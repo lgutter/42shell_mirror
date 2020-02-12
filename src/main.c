@@ -20,15 +20,17 @@ int		cetushell(char **env)
 	shell = ft_memalloc(sizeof(t_shell));
 	shell->envi = env;
 	configure_terminal(shell, 1);
-	while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q')
+	while (read(STDIN_FILENO, &c, 1) == 1)
 	{
 		if (!ft_isprint(c))
 			ft_printf("%d\n", c);
 		else
 			ft_printf("%d ('%c')\n", c, c);
+		if (c == 'q')
+			return (1);
 	}
 	configure_terminal(shell, 0);
-	return (1);
+	return (0);
 }
 
 int		main(int ac, char **av, char **env)
