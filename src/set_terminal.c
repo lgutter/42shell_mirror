@@ -20,7 +20,8 @@ void		configure_terminal(t_shell *shell, int activator)
 	{
 		tcgetattr(STDIN_FILENO, &orig);
 		shell->term = orig;
-		shell->term.c_lflag &= ~(ECHO | ICANON | IEXTEN);
+		shell->term.c_lflag &= ~(ECHO | ICANON | IEXTEN | ISIG);
+		shell->term.c_iflag &= ~(IXON);
 		shell->term.c_cc[VMIN] = 0;
 		shell->term.c_cc[VTIME] = 1;
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term);
