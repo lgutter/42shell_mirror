@@ -19,7 +19,7 @@ int		cetushell(char **env)
 
 	shell = ft_memalloc(sizeof(t_shell));
 	shell->envi = env;
-	configure_terminal(&shell, 1);
+	configure_terminal(shell, 1);
 	while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q')
 	{
 		if (!ft_isprint(c))
@@ -27,7 +27,7 @@ int		cetushell(char **env)
 		else
 			ft_printf("%d ('%c')\n", c, c);
 	}
-	configure_terminal(&shell, 0);
+	configure_terminal(shell, 0);
 	return (1);
 }
 
