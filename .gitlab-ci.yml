@@ -16,5 +16,6 @@ simple-test:
   after_script:
     - ninja -C build coverage --verbose
   artifacts:
+    when: always
     paths:
       - build/meson-logs/
