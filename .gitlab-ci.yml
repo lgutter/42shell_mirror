@@ -4,17 +4,17 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
-  test
+  - test
 
 simple-test:
   stage: test
   before_script:
     - meson build
     - ninja -C build
-    script:
-      - build/test-cetushell
-      after_script:
-        - ninja -C build coverage --verbose
-    artifacts:
-      paths:
-        build/meson-logs/coveragereport/
+  script:
+    - build/test-cetushell
+  after_script:
+    - ninja -C build coverage --verbose
+  artifacts:
+    paths:
+      - build/meson-logs/coveragereport/
