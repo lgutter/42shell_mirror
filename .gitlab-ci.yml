@@ -9,7 +9,7 @@ stages:
 simple-test:
   stage: test
   before_script:
-    - meson build
+    - meson build -Dbcoverage=true
     - ninja -C build
   script:
     - build/test-cetushell
