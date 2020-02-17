@@ -1,7 +1,6 @@
 image: lgutter/codam_ci:latest
 
 variables:
-  PYTHONWARNINGS: "ignore::yaml.YAMLLoadWarning"
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
@@ -12,7 +11,10 @@ simple-test:
   before_script:
     - meson build
     - ninja -C build
-  script:
-    - build/test-cetushell
-  after_script:
-    - coveralls -e build -e subprojects -e inc --exclude-pattern ".*(main|\.spec)\..*" --verbose
+    script:
+      - build/test-cetushell
+      after_script:
+        - ninja -C build coverage --verbose
+    artifacts:
+      paths:
+        build/meson-logs/coveragereport/
