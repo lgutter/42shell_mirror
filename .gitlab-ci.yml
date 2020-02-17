@@ -17,4 +17,4 @@ simple-test:
     - ninja -C build coverage --verbose
   artifacts:
     paths:
-      - build/meson-logs/coveragereport/
+      - build/meson-logs/
