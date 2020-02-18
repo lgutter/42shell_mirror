@@ -16,8 +16,9 @@ simple-test:
   script:
     - build/test-cetushell
   after_script:
+    - rm -rfv $(find -E . -regex ".*\.spec\.c\.gc(no|da|ov)")
     - ninja -C build coverage --verbose
   artifacts:
     when: always
     paths:
-      - build/meson-logs/
+      - build/meson-logs/coveragereport/

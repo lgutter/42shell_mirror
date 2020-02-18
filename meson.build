@@ -7,8 +7,6 @@ project(
   ]
 )
 
-add_project_arguments('-coverage', language : 'c')
-
 cc = meson.get_compiler('c')
 
 libft_proj = subproject('libft')
