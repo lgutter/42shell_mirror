@@ -16,7 +16,7 @@ simple-test:
   script:
     - build/test-cetushell
   after_script:
-    - rm -rfv $(find -E . -regex ".*\.spec\.c\.gc(no|da|ov)")
+    - rm -rfv $(find . -regex ".*\.spec\.c\.gc[ndo][oav]")
     - ninja -C build coverage --verbose
   artifacts:
     when: always
