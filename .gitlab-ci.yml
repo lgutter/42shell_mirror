@@ -16,7 +16,7 @@ simple-test:
   script:
     - meson test -C build
   after_script:
-    - rm -rfv $(find . -regex ".*\.spec\.c\.gc[ndo][oav]"")
+    - rm -rfv $(find . -regex ".*\.spec\.c\.gc[ndo][oav]")
     - ninja -C build coverage --verbose
   artifacts:
     when: always
