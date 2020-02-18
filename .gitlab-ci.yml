@@ -18,7 +18,8 @@ simple-test:
   after_script:
     - rm -rfv $(find . -regex ".*\.spec\.c\.gc[ndo][oav]")
     - ninja -C build coverage --verbose
+    - mv build/meson-logs meson-logs
   artifacts:
     when: always
     paths:
-      - build/meson-logs/coveragereport/
+      - meson-logs/
