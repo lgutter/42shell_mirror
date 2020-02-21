@@ -78,3 +78,35 @@ MANDATORY:
 For 21sh to work properly we must do a lexical analysis on the input arguments (tokenizing).
     SAUCE: https://www.thecrazyprogrammer.com/2017/02/lexical-analyzer-in-c.html
             https://niols.fr/materials/papers/sle18.pdf
+
+
+
+
+
+
+
+
+Product Backlog:
+
+- terminal input
+    - arrow left + right line edition
+    - arrow up + down History
+    - cntrl+c sigkill
+    - backspace
+    - tab
+    - enter
+    - ctrl + left + right move word per word
+    - home & end
+    - ctrl + up + down (move up down from multiline input)
+- lexer analysis
+- token parser
+- redirections
+- Pipes
+- history
+- builtins
+- environmental variables
+- command execute
+- filedescriptor aggregetion
+- error handling
+
+CETUSH: Error (12): Malloc error in environment

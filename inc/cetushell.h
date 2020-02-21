@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   shell21.h                                          :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
+/*   cetushell - 21 Shell                                 ::::::::            */
+/*                                                      :+:    :+:            */
+/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
+/*       lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/02/12 11:38:05 by dkroeke        #+#    #+#                */
-/*   Updated: 2020/02/12 11:38:05 by dkroeke       ########   odam.nl         */
+/*                                                 #+#    #+#                 */
+/*   License: GPLv3                                ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SHELL_H
-# define SHELL_H
+#ifndef CETUSHELL_H
+# define CETUSHELL_H
 # include <termios.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -19,7 +19,7 @@
 # include <term.h>
 # include "ft_printf.h"
 # include "libft.h"
-# include "terminal.h"
+# include "configure_terminal.h"
 
 typedef struct		s_buff
 {
@@ -44,5 +44,6 @@ typedef struct		s_shell
 
 void		get_winsize(t_shell *shell);
 void		configure_terminal(t_shell *shell, int activator);
+void		get_cursor_pos(t_cursor *cursor);
 
 #endif
