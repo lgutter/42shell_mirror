@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   terminal.h                                         :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
+/*   cetushell - 21 Shell                                 ::::::::            */
+/*                                                      :+:    :+:            */
+/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
+/*       lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/02/16 16:09:07 by dkroeke        #+#    #+#                */
-/*   Updated: 2020/02/16 16:09:07 by dkroeke       ########   odam.nl         */
+/*                                                 #+#    #+#                 */
+/*   License: GPLv3                                ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TERMINAL_H
-# define TERMINAL_H
+#ifndef CONFIGURE_TERMINAL_H
+# define CONFIGURE_TERMINAL_H
 # define CURSOR_POSITION "u7"
 # define CLEAR_TO_BEGIN "cb"
 # define CURSOR_LEFT "le"
@@ -20,7 +20,7 @@
 # define CURSOR_DOWN "do"
 # define CLEAR_SCREEN "cl"
 
-# include "shell21.h"
+# include "cetushell.h"
 
 void		send_terminal(char *command);
 
