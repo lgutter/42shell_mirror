@@ -23,7 +23,9 @@ endif
 inc_dir = include_directories('inc')
 src_files = files([
   'src/main.c',
-  'src/set_terminal.c',
+  'src/configure_terminal.c',
+  'src/handle_control.c',
+  'src/handle_cursor.c',
 ])
 
 executable(

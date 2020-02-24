@@ -19,7 +19,8 @@
 # include <term.h>
 # include "ft_printf.h"
 # include "libft.h"
-# include "configure_terminal.h"
+
+# define PROMPT_LEN 10
 
 typedef struct		s_buff
 {
@@ -29,8 +30,9 @@ typedef struct		s_buff
 
 typedef struct		s_cursor
 {
-	int				x;
-	int				y;
+	size_t			x;
+	size_t			y;
+	char			cur_buff[32];
 }					t_cursor;
 
 typedef struct		s_shell
@@ -44,6 +46,6 @@ typedef struct		s_shell
 
 void		get_winsize(t_shell *shell);
 void		configure_terminal(t_shell *shell, int activator);
-void		get_cursor_pos(t_cursor *cursor);
+void		get_cursor_pos(t_cursor *cursor, int init);
 
 #endif
