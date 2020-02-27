@@ -41,10 +41,10 @@ int			handle_input(t_buff *buffer, t_cursor *cursor)
 		if (c == 10)
 		{
 			cursor->y++;
-			ft_printf("\n%s\n", buffer->buff);
+			ft_printf("\noutput: %s", buffer->buff);
 			ft_memset(&buffer->buff, '\0', buffer->len);
 			buffer->len = 0;
-			cursor->x = 10;
+			cursor->x = PROMPT_LEN;
 			send_terminal("do");
 		}
 		handle_tab(c, buffer, cursor);

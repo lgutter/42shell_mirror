@@ -60,7 +60,6 @@ void		handle_backspace(char c, t_buff *buffer, t_cursor *cursor)
 	curs = cursor->x - PROMPT_LEN;
 	if (c == BACKSPACE && buffer->len > 0)
 	{
-		ft_printf("\ntesting %c", buffer->buff[curs]);
 		if (buffer->buff[curs] == '\0')
 		{
 			buffer->len = buffer->len - 1;
@@ -76,10 +75,18 @@ void		handle_backspace(char c, t_buff *buffer, t_cursor *cursor)
 
 void		handle_tab(char c, t_buff *buffer, t_cursor *cursor)
 {
+	int		i;
+
+	i = 0;
 	if (c == TAB)
 	{
-		buffer->buff[buffer->len] = '\t';
-		buffer->len = buffer->len + 1;
-		cursor->x = cursor->x + 1;
+		// autocomplete
+		while (i != 4)
+		{
+			buffer->buff[buffer->len] = ' ';
+			buffer->len = buffer->len + 1;
+			cursor->x = cursor->x + 1;
+			i++;
+		}
 	}
 }
