@@ -22,8 +22,10 @@ endif
 
 inc_dir = include_directories('inc')
 src_files = files([
-  'src/set_terminal.c',
-  'src/foo_test.c',
+  'src/main.c',
+  'src/configure_terminal.c',
+  'src/handle_control.c',
+  'src/handle_cursor.c',
 ])
 
 main_file = files('src/main.c')
