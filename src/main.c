@@ -40,6 +40,8 @@ int			handle_input(t_buff *buffer, t_cursor *cursor)
 		}
 		if (c == 10)
 		{
+			cursor->y++;
+			ft_printf("\n%s\n", buffer->buff);
 			ft_memset(&buffer->buff, '\0', buffer->len);
 			buffer->len = 0;
 			cursor->x = 10;
@@ -47,7 +49,7 @@ int			handle_input(t_buff *buffer, t_cursor *cursor)
 		}
 		handle_tab(c, buffer, cursor);
 		handle_backspace(c, buffer, cursor);
-		set_cursor_pos(cursor);
+		set_cursor_pos(cursor, buffer->len);
 	}
 	return (0);
 }
@@ -59,7 +61,6 @@ void		init_buffs(t_shell *shell)
 	ft_memset(&shell->buffer.buff, '\0', 2048);
 	ft_memset(&shell->cursor.cur_buff, 0, 32);
 	get_cursor_pos(&shell->cursor, 1);
-
 }
 
 int			prompt_shell(t_shell *shell)
@@ -83,11 +84,7 @@ int			cetushell(char **env)
 	shell = ft_memalloc(sizeof(t_shell));
 	shell->envi = env;
 	configure_terminal(shell, 1);
-<<<<<<< HEAD
-	get_cursor_pos(&shell->cursor);
-=======
 	init_buffs(shell);
->>>>>>> 94f42877c650e6d3b196e6ba0808effffb5ce1e8
 	while (1)
 	{
 		if (prompt_shell(shell) == 1)

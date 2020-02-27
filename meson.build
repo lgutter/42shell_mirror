@@ -12,7 +12,7 @@ cc = meson.get_compiler('c')
 libft_proj = subproject('libft')
 libft_deb = libft_proj.get_variable('libft_deb')
 
-libftprintf_proj = subproject('ft_printf')
+libftprintf_proj = subproject('libftprintf')
 libftprintf_deb = libftprintf_proj.get_variable('libftprintf_deb')
 
 libcurses_deb = cc.find_library('curses', required: false)
@@ -23,6 +23,7 @@ endif
 inc_dir = include_directories('inc')
 src_files = files([
   'src/main.c',
+  'src/foo_test.c',
   'src/configure_terminal.c',
   'src/handle_control.c',
   'src/handle_cursor.c',
@@ -56,6 +57,6 @@ norminette = find_program('norminette', required: false)
 
 if norminette.found()
   test('norm',
-    find_program('contrib/meson-norm.sh'),
+    find_program('scripts/meson-norm.sh'),
     args: src_files + main_file)
 endif

@@ -32,19 +32,22 @@ void		handle_esc_seq(char c, t_cursor *cursor)
 
 int			insert_char(t_buff *buffer, t_cursor *cursor, char c)
 {
-	size_t 			temp;
+	size_t			temp;
+	size_t			curs;
 
-	temp = buffer->len;
-	if (ft_isprint(buffer->buff[cursor->x]) && ft_isprint(buffer->buff[cursor->x + 1]))
+	curs = cursor->x - PROMPT_LEN;
+	temp = buffer->len - 1;
+	if (ft_isprint(buffer->buff[curs]) && ft_isprint(buffer->buff[curs]))
 	{
-		while (temp > cursor->x)
+		while (temp != curs)
 		{
 			buffer->buff[temp + 1] = buffer->buff[temp];
 			temp--;
 		}
-		buffer->buff[temp] = c;
+		buffer->buff[temp + 1] = buffer->buff[temp];
 		buffer->len = buffer->len + 1;
-
+		cursor->x = cursor->x + 1;
+		buffer->buff[temp] = c;
 		return (1);
 	}
 	return (0);
@@ -52,12 +55,22 @@ int			insert_char(t_buff *buffer, t_cursor *cursor, char c)
 
 void		handle_backspace(char c, t_buff *buffer, t_cursor *cursor)
 {
-	if (c == BACKSPACE && buffer->len > 0 && buffer->buff[buffer->len] == '\0')
+	size_t		curs;
+
+	curs = cursor->x - PROMPT_LEN;
+	if (c == BACKSPACE && buffer->len > 0)
 	{
-		ft_printf("\ntest =  %c\n", buffer->buff[buffer->len - 1]);
-		buffer->len = buffer->len - 1;
-		cursor->x = cursor->x - 1;
-		buffer->buff[buffer->len] = '\0';
+		ft_printf("\ntesting %c", buffer->buff[curs]);
+		if (buffer->buff[curs] == '\0')
+		{
+			buffer->len = buffer->len - 1;
+			cursor->x = cursor->x - 1;
+			buffer->buff[buffer->len] = '\0';
+		}
+		else
+		{
+			ft_printf("\ntesting");
+		}
 	}
 }
 
