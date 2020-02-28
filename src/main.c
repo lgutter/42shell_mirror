@@ -14,21 +14,16 @@
 #include "controls_shell.h"
 #include "configure_terminal.h"
 
-int			handle_input(t_buff *buffer, t_cursor *cursor)
+int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 {
-	char		c;
-	ssize_t		ret;
-
-	c = '\0';
-	ret = read(STDIN_FILENO, &c, 1);
-	if (ret == -1)
-		ft_dprintf(2, "ERROR");
-	if (ret == 1)
-	{
-		//ft_printf("\n(%d)\n", c);
-		handle_esc_seq(c, cursor);
-		if (ft_isprint(c))
+	if (ft_isprint(c))
 		{
+			if (c == 'p')
+			{
+				buffer->buff[buffer->len] = '\n';
+				cursor->x = cursor->x + 1;
+				buffer->len = buffer->len + 1;	
+			}
 			if (c == 'q')
 				return (1);
 			if (insert_char(buffer, cursor, c) == 0)
@@ -49,7 +44,25 @@ int			handle_input(t_buff *buffer, t_cursor *cursor)
 		}
 		handle_tab(c, buffer, cursor);
 		handle_backspace(c, buffer, cursor);
-		set_cursor_pos(cursor, buffer->len);
+		return (0);
+}
+
+int			read_input(t_shell *shell)
+{
+	char		c;
+	ssize_t		ret;
+
+	c = '\0';
+	ret = read(STDIN_FILENO, &c, 1);
+	if (ret == -1)
+		ft_dprintf(2, "ERROR");
+	if (ret == 1)
+	{
+		//ft_printf("\n(%d)\n", c);
+		handle_esc_seq(c, &shell->cursor);
+		cursor_pos(shell);
+		if (handle_control_char(&shell->buffer, &shell->cursor, c) == 1)
+			return (1);
 	}
 	return (0);
 }
@@ -61,17 +74,31 @@ void		init_buffs(t_shell *shell)
 	ft_memset(&shell->buffer.buff, '\0', 2048);
 	ft_memset(&shell->cursor.cur_buff, 0, 32);
 	get_cursor_pos(&shell->cursor, 1);
+	send_terminal("mb");
+	shell->cursor.layer = 0;
+}
+
+void		refresh_prompt(t_buff buffer, t_cursor cursor)
+{
+	size_t		i;
+
+	i = 0;
+	while (i <= cursor.layer)
+	{
+		send_terminal("cb");
+		send_terminal("up");
+		i++;
+	}
+	ft_printf("\nCetush >>%s", buffer.buff);
+	ft_printf("%s", cursor.cur_buff);
 }
 
 int			prompt_shell(t_shell *shell)
 {
 	while (42)
 	{
-		send_terminal("cb");
-		send_terminal("up");
-		ft_printf("\nCetush >>%s", shell->buffer.buff);
-		ft_printf("%s", shell->cursor.cur_buff);
-		if (handle_input(&shell->buffer, &shell->cursor) == 1)
+		refresh_prompt(shell->buffer, shell->cursor);
+		if (read_input(shell) == 1)
 			return (1);
 	}
 	return (0);

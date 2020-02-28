@@ -21,12 +21,25 @@ void		handle_esc_seq(char c, t_cursor *cursor)
 	ft_bzero(seq, 3);
 	if (c == ESCAPE)
 	{
-		read(STDIN_FILENO, &seq[0], 1);
-		read(STDIN_FILENO, &seq[1], 1);
+		if (read(STDIN_FILENO, &seq[0], 1) == -1)
+			return ;
+		if (read(STDIN_FILENO, &seq[1], 1) == -1)
+			return ;
 		if (seq[0] == 91 && seq[1] == 'D')
-			cursor->x = cursor->x - 1;
+		{
+			if (cursor->x > 0)
+				cursor->x = cursor->x - 1;
+			cursor->x = cursor->x_max;
+			cursor->y--;
+			cursor->layer--;
+		}
 		if (seq[0] == 91 && seq[1] == 'C')
-			cursor->x = cursor->x + 1;
+		{
+			if (cursor->x < cursor->x_max)
+				cursor->x = cursor->x + 1;
+			cursor->x = 0;
+			cursor->y++;
+		}
 	}
 }
 
@@ -60,15 +73,25 @@ void		handle_backspace(char c, t_buff *buffer, t_cursor *cursor)
 	curs = cursor->x - PROMPT_LEN;
 	if (c == BACKSPACE && buffer->len > 0)
 	{
-		if (buffer->buff[curs] == '\0')
+		if (buffer->buff[cursor->x] == '\0')
 		{
 			buffer->len = buffer->len - 1;
 			cursor->x = cursor->x - 1;
 			buffer->buff[buffer->len] = '\0';
 		}
-		else
+		else if (cursor->x > 0)
 		{
-			ft_printf("\ntesting");
+			cursor->x = cursor-> x - 1;
+			curs = cursor->x;
+			//ft_printf("\n test (%c)\n", buffer->buff[cursor->x - 1]);
+			while(buffer->buff[cursor->x] != '\0')
+			{
+				buffer->buff[cursor->x] = buffer->buff[cursor->x + 1];
+				cursor->x = cursor->x + 1;
+			}
+			buffer->buff[cursor->x] = '\0';
+			cursor->x = curs;
+			buffer->len = buffer->len - 1;
 		}
 	}
 }
