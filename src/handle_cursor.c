@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   handle_cursor.c                                    :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: Invalid date        by                #+#    #+#                */
+/*   Updated: 0003/01/01 00:00:00 by               ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,22 @@
 
 void		set_cursor_pos(t_cursor *cursor, size_t len)
 {
+
 	ft_memset(&cursor->cur_buff, 0, 32);
 	if (cursor->x < PROMPT_LEN && cursor->layer == 0)
 		cursor->x = PROMPT_LEN;
 	if (cursor->x > (len + PROMPT_LEN))
 		cursor->x = len + PROMPT_LEN;
+	ft_printf("\nx == %d\n", cursor->x);
 	ft_snprintf(cursor->cur_buff, 16, "%c[%d;%dH", 27 , cursor->y, cursor->x);
 }
 
 void		cursor_next_line(t_shell *shell)
 {
 	//ft_printf("\ntest: (%d)\n", shell->cursor.x_max);
-	if (shell->cursor.x == shell->cursor.x_max - 2)
+	if (shell->cursor.x > shell->cursor.x_max)
 	{
-		shell->buffer.buff[shell->cursor.x] = '\n';
+		//shell->buffer.buff[shell->cursor.x] = '\n';
 		shell->cursor.x = 0;
 		shell->cursor.y = shell->cursor.y + 1;
 		shell->cursor.layer = shell->cursor.layer + 1;

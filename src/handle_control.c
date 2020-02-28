@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   handle_control.c                                   :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: Invalid date        by                #+#    #+#                */
+/*   Updated: 0003/01/01 00:00:00 by               ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,22 @@ void		handle_esc_seq(char c, t_cursor *cursor)
 		{
 			if (cursor->x > 0)
 				cursor->x = cursor->x - 1;
-			cursor->x = cursor->x_max;
-			cursor->y--;
-			cursor->layer--;
+			else
+			{
+				cursor->x = cursor->x_max;
+				cursor->y--;
+				cursor->layer--;
+			}
 		}
 		if (seq[0] == 91 && seq[1] == 'C')
 		{
 			if (cursor->x < cursor->x_max)
 				cursor->x = cursor->x + 1;
-			cursor->x = 0;
-			cursor->y++;
+			else
+			{
+				cursor->y++;
+				cursor->x = 0;
+			}
 		}
 	}
 }
@@ -81,7 +87,7 @@ void		handle_backspace(char c, t_buff *buffer, t_cursor *cursor)
 		}
 		else if (cursor->x > 0)
 		{
-			cursor->x = cursor-> x - 1;
+			cursor->x = cursor-> x;
 			curs = cursor->x;
 			//ft_printf("\n test (%c)\n", buffer->buff[cursor->x - 1]);
 			while(buffer->buff[cursor->x] != '\0')

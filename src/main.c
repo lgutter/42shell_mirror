@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   main.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: Invalid date        by                #+#    #+#                */
+/*   Updated: 0003/01/01 00:00:00 by               ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,34 +17,34 @@
 int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (ft_isprint(c))
+	{
+		if (c == 'p')
 		{
-			if (c == 'p')
-			{
-				buffer->buff[buffer->len] = '\n';
-				cursor->x = cursor->x + 1;
-				buffer->len = buffer->len + 1;	
-			}
-			if (c == 'q')
-				return (1);
-			if (insert_char(buffer, cursor, c) == 0)
-			{
-				buffer->buff[buffer->len] = c;
-				cursor->x = cursor->x + 1;
-				buffer->len = buffer->len + 1;
-			}
+			buffer->buff[buffer->len] = '\n';
+			cursor->x = cursor->x + 1;
+			buffer->len = buffer->len + 1;
 		}
-		if (c == 10)
+		if (c == 'q')
+			return (1);
+		if (insert_char(buffer, cursor, c) == 0)
 		{
-			cursor->y++;
-			ft_printf("\noutput: %s", buffer->buff);
-			ft_memset(&buffer->buff, '\0', buffer->len);
-			buffer->len = 0;
-			cursor->x = PROMPT_LEN;
-			send_terminal("do");
+			buffer->buff[buffer->len] = c;
+			cursor->x = cursor->x + 1;
+			buffer->len = buffer->len + 1;
 		}
-		handle_tab(c, buffer, cursor);
-		handle_backspace(c, buffer, cursor);
-		return (0);
+	}
+	if (c == 10)
+	{
+		cursor->y++;
+		ft_printf("\noutput: %s", buffer->buff);
+		ft_memset(&buffer->buff, '\0', buffer->len);
+		buffer->len = 0;
+		cursor->x = PROMPT_LEN;
+		send_terminal("do");
+	}
+	handle_tab(c, buffer, cursor);
+	handle_backspace(c, buffer, cursor);
+	return (0);
 }
 
 int			read_input(t_shell *shell)
@@ -60,9 +60,9 @@ int			read_input(t_shell *shell)
 	{
 		//ft_printf("\n(%d)\n", c);
 		handle_esc_seq(c, &shell->cursor);
-		cursor_pos(shell);
 		if (handle_control_char(&shell->buffer, &shell->cursor, c) == 1)
 			return (1);
+		cursor_pos(shell);
 	}
 	return (0);
 }
@@ -74,7 +74,6 @@ void		init_buffs(t_shell *shell)
 	ft_memset(&shell->buffer.buff, '\0', 2048);
 	ft_memset(&shell->cursor.cur_buff, 0, 32);
 	get_cursor_pos(&shell->cursor, 1);
-	send_terminal("mb");
 	shell->cursor.layer = 0;
 }
 
