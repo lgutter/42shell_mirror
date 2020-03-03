@@ -23,7 +23,7 @@ endif
 inc_dir = include_directories('inc')
 src_files = files([
   'src/set_terminal.c',
-  'src/foo_test.c',
+  'src/tokenizer.c',
 ])
 
 main_file = files('src/main.c')
@@ -39,7 +39,7 @@ libcriterion_deb = dependency('criterion', required: false)
 
 if libcriterion_deb.found()
   test_files = src_files + files([
-    'src/foo_test.spec.c',
+    'src/tokenizer.spec.c',
   ])
 
   tester = executable('test-cetushell',
