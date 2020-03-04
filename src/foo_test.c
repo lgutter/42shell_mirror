@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        ::::::::            */
-/*   foo_test.c                                         :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
+/*   cetushell - 21 Shell                                 ::::::::            */
+/*                                                      :+:    :+:            */
+/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
+/*       lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/02/12 17:57:21 by lgutter        #+#    #+#                */
-/*   Updated: 2020/02/12 17:57:21 by lgutter       ########   odam.nl         */
+/*                                                 #+#    #+#                 */
+/*   License: GPLv3                                ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 

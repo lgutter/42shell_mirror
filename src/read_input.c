@@ -14,32 +14,53 @@
 #include "controls_shell.h"
 #include "configure_terminal.h"
 
-int			cetushell(char **env)
+int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 {
-	t_shell		*shell;
-
-	shell = ft_memalloc(sizeof(t_shell));
-	shell->envi = env;
-	configure_terminal(shell, 1);
-	init_buffs(shell);
-	while (1)
+	if (ft_isprint(c))
 	{
-		if (prompt_shell(shell) == 1)
+		if (c == 'p')
+		{
+			buffer->buff[buffer->len] = '\n';
+			cursor->x = cursor->x + 1;
+			buffer->len = buffer->len + 1;
+		}
+		if (c == 'q')
 			return (1);
+		insert_char(buffer, c);
+		cursor->x++;
+
 	}
-	configure_terminal(shell, 0);
+	if (c == 10)
+	{
+		cursor->y++;
+		ft_printf("\noutput: %s", buffer->buff);
+		ft_memset(&buffer->buff, '\0', buffer->len);
+		buffer->len = 0;
+		cursor->x = PROMPT_LEN;
+		send_terminal("do");
+	}
+	handle_tab(c, buffer, cursor);
+	if (c == BACKSPACE)
+		remove_char(buffer);
 	return (0);
 }
 
-int		main(int ac, char **av, char **env)
+int			read_input(t_shell *shell)
 {
-	if (ac != 1)
-		ft_dprintf(2, "Huh? why %s? No arguments needed!\n", av[1]);
-	else
+	char		c;
+	ssize_t		ret;
+
+	c = '\0';
+	ret = read(STDIN_FILENO, &c, 1);
+	if (ret == -1)
+		ft_dprintf(2, "ERROR");
+	if (ret == 1)
 	{
-		while (21)
-			if (cetushell(env) == 1)
-				return (0);
+		//ft_printf("\n(%d)\n", c);
+		handle_esc_seq(c, &shell->cursor, &shell->buffer);
+		if (handle_control_char(&shell->buffer, &shell->cursor, c) == 1)
+			return (1);
+		cursor_pos(shell);
 	}
-	return (1);
+	return (0);
 }

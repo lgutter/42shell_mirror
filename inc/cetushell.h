@@ -26,11 +26,12 @@ typedef struct		s_buff
 {
 	char			buff[2048];
 	size_t			len;
+	size_t			index;
 }					t_buff;
 
 typedef struct		s_cursor
 {
-	size_t			x;
+	ssize_t			x;
 	size_t			y;
 	char			cur_buff[32];
 	size_t			layer;
@@ -50,6 +51,9 @@ typedef struct		s_shell
 void		get_winsize(t_shell *shell);
 void		configure_terminal(t_shell *shell, int activator);
 void		get_cursor_pos(t_cursor *cursor, int init);
-void		refresh_prompt(t_buff buffer, t_cursor cursor);
+int			prompt_shell(t_shell *shell);
+int			read_input(t_shell *shell);
+void		init_buffs(t_shell *shell);
+void		remove_char(t_buff *buffer);
 
 #endif

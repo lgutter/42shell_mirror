@@ -10,12 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <criterion/criterion.h>
-#include <criterion/assert.h>
+#include "cetushell.h"
+#include "controls_shell.h"
+#include "configure_terminal.h"
 
-int		foo_test(void);
-
-Test(test_suit_one, always_true)
+void		refresh_prompt(t_buff buffer, t_cursor cursor)
 {
-	cr_assert_eq(foo_test(), 1);
+	size_t		i;
+
+	i = 0;
+	while (i <= cursor.layer)
+	{
+		send_terminal("cb");
+		send_terminal("up");
+		i++;
+	}
+	ft_printf("\nCetush >>%s", buffer.buff);
+	ft_printf("%s", cursor.cur_buff);
+}
+
+int			prompt_shell(t_shell *shell)
+{
+	while (42)
+	{
+		refresh_prompt(shell->buffer, shell->cursor);
+		if (read_input(shell) == 1)
+			return (1);
+	}
+	return (0);
 }
