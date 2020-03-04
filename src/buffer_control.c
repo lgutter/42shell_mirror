@@ -62,13 +62,13 @@ void		remove_char(t_buff *buffer)
 	else if (buffer->index > 0)
 	{
 		curs = buffer->index;
-		while (buffer->buff[buffer->index] != '\0')
+		while (buffer->buff[buffer->index - 1] != '\0')
 		{
 			buffer->buff[buffer->index - 1] = buffer->buff[buffer->index];
 			buffer->index = buffer->index + 1;
 		}
 		buffer->buff[buffer->index - 1] = '\0';
-		buffer->index = curs;
+		buffer->index = curs - 1;
 		buffer->len = buffer->len - 1;
 	}
 }

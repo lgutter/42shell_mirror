@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   cetushell.h                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: Invalid date        by                #+#    #+#                */
+/*   Updated: 0003/01/01 00:00:00 by               ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,5 +55,6 @@ int			prompt_shell(t_shell *shell);
 int			read_input(t_shell *shell);
 void		init_buffs(t_shell *shell);
 void		remove_char(t_buff *buffer);
+void		refresh_prompt(t_buff buffer, t_cursor cursor);
 
 #endif

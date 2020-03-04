@@ -22,7 +22,6 @@ endif
 
 inc_dir = include_directories('inc')
 src_files = files([
-  'src/main.c',
   'src/prompt.c',
   'src/read_input.c',
   'src/foo_test.c',
@@ -46,6 +45,7 @@ libcriterion_deb = dependency('criterion', required: false)
 if libcriterion_deb.found()
   test_files = src_files + files([
     'src/foo_test.spec.c',
+    'src/buffer_control.spec.c',
   ])
 
   tester = executable('test-cetushell',

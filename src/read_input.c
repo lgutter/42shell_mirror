@@ -28,7 +28,6 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 			return (1);
 		insert_char(buffer, c);
 		cursor->x++;
-
 	}
 	if (c == 10)
 	{
@@ -40,8 +39,12 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 		send_terminal("do");
 	}
 	handle_tab(c, buffer, cursor);
-	if (c == BACKSPACE)
+	if (c == BACKSPACE && cursor->x > PROMPT_LEN)
+	{
+		cursor->x--;
 		remove_char(buffer);
+		//refresh_prompt(*buffer, *cursor);
+	}
 	return (0);
 }
 

@@ -16,15 +16,9 @@
 
 void		refresh_prompt(t_buff buffer, t_cursor cursor)
 {
-	size_t		i;
-
-	i = 0;
-	while (i <= cursor.layer)
-	{
-		send_terminal("cb");
-		send_terminal("up");
-		i++;
-	}
+	ft_printf("%c[%d;%dH", 27, cursor.y, 0);
+	send_terminal("ce");
+	send_terminal("up");
 	ft_printf("\nCetush >>%s", buffer.buff);
 	ft_printf("%s", cursor.cur_buff);
 }

@@ -66,5 +66,4 @@ void		get_cursor_pos(t_cursor *cursor, int init)
 	cursor->x = ft_atoi(&pos[ret]);
 	if (init == 1)
 		cursor->x = PROMPT_LEN;
-	ft_printf("(%d,%d)", cursor->y, cursor->x);
 }
