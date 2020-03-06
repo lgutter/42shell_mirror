@@ -1,5 +1,0 @@
-.vscode
-.obj
-*.o
-/libftprintf.a
-/test/tester

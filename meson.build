@@ -12,7 +12,7 @@ cc = meson.get_compiler('c')
 libft_proj = subproject('libft')
 libft_deb = libft_proj.get_variable('libft_deb')
 
-libftprintf_proj = subproject('libftprintf')
+libftprintf_proj = subproject('ft_printf')
 libftprintf_deb = libftprintf_proj.get_variable('libftprintf_deb')
 
 libcurses_deb = cc.find_library('curses', required: false)
