@@ -14,7 +14,7 @@
 #include <criterion/assert.h>
 #include "tokenizer.h"
 
-Test(tokenizer, basic_mandatory_no_tokens)
+Test(tokenizer_tests, basic_mandatory_no_tokens)
 {
 	t_token *result = NULL;
 
@@ -22,7 +22,7 @@ Test(tokenizer, basic_mandatory_no_tokens)
 	cr_expect_eq(result, NULL);
 }
 
-Test(tokenizer, basic_mandatory_one_word_token)
+Test(tokenizer_tests, basic_mandatory_one_word_token)
 {
 	t_token *result = NULL;
 
@@ -43,7 +43,59 @@ Test(tokenizer, basic_mandatory_one_word_token_extra_blanks)
 	cr_expect_eq(result->next, NULL);
 }
 
-Test(tokenizer, basic_mandatory_two_word_tokens_extra_blanks)
+Test(tokenizer, basic_mandatory_one_word_token_dquote)
+{
+	t_token *result = NULL;
+
+	result = tokenizer("\"author';foo'\"");
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "\"author';foo'\"");
+	cr_expect_eq(result->next, NULL);
+}
+
+Test(tokenizer, basic_mandatory_one_word_token_squote_everything)
+{
+	t_token *result = NULL;
+
+	result = tokenizer("		 '&>&<;|\n\"2<&	 \\'  ");
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "'&>&<;|\n\"2<&	 \\'");
+	cr_expect_eq(result->next, NULL);
+}
+
+Test(tokenizer, basic_mandatory_one_word_token_dquote_everything)
+{
+	t_token *result = NULL;
+
+	result = tokenizer("	 \"&>&<;|\n\\\"2<&	 \\\"\" 	 ");
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "\"&>&<;|\n\\\"2<&	 \\\"\"");
+	cr_expect_eq(result->next, NULL);
+}
+
+Test(tokenizer, basic_mandatory_three_tokens_word_semi_word)
+{
+	t_token *result = NULL;
+
+	result = tokenizer("\\\"\\ ;\\;");
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "\\\"\\ ");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, SEMI);
+	cr_expect_str_eq(result->value, ";");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "\\;");
+	cr_expect_eq(result->next, NULL);
+}
+
+Test(tokenizer_tests, basic_mandatory_two_word_tokens_extra_blanks)
 {
 	t_token *result = NULL;
 
@@ -55,6 +107,21 @@ Test(tokenizer, basic_mandatory_two_word_tokens_extra_blanks)
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "foo42");
+	cr_expect_eq(result->next, NULL);
+}
+
+Test(tokenizer_tests, basic_mandatory_two_word_tokens_with_punctuation)
+{
+	t_token *result = NULL;
+
+	result = tokenizer("ca,t meson.build");
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "ca,t");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "meson.build");
 	cr_expect_eq(result->next, NULL);
 }
 
@@ -81,7 +148,7 @@ Test(tokenizer, basic_mandatory_four_tokens_word_io_number_lessamp_word)
 	cr_expect_eq(result->next, NULL);
 }
 
-Test(tokenizer, basic_mandatory_four_tokens_word_dless_lessamp_great)
+Test(tokenizer_tests, basic_mandatory_four_tokens_word_dless_lessamp_great)
 {
 	t_token *result = NULL;
 
@@ -102,4 +169,68 @@ Test(tokenizer, basic_mandatory_four_tokens_word_dless_lessamp_great)
 	cr_expect_eq(result->type, GREAT);
 	cr_expect_str_eq(result->value, ">");
 	cr_expect_eq(result->next, NULL);
+}
+
+Test(tokenizer_tests, basic_mandatory_four_tokens_word_pipe_squote_amp)
+{
+	t_token *result = NULL;
+
+	result = tokenizer("echo|'\\$(CC)' &");
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "echo");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, PIPE);
+	cr_expect_str_eq(result->value, "|");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "'\\$(CC)'");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, AMP);
+	cr_expect_str_eq(result->value, "&");
+	cr_expect_eq(result->next, NULL);
+}
+
+Test(tokenizer_tests, basic_mandatory_four_tokens_word_word_semi_word)
+{
+	t_token *result = NULL;
+
+	result = tokenizer("echo $PWD;	 foo");
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "echo");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "$PWD");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, SEMI);
+	cr_expect_str_eq(result->value, ";");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "foo");
+	cr_expect_eq(result->next, NULL);
+}
+
+Test(tokenizer_tests, edge_case_mandatory_buffer_expansion)
+{
+	t_token	*result = NULL;
+	char	longstr[BUFFER_SIZE + 32];
+	size_t	i = 0;
+
+	while (i < (BUFFER_SIZE + 31))
+	{
+		longstr[i] = 'a';
+		i++;
+	}
+	longstr[i] = '\0';
+	result = tokenizer(longstr);
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, longstr);
 }
