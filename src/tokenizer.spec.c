@@ -247,14 +247,13 @@ Test(tokenizer_tests, basic_mandatory_four_tokens_word_word_semi_word)
 	cr_expect_eq(result->next, NULL);
 }
 
-Test(tokenizer_tests, edge_case_mandatory_buffer_expansion, .timeout = 30)
+Test(tokenizer_tests, edge_case_mandatory_buffer_expansion)
 {
 	t_token	*result = NULL;
 	char	*longstr;
 
-	longstr = malloc(BUFFER_SIZE + 43);
+	longstr = ft_memalloc(BUFFER_SIZE + 43);
 	ft_memset(longstr, 'a', BUFFER_SIZE + 42);
-	longstr[BUFFER_SIZE + 42] = '\0';
 	result = tokenizer(longstr);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
