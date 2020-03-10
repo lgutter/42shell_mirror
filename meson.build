@@ -47,7 +47,9 @@ if libcriterion_deb.found()
     include_directories: inc_dir,
     dependencies: [libft_deb, libftprintf_deb, libcurses_deb, libcriterion_deb])
 
-  test('cetushell', tester)
+  test('cetushell',
+  tester,
+  args: '--verbose')
 endif
 
 norminette = find_program('norminette', required: false)
