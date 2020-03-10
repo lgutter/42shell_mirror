@@ -24,57 +24,37 @@
 **	arg: new - the character to be added.
 */
 
-static void	expand_buff(char **buff, char new, size_t *size)
+static void	expand_buff(char **buff, char new)
 {
+	static size_t	size = BUFFER_SIZE;
 	size_t			i;
 	char			*temp;
 
 	i = 0;
 	if (*buff == NULL)
 	{
-		*buff = (char *)ft_memalloc(*size);
+		*buff = (char *)ft_memalloc(size);
 		if (buff == NULL)
 			exit(1);
 	}
 	i = ft_strlen(*buff);
-	if (i >= (*size - 1))
+	if (i >= (size - 1))
 	{
-		temp = ft_memalloc(*size * 2);
+		temp = ft_memalloc(size * 2);
 		if (temp == NULL)
 			exit(1);
 		temp = ft_strcpy(temp, *buff);
 		free(*buff);
 		*buff = temp;
-		*size = *size * 2;
+		size = size * 2;
 	}
 	(*buff)[i] = new;
 }
 
 /*
-**	this function is a simple wrapper for buffer management.
-**	if the char is a terminating zero (it will never receive this from
-**	the tokenizer), it will empty the buffer.
-**	otherwise, it will pass its arguments to expand_buffer.
-*/
-
-static void	handle_buff(char **buff, char new)
-{
-	static size_t	size = BUFFER_SIZE;
-
-	if (new == '\0')
-	{
-		ft_memset((void *)*buff, '\0', size);
-	}
-	else
-	{
-		expand_buff(buff, new, &size);
-	}
-}
-
-/*
 **	The add_token function creates a new node in the list of tokens,
 **	and sets the type and transfers the buffer into the value field.
-**	It also calls handle_buff to empty the buffer.
+**	It also calls ft_memset to empty the buffer after it is done.
 **	arg: start - a pointer to the first element in the token list.
 **	arg: type - the type of the token.
 **	arg: buff - a pointer to the buffer.
@@ -102,7 +82,7 @@ static void	add_token(t_token **start, t_type type, char **buff)
 	temp->next = NULL;
 	temp->type = type;
 	temp->value = ft_strdup(*buff);
-	handle_buff(buff, '\0');
+	ft_memset((void *)*buff, '\0', ft_strlen(*buff));
 }
 
 t_token		*tokenizer(char *input)
@@ -121,11 +101,11 @@ t_token		*tokenizer(char *input)
 		if (state_rules.next_state == invalid)
 			state_rules = g_token_trans[cur_state].catch_state;
 		if (state_rules.add_char == ADD_CHAR_PRE)
-			handle_buff(&buff, *input);
+			expand_buff(&buff, *input);
 		if (state_rules.delimit_type != undetermined)
 			add_token(&start, state_rules.delimit_type, &buff);
 		if (state_rules.add_char == ADD_CHAR_POST)
-			handle_buff(&buff, *input);
+			expand_buff(&buff, *input);
 		if (state_rules.next_state == eof)
 			return (start);
 		cur_state = state_rules.next_state;

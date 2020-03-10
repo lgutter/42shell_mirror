@@ -21,7 +21,7 @@
 **	buffer size of the buffer used in the tokenizer/lexer.
 **	the part of the input string that will become a token is kept in this buffer
 */
-# define BUFFER_SIZE	1024
+# define BUFFER_SIZE	128
 
 /*
 **	the linked list node containing a token.

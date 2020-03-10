@@ -105,7 +105,7 @@ typedef struct		s_trans
 **	table[]{
 **	- - [STATE]{
 **	- - - - .rules[256] = {
-**	- - - - - - [char] = {next_state, delimit_type, add_char},
+**	- - - - - - [input char] = {next_state, delimit_type, add_char},
 **	- - - - - - ...
 **	- - - - },
 **	- - - - .catch_state = {next_state, delimit_type, add_char}
@@ -359,7 +359,7 @@ static const t_trans g_token_trans[] = {
 	{
 		.rules = {
 			['\0']		= {eof, WORD, SKIP_CHAR},
-			['\'']		= {blank, WORD, ADD_CHAR_PRE}
+			['\'']		= {state_word, undetermined, ADD_CHAR_POST}
 		},
 		.catch_state	= {squote, undetermined, ADD_CHAR_POST}
 	},
@@ -367,7 +367,7 @@ static const t_trans g_token_trans[] = {
 	{
 		.rules = {
 			['\0']		= {eof, WORD, SKIP_CHAR},
-			['"']		= {blank, WORD, ADD_CHAR_PRE},
+			['"']		= {state_word, undetermined, ADD_CHAR_POST},
 			['\\']		= {dq_backslash, undetermined, ADD_CHAR_POST}
 		},
 		.catch_state	= {dquote, undetermined, ADD_CHAR_POST}
