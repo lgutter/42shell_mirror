@@ -34,7 +34,7 @@ static void	expand_buff(char **buff, char new)
 	if (*buff == NULL)
 	{
 		*buff = (char *)ft_memalloc(size);
-		if (buff == NULL)
+		if (*buff == NULL)
 			exit(1);
 	}
 	i = ft_strlen(*buff);
