@@ -201,6 +201,29 @@ Test(tokenizer_tests, basic_mandatory_four_tokens_word_dless_lessamp_great)
 	cr_expect_eq(result->next, NULL);
 }
 
+Test(tokenizer_tests, basic_mandatory_four_tokens_word_dgreat_greatamp_less)
+{
+	t_token *result = NULL;
+
+	result = tokenizer("7oo		>>>&<");
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "7oo");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, DGREAT);
+	cr_expect_str_eq(result->value, ">>");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, GREATAMP);
+	cr_expect_str_eq(result->value, ">&");
+	result = result->next;
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, LESS);
+	cr_expect_str_eq(result->value, "<");
+	cr_expect_eq(result->next, NULL);
+}
+
 Test(tokenizer_tests, basic_mandatory_four_tokens_word_pipe_squote_amp)
 {
 	t_token *result = NULL;
@@ -224,14 +247,14 @@ Test(tokenizer_tests, basic_mandatory_four_tokens_word_pipe_squote_amp)
 	cr_expect_eq(result->next, NULL);
 }
 
-Test(tokenizer_tests, basic_mandatory_four_tokens_word_word_semi_word)
+Test(tokenizer_tests, basic_mandatory_four_tokens_newline_word_semi_word)
 {
 	t_token *result = NULL;
 
-	result = tokenizer("echo $PWD;	 foo");
+	result = tokenizer("\n $PWD;	 foo");
 	cr_assert_neq(result, NULL);
-	cr_expect_eq(result->type, WORD);
-	cr_expect_str_eq(result->value, "echo");
+	cr_expect_eq(result->type, NEWLINE);
+	cr_expect_str_eq(result->value, "\n");
 	result = result->next;
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
