@@ -22,9 +22,10 @@
 **	know its exact size.
 **	arg: buff - a pointer to the actual buffer.
 **	arg: new - the character to be added.
+**	returns: 0 on success, error code on error.
 */
 
-static void		expand_buff(char **buff, char new)
+static int		expand_buff(char **buff, char new)
 {
 	static size_t	size = BUFFER_SIZE;
 	size_t			i;
@@ -35,20 +36,21 @@ static void		expand_buff(char **buff, char new)
 	{
 		*buff = (char *)ft_memalloc(size);
 		if (*buff == NULL)
-			exit(1); // implement proper error handling!
+			return (handle_error(malloc_error));
 	}
 	i = ft_strlen(*buff);
 	if (i >= (size - 1))
 	{
 		temp = ft_memalloc(size * 2);
 		if (temp == NULL)
-			exit(1); // implement proper error handling!
+			return (handle_error(malloc_error));
 		temp = ft_strcpy(temp, *buff);
 		free(*buff);
 		*buff = temp;
 		size = size * 2;
 	}
 	(*buff)[i] = new;
+	return (0);
 }
 
 /*
@@ -58,9 +60,10 @@ static void		expand_buff(char **buff, char new)
 **	arg: start - a pointer to the first element in the token list.
 **	arg: type - the type of the token.
 **	arg: buff - a pointer to the buffer.
+**	returns: 0 on success, error code on error.
 */
 
-static void		add_token(t_token **start, t_type type, char **buff)
+static int		add_token(t_token **start, t_type type, char **buff)
 {
 	t_token *temp;
 
@@ -78,11 +81,15 @@ static void		add_token(t_token **start, t_type type, char **buff)
 		temp = temp->next;
 	}
 	if (temp == NULL)
-		exit(1); // implement proper error handling!
+	{
+		ft_memset((void *)*buff, '\0', ft_strlen(*buff));
+		return (handle_error(malloc_error));
+	}
 	temp->next = NULL;
 	temp->type = type;
 	temp->value = ft_strdup(*buff);
 	ft_memset((void *)*buff, '\0', ft_strlen(*buff));
+	return (0);
 }
 
 static t_rules	init_state(t_state cur_state, char input)
@@ -100,13 +107,16 @@ static t_rules	init_state(t_state cur_state, char input)
 static int		handle_token(t_rules state_rules, t_token **start,
 							char **buff, char input)
 {
-	if (state_rules.add_char == ADD_CHAR_PRE)
-		expand_buff(buff, input);
-	if (state_rules.delimit_type != undetermined)
-		add_token(start, state_rules.delimit_type, buff);
-	if (state_rules.add_char == ADD_CHAR_POST)
-		expand_buff(buff, input);
-	return (0);
+	int	ret;
+
+	ret = 0;
+	if (ret == 0 && state_rules.add_char == ADD_CHAR_PRE)
+		ret = expand_buff(buff, input);
+	if (ret == 0 && state_rules.delimit_type != undetermined)
+		ret = add_token(start, state_rules.delimit_type, buff);
+	if (ret == 0 && state_rules.add_char == ADD_CHAR_POST)
+		ret = expand_buff(buff, input);
+	return (ret);
 }
 
 t_token			*tokenizer(char *input)
@@ -122,7 +132,10 @@ t_token			*tokenizer(char *input)
 	{
 		state_rules = init_state(cur_state, *input);
 		if (handle_token(state_rules, &start, &buff, *input) != 0)
+		{
+			free_token_list(&start);
 			return (NULL);
+		}
 		if (state_rules.next_state == eof)
 			return (start);
 		cur_state = state_rules.next_state;

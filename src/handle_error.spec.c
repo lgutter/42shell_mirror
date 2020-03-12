@@ -15,6 +15,7 @@
 #include <criterion/redirect.h>
 #include <criterion/parameterized.h>
 #include "handle_error.h"
+#include "error_str.h"
 
 static void redirect_std_err()
 {

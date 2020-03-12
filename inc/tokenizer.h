@@ -15,6 +15,7 @@
 # include "ft_printf.h"
 # include "libft.h"
 # include "token_trans_table.h"
+# include "handle_error.h"
 # include <stdlib.h>
 
 /*
@@ -45,5 +46,11 @@ typedef struct			s_token
 **	return: a linked list of tokens, containing a token type and value.
 */
 t_token					*tokenizer(char *input);
+
+/*
+**	frees all nodes and their content in a token linked list.
+**	arg: start: a pointer to a pointer to the first element in the list.
+*/
+void					free_token_list(t_token **start);
 
 #endif

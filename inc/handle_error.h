@@ -33,15 +33,6 @@ typedef enum		e_error
 }					t_error;
 
 /*
-**	an array of all the error strings, using the error enums as index.
-**	these strings will be used to print a relevant error message.
-*/
-static const char	*g_error_str[error_count] = {
-	[no_error] = "Error code indicates no error",
-	[malloc_error] = "Malloc failed to allocate memory",
-};
-
-/*
 **	handle_error takes an error_code (see error enums), and prints the
 **	relevant error message, after which it returns the error code again.
 **
