@@ -14,12 +14,12 @@
 
 int		handle_error(int error_code)
 {
-	ft_dprintf(2, "%s\n", g_error_str[error_code]);
+	ft_dprintf(STDERR_FILENO, "%s\n", g_error_str[error_code]);
 	return (error_code);
 }
 
 int		handle_error_str(int error_code, const char *str)
 {
-	ft_dprintf(2, "%s: %s\n", g_error_str[error_code], str);
+	ft_dprintf(STDERR_FILENO, "%s: %s\n", g_error_str[error_code], str);
 	return (error_code);
 }

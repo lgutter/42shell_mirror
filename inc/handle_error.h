@@ -12,6 +12,7 @@
 
 #ifndef HANDLE_ERROR_H
 # define HANDLE_ERROR_H
+# include <unistd.h>
 # include "ft_printf.h"
 
 /*
@@ -21,7 +22,6 @@ typedef enum		e_error
 {
 	unknown_error = 0,
 	malloc_error,
-	foo_error,
 	error_count
 }					t_error;
 
@@ -32,7 +32,6 @@ typedef enum		e_error
 static const char	*g_error_str[error_count] = {
 	[unknown_error] = "An unknown error occurred",
 	[malloc_error] = "Malloc failed to allocate memory",
-	[foo_error] = "foo fake error"
 };
 
 /*
