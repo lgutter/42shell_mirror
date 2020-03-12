@@ -14,6 +14,15 @@
 #include "controls_shell.h"
 #include "configure_terminal.h"
 
+
+/**
+ * WIP: here all the controlls will be located apart from the escape sequences.
+ * with normal character -> add to buffer.
+ * 'q' = exit the program.
+ * 10/enter = enter the current buffer as input for process.
+ * tab = input tab into buffer.
+ * backspace = removes character from buffer according to the index position.
+ */
 int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (ft_isprint(c))
@@ -54,6 +63,9 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 	return (0);
 }
 
+/**
+ * reads the input from the user character per character.
+ */
 int			read_input(t_shell *shell)
 {
 	char		c;

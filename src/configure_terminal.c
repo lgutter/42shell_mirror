@@ -17,11 +17,22 @@ static int	ft_putchar(int c)
 	return (write(STDERR_FILENO, &c, 1));
 }
 
+/**
+ * this function will is able to send (termcap)codes specified by terminfo(5).
+ */
 void		send_terminal(char *command)
 {
 	tputs(tgetstr(command, NULL), 1, ft_putchar);
 }
 
+/**
+ * configure the terminal to run in RAW mode. RAW mode will not echo input
+ * directly to the terminal but lets you process the input into your own
+ * interpretation. 
+ * The settings for the terminal before cetushell will be stored into a static
+ * and with terminating the program these settings will be returned. 
+ * tgetent will get the current terminal information.
+ */
 void		configure_terminal(t_shell *shell, int activator)
 {
 	static struct termios orig;
@@ -41,6 +52,10 @@ void		configure_terminal(t_shell *shell, int activator)
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig);
 }
 
+/** will get the current window size of the terminal and will put it into
+ * a winsize struct. This is needed for printing newlines correctly at 
+ * end of the screen.
+ */
 void		get_winsize(t_shell *shell)
 {
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &shell->winsize);

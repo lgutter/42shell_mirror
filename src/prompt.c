@@ -14,6 +14,10 @@
 #include "controls_shell.h"
 #include "configure_terminal.h"
 
+/**
+ * this funciton has to make sure that the printing of the buffer (to a newline)
+ * in the prompt is handled correctly. 
+ */
 void		newline_buffer(t_buff buffer, t_cursor cursor)
 {
 	int		layer;
@@ -32,6 +36,10 @@ void		newline_buffer(t_buff buffer, t_cursor cursor)
 	}
 }
 
+/**
+ * will refresh the current prompt line by first recovering the cursor location.
+ * then it will clear to end of line to print the prompt and buffer again. 
+ */
 void		refresh_prompt(t_buff buffer, t_cursor cursor)
 {
 	send_terminal("rc");

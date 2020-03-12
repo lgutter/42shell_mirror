@@ -13,7 +13,11 @@
 #include "cetushell.h"
 #include "controls_shell.h"
 #include "configure_terminal.h"
-
+q
+/**
+ * initialize several parameters required for proper buffer managment and
+ * cursor control. also save's the current cursor location.
+ */
 void		init_buffs(t_shell *shell)
 {
 	get_winsize(shell);
@@ -26,6 +30,10 @@ void		init_buffs(t_shell *shell)
 	shell->cursor.layer = 0;
 }
 
+/**
+ * insert a character into the buffer. this can be done in the middle, begin
+ * and end of the buffer. 
+ */
 void		insert_char(t_buff *buffer, char c)
 {
 	size_t			temp;
@@ -49,6 +57,10 @@ void		insert_char(t_buff *buffer, char c)
 	buffer->len = buffer->len + 1;
 }
 
+/**
+ * will remove a character from the buffer, like inserting. This can be done on
+ * every spot within the buffer and sets buffer index and x-cursor accordingly.
+ */
 void		remove_char(t_buff *buffer)
 {
 	size_t		curs;
@@ -60,7 +72,7 @@ void		remove_char(t_buff *buffer)
 		buffer->index = buffer->index - 1;
 		buffer->buff[buffer->len] = '\0';
 	}
-	else if (buffer->index > 0)
+	else if (buffer->index >= 0)
 	{
 		curs = buffer->index;
 		while (buffer->buff[buffer->index - 1] != '\0')

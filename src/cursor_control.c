@@ -13,6 +13,11 @@
 #include "cetushell.h"
 #include "configure_terminal.h"
 
+/**
+ * this function will actually set the cursor position which is set within the
+ * cursor struct. it also makes sure that the cursor will not run off the screen
+ * or in front of the prompt.
+ */
 void		set_cursor_pos(t_cursor *cursor, size_t len)
 {
 	ft_memset(&cursor->cur_buff, 0, 32);
@@ -23,34 +28,40 @@ void		set_cursor_pos(t_cursor *cursor, size_t len)
 	ft_snprintf(cursor->cur_buff, 16, "%c[%d;%dH", 27 , cursor->y, cursor->x);
 }
 
+/** the cursor will be tracked on its position and look if the cursor is on
+ * the right layer. if at the beginning or the end it will change the layer (y-cursor).
+ */
 void		cursor_next_line(t_shell *shell)
 {
-	//ft_printf("\ntest: (%d)\n", shell->cursor.x_max);
 	if (shell->cursor.x > (ssize_t)shell->cursor.x_max)
 	{
-		//shell->buffer.buff[shell->cursor.x] = '\n';
 		shell->cursor.x = 1;
-		//shell->cursor.y = shell->cursor.y + 1;
 		shell->cursor.layer = shell->cursor.layer + 1;
 	}
 	if (shell->cursor.x == -1)
 	{
 		shell->cursor.x = shell->cursor.x_max;
-		//shell->cursor.y = shell->cursor.y - 1;
 	}
 }
 
+/**
+ * main cursor function to set the new window sizes as delimiters for the cursor.
+ * and calls cursor children functions.
+ */
 void		cursor_pos(t_shell *shell)
 {
 	get_winsize(shell);
-	if (ft_strlen(shell->buffer.buff) == 0)
-		shell->buffer.index = 0;
 	shell->cursor.x_max = shell->winsize.ws_col;
 	shell->cursor.y_max = shell->winsize.ws_row;
 	cursor_next_line(shell);
 	set_cursor_pos(&shell->cursor, shell->buffer.len);
 }
 
+/**
+ * Here the cursor position is extracted from the terminal by sending a
+ * a termcap code(u7) which will give a string in return. Reading and Parsing
+ * this string will give the x and y psoitions of the cursor. 
+ */
 void		get_cursor_pos(t_cursor *cursor, int init)
 {
 	char	pos[16];

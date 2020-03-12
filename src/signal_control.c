@@ -14,6 +14,12 @@
 #include "controls_shell.h"
 #include "configure_terminal.h"
 
+/**
+ * Handle escape sequence will read the STDIN for escape sequence combinations.
+ * For example, arrow keys are escape code /e[A, /e[B etc. Handle escape
+ * sequence will get the escape character(27) and then read 2 more characters.
+ * the second two characters will be compared. 
+ */
 void		handle_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 {
 	char	seq[3];
@@ -27,17 +33,28 @@ void		handle_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 			return ;
 		if (seq[0] == 91 && seq[1] == 'D' && cursor->x != -1)
 		{
-			buffer->index--;
-			cursor->x = cursor->x - 1;
+			if (buffer->index != 0)
+			{
+				buffer->index--;
+				cursor->x = cursor->x - 1;
+			}
 		}
 		if (seq[0] == 91 && seq[1] == 'C')
 		{
-			cursor->x = cursor->x + 1;
-			buffer->index++;
+			if (buffer->index < buffer->len)
+			{
+				cursor->x = cursor->x + 1;
+				buffer->index++;
+			}
 		}
 	}
 }
 
+/**
+ * Handle_tab will input 4 spaces into the buffer instead of adding /t. This to
+ * keep buffer managment easier to handle. IMPLEMENT: autocomplete when in a
+ * word.
+ */
 void		handle_tab(char c, t_buff *buffer, t_cursor *cursor)
 {
 	int		i;
@@ -45,7 +62,6 @@ void		handle_tab(char c, t_buff *buffer, t_cursor *cursor)
 	i = 0;
 	if (c == TAB)
 	{
-		// autocomplete
 		while (i != 4)
 		{
 			buffer->buff[buffer->len] = ' ';
