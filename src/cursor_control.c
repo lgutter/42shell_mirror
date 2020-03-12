@@ -29,23 +29,25 @@ void		cursor_next_line(t_shell *shell)
 	if (shell->cursor.x > (ssize_t)shell->cursor.x_max)
 	{
 		//shell->buffer.buff[shell->cursor.x] = '\n';
-		shell->cursor.x = 0;
-		shell->cursor.y = shell->cursor.y + 1;
+		shell->cursor.x = 1;
+		//shell->cursor.y = shell->cursor.y + 1;
 		shell->cursor.layer = shell->cursor.layer + 1;
 	}
 	if (shell->cursor.x == -1)
 	{
 		shell->cursor.x = shell->cursor.x_max;
-		shell->cursor.y = shell->cursor.y - 1;
+		//shell->cursor.y = shell->cursor.y - 1;
 	}
 }
 
 void		cursor_pos(t_shell *shell)
 {
 	get_winsize(shell);
+	if (ft_strlen(shell->buffer.buff) == 0)
+		shell->buffer.index = 0;
 	shell->cursor.x_max = shell->winsize.ws_col;
 	shell->cursor.y_max = shell->winsize.ws_row;
-	//cursor_next_line(shell);
+	cursor_next_line(shell);
 	set_cursor_pos(&shell->cursor, shell->buffer.len);
 }
 
