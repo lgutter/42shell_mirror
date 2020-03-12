@@ -24,7 +24,7 @@
 **	arg: new - the character to be added.
 */
 
-static void	expand_buff(char **buff, char new)
+static void		expand_buff(char **buff, char new)
 {
 	static size_t	size = BUFFER_SIZE;
 	size_t			i;
@@ -35,14 +35,14 @@ static void	expand_buff(char **buff, char new)
 	{
 		*buff = (char *)ft_memalloc(size);
 		if (*buff == NULL)
-			exit(1);
+			exit(1); // implement proper error handling!
 	}
 	i = ft_strlen(*buff);
 	if (i >= (size - 1))
 	{
 		temp = ft_memalloc(size * 2);
 		if (temp == NULL)
-			exit(1);
+			exit(1); // implement proper error handling!
 		temp = ft_strcpy(temp, *buff);
 		free(*buff);
 		*buff = temp;
@@ -60,7 +60,7 @@ static void	expand_buff(char **buff, char new)
 **	arg: buff - a pointer to the buffer.
 */
 
-static void	add_token(t_token **start, t_type type, char **buff)
+static void		add_token(t_token **start, t_type type, char **buff)
 {
 	t_token *temp;
 
@@ -78,38 +78,54 @@ static void	add_token(t_token **start, t_type type, char **buff)
 		temp = temp->next;
 	}
 	if (temp == NULL)
-		exit(1);
+		exit(1); // implement proper error handling!
 	temp->next = NULL;
 	temp->type = type;
 	temp->value = ft_strdup(*buff);
 	ft_memset((void *)*buff, '\0', ft_strlen(*buff));
 }
 
-t_token		*tokenizer(char *input)
+static t_rules	init_state(t_state cur_state, char input)
 {
 	t_rules	state_rules;
-	t_token	*start;
-	t_state	cur_state;
-	char	*buff;
 
-	buff = NULL;
+	state_rules = g_token_trans[cur_state].rules[(size_t)input];
+	if (state_rules.next_state == invalid)
+	{
+		state_rules = g_token_trans[cur_state].catch_state;
+	}
+	return (state_rules);
+}
+
+static int		handle_token(t_rules state_rules, t_token **start,
+							char **buff, char input)
+{
+	if (state_rules.add_char == ADD_CHAR_PRE)
+		expand_buff(buff, input);
+	if (state_rules.delimit_type != undetermined)
+		add_token(start, state_rules.delimit_type, buff);
+	if (state_rules.add_char == ADD_CHAR_POST)
+		expand_buff(buff, input);
+	return (0);
+}
+
+t_token			*tokenizer(char *input)
+{
+	t_rules		state_rules;
+	t_token		*start;
+	t_state		cur_state;
+	static char	*buff = NULL;
+
 	start = NULL;
 	cur_state = blank;
 	while (1)
 	{
-		state_rules = g_token_trans[cur_state].rules[(size_t)*input];
-		if (state_rules.next_state == invalid)
-			state_rules = g_token_trans[cur_state].catch_state;
-		if (state_rules.add_char == ADD_CHAR_PRE)
-			expand_buff(&buff, *input);
-		if (state_rules.delimit_type != undetermined)
-			add_token(&start, state_rules.delimit_type, &buff);
-		if (state_rules.add_char == ADD_CHAR_POST)
-			expand_buff(&buff, *input);
+		state_rules = init_state(cur_state, *input);
+		if (handle_token(state_rules, &start, &buff, *input) != 0)
+			return (NULL);
 		if (state_rules.next_state == eof)
 			return (start);
 		cur_state = state_rules.next_state;
 		input++;
 	}
-	return (start);
 }
