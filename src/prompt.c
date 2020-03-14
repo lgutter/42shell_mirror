@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "controls_shell.h"
-#include "configure_terminal.h"
 
 /**
  * this funciton has to make sure that the printing of the buffer (to a newline)

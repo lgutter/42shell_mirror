@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "controls_shell.h"
-#include "configure_terminal.h"
 
 /**
  * Handle escape sequence will read the STDIN for escape sequence combinations.
@@ -64,7 +62,6 @@ void		handle_tab(char c, t_buff *buffer, t_cursor *cursor)
 	{
 		while (i != 4)
 		{
-			cursor->x_max = 0;
 			insert_char(buffer, ' ');
 			cursor->current.x++;
 			i++;

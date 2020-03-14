@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "controls_shell.h"
-#include "configure_terminal.h"
 #include "criterion/criterion.h"
 
 Test(remove_char_middle, normal) {

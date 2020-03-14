@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "configure_terminal.h"
 
 /** the cursor will be tracked on its position and look if the cursor is on
  * the right layer. if at the beginning or the end it will change the layer (y-cursor).
@@ -48,7 +47,7 @@ void		cursor_pos(t_cursor *cursor, int len)
 	ft_memset(&cursor->cur_buff, 0, 32);
 	if (cursor->current.x < PROMPT_LEN && cursor->current.y == cursor->start.y)
 		cursor->current.x = PROMPT_LEN;
-	if (cursor->x > (ssize_t)(len + PROMPT_LEN) && cursor->current.y == cursor->start.y)
+	if (cursor->current.x > (ssize_t)(len + PROMPT_LEN) && cursor->current.y == cursor->start.y)
 		cursor->current.x = len + PROMPT_LEN;
 	ft_snprintf(cursor->cur_buff, 16, "%c[%d;%dH", 27 , cursor->current.y, cursor->current.x);
 }

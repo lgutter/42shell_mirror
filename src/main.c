@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "controls_shell.h"
-#include "configure_terminal.h"
 
 int			cetushell(char **env)
 {

@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "controls_shell.h"
-#include "configure_terminal.h"
 
 /**
  * initialize several parameters required for proper buffer managment and
@@ -20,13 +18,11 @@
  */
 void		init_buffs(t_shell *shell)
 {
-	//get_winsize(shell);
 	shell->buffer.len = 0;
 	shell->buffer.index = 0;
 	ft_memset(&shell->buffer.buff, '\0', 2048);
 	ft_memset(&shell->cursor.cur_buff, 0, 32);
 	get_cursor_pos(&shell->cursor, 1);
-	shell->cursor.layer = 0;
 }
 
 /**

@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "controls_shell.h"
-#include "configure_terminal.h"
 
 
 /**
@@ -38,7 +36,7 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 	}
 	if (c == 10)
 	{
-		ft_printf("\noutput (%d): %s",cursor->y, buffer->buff);
+		ft_printf("\noutput : %s", buffer->buff);
 		get_cursor_pos(cursor, 1);
 		ft_memset(&buffer->buff, '\0', buffer->len);
 		buffer->len = 0;

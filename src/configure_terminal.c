@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "configure_terminal.h"
+#include "cetushell.h"
 
 static int	ft_putchar(int c)
 {
