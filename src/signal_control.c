@@ -31,19 +31,19 @@ void		handle_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 			return ;
 		if (read(STDIN_FILENO, &seq[1], 1) == -1)
 			return ;
-		if (seq[0] == 91 && seq[1] == 'D' && cursor->x != -1)
+		if (seq[0] == 91 && seq[1] == 'D' && cursor->current.x > 0)
 		{
 			if (buffer->index != 0)
 			{
 				buffer->index--;
-				cursor->x = cursor->x - 1;
+				cursor->current.x--;
 			}
 		}
 		if (seq[0] == 91 && seq[1] == 'C')
 		{
 			if (buffer->index < buffer->len)
 			{
-				cursor->x = cursor->x + 1;
+				cursor->current.x++;
 				buffer->index++;
 			}
 		}
@@ -64,9 +64,9 @@ void		handle_tab(char c, t_buff *buffer, t_cursor *cursor)
 	{
 		while (i != 4)
 		{
-			buffer->buff[buffer->len] = ' ';
-			buffer->len = buffer->len + 1;
-			cursor->x = cursor->x + 1;
+			cursor->x_max = 0;
+			insert_char(buffer, ' ');
+			cursor->current.x++;
 			i++;
 		}
 	}

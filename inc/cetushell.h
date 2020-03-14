@@ -29,8 +29,17 @@ typedef struct		s_buff
 	size_t			index;
 }					t_buff;
 
+typedef struct		s_point
+{
+	int				x;
+	int				y;
+}					t_point;
+
 typedef struct		s_cursor
 {
+	t_point			start;
+	t_point			current;
+	t_point			max;
 	ssize_t			x;
 	size_t			y;
 	char			cur_buff[32];
@@ -55,6 +64,6 @@ int			prompt_shell(t_shell *shell);
 int			read_input(t_shell *shell);
 void		init_buffs(t_shell *shell);
 void		remove_char(t_buff *buffer);
-void		refresh_prompt(t_buff buffer, t_cursor cursor);
+void		refresh_prompt(t_buff buffer, t_cursor *cursor);
 
 #endif

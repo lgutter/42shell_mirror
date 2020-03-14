@@ -58,5 +58,10 @@ void		configure_terminal(t_shell *shell, int activator)
  */
 void		get_winsize(t_shell *shell)
 {
+	t_cursor *curs;
+
+	curs = &shell->cursor;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &shell->winsize);
+	curs->max.x = shell->winsize.ws_col;
+	curs->max.y = shell->winsize.ws_row;
 }

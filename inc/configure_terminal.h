@@ -24,6 +24,6 @@
 
 void		send_terminal(char *command);
 void		move_cursor_left(char c, t_cursor *cursor);
-void		cursor_pos(t_shell *shell);
+void		cursor_pos(t_cursor *cursor, int len);
 
 #endif
