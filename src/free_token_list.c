@@ -10,33 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "handle_error.h"
-#include "error_str.h"
+#include "tokenizer.h"
 
-int		handle_error(int error_code)
+void	free_token_list(t_token **start)
 {
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s\n", g_error_str[error_code]);
-	return (error_code);
-}
+	t_token	*temp;
+	t_token	*current;
 
-int		handle_error_str(int error_code, const char *str)
-{
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s: %s\n", g_error_str[error_code], str);
-	return (error_code);
-}
-
-void	*handle_error_str_p(int error_code, const char *str, void *pointer)
-{
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s: %s\n", g_error_str[error_code], str);
-	return (pointer);
-}
-
-void	*handle_error_p(int error_code, void *pointer)
-{
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s\n", g_error_str[error_code]);
-	return (pointer);
+	if (start == NULL || *start == NULL)
+		return ;
+	current = *start;
+	while (current != NULL)
+	{
+		temp = current->next;
+		free(current->value);
+		current->type = 0;
+		current->value = NULL;
+		free(current);
+		current = temp;
+	}
+	*start = NULL;
 }

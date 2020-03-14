@@ -23,6 +23,8 @@ endif
 inc_dir = include_directories('inc')
 src_files = files([
   'src/set_terminal.c',
+  'src/tokenizer.c',
+  'src/free_token_list.c',
   'src/handle_error.c'
 ])
 
@@ -39,7 +41,9 @@ libcriterion_deb = dependency('criterion', required: false)
 
 if libcriterion_deb.found()
   test_files = src_files + files([
-    'src/handle_error.spec.c'
+    'src/tokenizer.spec.c',
+    'src/handle_error.spec.c',
+    'src/free_token_list.spec.c'
   ])
 
   tester = executable('test-cetushell',
@@ -47,7 +51,9 @@ if libcriterion_deb.found()
     include_directories: inc_dir,
     dependencies: [libft_deb, libftprintf_deb, libcurses_deb, libcriterion_deb])
 
-  test('cetushell', tester)
+  test('cetushell',
+  tester,
+  args: '--verbose')
 endif
 
 norminette = find_program('norminette', required: false)

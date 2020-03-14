@@ -10,33 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "handle_error.h"
-#include "error_str.h"
-
-int		handle_error(int error_code)
-{
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s\n", g_error_str[error_code]);
-	return (error_code);
-}
-
-int		handle_error_str(int error_code, const char *str)
-{
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s: %s\n", g_error_str[error_code], str);
-	return (error_code);
-}
-
-void	*handle_error_str_p(int error_code, const char *str, void *pointer)
-{
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s: %s\n", g_error_str[error_code], str);
-	return (pointer);
-}
-
-void	*handle_error_p(int error_code, void *pointer)
-{
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s\n", g_error_str[error_code]);
-	return (pointer);
-}
+#ifndef ERROR_STR_H
+# define ERROR_STR_H
+# include "handle_error.h"
+/*
+**	an array of all the error strings, using the error enums as index.
+**	these strings will be used to print a relevant error message.
+*/
+static const char	*g_error_str[error_count] = {
+	[no_error] = "Error code indicates no error",
+	[malloc_error] = "Malloc failed to allocate memory",
+};
+#endif

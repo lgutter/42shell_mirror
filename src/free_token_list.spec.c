@@ -10,33 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "handle_error.h"
-#include "error_str.h"
+#include <criterion/criterion.h>
+#include <criterion/assert.h>
+#include "tokenizer.h"
 
-int		handle_error(int error_code)
+Test(free_token_list_tests, free_short_simple_list)
 {
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s\n", g_error_str[error_code]);
-	return (error_code);
-}
+	t_token *node1 = malloc(sizeof(t_token));
+	t_token *node2 = malloc(sizeof(t_token));
+	t_token *node3 = malloc(sizeof(t_token));
+	cr_assert_neq(node1, NULL, "malloc failed!");
+	cr_assert_neq(node2, NULL, "malloc failed!");
+	cr_assert_neq(node3, NULL, "malloc failed!");
+	t_token *start = node1;
 
-int		handle_error_str(int error_code, const char *str)
-{
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s: %s\n", g_error_str[error_code], str);
-	return (error_code);
-}
-
-void	*handle_error_str_p(int error_code, const char *str, void *pointer)
-{
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s: %s\n", g_error_str[error_code], str);
-	return (pointer);
-}
-
-void	*handle_error_p(int error_code, void *pointer)
-{
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "%s\n", g_error_str[error_code]);
-	return (pointer);
+	node1->type = WORD;
+	node1->value = strdup("foo");
+	node1->next = node2;
+	node1->type = DLESS;
+	node2->value = strdup("<<");
+	node2->next = node3;
+	node1->type = IO_NUMBER;
+	node3->value = strdup("42");
+	node3->next = NULL;
+	free_token_list(&start);
+	cr_expect_eq(start, NULL);
 }
