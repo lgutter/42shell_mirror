@@ -13,17 +13,16 @@
 #include "cetushell.h"
 #include "controls_shell.h"
 #include "configure_terminal.h"
-q
+
 /**
  * initialize several parameters required for proper buffer managment and
  * cursor control. also save's the current cursor location.
  */
 void		init_buffs(t_shell *shell)
 {
-	get_winsize(shell);
+	//get_winsize(shell);
 	shell->buffer.len = 0;
 	shell->buffer.index = 0;
-	send_terminal("sc");
 	ft_memset(&shell->buffer.buff, '\0', 2048);
 	ft_memset(&shell->cursor.cur_buff, 0, 32);
 	get_cursor_pos(&shell->cursor, 1);
@@ -72,7 +71,7 @@ void		remove_char(t_buff *buffer)
 		buffer->index = buffer->index - 1;
 		buffer->buff[buffer->len] = '\0';
 	}
-	else if (buffer->index >= 0)
+	else if (buffer->index != 0)
 	{
 		curs = buffer->index;
 		while (buffer->buff[buffer->index - 1] != '\0')

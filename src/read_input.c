@@ -31,34 +31,34 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 		//	send_terminal("do");
 		//if (c == 'f')
 		//	send_terminal("up");
-		if (c == 'p')
-		{
-			buffer->buff[buffer->len] = '\n';
-			cursor->x = cursor->x + 1;
-			buffer->len = buffer->len + 1;
-		}
 		if (c == 'q')
 			return (1);
 		insert_char(buffer, c);
-		cursor->x++;
+		cursor->current.x++;
 	}
 	if (c == 10)
 	{
-		cursor->y++;
-		cursor->y++;
 		ft_printf("\noutput (%d): %s",cursor->y, buffer->buff);
+		get_cursor_pos(cursor, 1);
 		ft_memset(&buffer->buff, '\0', buffer->len);
 		buffer->len = 0;
-		cursor->x = PROMPT_LEN;
+		buffer->index = 0;
 		send_terminal("do");
 		//send_terminal("do");
 	}
 	handle_tab(c, buffer, cursor);
-	if (c == BACKSPACE && cursor->x > PROMPT_LEN)
+	if (c == BACKSPACE)
 	{
-		ft_printf("\n buff[i]= (%c) index= (%d) cursorx = (%d) cursory = (%d)\n", buffer->buff[buffer->index - 1], buffer->index, cursor->x, cursor->y);
-		cursor->x--;
-		remove_char(buffer);
+		if (cursor->current.y == cursor->start.y && cursor->current.x > PROMPT_LEN)
+		{
+			cursor->current.x--;
+			remove_char(buffer);
+		}
+		else if (cursor->current.y != cursor->start.y)
+		{
+			cursor->current.x--;
+			remove_char(buffer);
+		}
 	}
 	return (0);
 }
