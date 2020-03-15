@@ -25,9 +25,9 @@ src_files = files([
   'src/prompt.c',
   'src/read_input.c',
   'src/configure_terminal.c',
-  'src/cursor_control.c',
-  'src/buffer_control.c',
-  'src/signal_control.c',
+  'src/cursor.c',
+  'src/buffer.c',
+  'src/controls.c',
 ])
 
 main_file = files('src/main.c')
@@ -43,7 +43,7 @@ libcriterion_deb = dependency('criterion', required: false)
 
 if libcriterion_deb.found()
   test_files = src_files + files([
-    'src/buffer_control.spec.c',
+    'src/buffer.spec.c',
   ])
 
   tester = executable('test-cetushell',

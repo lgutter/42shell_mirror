@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
+#include "input_control.h"
 
 int			cetushell(char **env)
 {

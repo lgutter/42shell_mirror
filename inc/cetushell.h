@@ -19,7 +19,28 @@
 # include <term.h>
 # include "ft_printf.h"
 # include "libft.h"
-# include "input_control.h"
+
+
+typedef struct		s_buff
+{
+	char			buff[2048];
+	size_t			len;
+	size_t			index;
+}					t_buff;
+
+typedef struct		s_point
+{
+	int				x;
+	int				y;
+}					t_point;
+
+typedef struct		s_cursor
+{
+	t_point			start;
+	t_point			current;
+	t_point			max;
+	char			cur_buff[32];
+}					t_cursor;
 
 typedef struct		s_shell
 {
@@ -29,5 +50,4 @@ typedef struct		s_shell
 	struct winsize	winsize;
 	t_buff			buffer;
 }					t_shell;
-
 #endif

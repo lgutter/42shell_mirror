@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
+#include "input_control.h"
 
 static int	ft_putchar(int c)
 {
@@ -52,10 +53,6 @@ void		configure_terminal(t_shell *shell, int activator)
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig);
 }
 
-/** will get the current window size of the terminal and will put it into
- * a winsize struct. This is needed for printing newlines correctly at 
- * end of the screen.
- */
 void		get_winsize(t_shell *shell)
 {
 	t_cursor *curs;
