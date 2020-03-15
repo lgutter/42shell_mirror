@@ -37,7 +37,7 @@ static void		cursor_next_line(t_cursor *cursor)
 void		set_cursor_pos(t_cursor *cursor, size_t len)
 {
 	cursor_next_line(cursor);
-	ft_memset(&cursor->cur_buff, 0, 32);
+	ft_memset(&cursor->cur_buff, 0, CUR_BUFF_SIZE);
 	if (cursor->current.x < PROMPT_LEN && cursor->current.y == cursor->start.y)
 		cursor->current.x = PROMPT_LEN;
 	if (cursor->current.x > (ssize_t)(len + PROMPT_LEN) &&
