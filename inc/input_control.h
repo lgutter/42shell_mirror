@@ -54,7 +54,10 @@ void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer);
 
 void		handle_tab(t_buff *buffer, t_cursor *cursor, char c);
 void		handle_backspace(t_buff *buffer, t_cursor *cursor, char c);
-int			handle_return(t_buff *buffer, t_cursor *cursor, char c);
+void		handle_tab_key(t_buff *buffer, t_cursor *cursor, char c);
+void		handle_backspace_key(t_buff *buffer, t_cursor *cursor, char c);
+int			handle_return_key(t_buff *buffer, t_cursor *cursor, char c);
+
 
 void		set_cursor_pos(t_cursor *cursor, int len);
 void		get_cursor_pos(t_cursor *cursor);
