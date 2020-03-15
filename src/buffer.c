@@ -17,8 +17,8 @@ void		init_buffs(t_shell *shell)
 {
 	shell->buffer.len = 0;
 	shell->buffer.index = 0;
-	ft_memset(&shell->buffer.buff, '\0', 2048);
-	ft_memset(&shell->cursor.cur_buff, 0, 32);
+	ft_memset(&shell->buffer.buff, '\0', BUFF_SIZE);
+	ft_memset(&shell->cursor.cur_buff, '\0', CUR_BUFF_SIZE);
 	get_cursor_pos(&shell->cursor);
 }
 

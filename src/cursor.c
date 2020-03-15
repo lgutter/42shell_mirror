@@ -34,7 +34,7 @@ static void		cursor_next_line(t_cursor *cursor)
 	}
 }
 
-void		set_cursor_pos(t_cursor *cursor, int len)
+void		set_cursor_pos(t_cursor *cursor, size_t len)
 {
 	cursor_next_line(cursor);
 	ft_memset(&cursor->cur_buff, 0, 32);
@@ -43,8 +43,8 @@ void		set_cursor_pos(t_cursor *cursor, int len)
 	if (cursor->current.x > (ssize_t)(len + PROMPT_LEN) &&
 			cursor->current.y == cursor->start.y)
 		cursor->current.x = len + PROMPT_LEN;
-	ft_snprintf(cursor->cur_buff, 16, "%c[%d;%dH", ESCAPE , cursor->current.y, \
-				cursor->current.x);
+	ft_snprintf(cursor->cur_buff, CUR_BUFF_SIZE, "%c[%d;%dH", ESCAPE \
+				, cursor->current.y, cursor->current.x);
 }
 
 void		get_cursor_pos(t_cursor *cursor)

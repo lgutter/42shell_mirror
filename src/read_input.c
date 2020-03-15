@@ -22,9 +22,9 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 		insert_char(buffer, c);
 		cursor->current.x++;
 	}
-	handle_return(buffer, cursor, c);
-	handle_tab(buffer, cursor, c);
-	handle_backspace(buffer, cursor, c);
+	return_key(buffer, cursor, c);
+	tab_key(buffer, cursor, c);
+	backspace_key(buffer, cursor, c);
 	return (0);
 }
 

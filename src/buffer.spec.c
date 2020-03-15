@@ -18,6 +18,7 @@ Test(remove_char_middle, normal) {
 	t_buff		*buffer;
 
 	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 4;
@@ -30,6 +31,7 @@ Test(remove_char_begin, normal) {
 	t_buff		*buffer;
 
 	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 0;
@@ -42,6 +44,7 @@ Test(remove_char_end, normal) {
 	t_buff		*buffer;
 
 	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 11;
@@ -54,6 +57,7 @@ Test(remove_char_multiple, normal) {
 	t_buff		*buffer;
 
 	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 5;
@@ -70,6 +74,7 @@ Test(remove_char_empty_string, normal) {
 	t_buff		*buffer;
 
 	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	ft_bzero(&buffer->buff, 30);
 	buffer->len = 11;
 	buffer->index = 0;
@@ -82,6 +87,7 @@ Test(insert_char_begin, normal) {
 	t_buff		*buffer;
 
 	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 0;
@@ -94,6 +100,7 @@ Test(insert_char_middle, normal) {
 	t_buff		*buffer;
 
 	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 5;
@@ -106,6 +113,7 @@ Test(insert_char_end, normal) {
 	t_buff		*buffer;
 
 	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 11;

@@ -13,7 +13,7 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-int			handle_return(t_buff *buffer, t_cursor *cursor, char c)
+int			return_key(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (c == RETURN)
 	{
@@ -27,7 +27,7 @@ int			handle_return(t_buff *buffer, t_cursor *cursor, char c)
 	return (0);
 }
 
-void		handle_tab(t_buff *buffer, t_cursor *cursor, char c)
+void		tab_key(t_buff *buffer, t_cursor *cursor, char c)
 {
 	int		i;
 
@@ -43,11 +43,12 @@ void		handle_tab(t_buff *buffer, t_cursor *cursor, char c)
 	}
 }
 
-void		handle_backspace(t_buff *buffer, t_cursor *cursor, char c)
+void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
 {
-		if (c == BACKSPACE)
+	if (c == BACKSPACE)
 	{
-		if (cursor->current.y == cursor->start.y && cursor->current.x > PROMPT_LEN)
+		if (cursor->current.y == cursor->start.y && \
+			cursor->current.x > PROMPT_LEN)
 		{
 			cursor->current.x--;
 			remove_char(buffer);
