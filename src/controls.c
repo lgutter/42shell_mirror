@@ -85,3 +85,25 @@ void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 		}
 	}
 }
+
+void		home_key(t_buff *buffer, t_cursor *cursor, char *seq)
+{
+	ft_printf("\ntest1 = (%s), %d\n", seq, strncmp(seq, HOME, ft_strlen(HOME)));
+	if (strncmp(seq, HOME, ft_strlen(HOME)) == 0)
+	{
+		cursor->current.x = PROMPT_LEN;
+		cursor->current.y = cursor->start.y;
+		buffer->index = 0;
+	}
+}
+
+void		end_key(t_buff *buffer, t_cursor *cursor, char *seq)
+{
+	ft_printf("\ntest1 = (%s), %d\n", seq, strncmp(seq, HOME, ft_strlen(HOME)));
+	if (strncmp(seq, END, ft_strlen(END)) == 0)
+	{
+		cursor->current.x = (buffer->len + PROMPT_LEN) % cursor->max.x;
+		cursor->current.y = cursor->current.y + (buffer->len / cursor->max.x);
+		buffer->index = buffer->len;
+	}
+}

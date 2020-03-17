@@ -24,6 +24,13 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 		insert_char(buffer, c);
 		cursor->current.x++;
 	}
+	if (c == CNTRL_R)
+	{
+		cursor->start.x = 1;
+		cursor->start.y = 1;
+		cursor->current.y = 1;
+		send_terminal("cl");
+	}
 	return_key(buffer, cursor, c);
 	tab_key(buffer, cursor, c);
 	backspace_key(buffer, cursor, c);
@@ -59,7 +66,10 @@ void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 		ret = read(STDIN_FILENO, seq, ESC_SEQ_SIZE);
 		if (ret == -1)
 			return ;
+		//ft_printf("\n%s\n", seq);
 		left_arrow_key(buffer, cursor, seq);
 		right_arrow_key(buffer, cursor, seq);
+		home_key(buffer, cursor, seq);
+		end_key(buffer, cursor, seq);
 	}
 }

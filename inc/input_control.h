@@ -28,15 +28,30 @@
 # define CURSOR_POSITION "u7"
 
 # define ESC_SEQ_SIZE 16
-# define ARROW_UP "[A"
-# define ARROW_DOWN "[B"
-# define ARROW_RIGHT "[D"
+# define ARROW_DOWN "[A"
+# define ARROW_UP "[B"
 # define ARROW_LEFT "[C"
-# define BACKSPACE 0177
-# define ESCAPE 033
-# define RETURN	012
-# define TAB 011
+# define ARROW_RIGHT "[D"
+# define END "[F"
+# define HOME "[H"
+
+# define CNTRL_A 001
+# define CNTRL_B 002
 # define CNTRL_C 003
+# define CNTRL_D 004
+# define CNTRL_E 005
+# define CNTRL_F 006
+# define CNTRL_G 007
+# define CNTRL_R 022
+# define CNTRL_S 023
+# define CNTRL_V 026
+# define CNTRL_X 030
+
+# define TAB 011
+# define RETURN	012
+# define ESCAPE 033
+# define BACKSPACE 0177
+
 
 /*----------------------------Prototypes--------------------------------------*/
 
@@ -154,6 +169,10 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c);
  * return: int: this int must signal the terminal to process the buffer.
  */
 int			return_key(t_buff *buffer, t_cursor *cursor, char c);
+
+void		home_key(t_buff *buffer, t_cursor *cursor, char *seq);
+
+void		end_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
