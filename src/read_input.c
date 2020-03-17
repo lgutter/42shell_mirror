@@ -66,7 +66,6 @@ void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 		ret = read(STDIN_FILENO, seq, ESC_SEQ_SIZE);
 		if (ret == -1)
 			return ;
-		//ft_printf("\n%s\n", seq);
 		left_arrow_key(buffer, cursor, seq);
 		right_arrow_key(buffer, cursor, seq);
 		home_key(buffer, cursor, seq);

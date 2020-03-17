@@ -28,6 +28,7 @@ src_files = files([
   'src/cursor.c',
   'src/buffer.c',
   'src/controls.c',
+  'src/escape_controls.c',
 ])
 
 main_file = files('src/main.c')
