@@ -26,7 +26,7 @@ static void		cursor_next_line(t_cursor *cursor)
 			send_terminal(CURSOR_DOWN);
 		}
 	}
-	if (cursor->current.x <= 0)
+	if (cursor->current.x == 0)
 	{
 		cursor->current.x = cursor->max.x;
 		if (cursor->current.y != cursor->start.y)
@@ -40,7 +40,7 @@ void		set_cursor_pos(t_cursor *cursor, size_t len)
 	ft_memset(&cursor->cur_buff, '\0', CUR_BUFF_SIZE);
 	if (cursor->current.x < PROMPT_LEN && cursor->current.y == cursor->start.y)
 		cursor->current.x = PROMPT_LEN;
-	if (cursor->current.x > (ssize_t)(len + PROMPT_LEN) &&
+	if (cursor->current.x > (len + PROMPT_LEN) &&
 			cursor->current.y == cursor->start.y)
 		cursor->current.x = len + PROMPT_LEN;
 	ft_snprintf(cursor->cur_buff, CUR_BUFF_SIZE, "%c[%d;%dH", ESCAPE \
@@ -51,17 +51,26 @@ void		get_cursor_pos(t_cursor *cursor)
 {
 	char	pos[16];
 	int		ret;
+	int		temp;
 
-	ret = 0;
-	ft_memset(&pos, '\0', sizeof(pos));
 	send_terminal(CURSOR_POSITION);
-	ret = read(STDIN_FILENO, &pos, sizeof(pos) - 1);
-	cursor->start.y = ft_atoi(&pos[2]);
-	while (!ft_isdigit(pos[ret]))
-		ret = ret - 1;
-	while (ft_isdigit(pos[ret - 1]))
-		ret = ret - 1;
-	cursor->start.x = ft_atoi(&pos[ret]);
+	ft_memset(&pos, '\0', sizeof(pos));
+	ret = read(STDIN_FILENO, &pos, sizeof(pos));
+	if (ret == -1)
+		return ;
+	if (ret < 3)
+		read(STDIN_FILENO, &pos, sizeof(pos));
+	else
+	{
+		temp = ft_atoi(&pos[2]);
+		if (temp != 0)
+			cursor->start.y = temp;
+		while (ft_isdigit(pos[ret]) == 0)
+			ret = ret - 1;
+		while (ft_isdigit(pos[ret - 1]) == 1)
+			ret = ret - 1;
+		cursor->start.x = ft_atoi(&pos[ret]);
+	}
 	cursor->current.x = PROMPT_LEN;
 	cursor->current.y = cursor->start.y;
 }

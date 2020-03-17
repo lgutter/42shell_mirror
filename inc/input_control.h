@@ -27,10 +27,11 @@
 # define CLEAR_SCREEN "cl"
 # define CURSOR_POSITION "u7"
 
-# define ARROW_UP "\e[A"
-# define ARROW_DOWN "\e[B"
-# define ARROW_RIGHT "\e[C"
-# define ARROW_LEFT "\e[D"
+# define ESC_SEQ_SIZE 16
+# define ARROW_UP "[A"
+# define ARROW_DOWN "[B"
+# define ARROW_RIGHT "[D"
+# define ARROW_LEFT "[C"
 # define BACKSPACE 0177
 # define ESCAPE 033
 # define RETURN	012
@@ -153,6 +154,10 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c);
  * return: int: this int must signal the terminal to process the buffer.
  */
 int			return_key(t_buff *buffer, t_cursor *cursor, char c);
+
+void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
+
+void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 /**
  * set_cursor_pos will set the current cursor position defined in the t_cursor

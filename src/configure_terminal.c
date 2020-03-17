@@ -48,6 +48,6 @@ void		get_winsize(t_shell *shell)
 
 	curs = &shell->cursor;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &shell->winsize);
-	curs->max.x = shell->winsize.ws_col;
-	curs->max.y = shell->winsize.ws_row;
+	curs->max.x = (size_t)shell->winsize.ws_col;
+	curs->max.y = (size_t)shell->winsize.ws_row;
 }

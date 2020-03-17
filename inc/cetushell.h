@@ -32,8 +32,8 @@ typedef struct		s_buff
 
 typedef struct		s_point
 {
-	int				x;
-	int				y;
+	size_t				x;
+	size_t				y;
 }					t_point;
 
 typedef struct		s_cursor

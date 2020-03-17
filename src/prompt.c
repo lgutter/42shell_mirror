@@ -13,9 +13,9 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-int			calculate_layer(t_buff buffer, t_cursor *cursor)
+size_t			calculate_layer(t_buff buffer, t_cursor *cursor)
 {
-	int		layer;
+	size_t		layer;
 
 	if (buffer.len == 0 || cursor->max.x == 0)
 		layer = 0;
@@ -38,28 +38,23 @@ static void		print_buffer(t_buff buffer, t_cursor *cursor, int layer)
 	}
 }
 
-static void		clear_prompt(t_cursor *cursor, int layer)
+static void		clear_prompt(t_cursor *cursor)
 {
-	while (layer != 0)
-	{
-		ft_printf("%c[%d;%dH", ESCAPE , cursor->start.y + layer, 0);
-		send_terminal(CLEAR_TO_END);
-		layer--;
-	}
 	ft_printf("%c[%d;%dH", ESCAPE , cursor->start.y, 0);
-	send_terminal(CLEAR_TO_END);
+	send_terminal("cd");
 }
 
 static void		refresh_prompt(t_buff buffer, t_cursor *cursor)
 {
-	int layer;
+	size_t layer;
 
 	layer = calculate_layer(buffer, cursor);
-	clear_prompt(cursor, layer);
+	clear_prompt(cursor);
 	ft_printf("%s", PROMPT_STR);
 	print_buffer(buffer, cursor, layer);
 	ft_printf("%s",  cursor->cur_buff);
 }
+
 
 int			prompt_shell(t_shell *shell)
 {

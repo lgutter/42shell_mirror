@@ -17,12 +17,12 @@ int			return_key(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (c == RETURN)
 	{
-		ft_printf("\noutput : %s", buffer->buff);
+		send_terminal(CURSOR_DOWN);
+		ft_printf("output : %s\n", buffer->buff);
 		get_cursor_pos(cursor);
 		ft_memset(&buffer->buff, '\0', buffer->len);
 		buffer->len = 0;
 		buffer->index = 0;
-		send_terminal(CURSOR_DOWN);
 	}
 	return (0);
 }
@@ -57,6 +57,31 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
 		{
 			cursor->current.x--;
 			remove_char(buffer);
+		}
+	}
+}
+
+void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
+{
+	if (ft_strncmp(seq, ARROW_LEFT, ft_strlen(ARROW_LEFT)) &&
+					 cursor->current.x > 0)
+		{
+			if (buffer->index != 0)
+			{
+				buffer->index--;
+				cursor->current.x--;
+			}
+		}
+}
+
+void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
+{
+	if (ft_strncmp(seq, ARROW_RIGHT, ft_strlen(ARROW_RIGHT)))
+	{
+		if (buffer->index < buffer->len)
+		{
+			cursor->current.x++;
+			buffer->index++;
 		}
 	}
 }
