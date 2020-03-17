@@ -14,7 +14,7 @@ simple-test:
     - meson build -Db_coverage=true
     - ninja -C build
   script:
-    - meson test -C build
+    - ninja test -C build
   after_script:
     - rm -rfv $(find . -regex ".*\.spec\.c\.gc[ndo][oav]")
     - ninja -C build coverage --verbose
