@@ -50,6 +50,6 @@ typedef struct		s_shell
 	char			**envi;
 	t_cursor		cursor;
 	struct winsize	winsize;
-	t_buff			buffer;
+	t_buff			*buffer;
 }					t_shell;
 #endif

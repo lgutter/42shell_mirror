@@ -48,8 +48,8 @@ int			read_input(t_shell *shell)
 		ft_dprintf(2, "ERROR");
 	if (ret == 1)
 	{
-		read_esc_seq(c, &shell->cursor, &shell->buffer);
-		if (handle_control_char(&shell->buffer, &shell->cursor, c) == 1)
+		read_esc_seq(c, &shell->cursor, shell->buffer);
+		if (handle_control_char(shell->buffer, &shell->cursor, c) == 1)
 			return (1);
 	}
 	return (0);

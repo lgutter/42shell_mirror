@@ -18,15 +18,20 @@ int			cetushell(char **env)
 	t_shell		*shell;
 
 	shell = ft_memalloc(sizeof(t_shell));
+	shell->buffer = ft_memalloc(sizeof(t_buff));
+	if (shell->buffer == NULL || shell == NULL)
+		return (1);
 	shell->envi = env;
 	configure_terminal(shell, 1);
-	init_buffs(shell);
 	while (1)
 	{
+		init_buffs(shell);
 		if (prompt_shell(shell) == 1)
+		{
+			configure_terminal(shell, 0);
 			return (1);
+		}
 	}
-	configure_terminal(shell, 0);
 	return (0);
 }
 
