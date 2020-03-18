@@ -13,32 +13,47 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-int			cetushell(char **env)
+void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
-	t_shell		*shell;
-
-	shell = ft_memalloc(sizeof(t_shell));
-	shell->envi = env;
-	configure_terminal(shell, 1);
-	init_buffs(shell);
-	while (1)
-	{
-		if (prompt_shell(shell) == 1)
-			return (1);
-	}
-	configure_terminal(shell, 0);
-	return (0);
+	if (ft_strncmp(seq, ARROW_LEFT, ft_strlen(ARROW_LEFT)) &&
+					 cursor->current.x > 0)
+		{
+			if (buffer->index != 0)
+			{
+				buffer->index--;
+				cursor->current.x--;
+			}
+		}
 }
 
-int		main(int ac, char **av, char **env)
+void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
-	if (ac != 1)
-		ft_dprintf(2, "Huh? why %s? No arguments needed!\n", av[1]);
-	else
+	if (ft_strncmp(seq, ARROW_RIGHT, ft_strlen(ARROW_RIGHT)))
 	{
-		while (21)
-			if (cetushell(env) == 1)
-				return (0);
+		if (buffer->index < buffer->len)
+		{
+			cursor->current.x++;
+			buffer->index++;
+		}
 	}
-	return (1);
+}
+
+void		home_key(t_buff *buffer, t_cursor *cursor, char *seq)
+{
+	if (strncmp(seq, HOME, ft_strlen(HOME)) == 0)
+	{
+		cursor->current.x = PROMPT_LEN;
+		cursor->current.y = cursor->start.y;
+		buffer->index = 0;
+	}
+}
+
+void		end_key(t_buff *buffer, t_cursor *cursor, char *seq)
+{
+	if (strncmp(seq, END, ft_strlen(END)) == 0)
+	{
+		cursor->current.x = (buffer->len + PROMPT_LEN) % cursor->max.x;
+		cursor->current.y = cursor->current.y + (buffer->len / cursor->max.x);
+		buffer->index = buffer->len;
+	}
 }

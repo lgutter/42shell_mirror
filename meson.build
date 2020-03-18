@@ -22,10 +22,16 @@ endif
 
 inc_dir = include_directories('inc')
 src_files = files([
-  'src/set_terminal.c',
+  'src/prompt.c',
+  'src/read_input.c',
+  'src/configure_terminal.c',
+  'src/cursor.c',
+  'src/buffer.c',
+  'src/controls.c',
+  'src/escape_controls.c',
   'src/tokenizer.c',
   'src/free_token_list.c',
-  'src/handle_error.c'
+  'src/handle_error.c',
 ])
 
 main_file = files('src/main.c')
@@ -41,6 +47,7 @@ libcriterion_deb = dependency('criterion', required: false)
 
 if libcriterion_deb.found()
   test_files = src_files + files([
+    'src/buffer.spec.c',
     'src/tokenizer.spec.c',
     'src/handle_error.spec.c',
     'src/free_token_list.spec.c'
