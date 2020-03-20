@@ -30,10 +30,14 @@
 # define ESC_SEQ_SIZE 16
 # define ARROW_DOWN "[A"
 # define ARROW_UP "[B"
-# define ARROW_LEFT "[C"
-# define ARROW_RIGHT "[D"
+# define ARROW_LEFT "[D"
+# define ARROW_RIGHT "[C"
 # define END "[F"
 # define HOME "[H"
+# define SHIFT_LEFT "[1;2D"
+# define SHIFT_RIGHT "[1;2C"
+# define RV_MODE "\033[7m"
+# define RV_RESET "\033[m"
 
 # define CNTRL_A 001
 # define CNTRL_B 002
@@ -177,6 +181,10 @@ void		end_key(t_buff *buffer, t_cursor *cursor, char *seq);
 void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
+
+void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq);
+
+void        shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 /**
  * set_cursor_pos will set the current cursor position defined in the t_cursor
