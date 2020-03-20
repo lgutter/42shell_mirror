@@ -13,29 +13,24 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-size_t			calculate_layer(t_buff buffer, t_cursor *cursor)
+static void		print_buffer(t_buff buffer)
 {
-	size_t		layer;
-
-	if (buffer.len == 0 || cursor->max.x == 0)
-		layer = 0;
-	else
-		layer = (buffer.len + PROMPT_LEN - 1) / cursor->max.x;
-	return (layer);
-}
-
-static void		print_buffer(t_buff buffer, t_cursor *cursor, int layer)
-{
-	int		i;
-
-	i = 1;
-	ft_printf("%.*s",cursor->max.x - PROMPT_LEN + 1, buffer.buff);
-	while (layer >= i)
-	{
-		ft_printf("%.*s",cursor->max.x, &buffer.buff[(cursor->max.x * i)	\
-		 - PROMPT_LEN + 1]);
-		i++;
+	if (buffer.rv_end > buffer.rv_start) 
+	{	
+		ft_printf("%.*s%s", buffer.rv_start, buffer.buff, RV_MODE);
+		ft_printf("%.*s", buffer.rv_end - buffer.rv_start, 
+		&buffer.buff[buffer.rv_start]);
+		ft_printf("%s%s", RV_RESET, &buffer.buff[buffer.rv_end]);
 	}
+	else if (buffer.rv_end < buffer.rv_start)
+	{
+		ft_printf("%.*s%s",buffer.rv_end, buffer.buff, RV_MODE);
+		ft_printf("%.*s", buffer.rv_start - buffer.rv_end, 
+		&buffer.buff[buffer.rv_end]);
+		ft_printf("%s%s", RV_RESET, &buffer.buff[buffer.rv_start]);
+	}
+	else
+		ft_printf("%s", buffer.buff);
 }
 
 static void		clear_prompt(t_cursor *cursor)
@@ -46,12 +41,9 @@ static void		clear_prompt(t_cursor *cursor)
 
 static void		refresh_prompt(t_buff buffer, t_cursor *cursor)
 {
-	size_t layer;
-
-	layer = calculate_layer(buffer, cursor);
 	clear_prompt(cursor);
 	ft_printf("%s", PROMPT_STR);
-	print_buffer(buffer, cursor, layer);
+	print_buffer(buffer);
 	ft_printf("%s",  cursor->cur_buff);
 }
 

@@ -28,6 +28,8 @@ typedef struct		s_buff
 	char			buff[INPUT_BUFF_SIZE];
 	size_t			len;
 	size_t			index;
+	size_t			rv_start;
+	size_t			rv_end;
 }					t_buff;
 
 typedef struct		s_point
