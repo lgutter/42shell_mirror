@@ -32,7 +32,7 @@ static void		print_buffer(t_buff buffer, t_cursor *cursor, int layer)
 	ft_printf("%.*s",cursor->max.x - PROMPT_LEN + 1, buffer.buff);
 	while (layer >= i)
 	{
-		ft_printf("\n%.*s",cursor->max.x, &buffer.buff[(cursor->max.x * i)	\
+		ft_printf("%.*s",cursor->max.x, &buffer.buff[(cursor->max.x * i)	\
 		 - PROMPT_LEN + 1]);
 		i++;
 	}
