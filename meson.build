@@ -29,6 +29,7 @@ src_files = files([
   'src/buffer.c',
   'src/controls.c',
   'src/escape_controls.c',
+  'src/cut_copy.c',
   'src/tokenizer.c',
   'src/free_token_list.c',
   'src/handle_error.c',

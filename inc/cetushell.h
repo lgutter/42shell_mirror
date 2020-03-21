@@ -20,12 +20,13 @@
 # include "ft_printf.h"
 # include "libft.h"
 
-# define BUFF_SIZE 4096
+# define INPUT_BUFF_SIZE 4096
 # define CUR_BUFF_SIZE 32
 
 typedef struct		s_buff
 {
-	char			buff[BUFF_SIZE];
+	char			buff[INPUT_BUFF_SIZE];
+	char			*copy;
 	size_t			len;
 	size_t			index;
 	size_t			rv_start;
