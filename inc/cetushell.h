@@ -26,6 +26,7 @@
 typedef struct		s_buff
 {
 	char			buff[INPUT_BUFF_SIZE];
+	char			*copy;
 	size_t			len;
 	size_t			index;
 	size_t			rv_start;

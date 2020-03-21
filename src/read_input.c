@@ -15,6 +15,7 @@
 
 int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 {
+	//ft_printf("\n\n (%d)\n", c);
 	if (ft_isprint(c) != 0)
 	{
 		if (c == 'q')
@@ -67,6 +68,7 @@ void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 		if (ret == -1)
 			return ;
 		//ft_printf("\n\nseq = %s \n", seq);
+		cut_cntrl_left(buffer, cursor, seq);
 		shift_right_key(buffer, cursor, seq);
 		shift_left_key(buffer, cursor, seq);
 		left_arrow_key(buffer, cursor, seq);

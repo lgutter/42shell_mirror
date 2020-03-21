@@ -27,17 +27,23 @@
 # define CLEAR_SCREEN "cl"
 # define CURSOR_POSITION "u7"
 
-# define ESC_SEQ_SIZE 16
-# define ARROW_DOWN "[A"
-# define ARROW_UP "[B"
-# define ARROW_LEFT "[D"
-# define ARROW_RIGHT "[C"
-# define END "[F"
-# define HOME "[H"
-# define SHIFT_LEFT "[1;2D"
-# define SHIFT_RIGHT "[1;2C"
-# define RV_MODE "\033[7m"
-# define RV_RESET "\033[m"
+# define ESC_SEQ_SIZE   16
+# define ARROW_UP       "[A"
+# define ARROW_DOWN     "[B"
+# define ARROW_RIGHT    "[C"
+# define ARROW_LEFT     "[D"
+# define END            "[F"
+# define HOME           "[H"
+# define SHIFT_UP       "[1;2A"
+# define SHIFT_DOWN     "[1;2B"
+# define SHIFT_RIGHT    "[1;2C"
+# define SHIFT_LEFT     "[1;2D"
+# define CNTRL_UP       "[1;5A"
+# define CNTRL_DOWN     "[1;5B"
+# define CNTRL_RIGHT    "[1;5C"
+# define CNTRL_LEFT     "[1;5D"
+# define RV_MODE        "\033[7m"
+# define RV_RESET       "\033[m"
 
 # define CNTRL_A 001
 # define CNTRL_B 002
@@ -185,6 +191,8 @@ void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
 void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 void        shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq);
+
+void		cut_cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq);
 
 /**
  * set_cursor_pos will set the current cursor position defined in the t_cursor
