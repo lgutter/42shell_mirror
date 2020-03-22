@@ -61,8 +61,8 @@ int			prompt_shell(t_shell *shell)
 	while (42)
 	{
 		get_winsize(shell);
-		set_cursor_pos(&shell->cursor, shell->buffer.len);
-		refresh_prompt(shell->buffer, &shell->cursor);
+		set_cursor_pos(&shell->cursor, shell->buffer->len);
+		refresh_prompt(*shell->buffer, &shell->cursor);
 		if (read_input(shell) == 1)
 			return (1);
 	}

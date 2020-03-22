@@ -20,12 +20,12 @@
 # include "ft_printf.h"
 # include "libft.h"
 
-# define BUFF_SIZE 4096
+# define INPUT_BUFF_SIZE 4096
 # define CUR_BUFF_SIZE 32
 
 typedef struct		s_buff
 {
-	char			buff[BUFF_SIZE];
+	char			buff[INPUT_BUFF_SIZE];
 	size_t			len;
 	size_t			index;
 }					t_buff;
@@ -50,6 +50,6 @@ typedef struct		s_shell
 	char			**envi;
 	t_cursor		cursor;
 	struct winsize	winsize;
-	t_buff			buffer;
+	t_buff			*buffer;
 }					t_shell;
 #endif

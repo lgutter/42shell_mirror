@@ -13,8 +13,16 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-static void		cursor_next_line(t_cursor *cursor)
+static void		cursor_next_line(t_cursor *cursor, size_t len)
 {
+	if (((len - 1 + PROMPT_LEN) % cursor->max.x == 1) 
+	&& ((len - 1 + PROMPT_LEN) % cursor->max.x != cursor->current.x) 
+	&& cursor->current.y == cursor->max.y)
+	{
+		cursor->start.y--;
+		cursor->current.y--;
+		send_terminal(CURSOR_DOWN);
+	}
 	if (cursor->current.x > cursor->max.x)
 	{
 		cursor->current.x = 1;
@@ -36,7 +44,7 @@ static void		cursor_next_line(t_cursor *cursor)
 
 void		set_cursor_pos(t_cursor *cursor, size_t len)
 {
-	cursor_next_line(cursor);
+	cursor_next_line(cursor, len);
 	ft_memset(&cursor->cur_buff, '\0', CUR_BUFF_SIZE);
 	if (cursor->current.x < PROMPT_LEN && cursor->current.y == cursor->start.y)
 		cursor->current.x = PROMPT_LEN;
