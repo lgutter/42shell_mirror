@@ -19,8 +19,6 @@ char		*copy_cut_right_to_left(t_buff *buffer, int cut)
 	size_t	len;
 
 	len = buffer->rv_start - buffer->rv_end + 1;
-	//if ( len == 1 || (len > 0 && buffer->rv_end == 0))
-	//	len++;
 	if (len == 0)
 		return (NULL);
 	copy = ft_memalloc(sizeof(char) * len + 1);
@@ -86,7 +84,7 @@ void	cut(t_buff *buffer)
 		buffer->rv_start = buffer->index;
 		buffer->rv_end = buffer->rv_start;
 	}
-	else if (buffer->index != buffer->len)
+	else if (buffer->index != buffer->len && buffer->rv_end != buffer->rv_start)
 	{
 		buffer->copy = ft_memalloc(2);
 		buffer->copy[1] = '\0';
