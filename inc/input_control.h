@@ -192,11 +192,7 @@ void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 void        shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
-<<<<<<< HEAD
 void		cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c);
-=======
-void		cut_cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq);
->>>>>>> 461c721e986a64e022db25670cf2f321f0f72195
 
 /**
  * set_cursor_pos will set the current cursor position defined in the t_cursor

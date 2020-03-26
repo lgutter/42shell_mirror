@@ -68,11 +68,7 @@ void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 		if (ret == -1)
 			return ;
 		//ft_printf("\n\nseq = %s \n", seq);
-<<<<<<< HEAD
 		cut_copy_paste(buffer, cursor, seq, 0);
-=======
-		cut_cntrl_left(buffer, cursor, seq);
->>>>>>> 461c721e986a64e022db25670cf2f321f0f72195
 		shift_right_key(buffer, cursor, seq);
 		shift_left_key(buffer, cursor, seq);
 		left_arrow_key(buffer, cursor, seq);
