@@ -51,7 +51,8 @@ if libcriterion_deb.found()
     'src/buffer.spec.c',
     'src/tokenizer.spec.c',
     'src/handle_error.spec.c',
-    'src/free_token_list.spec.c'
+    'src/free_token_list.spec.c',
+    'src/cut_copy.spec.c',
   ])
 
   tester = executable('test-cetushell',

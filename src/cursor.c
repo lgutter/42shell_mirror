@@ -15,24 +15,18 @@
 
 static void		cursor_next_line(t_cursor *cursor, size_t len)
 {
-	if (((len - 1 + PROMPT_LEN) % cursor->max.x == 1) 
-	&& ((len - 1 + PROMPT_LEN) % cursor->max.x != cursor->current.x) 
-	&& cursor->current.y == cursor->max.y)
+	if ((((len - 1 + PROMPT_LEN) / cursor->max.x) + cursor->start.y) >
+	cursor->max.y)
 	{
+		send_terminal(CURSOR_DOWN);
 		cursor->start.y--;
 		cursor->current.y--;
-		send_terminal(CURSOR_DOWN);
 	}
 	if (cursor->current.x > cursor->max.x)
 	{
 		cursor->current.x = 1;
 		if (cursor->current.y != cursor->max.y)
 			cursor->current.y++;
-		else
-		{
-			cursor->start.y--;
-			send_terminal(CURSOR_DOWN);
-		}
 	}
 	if (cursor->current.x == 0)
 	{

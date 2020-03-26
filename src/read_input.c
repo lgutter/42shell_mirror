@@ -27,11 +27,11 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 	}
 	if (c == CNTRL_R)
 	{
-		cursor->start.x = 1;
+		cursor->current.y = cursor->current.y - cursor->start.y;
 		cursor->start.y = 1;
-		cursor->current.y = 1;
 		send_terminal("cl");
 	}
+	cut_copy_paste(buffer, cursor, NULL, c);
 	return_key(buffer, cursor, c);
 	tab_key(buffer, cursor, c);
 	backspace_key(buffer, cursor, c);
@@ -68,7 +68,7 @@ void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 		if (ret == -1)
 			return ;
 		//ft_printf("\n\nseq = %s \n", seq);
-		cut_cntrl_left(buffer, cursor, seq);
+		cut_copy_paste(buffer, cursor, seq, 0);
 		shift_right_key(buffer, cursor, seq);
 		shift_left_key(buffer, cursor, seq);
 		left_arrow_key(buffer, cursor, seq);
