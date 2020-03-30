@@ -37,7 +37,12 @@ void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq)
 	if (ft_strncmp(seq, SHIFT_LEFT, ft_strlen(SHIFT_LEFT)) == 0 &&
 					 cursor->current.x > 0)
 		{
-			if (buffer->index != 0 && buffer->index != buffer->len)
+			if (buffer->index == buffer->len)
+			{
+				buffer->index--;
+				cursor->current.x--;
+			}
+			if (buffer->index != 0)
 			{
 				if (buffer->rv_start == buffer->rv_end)
 				{
