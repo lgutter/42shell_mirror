@@ -100,7 +100,30 @@ void	paste(t_buff *buffer, t_cursor *cursor)
 	size_t i;
 
 	i = 0;
+	if (!buffer->copy)
+		return ;
 	len = ft_strlen(buffer->copy);
+	if (buffer->rv_start != buffer->rv_end)
+	{
+		if (buffer->rv_start > buffer->rv_end)
+		{
+			buffer->index = buffer->rv_start;
+			while (buffer->rv_start != buffer->rv_end)
+			{
+				remove_char(buffer);
+				buffer->rv_start--;
+			}
+		}
+		else if (buffer->rv_start < buffer->rv_end)
+		{
+			buffer->index = buffer->rv_end;
+			while (buffer->rv_start != buffer->rv_end)
+			{
+				remove_char(buffer);
+				buffer->rv_end--;
+			}
+		}
+	}
 	while (len > i)
 	{
 		insert_char(buffer, buffer->copy[i]);
