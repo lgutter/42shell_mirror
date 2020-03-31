@@ -31,3 +31,45 @@ void	free_token_list(t_token **start)
 	}
 	*start = NULL;
 }
+
+static t_token	*init_token(t_token **start)
+{
+	t_token *temp;
+	t_token *previous;
+
+	previous = NULL;
+	if (*start == NULL)
+	{
+		*start = (t_token *)ft_memalloc(sizeof(t_token));
+		temp = *start;
+	}
+	else
+	{
+		temp = *start;
+		while (temp->next != NULL)
+			temp = temp->next;
+		temp->next = (t_token *)ft_memalloc(sizeof(t_token));
+		previous = temp;
+		temp = temp->next;
+	}
+	if (temp != NULL)
+		temp->prev = previous;
+	return (temp);
+}
+
+int				add_token(t_token **start, t_type type, char **buff)
+{
+	t_token *temp;
+
+	temp = init_token(start);
+	if (temp == NULL)
+	{
+		ft_memset((void *)*buff, '\0', ft_strlen(*buff));
+		return (handle_error(malloc_error));
+	}
+	temp->next = NULL;
+	temp->type = type;
+	temp->value = ft_strdup(*buff);
+	ft_memset((void *)*buff, '\0', ft_strlen(*buff));
+	return (0);
+}

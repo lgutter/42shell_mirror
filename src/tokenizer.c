@@ -53,45 +53,6 @@ static int		expand_buff(char **buff, char new)
 	return (0);
 }
 
-/*
-**	The add_token function creates a new node in the list of tokens,
-**	and sets the type and transfers the buffer into the value field.
-**	It also calls ft_memset to empty the buffer after it is done.
-**	arg: start - a pointer to the first element in the token list.
-**	arg: type - the type of the token.
-**	arg: buff - a pointer to the buffer.
-**	returns: 0 on success, error code on error.
-*/
-
-static int		add_token(t_token **start, t_type type, char **buff)
-{
-	t_token *temp;
-
-	if (*start == NULL)
-	{
-		*start = (t_token *)ft_memalloc(sizeof(t_token));
-		temp = *start;
-	}
-	else
-	{
-		temp = *start;
-		while (temp->next != NULL)
-			temp = temp->next;
-		temp->next = (t_token *)ft_memalloc(sizeof(t_token));
-		temp = temp->next;
-	}
-	if (temp == NULL)
-	{
-		ft_memset((void *)*buff, '\0', ft_strlen(*buff));
-		return (handle_error(malloc_error));
-	}
-	temp->next = NULL;
-	temp->type = type;
-	temp->value = ft_strdup(*buff);
-	ft_memset((void *)*buff, '\0', ft_strlen(*buff));
-	return (0);
-}
-
 static t_rules	init_state(t_state cur_state, char input)
 {
 	t_rules	state_rules;

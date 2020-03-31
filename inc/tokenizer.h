@@ -31,12 +31,14 @@
 **			enums are defined in token_trans_table.h
 **	value:	a string with the characters from the input that the token contains.
 **	next:	pointer to the next token in the list.
+**	prev:	pointer to the previous token in the list.
 */
 typedef struct			s_token
 {
 	t_type				type;
 	char				*value;
 	struct s_token		*next;
+	struct s_token		*prev;
 }						t_token;
 
 /*
@@ -46,6 +48,17 @@ typedef struct			s_token
 **	return: a linked list of tokens, containing a token type and value.
 */
 t_token					*tokenizer(char *input);
+
+/*
+**	The add_token function creates a new node in the list of tokens,
+**	and sets the type and transfers the buffer into the value field.
+**	It also calls ft_memset to empty the buffer after it is done.
+**	arg: start - a pointer to the first element in the token list.
+**	arg: type - the type of the token.
+**	arg: buff - a pointer to the buffer.
+**	returns: 0 on success, error code on error.
+*/
+int						add_token(t_token **start, t_type type, char **buff);
 
 /*
 **	frees all nodes and their content in a token linked list.
