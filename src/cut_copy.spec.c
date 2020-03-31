@@ -44,7 +44,7 @@ Test(copy_start_right_left, normal) {
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 0;
-	buffer->rv_start = 4;
+	buffer->rv_start = 5;
 	buffer->rv_end = 0;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
@@ -84,7 +84,7 @@ Test(copy_end_left_right, normal) {
 	buffer->len = 11;
 	buffer->index = 10;
 	buffer->rv_start = 6;
-	buffer->rv_end = 10;
+	buffer->rv_end = 11;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
 	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);
@@ -104,7 +104,7 @@ Test(copy_end_right_left, normal) {
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 6;
-	buffer->rv_start = 10;
+	buffer->rv_start = 11;
 	buffer->rv_end = 6;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
@@ -125,7 +125,7 @@ Test(copy_all_right_left, normal) {
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 0;
-	buffer->rv_start = 10;
+	buffer->rv_start = 11;
 	buffer->rv_end = 0;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
@@ -147,7 +147,7 @@ Test(copy_all_left_right, normal) {
 	buffer->len = 11;
 	buffer->index = 10;
 	buffer->rv_start = 0;
-	buffer->rv_end = 10;
+	buffer->rv_end = 11;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
 	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);;
@@ -187,7 +187,7 @@ Test(cut_start_right_left, normal) {
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 0;
-	buffer->rv_start = 4;
+	buffer->rv_start = 5;
 	buffer->rv_end = 0;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
@@ -247,7 +247,7 @@ Test(cut_end_right_left, normal) {
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 6;
-	buffer->rv_start = 10;
+	buffer->rv_start = 11;
 	buffer->rv_end = 6;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
@@ -268,7 +268,7 @@ Test(cut_all_right_left, normal) {
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 0;
-	buffer->rv_start = 10;
+	buffer->rv_start = 11;
 	buffer->rv_end = 0;
 	cursor.current.x = 1;
 	cursor.current.x = 2;

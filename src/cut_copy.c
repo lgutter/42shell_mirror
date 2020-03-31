@@ -13,43 +13,25 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-char		*copy_cut_right_to_left(t_buff *buffer, int cut)
-{
-	char	*copy;
-	size_t	len;
-
-	len = buffer->rv_start - buffer->rv_end + 1;
-	if (len == 0)
-		return (NULL);
-	copy = ft_memalloc(sizeof(char) * len + 1);
-	if (copy == NULL)
-		return (NULL);
-	copy[len + 1] = '\0';
-	ft_strncpy(copy, &buffer->buff[buffer->rv_end], len);
-	if (cut == 1)
-	{
-		buffer->rv_start++;
-		buffer->index = buffer->rv_start;
-		while (buffer->rv_start > buffer->rv_end)
-		{
-			remove_char(buffer);
-			buffer->rv_start--;
-		}
-	}
-	return (copy);
-}
-
 void	copy(t_buff *buffer)
 {
 	size_t temp;
+	size_t len;
 
 	if (buffer->rv_start < buffer->rv_end)
 	{
 		temp = buffer->rv_end;
 		buffer->rv_end = buffer->rv_start;
-		buffer->rv_start = temp;
+		buffer->rv_start = temp + 1;
 	}
-	buffer->copy = copy_cut_right_to_left(buffer, 0);
+	len = buffer->rv_start - buffer->rv_end;
+	if (len == 0)
+		buffer->copy = NULL;
+	buffer->copy = ft_memalloc(sizeof(char) * len + 1);
+	if (buffer->copy == NULL)
+		return ;
+	buffer->copy[len + 1] = '\0';
+	ft_strncpy(buffer->copy, &buffer->buff[buffer->rv_end], len);
 }
 
 void	cut(t_buff *buffer)
@@ -59,8 +41,7 @@ void	cut(t_buff *buffer)
 		if (buffer->copy != NULL && ft_strlen(buffer->copy) > 0)
 			ft_memset(buffer->copy, '\0', ft_strlen(buffer->copy));
 		copy(buffer);
-		buffer->rv_start = buffer->index;
-		buffer->rv_end = buffer->rv_start;
+		remove_word(buffer);
 	}
 	else if (buffer->index != buffer->len && buffer->rv_end != buffer->rv_start)
 	{
@@ -82,26 +63,7 @@ void	paste(t_buff *buffer, t_cursor *cursor)
 		return ;
 	len = ft_strlen(buffer->copy);
 	if (buffer->rv_start != buffer->rv_end)
-	{
-		if (buffer->rv_start > buffer->rv_end)
-		{
-			buffer->index = buffer->rv_start;
-			while (buffer->rv_start != buffer->rv_end)
-			{
-				remove_char(buffer);
-				buffer->rv_start--;
-			}
-		}
-		else if (buffer->rv_start < buffer->rv_end)
-		{
-			buffer->index = buffer->rv_end;
-			while (buffer->rv_start != buffer->rv_end)
-			{
-				remove_char(buffer);
-				buffer->rv_end--;
-			}
-		}
-	}
+		remove_word(buffer);
 	while (len > i)
 	{
 		insert_char(buffer, buffer->copy[i]);
