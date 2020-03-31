@@ -47,7 +47,14 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (c == BACKSPACE)
 	{
-		if (cursor->current.y == cursor->start.y && \
+		if (buffer->rv_end != buffer->rv_start)
+		{
+			ft_printf("\ntest %d %d\n", buffer->rv_end, buffer->rv_start);
+			if (buffer->rv_end > buffer->rv_start)
+				cursor->current.x = cursor->current.x - (buffer->rv_end - buffer->rv_start);
+			remove_word(buffer);
+		}
+		else if (cursor->current.y == cursor->start.y && \
 			cursor->current.x > PROMPT_LEN)
 		{
 			cursor->current.x--;
