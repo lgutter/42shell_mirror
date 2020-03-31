@@ -62,9 +62,14 @@ void	paste(t_buff *buffer, t_cursor *cursor)
 	if (!buffer->copy)
 		return ;
 	len = ft_strlen(buffer->copy);
+	if (buffer->rv_end > buffer->rv_start)
+	{
+		buffer->index = buffer->index - (buffer->rv_end - buffer->rv_start);
+		cursor->current.x = cursor->current.x - \
+			(buffer->rv_end - buffer->rv_start);
+	}
 	if (buffer->rv_start != buffer->rv_end)
 		remove_word(buffer);
-	buffer->index = buffer->rv_start;
 	while (len > i)
 	{
 		insert_char(buffer, buffer->copy[i]);
