@@ -9,6 +9,15 @@ project(
 
 cc = meson.get_compiler('c')
 
+add_project_arguments(cc.get_supported_arguments([
+  '-Woverflow',
+  '-Wassign-enum',
+  '-Wno-missing-braces',
+  '-Wno-missing-field-initializers',
+  '-Wno-unused-parameter',
+  '-Wno-unused-result',
+]), language: 'c')
+
 libft_proj = subproject('libft')
 libft_deb = libft_proj.get_variable('libft_deb')
 
@@ -17,7 +26,7 @@ libftprintf_deb = libftprintf_proj.get_variable('libftprintf_deb')
 
 libcurses_deb = cc.find_library('curses', required: false)
 if not libcurses_deb.found()
-	libcurses_deb = dependency('ncurses')
+  libcurses_deb = dependency('ncurses')
 endif
 
 inc_dir = include_directories('inc')

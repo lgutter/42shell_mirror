@@ -6,15 +6,14 @@ variables:
 stages:
   - test
 
-simple-test:
+gcc-test:
   stage: test
   before_script:
     - meson --version
     - ninja --version
     - meson build -Db_coverage=true
-    - ninja -C build
   script:
-    - ninja test -C build
+    - ninja test -C build --verbose
   after_script:
     - rm -rfv $(find . -regex ".*\.spec\.c\.gc[ndo][oav]")
     - ninja -C build coverage --verbose
@@ -23,3 +22,12 @@ simple-test:
     when: always
     paths:
       - meson-logs/
+
+clang-test:
+  stage: test
+  before_script:
+    - meson --version
+    - ninja --version
+    - CC=clang meson build
+  script:
+    - ninja test -C build --verbose
