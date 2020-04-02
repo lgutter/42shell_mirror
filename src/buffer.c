@@ -73,17 +73,21 @@ void		remove_char(t_buff *buffer)
 	}
 }
 
-int		remove_word(t_buff *buffer)
+void		remove_word(t_buff *buffer, t_cursor *cursor)
 {
 	size_t	i;
 
 	i = 0;
 	buffer->index = buffer->rv_start;
+	cursor->current.x = (buffer->rv_start + PROMPT_LEN) % cursor->max.x;
+	if (buffer->index / cursor->max.x > 0 && cursor->current.y == cursor->start.y)
+		cursor->current.y = cursor->current.y + (buffer->index / cursor->max.x);
 	while (buffer->rv_start > buffer->rv_end)
 	{
 		remove_char(buffer);
 		buffer->rv_start--;
+		cursor->current.x--;
+		set_cursor_pos(cursor, buffer->len);
 		i++;
 	}
-	return (i);
 }
