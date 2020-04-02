@@ -33,6 +33,7 @@ src_files = files([
   'src/tokenizer.c',
   'src/free_token_list.c',
   'src/handle_error.c',
+  'src/utils.c',
 ])
 
 main_file = files('src/main.c')

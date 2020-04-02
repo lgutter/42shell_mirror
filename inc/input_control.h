@@ -194,7 +194,7 @@ void        shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 void		cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c);
 
-void		remove_word(t_buff *buffer);
+int			remove_word(t_buff *buffer);
 
 /**
  * set_cursor_pos will set the current cursor position defined in the t_cursor

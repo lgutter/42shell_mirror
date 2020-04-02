@@ -15,16 +15,15 @@
 
 void	copy(t_buff *buffer)
 {
-	size_t temp;
 	size_t len;
 
-	if (buffer->rv_start < buffer->rv_end)
-	{
-		temp = buffer->rv_end;
-		buffer->rv_end = buffer->rv_start;
-		buffer->rv_start = temp + 1;
-	}
+	ft_swap_rv(buffer);
 	len = buffer->rv_start - buffer->rv_end;
+	if (len == 1)
+	{
+		buffer->rv_end--;
+		len++;
+	}
 	if (len == 0)
 		buffer->copy = NULL;
 	buffer->copy = ft_memalloc(sizeof(char) * len + 1);
@@ -43,14 +42,6 @@ void	cut(t_buff *buffer)
 		copy(buffer);
 		remove_word(buffer);
 	}
-	else if (buffer->index != buffer->len && buffer->rv_end != buffer->rv_start)
-	{
-		buffer->copy = ft_memalloc(2);
-		buffer->copy[1] = '\0';
-		buffer->copy[0] = buffer->buff[buffer->index];
-		buffer->index++;
-		remove_char(buffer);
-	}
 }
 
 void	paste(t_buff *buffer, t_cursor *cursor)
@@ -62,14 +53,12 @@ void	paste(t_buff *buffer, t_cursor *cursor)
 	if (!buffer->copy)
 		return ;
 	len = ft_strlen(buffer->copy);
-	if (buffer->rv_end > buffer->rv_start)
-	{
-		buffer->index = buffer->index - (buffer->rv_end - buffer->rv_start);
-		cursor->current.x = cursor->current.x - \
-			(buffer->rv_end - buffer->rv_start);
-	}
+	ft_swap_rv(buffer);
 	if (buffer->rv_start != buffer->rv_end)
-		remove_word(buffer);
+	{
+		cursor->current.x = (buffer->rv_start + PROMPT_LEN) % cursor->max.x;
+		cursor->current.x = cursor->current.x - remove_word(buffer);
+	}
 	while (len > i)
 	{
 		insert_char(buffer, buffer->copy[i]);
@@ -88,9 +77,6 @@ void	cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c)
 		paste(buffer, cursor);
 	if (seq != NULL && ft_strncmp(seq, CNTRL_LEFT, sizeof(CNTRL_LEFT)) == 0)
 	{
-		if (buffer->rv_start < buffer->rv_end)
-			cursor->current.x = cursor->current.x - (buffer->rv_end \
-			- buffer->rv_start);
 		cut(buffer);
 	}
 }

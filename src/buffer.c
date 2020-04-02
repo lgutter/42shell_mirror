@@ -73,21 +73,17 @@ void		remove_char(t_buff *buffer)
 	}
 }
 
-void		remove_word(t_buff *buffer)
+int		remove_word(t_buff *buffer)
 {
-	size_t	temp;
+	size_t	i;
 
-	temp = 0;
-	if (buffer->rv_start < buffer->rv_end)
-	{
-		temp = buffer->rv_end + 1;
-		buffer->rv_end = buffer->rv_start;
-		buffer->rv_start = temp;
-	}
+	i = 0;
 	buffer->index = buffer->rv_start;
 	while (buffer->rv_start > buffer->rv_end)
 	{
 		remove_char(buffer);
 		buffer->rv_start--;
+		i++;
 	}
+	return (i);
 }

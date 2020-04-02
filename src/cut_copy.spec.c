@@ -299,3 +299,43 @@ Test(cut_all_left_right, normal) {
 	free(buffer->copy);
 	free(buffer);
 }
+
+Test(cut_two_char, normal) {
+	t_buff		*buffer;
+	t_cursor	cursor;
+
+	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	ft_strcpy(buffer->buff, "Hello world");
+	buffer->len = 11;
+	buffer->index = 11;
+	buffer->rv_start = 11;
+	buffer->rv_end = 9;
+	cursor.current.x = 1;
+	cursor.current.x = 2;
+	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);;
+	cr_expect_str_eq(buffer->buff, "Hello wor");
+	cr_expect_str_eq(buffer->copy, "ld");
+	free(buffer->copy);
+	free(buffer);
+}
+
+Test(cut_two_char_left, normal) {
+	t_buff		*buffer;
+	t_cursor	cursor;
+
+	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	ft_strcpy(buffer->buff, "Hello world");
+	buffer->len = 11;
+	buffer->index = 11;
+	buffer->rv_start = 9;
+	buffer->rv_end = 10;
+	cursor.current.x = 1;
+	cursor.current.x = 2;
+	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);;
+	cr_expect_str_eq(buffer->buff, "Hello wor");
+	cr_expect_str_eq(buffer->copy, "ld");
+	free(buffer->copy);
+	free(buffer);
+}
