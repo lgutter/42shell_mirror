@@ -137,7 +137,7 @@ Test(copy_all_right_left, normal) {
 	free(buffer);
 }
 
-Test(copy_all_left_right, normal) {
+Test(copy_two_char, normal) {
 	t_buff		*buffer;
 	t_cursor	cursor;
 
@@ -146,13 +146,33 @@ Test(copy_all_left_right, normal) {
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 10;
-	buffer->rv_start = 0;
-	buffer->rv_end = 11;
+	buffer->rv_start = 1;
+	buffer->rv_end = 2;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
 	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);;
 	cr_expect_str_eq(buffer->buff, "Hello world");
-	cr_expect_str_eq(buffer->copy, "Hello world");
+	cr_expect_str_eq(buffer->copy, "el");
+	free(buffer->copy);
+	free(buffer);
+}
+
+Test(copy_two_char_left, normal) {
+	t_buff		*buffer;
+	t_cursor	cursor;
+
+	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	ft_strcpy(buffer->buff, "Hello world");
+	buffer->len = 11;
+	buffer->index = 10;
+	buffer->rv_start = 3;
+	buffer->rv_end = 1;
+	cursor.current.x = 1;
+	cursor.current.x = 2;
+	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);;
+	cr_expect_str_eq(buffer->buff, "Hello world");
+	cr_expect_str_eq(buffer->copy, "el");
 	free(buffer->copy);
 	free(buffer);
 }
