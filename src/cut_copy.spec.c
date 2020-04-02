@@ -168,8 +168,8 @@ Test(cut_start_left_right, normal) {
 	buffer->index = 4;
 	buffer->rv_start = 0;
 	buffer->rv_end = 4;
-	cursor.current.x = 1;
-	cursor.current.x = 2;
+	cursor.max.x = 100;
+	cursor.current.x = 20;
 	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	cr_expect_str_eq(buffer->buff, " world");
@@ -189,7 +189,7 @@ Test(cut_start_right_left, normal) {
 	buffer->index = 0;
 	buffer->rv_start = 5;
 	buffer->rv_end = 0;
-	cursor.current.x = 1;
+	cursor.max.x = 100;
 	cursor.current.x = 2;
 	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
@@ -210,8 +210,8 @@ Test(cut_start_null, normal) {
 	buffer->index = 4;
 	buffer->rv_start = 4;
 	buffer->rv_end = 4;
-	cursor.current.x = 1;
-	cursor.current.x = 2;
+	cursor.max.x = 100;
+	cursor.current.x = 20;
 	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);;
 	cr_expect_str_eq(buffer->buff, "Hello world");
 	free(buffer);
@@ -228,8 +228,8 @@ Test(cut_end_left_right, normal) {
 	buffer->index = 10;
 	buffer->rv_start = 6;
 	buffer->rv_end = 10;
-	cursor.current.x = 1;
-	cursor.current.x = 2;
+	cursor.max.x = 100;
+	cursor.current.x = 20;
 	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	cr_expect_str_eq(buffer->buff, "Hello ");
@@ -249,8 +249,8 @@ Test(cut_end_right_left, normal) {
 	buffer->index = 6;
 	buffer->rv_start = 11;
 	buffer->rv_end = 6;
-	cursor.current.x = 1;
-	cursor.current.x = 2;
+	cursor.max.x = 100;
+	cursor.current.x = 20;
 	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	cr_expect_str_eq(buffer->buff, "Hello ");
@@ -270,8 +270,8 @@ Test(cut_all_right_left, normal) {
 	buffer->index = 0;
 	buffer->rv_start = 11;
 	buffer->rv_end = 0;
-	cursor.current.x = 1;
-	cursor.current.x = 2;
+	cursor.max.x = 100;
+	cursor.current.x = 20;
 	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	cr_expect_str_eq(buffer->buff, "");
@@ -291,8 +291,8 @@ Test(cut_all_left_right, normal) {
 	buffer->index = 10;
 	buffer->rv_start = 0;
 	buffer->rv_end = 10;
-	cursor.current.x = 1;
-	cursor.current.x = 2;
+	cursor.max.x = 100;
+	cursor.current.x = 20;
 	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);;
 	cr_expect_str_eq(buffer->buff, "");
 	cr_expect_str_eq(buffer->copy, "Hello world");
@@ -311,8 +311,8 @@ Test(cut_two_char, normal) {
 	buffer->index = 11;
 	buffer->rv_start = 11;
 	buffer->rv_end = 9;
-	cursor.current.x = 1;
-	cursor.current.x = 2;
+	cursor.max.x = 100;
+	cursor.current.x = 20;
 	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);;
 	cr_expect_str_eq(buffer->buff, "Hello wor");
 	cr_expect_str_eq(buffer->copy, "ld");
@@ -331,8 +331,8 @@ Test(cut_two_char_left, normal) {
 	buffer->index = 11;
 	buffer->rv_start = 9;
 	buffer->rv_end = 10;
-	cursor.current.x = 1;
-	cursor.current.x = 2;
+	cursor.max.x = 1000;
+	cursor.current.x = 20;
 	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);;
 	cr_expect_str_eq(buffer->buff, "Hello wor");
 	cr_expect_str_eq(buffer->copy, "ld");

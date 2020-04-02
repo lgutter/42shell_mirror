@@ -33,14 +33,15 @@ void	copy(t_buff *buffer)
 	ft_strncpy(buffer->copy, &buffer->buff[buffer->rv_end], len);
 }
 
-void	cut(t_buff *buffer)
+void	cut(t_buff *buffer, t_cursor *cursor)
 {
 	if (buffer->rv_end != buffer->rv_start)
 	{
 		if (buffer->copy != NULL && ft_strlen(buffer->copy) > 0)
 			ft_memset(buffer->copy, '\0', ft_strlen(buffer->copy));
 		copy(buffer);
-		remove_word(buffer);
+		cursor->current.x = (buffer->rv_start + PROMPT_LEN) % cursor->max.x;
+		cursor->current.x = cursor->current.x - remove_word(buffer);
 	}
 }
 
@@ -77,6 +78,6 @@ void	cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c)
 		paste(buffer, cursor);
 	if (seq != NULL && ft_strncmp(seq, CNTRL_LEFT, sizeof(CNTRL_LEFT)) == 0)
 	{
-		cut(buffer);
+		cut(buffer, cursor);
 	}
 }
