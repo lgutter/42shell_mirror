@@ -121,3 +121,57 @@ Test(insert_char_end, normal) {
 	cr_expect_str_eq(buffer->buff, "Hello world!");
 	free(buffer);
 }
+
+Test(remove_word_start, normal) {
+	t_buff		*buffer;
+	t_cursor	cursor;
+
+	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	ft_strcpy(buffer->buff, "Hello world");
+	buffer->len = 11;
+	buffer->index = 5;
+	buffer->rv_end = 0;
+	buffer->rv_start = 5;
+		cursor.current.x = 20;
+		cursor.max.x = 100;
+	remove_word(buffer, &cursor);
+	cr_expect_str_eq(buffer->buff, " world");
+	free(buffer);
+}
+
+Test(remove_word_middle, normal) {
+	t_buff		*buffer;
+	t_cursor	cursor;
+
+	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	ft_strcpy(buffer->buff, "Hello world");
+	buffer->len = 11;
+	buffer->index = 8;
+	buffer->rv_end = 3;
+	buffer->rv_start = 8;
+		cursor.current.x = 20;
+		cursor.max.x = 100;
+	remove_word(buffer, &cursor);
+	cr_expect_str_eq(buffer->buff, "Helrld");
+	free(buffer);
+}
+
+Test(remove_word_end, normal) {
+	t_buff		*buffer;
+	t_cursor	cursor;
+
+	buffer = ft_memalloc(sizeof(t_buff));
+	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	ft_strcpy(buffer->buff, "Hello world");
+	buffer->len = 11;
+	buffer->index = 10;
+	buffer->rv_end = 8;
+	buffer->rv_start = 11;
+	cursor.current.x = 20;
+	cursor.max.x = 100;
+	remove_word(buffer, &cursor);
+	cr_expect_str_eq(buffer->buff, "Hello wo");
+	free(buffer);
+}

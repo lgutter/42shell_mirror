@@ -17,6 +17,9 @@ void		init_buffs(t_shell *shell)
 {
 	shell->buffer->len = 0;
 	shell->buffer->index = 0;
+	shell->buffer->rv_start = 0;
+	shell->buffer->rv_end = 0;
+	shell->buffer->copy = NULL;
 	ft_memset(&shell->buffer->buff, '\0', INPUT_BUFF_SIZE);
 	ft_memset(&shell->cursor.cur_buff, '\0', CUR_BUFF_SIZE);
 	get_cursor_pos(&shell->cursor);
@@ -67,5 +70,26 @@ void		remove_char(t_buff *buffer)
 		buffer->buff[buffer->index - 1] = '\0';
 		buffer->index = curs - 1;
 		buffer->len = buffer->len - 1;
+	}
+}
+
+void		remove_word(t_buff *buffer, t_cursor *cursor)
+{
+	size_t	i;
+
+	i = 0;
+	buffer->index = buffer->rv_start;
+	cursor->current.x = ((buffer->rv_start + PROMPT_LEN) % cursor->max.x);
+	if (cursor->current.y == (cursor->start.y + ((buffer->rv_end + PROMPT_LEN) \
+	/ cursor->max.x)))
+		cursor->current.y = cursor->start.y + ((buffer->rv_start + PROMPT_LEN) \
+		/ cursor->max.x);
+	while (buffer->rv_start > buffer->rv_end)
+	{
+		remove_char(buffer);
+		buffer->rv_start--;
+		cursor->current.x--;
+		set_cursor_pos(cursor, buffer->len);
+		i++;
 	}
 }

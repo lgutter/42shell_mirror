@@ -26,8 +26,11 @@
 typedef struct		s_buff
 {
 	char			buff[INPUT_BUFF_SIZE];
+	char			*copy;
 	size_t			len;
 	size_t			index;
+	size_t			rv_start;
+	size_t			rv_end;
 }					t_buff;
 
 typedef struct		s_point
@@ -52,4 +55,7 @@ typedef struct		s_shell
 	struct winsize	winsize;
 	t_buff			*buffer;
 }					t_shell;
+
+void	ft_swap_rv(t_buff *buffer);
+size_t	ft_abs(size_t a);
 #endif

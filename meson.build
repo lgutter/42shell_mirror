@@ -29,9 +29,11 @@ src_files = files([
   'src/buffer.c',
   'src/controls.c',
   'src/escape_controls.c',
+  'src/cut_copy.c',
   'src/tokenizer.c',
   'src/free_token_list.c',
   'src/handle_error.c',
+  'src/utils.c',
 ])
 
 main_file = files('src/main.c')
@@ -50,7 +52,8 @@ if libcriterion_deb.found()
     'src/buffer.spec.c',
     'src/tokenizer.spec.c',
     'src/handle_error.spec.c',
-    'src/free_token_list.spec.c'
+    'src/free_token_list.spec.c',
+    'src/cut_copy.spec.c',
   ])
 
   tester = executable('test-cetushell',
