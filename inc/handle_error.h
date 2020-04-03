@@ -29,6 +29,8 @@ typedef enum		e_error
 {
 	no_error,
 	malloc_error,
+	invalid_token,
+	parsing_error,
 	error_count
 }					t_error;
 
