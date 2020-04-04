@@ -24,7 +24,7 @@ int		copy(t_buff *buffer)
 		buffer->rv_end--;
 		len++;
 	}
-	if (len > buffer->copy_size)
+	while (len > buffer->copy_size)
 	{
 		buffer->copy = buff_realloc(buffer->copy, buffer->copy_size, len);
 		if (buffer->copy == NULL)
