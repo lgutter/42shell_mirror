@@ -20,5 +20,6 @@
 static const char	*g_error_str[error_count] = {
 	[no_error] = "Error code indicates no error",
 	[malloc_error] = "Malloc failed to allocate memory",
+	[read_error] = "Error while read() call",
 };
 #endif

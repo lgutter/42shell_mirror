@@ -113,7 +113,7 @@ int			read_input(t_shell *shell);
  * 
  * arg: *shell: pointer to struct defined in cetushell.h.
  */
-void		init_buffs(t_shell *shell);
+void		init_buffs(t_buff *buffer, t_cursor *cursor);
 
 /**
  * insert_char requires a pointer to the struct t_buff defined in cetushell.h
@@ -123,7 +123,7 @@ void		init_buffs(t_shell *shell);
  * arg: *buffer: pointer to t_buff struct defined in cetushell.h
  * arg: char c: the character to be inserted within the buffer(buffer->buff)
  */
-void		insert_char(t_buff *buffer, char c);
+int			insert_char(t_buff *buffer, char c);
 
 /**
  * remove_char requires a pointer to the struct t_buff defined in cetushell.h. 
@@ -133,6 +133,8 @@ void		insert_char(t_buff *buffer, char c);
  * arg: *buffer: pointer to t_buff struct defined in cetushell.h
  */
 void		remove_char(t_buff *buffer);
+
+char		*buff_realloc(char *buffer, size_t buff_size, size_t len);
 
 /**
  * read_esc_seq requires as input a char, a pointer to the t_cursor and t_buff
@@ -144,7 +146,7 @@ void		remove_char(t_buff *buffer);
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  */
-void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer);
+int			read_esc_seq(char c, t_cursor *cursor, t_buff *buffer);
 
 /**
  * the tab_key requires as input a pointer to a t_buff and t_cursor struct and
@@ -192,7 +194,7 @@ void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 void        shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
-void		cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c);
+int			cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c);
 
 void		remove_word(t_buff *buffer, t_cursor *cursor);
 
