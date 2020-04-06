@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   buffer.spec.c                                      :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: Invalid date        by               #+#    #+#                 */
+/*   Updated: 2020/04/06 17:42:50 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,14 @@ Test(remove_char, middle) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 4;
 	remove_char(buffer);
 	cr_expect_str_eq(buffer->buff, "Helo world");
+	free(buffer->buff);
 	free(buffer);
 }
 
@@ -34,13 +35,14 @@ Test(remove_char, begin) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 0;
 	remove_char(buffer);
 	cr_expect_str_eq(buffer->buff, "Hello world");
+	free(buffer->buff);
 	free(buffer);
 }
 
@@ -49,13 +51,14 @@ Test(remove_char, end) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 11;
 	remove_char(buffer);
 	cr_expect_str_eq(buffer->buff, "Hello worl");
+	free(buffer->buff);
 	free(buffer);
 }
 
@@ -64,8 +67,8 @@ Test(remove_char, multiple) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 5;
@@ -75,6 +78,7 @@ Test(remove_char, multiple) {
 	remove_char(buffer);
 	remove_char(buffer);
 	cr_expect_str_eq(buffer->buff, " world");
+	free(buffer->buff);
 	free(buffer);
 }
 
@@ -83,13 +87,13 @@ Test(remove_char, empty_string) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
-	ft_bzero(buffer->buff, 30);
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	buffer->len = 11;
 	buffer->index = 0;
 	remove_char(buffer);
 	cr_expect_str_eq(buffer->buff, "");
+	free(buffer->buff);
 	free(buffer);
 }
 
@@ -98,13 +102,14 @@ Test(insert_char, begin) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 0;
 	insert_char(buffer, '!');
 	cr_expect_str_eq(buffer->buff, "!Hello world");
+	free(buffer->buff);
 	free(buffer);
 }
 
@@ -113,13 +118,14 @@ Test(insert_char, middle) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 5;
 	insert_char(buffer, '!');
 	cr_expect_str_eq(buffer->buff, "Hello! world");
+	free(buffer->buff);
 	free(buffer);
 }
 
@@ -128,13 +134,14 @@ Test(insert_char, end) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 11;
 	insert_char(buffer, '!');
 	cr_expect_str_eq(buffer->buff, "Hello world!");
+	free(buffer->buff);
 	free(buffer);
 }
 
@@ -144,17 +151,18 @@ Test(remove_word, start) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 5;
 	buffer->rv_end = 0;
 	buffer->rv_start = 5;
-		cursor.current.x = 20;
-		cursor.max.x = 100;
+	cursor.current.x = 20;
+	cursor.max.x = 100;
 	remove_word(buffer, &cursor);
 	cr_expect_str_eq(buffer->buff, " world");
+	free(buffer->buff);
 	free(buffer);
 }
 
@@ -164,17 +172,18 @@ Test(remove_word, middle) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 8;
 	buffer->rv_end = 3;
 	buffer->rv_start = 8;
-		cursor.current.x = 20;
-		cursor.max.x = 100;
+	cursor.current.x = 20;
+	cursor.max.x = 100;
 	remove_word(buffer, &cursor);
 	cr_expect_str_eq(buffer->buff, "Helrld");
+	free(buffer->buff);
 	free(buffer);
 }
 
@@ -184,8 +193,8 @@ Test(remove_word, end) {
 
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
-	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
+	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
 	buffer->len = 11;
 	buffer->index = 10;
@@ -195,5 +204,6 @@ Test(remove_word, end) {
 	cursor.max.x = 100;
 	remove_word(buffer, &cursor);
 	cr_expect_str_eq(buffer->buff, "Hello wo");
+	free(buffer->buff);
 	free(buffer);
 }

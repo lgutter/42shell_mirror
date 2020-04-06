@@ -25,7 +25,8 @@ int			cetushell(char **env)
 	configure_terminal(shell, 1);
 	while (1)
 	{
-		init_buffs(shell->buffer, &shell->cursor);
+		if (init_buffs(shell->buffer, &shell->cursor) == 1)
+			return (1);
 		if (prompt_shell(shell) == 1)
 		{
 			configure_terminal(shell, 0);

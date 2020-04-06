@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   buffer.c                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: Invalid date        by               #+#    #+#                 */
+/*   Updated: 2020/04/06 17:28:38 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cetushell.h"
 #include "input_control.h"
 
-void		init_buffs(t_buff *buffer, t_cursor *cursor)
+int		init_buffs(t_buff *buffer, t_cursor *cursor)
 {
 	buffer->len = 0;
 	buffer->index = 0;
@@ -21,13 +21,13 @@ void		init_buffs(t_buff *buffer, t_cursor *cursor)
 	buffer->rv_end = 0;
 	buffer->copy = ft_memalloc(sizeof(char) * INPUT_BUFF_SIZE + 1);
 	buffer->buff = ft_memalloc(sizeof(char) * INPUT_BUFF_SIZE + 1);
-	if (buffer->buff == 0 || buffer->copy == 0)
-		return;
+	ft_memset(cursor->cur_buff, '\0', CUR_BUFF_SIZE);
+	if (buffer->buff == NULL || buffer->copy == NULL)
+		return (1);
 	buffer->buff_size = INPUT_BUFF_SIZE;
 	buffer->copy_size = INPUT_BUFF_SIZE;
-	ft_memset(buffer->buff, '\0', INPUT_BUFF_SIZE + 1);
-	ft_memset(cursor->cur_buff, '\0', CUR_BUFF_SIZE + 1);
 	get_cursor_pos(cursor);
+	return (0);
 }
 
 int			insert_char(t_buff *buffer, char c)
@@ -109,15 +109,13 @@ void	remove_word(t_buff *buffer, t_cursor *cursor)
 char	*buff_realloc(char *buffer, size_t buff_size, size_t len)
 {
 	char	*temp;
-	size_t 	i;
+	size_t	i;
 
 	i = 0;
-
 	buff_size = buff_size + REALLOC_SIZE;
 	temp = ft_memalloc(sizeof(char) * buff_size + 1);
 	if (temp == NULL)
 		return (NULL);
-	ft_memset(temp, '\0', buff_size + 1);
 	while (i < len)
 	{
 		temp[i] = buffer[i];

@@ -59,6 +59,4 @@ typedef struct		s_shell
 	t_buff			*buffer;
 }					t_shell;
 
-void	ft_swap_rv(t_buff *buffer);
-size_t	ft_abs(size_t a);
 #endif
