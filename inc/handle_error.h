@@ -29,6 +29,7 @@ typedef enum		e_error
 {
 	no_error,
 	malloc_error,
+	read_error,
 	error_count
 }					t_error;
 

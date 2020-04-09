@@ -22,7 +22,8 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 			return (1);
 		if (c == '=')
 			ft_printf("\n");
-		insert_char(buffer, c);
+		if (insert_char(buffer, c) > 0)
+			return (1);
 		cursor->current.x++;
 	}
 	if (c == CNTRL_R)
@@ -31,7 +32,8 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 		cursor->start.y = 1;
 		send_terminal("cl");
 	}
-	cut_copy_paste(buffer, cursor, NULL, c);
+	if (cut_copy_paste(buffer, cursor, NULL, c) != 0)
+		return (1);
 	return_key(buffer, cursor, c);
 	tab_key(buffer, cursor, c);
 	backspace_key(buffer, cursor, c);
@@ -44,19 +46,22 @@ int			read_input(t_shell *shell)
 	int			ret;
 
 	c = '\0';
+	shell->buffer->len = ft_strlen(shell->buffer->buff);
 	ret = read(STDIN_FILENO, &c, 1);
 	if (ret == -1)
-		ft_dprintf(2, "ERROR");
+		return (2);
 	if (ret == 1)
 	{
-		read_esc_seq(c, &shell->cursor, shell->buffer);
-		if (handle_control_char(shell->buffer, &shell->cursor, c) == 1)
+		ret = read_esc_seq(c, &shell->cursor, shell->buffer);
+		if (ret != 0)
+			return(ret);
+		if (handle_control_char(shell->buffer, &shell->cursor, c) != 0)
 			return (1);
 	}
 	return (0);
 }
 
-void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
+int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 {
 	char	seq[ESC_SEQ_SIZE];
 	int		ret;
@@ -66,9 +71,10 @@ void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 	{
 		ret = read(STDIN_FILENO, seq, ESC_SEQ_SIZE);
 		if (ret == -1)
-			return ;
+			return (2);
 		//ft_printf("\n\nseq = %s \n", seq);
-		cut_copy_paste(buffer, cursor, seq, 0);
+		if (cut_copy_paste(buffer, cursor, seq, 0) != 0)
+			return (1);
 		shift_right_key(buffer, cursor, seq);
 		shift_left_key(buffer, cursor, seq);
 		left_arrow_key(buffer, cursor, seq);
@@ -76,4 +82,5 @@ void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 		home_key(buffer, cursor, seq);
 		end_key(buffer, cursor, seq);
 	}
+	return (0);
 }

@@ -5,7 +5,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
 /*       lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
+/*                                                  #+#   #+#                 */
 /*   License: GPLv3                                ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
@@ -104,6 +104,7 @@ void		configure_terminal(t_shell *shell, int activator);
  * an int specifying termination or succesion depending on which key is pressed.
  * 
  * arg: *shell: pointer to struct defined in cetushell.h.
+ * return: int: succes (0) or error_code
  */
 int			read_input(t_shell *shell);
 
@@ -113,7 +114,7 @@ int			read_input(t_shell *shell);
  * 
  * arg: *shell: pointer to struct defined in cetushell.h.
  */
-void		init_buffs(t_shell *shell);
+int			init_buffs(t_buff *buffer, t_cursor *cursor);
 
 /**
  * insert_char requires a pointer to the struct t_buff defined in cetushell.h
@@ -123,7 +124,7 @@ void		init_buffs(t_shell *shell);
  * arg: *buffer: pointer to t_buff struct defined in cetushell.h
  * arg: char c: the character to be inserted within the buffer(buffer->buff)
  */
-void		insert_char(t_buff *buffer, char c);
+int			insert_char(t_buff *buffer, char c);
 
 /**
  * remove_char requires a pointer to the struct t_buff defined in cetushell.h. 
@@ -131,8 +132,22 @@ void		insert_char(t_buff *buffer, char c);
  * of a string or at the end depending on the index.
  * 
  * arg: *buffer: pointer to t_buff struct defined in cetushell.h
+ * return: int: succes (0) or error_code
  */
 void		remove_char(t_buff *buffer);
+
+/**
+ * Buff relloc requires a string, the current allocated size and the 
+ * current string length. This function will take a string and will allocate 
+ * a new string with an increased allocated size by the define REALLOC_SIZE. 
+ * it will copy the content from buffer to the new string and returns the new
+ * string.
+ * 
+ * arg: *buffer: An allocated string which requires an increase in size.
+ * arg: buff_size: The size of the current allocation of buffer.
+ * arg: len: The actual length (characters) of the buffer
+ */
+char		*buff_realloc(char *buffer, size_t buff_size, size_t len);
 
 /**
  * read_esc_seq requires as input a char, a pointer to the t_cursor and t_buff
@@ -144,7 +159,7 @@ void		remove_char(t_buff *buffer);
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  */
-void		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer);
+int			read_esc_seq(char c, t_cursor *cursor, t_buff *buffer);
 
 /**
  * the tab_key requires as input a pointer to a t_buff and t_cursor struct and
@@ -162,8 +177,8 @@ void		tab_key(t_buff *buffer, t_cursor *cursor, char c);
  * and a character c. This function will remove a character and will invoke the
  * function remove_char().
  * 
- * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
+ * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: c: character input from user which must be BACKSPACE (\177)
  */
 void		backspace_key(t_buff *buffer, t_cursor *cursor, char c);
@@ -173,26 +188,102 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c);
  * and a character c. this function will enter the buffer as input for the rest
  * of the terminal process. The function itself will return an int.
  * 
- * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
+ * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: c: character input from user which must be RETURN (\012)
  * return: int: this int must signal the terminal to process the buffer.
  */
 int			return_key(t_buff *buffer, t_cursor *cursor, char c);
 
+/**
+ * the return_key requires as input a pointer to a t_buff and t_cursor struct
+ * and a string seq. will move the cursor and buffer index to the start of the 
+ * buffer.
+ * 
+ * arg: *buffer: pointer to struct t_buff defined in cetushell.h
+ * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
+ * arg: *seq: The character sequence that is assigned to this control.
+ */
 void		home_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
+/**
+ * the return_key requires as input a pointer to a t_buff and t_cursor struct
+ * and a string seq. will move the cursor and buffer index to the start of the 
+ * buffer.
+ * 
+ * arg: *buffer: pointer to struct t_buff defined in cetushell.h
+ * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
+ * arg: *seq: The character sequence that is assigned to this control.
+ */
 void		end_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
+/**
+ * the left_arrow_key requires as input a pointer to a t_buff and t_cursor
+ * struct and a string seq.This function will move the cursor one step left.
+ * 
+ * arg: *buffer: pointer to struct t_buff defined in cetushell.h
+ * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
+ * arg: *seq: The character sequence that is assigned to this control.
+ */
 void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
+/**
+ * the right_arrow_key requires as input a pointer to a t_buff and t_cursor 
+ * struct and a string seq.This function will move the cursor one step right.
+ * 
+ * arg: *buffer: pointer to struct t_buff defined in cetushell.h
+ * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
+ * arg: *seq: The character sequence that is assigned to this control.
+ */
 void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
+/**
+ * the shift_left_arrow_key requires as input a pointer to a t_buff and t_cursor 
+ * struct and a string seq.This function will move the cursor one step left and 
+ * will keep the previous character highlighted.
+ * 
+ * arg: *buffer: pointer to struct t_buff defined in cetushell.h
+ * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
+ * arg: *seq: The character sequence that is assigned to this control.
+ */
 void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
+/**
+ * the shift_left_arrow_key requires as input a pointer to a t_buff and t_cursor 
+ * struct and a string seq.This function will move the cursor one step right and 
+ * will keep the previous character highlighted.
+ * 
+ * arg: *buffer: pointer to struct t_buff defined in cetushell.h
+ * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
+ * arg: *seq: The character sequence that is assigned to this control.
+ */
 void        shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
-void		cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c);
+/**
+ * ft_swap_rv requires as input a pointer to a t_buff struct and a string seq.
+ * This function will swap the highlighted text start and end position to always
+ * match rv_end < rv_start. The function will take the cursor into account which
+ * makes it different then normal ft_swap.
+ * 
+ * arg: *buffer: pointer to struct t_buff defined in cetushell.h
+ */
+void		ft_swap_rv(t_buff *buffer);
+
+/**
+ * cut_copy_paste requires as input a pointer to a t_buff struct and t_cursor
+ * struct. It also requires either a string seq or character c which will define
+ * what control character is pressed on the keyboard. This function will copy
+ * text from buffer, cut text from the buffer and copies it or paste the copied
+ * text into the buffer depending on the pressed key combination.
+ * 
+ * arg: *buffer: pointer to struct t_buff defined in cetushell.h
+ * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
+ * arg: *seq: The character sequence that is assigned to this control.
+ * arg: c: a character which defines what control is used.
+ * return: 
+ */
+int			cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c);
+
 
 void		remove_word(t_buff *buffer, t_cursor *cursor);
 
