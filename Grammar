@@ -20,54 +20,28 @@
    ------------------------------------------------------- */
 %start program
 %%
-program			: program complete_command
-				|         complete_command
+program			: complete_command...
 				;
-complete_command: pipe_sequence separator_op
-				| pipe_sequence
+complete_command: pipe_sequence... [separator_op]
 				;
-pipe_sequence	:                    simple_command
-				| pipe_sequence PIPE simple_command
+pipe_sequence	: simple_command [PIPE]
 				;
-simple_command	: cmd_prefix cmd_word cmd_suffix
-				| cmd_prefix cmd_word
-				| cmd_prefix
-				| cmd_word cmd_suffix
-				| cmd_word
+simple_command	: WORD... [io_redirect...]
 				;
-cmd_word		: WORD
+io_redirect		: [IO_NUMBER] (io_file | io_here)
 				;
-cmd_prefix		:            io_redirect
-				| cmd_prefix io_redirect
-				;
-cmd_suffix		:            io_redirect
-				| cmd_suffix io_redirect
-				|            WORD
-				| cmd_suffix WORD
-				;
-io_redirect		:           io_file
-				| IO_NUMBER io_file
-				|           io_here
-				| IO_NUMBER io_here
-				;
-io_file			: LESS      filename
-				| LESSAMP   filename
-				| GREAT     filename
-				| GREATAMP  filename
-				| DGREAT    filename
+io_file			: (LESS | LESSAMP | GREAT | GREATAMP | DGREAT) filename
 				;
 filename		: WORD
 				;
-io_here			: DLESS     here_end
+io_here			: DLESS here_end
 				;
 here_end		: WORD
 				;
-# newline_list	:              NEWLINE
-# 				| newline_list NEWLINE
-# 				;
-# linebreak		: newline_list
-# 				| /* empty */
-# 				;
-separator_op	: AMP
-				| SEMI
+separator_op	: (AMP | SEMI)
 				;
+
+/* newline_list	: NEWLINE...
+*				;
+* linebreak		: [newline_list]
+*/				;
