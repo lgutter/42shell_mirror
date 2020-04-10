@@ -5,7 +5,7 @@
 /*                                                     +:+                    */
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: Invalid date        by               #+#    #+#                 */
+/*   Created: Invalid date        by                #+#   #+#                 */
 /*   Updated: 2020/04/06 17:28:38 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
@@ -36,13 +36,8 @@ int			insert_char(t_buff *buffer, char c)
 
 	temp = buffer->len - 1;
 	if (buffer->len == buffer->buff_size)
-	{
-	 	buffer->buff = buff_realloc(buffer->buff, buffer->buff_size, \
-		 buffer->len);
-		 if (buffer->buff == NULL)
-		 	return (1);
-		buffer->buff_size = buffer->buff_size + REALLOC_SIZE;
-	}
+		if (buff_realloc(buffer, 0, buffer->buff_size) == 1)
+			return (1);
 	if (ft_isprint(buffer->buff[buffer->index]))
 	{
 		while (temp != buffer->index)
@@ -106,21 +101,30 @@ void	remove_word(t_buff *buffer, t_cursor *cursor)
 	}
 }
 
-char	*buff_realloc(char *buffer, size_t buff_size, size_t len)
+int		buff_realloc(t_buff *buffer, size_t len, size_t size)
 {
 	char	*temp;
-	size_t	i;
 
-	i = 0;
-	buff_size = buff_size + REALLOC_SIZE;
-	temp = ft_memalloc(sizeof(char) * buff_size + 1);
-	if (temp == NULL)
-		return (NULL);
-	while (i < len)
+	if (len != 0)
+		buffer->copy_size = buffer->copy_size + REALLOC_SIZE;
+	else
+		buffer->buff_size = buffer->buff_size + REALLOC_SIZE;
+	if (len != 0)
 	{
-		temp[i] = buffer[i];
-		i++;
+		temp = ft_strdup(buffer->copy);
+		free(buffer->copy);
+		buffer->copy = ft_memalloc(size + REALLOC_SIZE + 1);
+		ft_strncpy(buffer->copy, temp, len);
 	}
-	free(buffer);
-	return (temp);
+	else
+	{
+		temp = ft_strdup(buffer->buff);
+		free(buffer->buff);
+		buffer->buff = ft_memalloc(size + REALLOC_SIZE + 1);
+		ft_strncpy(buffer->buff, temp, buffer->len);
+	}
+	free(temp);
+	if (buffer->buff == NULL || buffer->copy == NULL)
+		return (1);
+	return (0);
 }
