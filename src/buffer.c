@@ -35,7 +35,7 @@ int			insert_char(t_buff *buffer, char c)
 	size_t			temp;
 
 	temp = buffer->len - 1;
-	if (buffer->len >= buffer->buff_size)
+	if (buffer->len == buffer->buff_size)
 		if (buff_realloc(buffer, 0, buffer->buff_size) == 1)
 			return (1);
 	if (ft_isprint(buffer->buff[buffer->index]))
