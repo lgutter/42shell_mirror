@@ -20,9 +20,9 @@
 # include "ft_printf.h"
 # include "libft.h"
 
-# define INPUT_BUFF_SIZE 20
+# define INPUT_BUFF_SIZE 32
 # define CUR_BUFF_SIZE 32
-# define REALLOC_SIZE 8
+# define REALLOC_SIZE 32
 
 typedef struct		s_buff
 {

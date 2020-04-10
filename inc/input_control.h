@@ -137,17 +137,16 @@ int			insert_char(t_buff *buffer, char c);
 void		remove_char(t_buff *buffer);
 
 /**
- * Buff relloc requires a string, the current allocated size and the 
- * current string length. This function will take a string and will allocate 
- * a new string with an increased allocated size by the define REALLOC_SIZE. 
+ * Buff relloc requires a string, the current allocated size and the
+ * current string length. This function will take a string and will allocate
+ * a new string with an increased allocated size by the define REALLOC_SIZE.
  * it will copy the content from buffer to the new string and returns the new
  * string.
- * 
  * arg: *buffer: An allocated string which requires an increase in size.
  * arg: buff_size: The size of the current allocation of buffer.
  * arg: len: The actual length (characters) of the buffer
- */
-char		*buff_realloc(char *buffer, size_t buff_size, size_t len);
+ **/
+int			buff_realloc(t_buff *buffer, size_t len, size_t size);
 
 /**
  * read_esc_seq requires as input a char, a pointer to the t_cursor and t_buff

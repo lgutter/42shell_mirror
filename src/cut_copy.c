@@ -25,12 +25,8 @@ int		copy(t_buff *buffer)
 		len++;
 	}
 	while (len > buffer->copy_size)
-	{
-		buffer->copy = buff_realloc(buffer->copy, buffer->copy_size, len);
-		if (buffer->copy == NULL)
+		if (buff_realloc(buffer, len, buffer->copy_size) == 1)
 			return (1);
-		buffer->copy_size = buffer->copy_size + REALLOC_SIZE;
-	}
 	ft_memset(buffer->copy, '\0', buffer->copy_size);
 	ft_strncpy(buffer->copy, &buffer->buff[buffer->rv_end], len);
 	return (0);
