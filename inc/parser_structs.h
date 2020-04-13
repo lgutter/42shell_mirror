@@ -52,7 +52,7 @@ typedef struct					s_complete_command
 typedef struct					s_pipe_sequence
 {
 	struct s_simple_command		*simple_command;
-	t_type						pipe;
+	t_pipe_op					pipe;
 	struct s_pipe_sequence		*next;
 }								t_pipe_sequence;
 

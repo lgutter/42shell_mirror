@@ -56,7 +56,7 @@ t_argument			*parse_arguments(t_token **token)
 	}
 	arguments = init_arguments(token);
 	if (arguments == NULL)
-		return (handle_error_p(malloc_error, NULL));
+		return (NULL);
 	*token = (*token)->next;
 	if (*token != NULL && (*token)->type == WORD)
 	{

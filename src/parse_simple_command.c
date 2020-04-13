@@ -90,7 +90,5 @@ t_simple_cmd	*parse_simple_command(t_token **token)
 		else if (init_redirects(simple_command, token) == -1)
 			return (free_simple_command(simple_command));
 	}
-	if (*token != NULL)
-		*token = (*token)->next;
 	return (simple_command);
 }
