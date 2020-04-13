@@ -29,6 +29,26 @@ int	is_redirect_op(t_token *token)
 	return (0);
 }
 
+int	is_start_of_cmd(t_token *token)
+{
+	if (token == NULL)
+	{
+		return (0);
+	}
+	if (token->type == LESS ||
+		token->type == DLESS ||
+		token->type == GREAT ||
+		token->type == DGREAT ||
+		token->type == LESSAMP ||
+		token->type == GREATAMP ||
+		token->type == IO_NUMBER ||
+		token->type == WORD)
+	{
+		return (1);
+	}
+	return (0);
+}
+
 int	is_seperator_op(t_token *token)
 {
 	if (token == NULL)

@@ -26,6 +26,8 @@
 **	struct in parser_structs.h
 */
 
+t_simple_cmd	*parse_simple_command(t_token **token);
+t_argument		*parse_arguments(t_token **token);
 t_io_redirect	*parse_io_redirect(t_token **token);
 t_io_here		*parse_io_here(t_token **token);
 t_io_file		*parse_io_file(t_token **token);
@@ -37,6 +39,8 @@ t_io_file		*parse_io_file(t_token **token);
 **	after which it frees the struct itself, and returns NULL.
 */
 
+t_simple_cmd	*free_simple_command(t_simple_cmd *simple_command);
+t_argument		*free_arguments(t_argument *arguments);
 t_io_redirect	*free_io_redirect(t_io_redirect *io_redirect);
 t_io_here		*free_io_here(t_io_here *io_here);
 t_io_file		*free_io_file(t_io_file *io_file);

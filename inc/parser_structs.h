@@ -58,9 +58,9 @@ typedef struct					s_pipe_sequence
 
 typedef struct					s_simple_command
 {
-	char						*cmd_word;
+	struct s_io_redirect		*redirects;
 	struct s_argument			*arguments;
-}								t_simple_command;
+}								t_simple_cmd;
 
 typedef struct					s_argument
 {

@@ -35,6 +35,8 @@ src_files = files([
   'src/tokenizer.c',
   'src/token_list_util.c',
   'src/handle_error.c',
+  'src/parse_arguments.c',
+  'src/parse_simple_command.c',
   'src/parse_io_redirect.c',
   'src/parse_io_file.c',
   'src/parse_io_here.c',
@@ -57,10 +59,12 @@ if libcriterion_deb.found()
     'src/tokenizer.spec.c',
     'src/handle_error.spec.c',
     'src/token_list_util.spec.c',
+    'src/parse_arguments.spec.c',
+    'src/parse_simple_command.spec.c',
     'src/parse_io_redirect.spec.c',
     'src/parse_io_here.spec.c',
     'src/parse_io_file.spec.c',
-    'src/parser_utils.spec.c'
+    'src/parser_utils.spec.c',
   ])
 
   tester = executable('test-cetushell',
