@@ -75,7 +75,5 @@ t_io_redirect	*parse_io_redirect(t_token **token)
 		if (io_redirect->next == NULL)
 			return (free_io_redirect(io_redirect));
 	}
-	if (*token != NULL && (*token)->next != NULL)
-		*token = (*token)->next;
 	return (io_redirect);
 }
