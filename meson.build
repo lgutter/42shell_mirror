@@ -59,7 +59,8 @@ if libcriterion_deb.found()
     'src/token_list_util.spec.c',
     'src/parse_io_redirect.spec.c',
     'src/parse_io_here.spec.c',
-    'src/parse_io_file.spec.c'
+    'src/parse_io_file.spec.c',
+    'src/parser_utils.spec.c'
   ])
 
   tester = executable('test-cetushell',
