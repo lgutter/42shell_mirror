@@ -25,7 +25,7 @@
 **	a specific element of the syntax tree, each of which is defined as a
 **	struct in parser_structs.h
 */
-
+t_complete_cmd	*parse_complete_command(t_token **token);
 t_pipe_sequence	*parse_pipe_sequence(t_token **token);
 t_simple_cmd	*parse_simple_command(t_token **token);
 t_argument		*parse_arguments(t_token **token);
@@ -40,6 +40,7 @@ t_io_file		*parse_io_file(t_token **token);
 **	after which it frees the struct itself, and returns NULL.
 */
 
+t_complete_cmd	*free_complete_command(t_complete_cmd *complete_cmd);
 t_pipe_sequence	*free_pipe_sequence(t_pipe_sequence *pipe_sequence);
 t_simple_cmd	*free_simple_command(t_simple_cmd *simple_command);
 t_argument		*free_arguments(t_argument *arguments);

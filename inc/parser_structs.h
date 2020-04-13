@@ -39,15 +39,15 @@ typedef enum					e_redirect_op
 
 typedef struct					s_program
 {
-	struct s_complete_command	*complete_commands;
+	struct s_complete_cmd		*complete_commands;
 }								t_program;
 
-typedef struct					s_complete_command
+typedef struct					s_complete_cmd
 {
 	struct s_pipe_sequence		*pipe_sequence;
 	t_seperator_op				seperator_op;
-	struct s_complete_command	*next;
-}								t_complete_command;
+	struct s_complete_cmd		*next;
+}								t_complete_cmd;
 
 typedef struct					s_pipe_sequence
 {
