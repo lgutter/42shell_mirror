@@ -28,6 +28,21 @@ t_io_redirect	*free_io_redirect(t_io_redirect *io_redirect)
 	return (NULL);
 }
 
+static int		init_io_number(t_io_redirect *io_redirect, t_token **token)
+{
+	if ((*token)->type == IO_NUMBER)
+	{
+		io_redirect->io_number = ft_strdup((*token)->value);
+		if (io_redirect->io_number == NULL)
+		{
+			handle_error(malloc_error);
+			return (-1);
+		}
+		*token = (*token)->next;
+	}
+	return (0);
+}
+
 static int		init_io_redirect(t_io_redirect *io_redirect, t_token **token)
 {
 	if (token == NULL || *token == NULL)
@@ -65,14 +80,8 @@ t_io_redirect	*parse_io_redirect(t_token **token)
 	io_redirect = (t_io_redirect *)ft_memalloc(sizeof(t_io_redirect) * 1);
 	if (io_redirect == NULL)
 		return (handle_error_p(malloc_error, NULL));
-	if ((*token)->type == IO_NUMBER)
-	{
-		io_redirect->io_number = ft_strdup((*token)->value);
-		if (io_redirect->io_number == NULL)
-			return (handle_error_p(malloc_error, NULL));
-		if ((*token)->next != NULL)
-			*token = (*token)->next;
-	}
+	if (init_io_number(io_redirect, token) == -1)
+		return (free_io_redirect(io_redirect));
 	if (init_io_redirect(io_redirect, token) == -1)
 		return (free_io_redirect(io_redirect));
 	if (*token != NULL && is_start_of_redirect(*token) == 1)
