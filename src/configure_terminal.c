@@ -13,37 +13,41 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-int			cetushell(char **env)
+static int	ft_putchar(int c)
 {
-	t_shell		*shell;
-
-	shell = ft_memalloc(sizeof(t_shell));
-	shell->buffer = ft_memalloc(sizeof(t_buff));
-	if (shell->buffer == NULL || shell == NULL)
-		return (1);
-	shell->envi = env;
-	configure_terminal(shell, 1);
-	while (1)
-	{
-		init_buffs(shell);
-		if (prompt_shell(shell) == 1)
-		{
-			configure_terminal(shell, 0);
-			return (1);
-		}
-	}
-	return (0);
+	return (write(STDERR_FILENO, &c, 1));
 }
 
-int		main(int ac, char **av, char **env)
+void		send_terminal(char *command)
 {
-	if (ac != 1)
-		ft_dprintf(2, "Huh? why %s? No arguments needed!\n", av[1]);
-	else
+	tputs(tgetstr(command, NULL), 1, ft_putchar);
+}
+
+void		configure_terminal(t_shell *shell, int activator)
+{
+	static struct termios orig;
+
+	if (activator == 1)
 	{
-		while (21)
-			if (cetushell(env) == 1)
-				return (0);
+		tgetent(NULL, getenv("TERM"));
+		tcgetattr(STDIN_FILENO, &orig);
+		shell->term = orig;
+		shell->term.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);
+		shell->term.c_iflag &= ~(IXON);
+		shell->term.c_cc[VMIN] = 0;
+		shell->term.c_cc[VTIME] = 1;
+		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term);
 	}
-	return (1);
+	if (activator == 0)
+		tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig);
+}
+
+void		get_winsize(t_shell *shell)
+{
+	t_cursor *curs;
+
+	curs = &shell->cursor;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &shell->winsize);
+	curs->max.x = (size_t)shell->winsize.ws_col;
+	curs->max.y = (size_t)shell->winsize.ws_row;
 }

@@ -31,7 +31,14 @@ endif
 
 inc_dir = include_directories('inc')
 src_files = files([
-  'src/set_terminal.c',
+  'src/prompt.c',
+  'src/read_input.c',
+  'src/configure_terminal.c',
+  'src/cursor.c',
+  'src/buffer.c',
+  'src/controls.c',
+  'src/escape_controls.c',
+  'src/cut_copy.c',
   'src/tokenizer.c',
   'src/token_list_util.c',
   'src/handle_error.c',
@@ -43,6 +50,8 @@ src_files = files([
   'src/parse_io_file.c',
   'src/parse_io_here.c',
   'src/parser_utils.c',
+  'src/handle_error.c',
+  'src/utils.c',
 ])
 
 main_file = files('src/main.c')
@@ -58,6 +67,7 @@ libcriterion_deb = dependency('criterion', required: false)
 
 if libcriterion_deb.found()
   test_files = src_files + files([
+    'src/buffer.spec.c',
     'src/tokenizer.spec.c',
     'src/handle_error.spec.c',
     'src/token_list_util.spec.c',
@@ -69,6 +79,7 @@ if libcriterion_deb.found()
     'src/parse_io_here.spec.c',
     'src/parse_io_file.spec.c',
     'src/parser_utils.spec.c',
+    'src/cut_copy.spec.c',
   ])
 
   tester = executable('test-cetushell',

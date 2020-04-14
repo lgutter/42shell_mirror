@@ -13,37 +13,50 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-int			cetushell(char **env)
+int			return_key(t_buff *buffer, t_cursor *cursor, char c)
 {
-	t_shell		*shell;
-
-	shell = ft_memalloc(sizeof(t_shell));
-	shell->buffer = ft_memalloc(sizeof(t_buff));
-	if (shell->buffer == NULL || shell == NULL)
-		return (1);
-	shell->envi = env;
-	configure_terminal(shell, 1);
-	while (1)
+	if (c == RETURN)
 	{
-		init_buffs(shell);
-		if (prompt_shell(shell) == 1)
-		{
-			configure_terminal(shell, 0);
-			return (1);
-		}
+		send_terminal(CURSOR_DOWN);
+		ft_printf("output : %s\n", buffer->buff);
+		get_cursor_pos(cursor);
+		ft_memset(&buffer->buff, '\0', buffer->len);
+		buffer->len = 0;
+		buffer->index = 0;
 	}
 	return (0);
 }
 
-int		main(int ac, char **av, char **env)
+void		tab_key(t_buff *buffer, t_cursor *cursor, char c)
 {
-	if (ac != 1)
-		ft_dprintf(2, "Huh? why %s? No arguments needed!\n", av[1]);
-	else
+	int		i;
+
+	i = 0;
+	if (c == TAB)
 	{
-		while (21)
-			if (cetushell(env) == 1)
-				return (0);
+		while (i != 4)
+		{
+			insert_char(buffer, ' ');
+			cursor->current.x++;
+			i++;
+		}
 	}
-	return (1);
+}
+
+void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
+{
+	if (c == BACKSPACE)
+	{
+		if (buffer->rv_end != buffer->rv_start)
+		{
+			ft_swap_rv(buffer);
+			remove_word(buffer, cursor);
+		}
+		else if ((cursor->current.y == cursor->start.y && \
+			cursor->current.x > PROMPT_LEN) || cursor->current.y != cursor->start.y)
+		{
+			cursor->current.x--;
+			remove_char(buffer);
+		}
+	}
 }
