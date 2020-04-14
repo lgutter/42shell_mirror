@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   buffer.spec.c                                      :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
+/*   Updated: 2020/04/06 17:03:13 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
