@@ -48,6 +48,7 @@ ParameterizedTestParameters(handle_error_tests, param_test_all_error_codes)
 		1,
 		2,
 		3,
+		4,
     };
 
     size_t nb_params = sizeof (err_params) / sizeof (int);
@@ -60,7 +61,8 @@ ParameterizedTestParameters(handle_error_str_tests, param_test_all_error_codes_w
 		{0, "foo"},
 		{1, "foo bar"},
 		{2, "foo"},
-		{3, "bar"}
+		{3, "bar"},
+		{4, "baz"}
     };
 
     size_t nb_params = sizeof (err_str_params) / sizeof (struct s_err_str_params);
@@ -74,6 +76,7 @@ ParameterizedTestParameters(handle_error_p_tests, param_test_all_error_codes_wit
 		{1, (void *)42},
 		{2, (void *)12},
 		{3, (void *)26},
+		{4, (void *)420},
     };
 
     size_t nb_params = sizeof (err_p_params) / sizeof (struct s_err_p_params);
@@ -87,6 +90,7 @@ ParameterizedTestParameters(handle_error_str_p_tests, param_test_all_error_codes
 		{1, "foo bar", (void *)42},
 		{2, "foo bar", (void *)26},
 		{3, "foo bar", (void *)13},
+		{4, "foo foo", (void *)457},
     };
 
     size_t nb_params = sizeof (err_str_params) / sizeof (struct s_err_str_p_params);
