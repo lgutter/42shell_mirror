@@ -21,7 +21,7 @@ int			return_key(t_buff *buffer, t_cursor *cursor, char c)
 		send_terminal(CURSOR_DOWN);
 		handle_input(buffer->buff);
 		get_cursor_pos(cursor);
-		ft_memset(&buffer->buff, '\0', buffer->len);
+		ft_memset(buffer->buff, '\0', buffer->buff_size);
 		buffer->len = 0;
 		buffer->index = 0;
 	}

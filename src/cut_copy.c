@@ -13,7 +13,7 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-void	copy(t_buff *buffer)
+int		copy(t_buff *buffer)
 {
 	size_t len;
 
@@ -24,54 +24,59 @@ void	copy(t_buff *buffer)
 		buffer->rv_end--;
 		len++;
 	}
-	if (len == 0)
-		buffer->copy = NULL;
-	buffer->copy = ft_memalloc(sizeof(char) * len + 1);
-	if (buffer->copy == NULL)
-		return ;
-	buffer->copy[len + 1] = '\0';
+	while (len > buffer->copy_size)
+		if (buff_realloc(buffer, len, buffer->copy_size) == 1)
+			return (1);
+	ft_memset(buffer->copy, '\0', buffer->copy_size);
 	ft_strncpy(buffer->copy, &buffer->buff[buffer->rv_end], len);
+	return (0);
 }
 
-void	cut(t_buff *buffer, t_cursor *cursor)
+int		cut(t_buff *buffer, t_cursor *cursor)
 {
 	if (buffer->rv_end != buffer->rv_start)
 	{
-		if (buffer->copy != NULL && ft_strlen(buffer->copy) > 0)
-			ft_memset(buffer->copy, '\0', ft_strlen(buffer->copy));
-		copy(buffer);
+		if (copy(buffer) != 0)
+			return (1);
 		remove_word(buffer, cursor);
 	}
+	return (0);
 }
 
-void	paste(t_buff *buffer, t_cursor *cursor)
+int		paste(t_buff *buffer, t_cursor *cursor)
 {
 	size_t len;
 	size_t i;
 
 	i = 0;
-	if (!buffer->copy)
-		return ;
 	len = ft_strlen(buffer->copy);
+	if (len == 0)
+		return (0);
 	ft_swap_rv(buffer);
 	if (buffer->rv_start != buffer->rv_end)
 		remove_word(buffer, cursor);
 	while (len > i)
 	{
-		insert_char(buffer, buffer->copy[i]);
+		if (insert_char(buffer, buffer->copy[i]) != 0)
+			return (1);
 		cursor->current.x++;
 		set_cursor_pos(cursor, buffer->len);
 		i++;
 	}
+	return (0);
 }
 
-void	cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c)
+int		cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c)
 {
 	if (c == CNTRL_X)
-		copy(buffer);
+		if (copy(buffer) != 0)
+			return (1);
 	if (c == CNTRL_V || (seq != NULL
 	&& ft_strncmp(seq, CNTRL_RIGHT, sizeof(CNTRL_RIGHT)) == 0))
-		paste(buffer, cursor);
+		if (paste(buffer, cursor) != 0)
+			return (1);
 	if (seq != NULL && ft_strncmp(seq, CNTRL_LEFT, sizeof(CNTRL_LEFT)) == 0)
-		cut(buffer, cursor);
+		if (cut(buffer, cursor) != 0)
+			return (1);
+	return (0);
 }
