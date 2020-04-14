@@ -53,6 +53,13 @@ src_files = files([
   'src/handle_error.c',
   'src/utils.c',
   'src/handle_input.c',
+  'src/convert_env_to_envp.c',
+  'src/dup_sys_env.c',
+  'src/expand_variable.c',
+  'src/ft_getenv.c',
+  'src/ft_setenv.c',
+  'src/ft_unsetenv.c',
+  'src/free_env_list.c',
   'src/TEMP_print_token_parse.c',
 ])
 
@@ -82,6 +89,12 @@ if libcriterion_deb.found()
     'src/parse_io_file.spec.c',
     'src/parser_utils.spec.c',
     'src/cut_copy.spec.c',
+    'src/convert_env_to_envp.spec.c',
+    'src/dup_sys_env.spec.c',
+    'src/expand_variable.spec.c',
+    'src/ft_getenv.spec.c',
+    'src/ft_setenv.spec.c',
+    'src/ft_unsetenv.spec.c',
   ])
 
   tester = executable('test-cetushell',

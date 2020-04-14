@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   input_control.h                                    :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                  #+#   #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: Invalid date        by               #+#    #+#                 */
+/*   Updated: 0003/01/01 00:00:00 by               ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef INPUT_CONTROL_H
 # define INPUT_CONTROL_H
 
-/*--------------------------Includes------------------------------------------*/
+/*
+**--------------------------Includes------------------------------------------
+*/
 # include <unistd.h>
 # include <stdlib.h>
 # include "cetushell.h"
-/*--------------------------Defines-------------------------------------------*/
+# include "utils.h"
+
+/*
+**--------------------------Defines-------------------------------------------
+*/
 
 # define PROMPT_LEN 10
 # define PROMPT_STR "Cetush >>"
@@ -66,11 +72,11 @@
 /*----------------------------Prototypes--------------------------------------*/
 
 /**
- * send_terminal will require a command specified by (5) terminfo under 
- * termcap codes. This will send a instruction to the terminal by looking at 
- * which terminal is running. This can make it usefull to make sure that this 
+ * send_terminal will require a command specified by (5) terminfo under
+ * termcap codes. This will send a instruction to the terminal by looking at
+ * which terminal is running. This can make it usefull to make sure that this
  * program works on every terminal.
- * 
+ *
  * arg: command: string command specified in man (5) terminfo.
  */
 void		send_terminal(char *command);
@@ -79,21 +85,21 @@ void		send_terminal(char *command);
  * get_winsize will require a pointer struct t_shell specified in "cetushell.h".
  * It will get the current window size and sets this into a winsize struct. This
  * is needed to print the prompt,input and output correctly.
- * 
+ *
  * arg: *shell: poiter to struct t_shell defined in cethushell.h
  */
 void		get_winsize(t_shell *shell);
 
 /**
  * Configure_terminal will take in a pointer to a t_shell struct defined in
- * "cetushell.h" and a activator. It wil then put the terminal in 
- * RAW mode (activator = 1), or put the original terminal settings back 
- * (avtivator = 0). The original terminal will be saved in a static within the 
+ * "cetushell.h" and a activator. It wil then put the terminal in
+ * RAW mode (activator = 1), or put the original terminal settings back
+ * (avtivator = 0). The original terminal will be saved in a static within the
  * function. This function is needed to be able to control the process input
  * handling of the terminal.
- * 
+ *
  * arg:    *shell: pointer to struct defined in cetushell.h.
- * arg: activator; 1 for activation of RAW mode, 0 for returning original 
+ * arg: activator; 1 for activation of RAW mode, 0 for returning original
  *                 settings.
  */
 void		configure_terminal(t_shell *shell, int activator);
@@ -102,7 +108,7 @@ void		configure_terminal(t_shell *shell, int activator);
  * read_input will take in a pointer to struct t_shell defined in "cetushell".
  * it will read the input of the user and process it. The function will return
  * an int specifying termination or succesion depending on which key is pressed.
- * 
+ *
  * arg: *shell: pointer to struct defined in cetushell.h.
  * return: int: succes (0) or error_code
  */
@@ -111,7 +117,7 @@ int			read_input(t_shell *shell);
 /**
  * init_buffs will initialize all the buffers needed for input of the shell. It
  * requires s pointer to the struct t_shell defined in cethushell.h.
- * 
+ *
  * arg: *shell: pointer to struct defined in cetushell.h.
  */
 int			init_buffs(t_buff *buffer, t_cursor *cursor);
@@ -120,17 +126,17 @@ int			init_buffs(t_buff *buffer, t_cursor *cursor);
  * insert_char requires a pointer to the struct t_buff defined in cetushell.h
  * and a character which needs to be inserted. The struct has the current index
  * and will insert the character in the middle of a string or at the end.
- * 
+ *
  * arg: *buffer: pointer to t_buff struct defined in cetushell.h
  * arg: char c: the character to be inserted within the buffer(buffer->buff)
  */
 int			insert_char(t_buff *buffer, char c);
 
 /**
- * remove_char requires a pointer to the struct t_buff defined in cetushell.h. 
+ * remove_char requires a pointer to the struct t_buff defined in cetushell.h.
  * The struct has the current index and will remove the character in the middle
  * of a string or at the end depending on the index.
- * 
+ *
  * arg: *buffer: pointer to t_buff struct defined in cetushell.h
  * return: int: succes (0) or error_code
  */
@@ -153,7 +159,7 @@ int			buff_realloc(t_buff *buffer, size_t len, size_t size);
  * struct. When the first character is an escape character, this function will
  * read out the additional sequence characters. this is required for some keys
  * to work in RAW mode of the terminal.
- * 
+ *
  * arg: c: character input from user which must be ESCAPE (\033)
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
@@ -162,9 +168,9 @@ int			read_esc_seq(char c, t_cursor *cursor, t_buff *buffer);
 
 /**
  * the tab_key requires as input a pointer to a t_buff and t_cursor struct and
- * a character c. This function will insert four spaces and moves the cursor 
+ * a character c. This function will insert four spaces and moves the cursor
  * accordingly. currently using four actual ' '.
- * 
+ *
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  * arg: c: character input from user which must be TAB (\011)
@@ -175,7 +181,7 @@ void		tab_key(t_buff *buffer, t_cursor *cursor, char c);
  * the backspace_key requires as input a pointer to a t_buff and t_cursor struct
  * and a character c. This function will remove a character and will invoke the
  * function remove_char().
- * 
+ *
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: c: character input from user which must be BACKSPACE (\177)
@@ -186,7 +192,7 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c);
  * the backspace_key requires as input a pointer to a t_buff and t_cursor struct
  * and a character c. this function will enter the buffer as input for the rest
  * of the terminal process. The function itself will return an int.
- * 
+ *
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: c: character input from user which must be RETURN (\012)
@@ -196,9 +202,9 @@ int			return_key(t_buff *buffer, t_cursor *cursor, char c);
 
 /**
  * the return_key requires as input a pointer to a t_buff and t_cursor struct
- * and a string seq. will move the cursor and buffer index to the start of the 
+ * and a string seq. will move the cursor and buffer index to the start of the
  * buffer.
- * 
+ *
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *seq: The character sequence that is assigned to this control.
@@ -207,9 +213,9 @@ void		home_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 /**
  * the return_key requires as input a pointer to a t_buff and t_cursor struct
- * and a string seq. will move the cursor and buffer index to the start of the 
+ * and a string seq. will move the cursor and buffer index to the start of the
  * buffer.
- * 
+ *
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *seq: The character sequence that is assigned to this control.
@@ -219,7 +225,7 @@ void		end_key(t_buff *buffer, t_cursor *cursor, char *seq);
 /**
  * the left_arrow_key requires as input a pointer to a t_buff and t_cursor
  * struct and a string seq.This function will move the cursor one step left.
- * 
+ *
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *seq: The character sequence that is assigned to this control.
@@ -227,9 +233,9 @@ void		end_key(t_buff *buffer, t_cursor *cursor, char *seq);
 void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 /**
- * the right_arrow_key requires as input a pointer to a t_buff and t_cursor 
+ * the right_arrow_key requires as input a pointer to a t_buff and t_cursor
  * struct and a string seq.This function will move the cursor one step right.
- * 
+ *
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *seq: The character sequence that is assigned to this control.
@@ -237,10 +243,10 @@ void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
 void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 /**
- * the shift_left_arrow_key requires as input a pointer to a t_buff and t_cursor 
- * struct and a string seq.This function will move the cursor one step left and 
+ * the shift_left_arrow_key requires as input a pointer to a t_buff and t_cursor
+ * struct and a string seq.This function will move the cursor one step left and
  * will keep the previous character highlighted.
- * 
+ *
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *seq: The character sequence that is assigned to this control.
@@ -248,10 +254,10 @@ void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq);
 void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 /**
- * the shift_left_arrow_key requires as input a pointer to a t_buff and t_cursor 
- * struct and a string seq.This function will move the cursor one step right and 
+ * the shift_left_arrow_key requires as input a pointer to a t_buff and t_cursor
+ * struct and a string seq.This function will move the cursor one step right and
  * will keep the previous character highlighted.
- * 
+ *
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *seq: The character sequence that is assigned to this control.
@@ -259,27 +265,17 @@ void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq);
 void        shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq);
 
 /**
- * ft_swap_rv requires as input a pointer to a t_buff struct and a string seq.
- * This function will swap the highlighted text start and end position to always
- * match rv_end < rv_start. The function will take the cursor into account which
- * makes it different then normal ft_swap.
- * 
- * arg: *buffer: pointer to struct t_buff defined in cetushell.h
- */
-void		ft_swap_rv(t_buff *buffer);
-
-/**
  * cut_copy_paste requires as input a pointer to a t_buff struct and t_cursor
  * struct. It also requires either a string seq or character c which will define
  * what control character is pressed on the keyboard. This function will copy
  * text from buffer, cut text from the buffer and copies it or paste the copied
  * text into the buffer depending on the pressed key combination.
- * 
+ *
  * arg: *buffer: pointer to struct t_buff defined in cetushell.h
  * arg: *cursor: pointer to struct t_cursor defined in cetushell.h
  * arg: *seq: The character sequence that is assigned to this control.
  * arg: c: a character which defines what control is used.
- * return: 
+ * return:
  */
 int			cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c);
 
@@ -288,27 +284,27 @@ void		remove_word(t_buff *buffer, t_cursor *cursor);
 
 /**
  * set_cursor_pos will set the current cursor position defined in the t_cursor
- * struct (x,y) and uses the buffer len as limitation. It translates the 
- * coordinates to a string (cur_buff) which then can be used to send an 
+ * struct (x,y) and uses the buffer len as limitation. It translates the
+ * coordinates to a string (cur_buff) which then can be used to send an
  * instruction to the terminal.
- * 
+ *
  * arg: *cursor: pointer to t_cursor struct defined in cetushell.h.
  * arg: len: the buffer max len to prevent the cursor from going over it.
  */
 void		set_cursor_pos(t_cursor *cursor, size_t len);
 
 /**
- * get_cursor_pos will get the starting cursor position and will set its 
+ * get_cursor_pos will get the starting cursor position and will set its
  * coordinates accordingly into the t_cursor struct.
- * 
+ *
  * arg: *cursor: pointer to t_cursor struct defined in cetushell.h
  */
 void		get_cursor_pos(t_cursor *cursor);
 
 /**
- * prompt_shell will require the t_shell struct as input and will show  and 
+ * prompt_shell will require the t_shell struct as input and will show  and
  * refresh the prompt after every iteration.
- * 
+ *
  * arg: *shell: pointer to t_shell struct defined in cetushell.h
  */
 int			prompt_shell(t_shell *shell);
