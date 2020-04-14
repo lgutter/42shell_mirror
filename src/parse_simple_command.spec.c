@@ -138,6 +138,23 @@ Test(parse_simple_command_unit, valid_two_redirects_and_arg_different_order)
 	cr_expect_eq(simple_command->arguments->next, NULL);
 }
 
+Test(parse_simple_command_unit, invalid_null_token)
+{
+	t_simple_cmd *simple_command;
+	t_token			*token = NULL;
+
+	simple_command = parse_simple_command(&token);
+	cr_assert_eq(NULL, simple_command);
+}
+
+Test(parse_simple_command_unit, invalid_null_token_pointer)
+{
+	t_simple_cmd *simple_command;
+
+	simple_command = parse_simple_command(NULL);
+	cr_assert_eq(NULL, simple_command);
+}
+
 Test(free_simple_command_unit, valid_free_two_redirects_here_file)
 {
 	t_simple_cmd *simple_command;

@@ -27,6 +27,8 @@ t_io_here		*parse_io_here(t_token **token)
 {
 	t_io_here	*io_here;
 
+	if (token == NULL || *token == NULL)
+		return (handle_error_p(invalid_token, NULL));
 	if ((*token)->type != DLESS ||
 		(*token)->next == NULL || (*token)->next->type != WORD)
 	{
@@ -36,10 +38,7 @@ t_io_here		*parse_io_here(t_token **token)
 	*token = (*token)->next;
 	io_here = ft_memalloc(sizeof(t_io_here) * 1);
 	if (io_here == NULL)
-	{
-		handle_error(malloc_error);
-		return (NULL);
-	}
+		return (handle_error_p(malloc_error, NULL));
 	io_here->here_end = ft_strdup((*token)->value);
 	if (io_here->here_end == NULL)
 	{

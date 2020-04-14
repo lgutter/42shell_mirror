@@ -49,7 +49,9 @@ t_argument			*parse_arguments(t_token **token)
 {
 	t_argument	*arguments;
 
-	if (token == NULL || *token == NULL || (*token)->type != WORD)
+	if (token == NULL || *token == NULL)
+		return (handle_error_p(invalid_token, NULL));
+	if ((*token)->type != WORD)
 	{
 		handle_error_str(parsing_error, (*token)->value);
 		return (NULL);

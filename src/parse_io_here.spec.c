@@ -49,6 +49,23 @@ Test(parse_io_here_unit, valid_here_doc)
 	cr_expect_str_eq(io_here->here_end, "EOF");
 }
 
+Test(parse_io_here_unit, invalid_null_token)
+{
+	t_io_here *io_here;
+	t_token			*token = NULL;
+
+	io_here = parse_io_here(&token);
+	cr_assert_eq(NULL, io_here);
+}
+
+Test(parse_io_here_unit, invalid_null_token_pointer)
+{
+	t_io_here *io_here;
+
+	io_here = parse_io_here(NULL);
+	cr_assert_eq(NULL, io_here);
+}
+
 Test(free_io_here_unit, valid_free_here_doc)
 {
 	t_io_here *io_here;

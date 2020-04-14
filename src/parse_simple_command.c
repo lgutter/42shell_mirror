@@ -72,7 +72,9 @@ t_simple_cmd	*parse_simple_command(t_token **token)
 {
 	t_simple_cmd	*simple_command;
 
-	if (token == NULL || *token == NULL || is_start_of_cmd(*token) != 1)
+	if (token == NULL || *token == NULL)
+		return (handle_error_p(invalid_token, NULL));
+	if (is_start_of_cmd(*token) != 1)
 	{
 		handle_error_str(parsing_error, (*token)->value);
 		return (NULL);

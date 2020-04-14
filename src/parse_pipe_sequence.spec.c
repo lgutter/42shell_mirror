@@ -117,6 +117,23 @@ Test(parse_pipe_sequence_unit, valid_redirect_arg_pipe_cmd)
 	cr_expect_eq(pipe_sequence->pipe, pipe_op);
 }
 
+Test(parse_pipe_sequence_unit, invalid_null_token)
+{
+	t_pipe_sequence *pipe_sequence;
+	t_token			*token = NULL;
+
+	pipe_sequence = parse_pipe_sequence(&token);
+	cr_assert_eq(NULL, pipe_sequence);
+}
+
+Test(parse_pipe_sequence_unit, invalid_null_token_pointer)
+{
+	t_pipe_sequence *pipe_sequence;
+
+	pipe_sequence = parse_pipe_sequence(NULL);
+	cr_assert_eq(NULL, pipe_sequence);
+}
+
 Test(free_pipe_sequence_unit, valid_free_two_redirects_here_file)
 {
 	t_pipe_sequence *pipe_sequence;

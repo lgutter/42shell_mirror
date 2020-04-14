@@ -123,6 +123,23 @@ Test(parse_complete_command_unit, valid_two_cmd_redirect_arg_semi)
 	cr_expect_eq(simple_cmd->arguments->next, NULL);
 }
 
+Test(parse_complete_command_unit, invalid_null_token)
+{
+	t_complete_cmd *complete_command;
+	t_token			*token = NULL;
+
+	complete_command = parse_complete_command(&token);
+	cr_assert_eq(NULL, complete_command);
+}
+
+Test(parse_complete_command_unit, invalid_null_token_pointer)
+{
+	t_complete_cmd *complete_command;
+
+	complete_command = parse_complete_command(NULL);
+	cr_assert_eq(NULL, complete_command);
+}
+
 Test(free_complete_command_unit, valid_free_two_redirects_here_file)
 {
 	t_complete_cmd *complete_command;
@@ -143,3 +160,4 @@ Test(free_complete_command_unit, valid_free_two_redirects_here_file)
 
 	free_complete_command(complete_command);
 }
+

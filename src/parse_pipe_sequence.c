@@ -56,7 +56,9 @@ t_pipe_sequence			*parse_pipe_sequence(t_token **token)
 {
 	t_pipe_sequence	*pipe_sequence;
 
-	if (token == NULL || *token == NULL || is_start_of_cmd(*token) != 1)
+	if (token == NULL || *token == NULL)
+		return (handle_error_p(invalid_token, NULL));
+	if (is_start_of_cmd(*token) != 1)
 	{
 		handle_error_str(parsing_error, (*token)->value);
 		return (NULL);

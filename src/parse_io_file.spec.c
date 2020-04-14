@@ -122,6 +122,23 @@ Test(parse_io_file_unit, valid_file_redirect_fd_out)
 	cr_expect_str_eq(io_file->filename, "42");
 }
 
+Test(parse_io_file_unit, invalid_null_token)
+{
+	t_io_file *io_file;
+	t_token			*token = NULL;
+
+	io_file = parse_io_file(&token);
+	cr_assert_eq(NULL, io_file);
+}
+
+Test(parse_io_file_unit, invalid_null_token_pointer)
+{
+	t_io_file *io_file;
+
+	io_file = parse_io_file(NULL);
+	cr_assert_eq(NULL, io_file);
+}
+
 Test(free_io_file_unit, valid_free_file_redirect_append)
 {
 	t_io_file *io_file;

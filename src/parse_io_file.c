@@ -28,6 +28,8 @@ t_io_file		*parse_io_file(t_token **token)
 {
 	t_io_file	*io_file;
 
+	if (token == NULL || *token == NULL)
+		return (handle_error_p(invalid_token, NULL));
 	if (is_redirect_op(*token) != 1 ||
 		(*token)->next == NULL || (*token)->next->type != WORD)
 	{
@@ -36,10 +38,7 @@ t_io_file		*parse_io_file(t_token **token)
 	}
 	io_file = ft_memalloc(sizeof(t_io_file) * 1);
 	if (io_file == NULL)
-	{
-		handle_error(malloc_error);
-		return (NULL);
-	}
+		return (handle_error_p(malloc_error, NULL));
 	io_file->redirect_op = (t_redirect_op)(*token)->type;
 	*token = (*token)->next;
 	io_file->filename = ft_strdup((*token)->value);

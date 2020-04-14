@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   parse_complete_cmd.c                              :+:    :+:            */
+/*   parse_complete_command.c                           :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
@@ -41,7 +41,7 @@ static t_complete_cmd	*init_complete_command(t_token **token)
 		complete_cmd = free_complete_command(complete_cmd);
 		return (NULL);
 	}
-	if (*token != NULL && is_seperator_op(*token))
+	if (*token != NULL && is_seperator_op(*token) == 1)
 	{
 		complete_cmd->seperator_op = (t_seperator_op)(*token)->type;
 		*token = (*token)->next;
@@ -56,7 +56,9 @@ t_complete_cmd			*parse_complete_command(t_token **token)
 {
 	t_complete_cmd	*complete_cmd;
 
-	if (token == NULL || *token == NULL || is_start_of_cmd(*token) != 1)
+	if (token == NULL || *token == NULL)
+		return (handle_error_p(invalid_token, NULL));
+	if (is_start_of_cmd(*token) != 1)
 	{
 		handle_error_str(parsing_error, (*token)->value);
 		return (NULL);

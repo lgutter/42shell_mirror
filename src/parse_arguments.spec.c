@@ -71,6 +71,23 @@ Test(parse_arguments_unit, valid_two_arguments)
 	cr_expect_eq(argument->next, NULL);
 }
 
+Test(parse_arguments_unit, invalid_null_token)
+{
+	t_argument *arguments;
+	t_token			*token = NULL;
+
+	arguments = parse_arguments(&token);
+	cr_assert_eq(NULL, arguments);
+}
+
+Test(parse_arguments_unit, invalid_null_token_pointer)
+{
+	t_argument *arguments;
+
+	arguments = parse_arguments(NULL);
+	cr_assert_eq(NULL, arguments);
+}
+
 Test(free_argument_unit, valid_free_two_arguments)
 {
 	t_argument *argument;
