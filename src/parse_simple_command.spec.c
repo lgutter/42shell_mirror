@@ -16,6 +16,11 @@
 #include "tokenizer.h"
 #include "parser.h"
 
+static void redirect_std_err(void)
+{
+	cr_redirect_stderr();
+}
+
 static t_token	*init_token(t_type type, const char *value, t_token *next)
 {
 	t_token *token = (t_token *)malloc(sizeof(t_token) * 1);
@@ -138,7 +143,7 @@ Test(parse_simple_command_unit, valid_two_redirects_and_arg_different_order)
 	cr_expect_eq(simple_command->arguments->next, NULL);
 }
 
-Test(parse_simple_command_unit, invalid_null_token)
+Test(parse_simple_command_unit, invalid_null_token, .init = redirect_std_err)
 {
 	t_simple_cmd *simple_command;
 	t_token			*token = NULL;
@@ -147,7 +152,7 @@ Test(parse_simple_command_unit, invalid_null_token)
 	cr_assert_eq(NULL, simple_command);
 }
 
-Test(parse_simple_command_unit, invalid_null_token_pointer)
+Test(parse_simple_command_unit, invalid_null_token_pointer, .init = redirect_std_err)
 {
 	t_simple_cmd *simple_command;
 

@@ -16,6 +16,11 @@
 #include "tokenizer.h"
 #include "parser.h"
 
+static void redirect_std_err(void)
+{
+	cr_redirect_stderr();
+}
+
 static t_token	*init_token(t_type type, const char *value, t_token *next)
 {
 	t_token *token = (t_token *)malloc(sizeof(t_token) * 1);
@@ -117,7 +122,7 @@ Test(parse_pipe_sequence_unit, valid_redirect_arg_pipe_cmd)
 	cr_expect_eq(pipe_sequence->pipe, pipe_op);
 }
 
-Test(parse_pipe_sequence_unit, invalid_null_token)
+Test(parse_pipe_sequence_unit, invalid_null_token, .init = redirect_std_err)
 {
 	t_pipe_sequence *pipe_sequence;
 	t_token			*token = NULL;
@@ -126,7 +131,7 @@ Test(parse_pipe_sequence_unit, invalid_null_token)
 	cr_assert_eq(NULL, pipe_sequence);
 }
 
-Test(parse_pipe_sequence_unit, invalid_null_token_pointer)
+Test(parse_pipe_sequence_unit, invalid_null_token_pointer, .init = redirect_std_err)
 {
 	t_pipe_sequence *pipe_sequence;
 

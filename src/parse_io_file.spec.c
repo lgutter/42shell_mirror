@@ -16,6 +16,11 @@
 #include "tokenizer.h"
 #include "parser.h"
 
+static void redirect_std_err(void)
+{
+	cr_redirect_stderr();
+}
+
 static t_token	*init_token(t_type type, const char *value, t_token *next)
 {
 	t_token *token = (t_token *)malloc(sizeof(t_token) * 1);
@@ -122,7 +127,7 @@ Test(parse_io_file_unit, valid_file_redirect_fd_out)
 	cr_expect_str_eq(io_file->filename, "42");
 }
 
-Test(parse_io_file_unit, invalid_null_token)
+Test(parse_io_file_unit, invalid_null_token, .init = redirect_std_err)
 {
 	t_io_file *io_file;
 	t_token			*token = NULL;
@@ -131,7 +136,7 @@ Test(parse_io_file_unit, invalid_null_token)
 	cr_assert_eq(NULL, io_file);
 }
 
-Test(parse_io_file_unit, invalid_null_token_pointer)
+Test(parse_io_file_unit, invalid_null_token_pointer, .init = redirect_std_err)
 {
 	t_io_file *io_file;
 
