@@ -25,6 +25,7 @@
 **	a specific element of the syntax tree, each of which is defined as a
 **	struct in parser_structs.h
 */
+
 t_complete_cmd	*parse_complete_command(t_token **token);
 t_pipe_sequence	*parse_pipe_sequence(t_token **token);
 t_simple_cmd	*parse_simple_command(t_token **token);

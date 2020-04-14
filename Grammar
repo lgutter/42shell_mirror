@@ -40,8 +40,3 @@ here_end		: WORD
 				;
 separator_op	: (AMP | SEMI)
 				;
-
-/* newline_list	: NEWLINE...
-*				;
-* linebreak		: [newline_list]
-*/				;
