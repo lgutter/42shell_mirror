@@ -24,6 +24,15 @@
 int		is_redirect_op(t_token *token);
 
 /*
+**	checks if the passed token is a valid start of a redirection.
+**	arg: token: the token to be checked.
+**	returns:
+**	0 if the token is NOT a valid start of a redirection.
+**	1 if the token IS a valid start of a redirection.
+*/
+int		is_start_of_redirect(t_token *token);
+
+/*
 **	checks if the passed token is a valid start of a simple command.
 **	arg: token: the token to be checked.
 **	returns:

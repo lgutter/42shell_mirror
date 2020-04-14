@@ -106,6 +106,23 @@ Test(parse_io_redirect_unit, valid_two_redirects_here_file)
 	cr_expect_str_eq(io_redirect->io_file->filename, "42");
 }
 
+Test(parse_io_redirect_unit, invalid_null_token)
+{
+	t_io_redirect *io_redirect;
+	t_token			*token = NULL;
+
+	io_redirect = parse_io_redirect(&token);
+	cr_assert_eq(NULL, io_redirect);
+}
+
+Test(parse_io_redirect_unit, invalid_null_token_pointer)
+{
+	t_io_redirect *io_redirect;
+
+	io_redirect = parse_io_redirect(NULL);
+	cr_assert_eq(NULL, io_redirect);
+}
+
 Test(free_io_redirect_unit, valid_free_two_redirects_here_file)
 {
 	t_io_redirect *io_redirect;
