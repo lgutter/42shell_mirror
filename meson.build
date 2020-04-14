@@ -52,6 +52,8 @@ src_files = files([
   'src/parser_utils.c',
   'src/handle_error.c',
   'src/utils.c',
+  'src/handle_input.c',
+  'src/TEMP_print_token_parse.c',
 ])
 
 main_file = files('src/main.c')

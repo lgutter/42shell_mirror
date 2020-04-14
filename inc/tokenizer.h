@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   tokenizer.h                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: 2020/04/14 11:52:43 by lgutter       #+#    #+#                 */
+/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct			s_token
 **
 **	return: a linked list of tokens, containing a token type and value.
 */
-t_token					*tokenizer(char *input);
+t_token					*tokenizer(const char *input);
 
 /*
 **	The add_token function creates a new node in the list of tokens,

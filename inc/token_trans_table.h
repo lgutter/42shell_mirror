@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   token_trans_table.h                                :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: 2020/04/14 11:52:43 by lgutter       #+#    #+#                 */
+/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ typedef enum		e_state
 	great,
 	pipe_state,
 	amp,
-	newline,
+	state_newline,
 	semicolon,
 	squote,
 	dquote,
@@ -120,7 +120,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, undetermined, SKIP_CHAR},
 			[' ']		= {blank, undetermined, SKIP_CHAR},
 			['\t']		= {blank, undetermined, SKIP_CHAR},
-			['\n']		= {newline, undetermined, ADD_CHAR_POST},
+			['\n']		= {state_newline, undetermined, ADD_CHAR_POST},
 			['0']		= {number, undetermined, ADD_CHAR_POST},
 			['1']		= {number, undetermined, ADD_CHAR_POST},
 			['2']		= {number, undetermined, ADD_CHAR_POST},
@@ -147,7 +147,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, WORD, SKIP_CHAR},
 			[' ']		= {blank, WORD, SKIP_CHAR},
 			['\t']		= {blank, WORD, SKIP_CHAR},
-			['\n']		= {newline, WORD, ADD_CHAR_POST},
+			['\n']		= {state_newline, WORD, ADD_CHAR_POST},
 			['<']		= {less, WORD, ADD_CHAR_POST},
 			['>']		= {great, WORD, ADD_CHAR_POST},
 			['&']		= {amp, WORD, ADD_CHAR_POST},
@@ -165,7 +165,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, WORD, SKIP_CHAR},
 			[' ']		= {blank, WORD, SKIP_CHAR},
 			['\t']		= {blank, WORD, SKIP_CHAR},
-			['\n']		= {newline, WORD, ADD_CHAR_POST},
+			['\n']		= {state_newline, WORD, ADD_CHAR_POST},
 			['0']		= {number, undetermined, ADD_CHAR_POST},
 			['1']		= {number, undetermined, ADD_CHAR_POST},
 			['2']		= {number, undetermined, ADD_CHAR_POST},
@@ -193,7 +193,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, LESS, SKIP_CHAR},
 			[' ']		= {blank, LESS, SKIP_CHAR},
 			['\t']		= {blank, LESS, SKIP_CHAR},
-			['\n']		= {newline, LESS, ADD_CHAR_POST},
+			['\n']		= {state_newline, LESS, ADD_CHAR_POST},
 			['0']		= {number, LESS, ADD_CHAR_POST},
 			['1']		= {number, LESS, ADD_CHAR_POST},
 			['2']		= {number, LESS, ADD_CHAR_POST},
@@ -221,7 +221,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, GREAT, SKIP_CHAR},
 			[' ']		= {blank, GREAT, SKIP_CHAR},
 			['\t']		= {blank, GREAT, SKIP_CHAR},
-			['\n']		= {newline, GREAT, ADD_CHAR_POST},
+			['\n']		= {state_newline, GREAT, ADD_CHAR_POST},
 			['0']		= {number, GREAT, ADD_CHAR_POST},
 			['1']		= {number, GREAT, ADD_CHAR_POST},
 			['2']		= {number, GREAT, ADD_CHAR_POST},
@@ -249,7 +249,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, PIPE, SKIP_CHAR},
 			[' ']		= {blank, PIPE, SKIP_CHAR},
 			['\t']		= {blank, PIPE, SKIP_CHAR},
-			['\n']		= {newline, PIPE, ADD_CHAR_POST},
+			['\n']		= {state_newline, PIPE, ADD_CHAR_POST},
 			['0']		= {number, PIPE, ADD_CHAR_POST},
 			['1']		= {number, PIPE, ADD_CHAR_POST},
 			['2']		= {number, PIPE, ADD_CHAR_POST},
@@ -277,7 +277,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, AMP, SKIP_CHAR},
 			[' ']		= {blank, AMP, SKIP_CHAR},
 			['\t']		= {blank, AMP, SKIP_CHAR},
-			['\n']		= {newline, AMP, ADD_CHAR_POST},
+			['\n']		= {state_newline, AMP, ADD_CHAR_POST},
 			['0']		= {number, AMP, ADD_CHAR_POST},
 			['1']		= {number, AMP, ADD_CHAR_POST},
 			['2']		= {number, AMP, ADD_CHAR_POST},
@@ -299,13 +299,13 @@ static const t_trans g_token_trans[] = {
 		},
 		.catch_state	= {state_word, AMP, ADD_CHAR_POST}
 	},
-	[newline] =
+	[state_newline] =
 	{
 		.rules = {
 			['\0']		= {eof, NEWLINE, SKIP_CHAR},
 			[' ']		= {blank, NEWLINE, SKIP_CHAR},
 			['\t']		= {blank, NEWLINE, SKIP_CHAR},
-			['\n']		= {newline, NEWLINE, ADD_CHAR_POST},
+			['\n']		= {state_newline, NEWLINE, ADD_CHAR_POST},
 			['0']		= {number, NEWLINE, ADD_CHAR_POST},
 			['1']		= {number, NEWLINE, ADD_CHAR_POST},
 			['2']		= {number, NEWLINE, ADD_CHAR_POST},
@@ -333,7 +333,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, SEMI, SKIP_CHAR},
 			[' ']		= {blank, SEMI, SKIP_CHAR},
 			['\t']		= {blank, SEMI, SKIP_CHAR},
-			['\n']		= {newline, SEMI, ADD_CHAR_POST},
+			['\n']		= {state_newline, SEMI, ADD_CHAR_POST},
 			['0']		= {number, SEMI, ADD_CHAR_POST},
 			['1']		= {number, SEMI, ADD_CHAR_POST},
 			['2']		= {number, SEMI, ADD_CHAR_POST},
