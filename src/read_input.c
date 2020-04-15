@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   read_input.c                                       :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: 2020/04/14 11:52:43 by dkroeke       #+#    #+#                 */
+/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 {
-	//ft_printf("\n\n (%d)\n", c);
 	if (ft_isprint(c) != 0)
 	{
 		if (c == 'q')
@@ -54,14 +53,14 @@ int			read_input(t_shell *shell)
 	{
 		ret = read_esc_seq(c, &shell->cursor, shell->buffer);
 		if (ret != 0)
-			return(ret);
+			return (ret);
 		if (handle_control_char(shell->buffer, &shell->cursor, c) != 0)
 			return (1);
 	}
 	return (0);
 }
 
-int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
+int			read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 {
 	char	seq[ESC_SEQ_SIZE];
 	int		ret;
@@ -72,7 +71,6 @@ int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 		ret = read(STDIN_FILENO, seq, ESC_SEQ_SIZE);
 		if (ret == -1)
 			return (2);
-		//ft_printf("\n\nseq = %s \n", seq);
 		if (cut_copy_paste(buffer, cursor, seq, 0) != 0)
 			return (1);
 		shift_right_key(buffer, cursor, seq);

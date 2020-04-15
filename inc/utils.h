@@ -29,22 +29,22 @@ void		ft_swap_rv(t_buff *buffer);
 **	will re-allocate and expand the char * pointed to by source with addition.
 **	if *source is NULL, it will allocate a new string for addition.
 */
-void	ft_strexpand(char **source, const char *addition);
+void		ft_strexpand(char **source, const char *addition);
 
 /*
 **	will allocate a duplicate of the given string, up to length len.
 */
-char	*ft_strndup(const char *string, size_t len);
+char		*ft_strndup(const char *string, size_t len);
 
 /*
 **	will allocate a duplicate of the given string, up to charachter delim.
 */
-char	*ft_strcdup(const char *string, char delim);
+char		*ft_strcdup(const char *string, char delim);
 
 /*
 **	returns the length of string up to charachter delim, or length size,
 **	whichever comes first.
 */
-size_t	ft_strlenc(const char *string, int delim, size_t size);
+size_t		ft_strlenc(const char *string, int delim, size_t size);
 
 #endif

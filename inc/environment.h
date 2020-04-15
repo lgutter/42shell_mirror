@@ -71,7 +71,6 @@ int					ft_unsetenv(t_env *env, const char *key);
 */
 char				**convert_env_to_envp(t_env *list_start);
 
-
 /*
 **	Takes a pointer to a string and the env list,
 **	and expands the string correctly if it starts with ~ or $.

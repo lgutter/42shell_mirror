@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   prompt.c                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: 2020/04/14 11:52:43 by dkroeke       #+#    #+#                 */
+/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 
 static void		print_buffer(t_buff *buffer)
 {
-	if (buffer->rv_end > buffer->rv_start) 
-	{	
+	if (buffer->rv_end > buffer->rv_start)
+	{
 		ft_printf("%.*s%s", buffer->rv_start, buffer->buff, RV_MODE);
-		ft_printf("%.*s", buffer->rv_end - buffer->rv_start, 
+		ft_printf("%.*s", buffer->rv_end - buffer->rv_start,
 		&buffer->buff[buffer->rv_start]);
 		ft_printf("%s%s", RV_RESET, &buffer->buff[buffer->rv_end]);
 	}
 	else if (buffer->rv_end < buffer->rv_start)
 	{
-		ft_printf("%.*s%s",buffer->rv_end, buffer->buff, RV_MODE);
-		ft_printf("%.*s", buffer->rv_start - buffer->rv_end, 
+		ft_printf("%.*s%s", buffer->rv_end, buffer->buff, RV_MODE);
+		ft_printf("%.*s", buffer->rv_start - buffer->rv_end,
 		&buffer->buff[buffer->rv_end]);
 		ft_printf("%s%s", RV_RESET, &buffer->buff[buffer->rv_start]);
 	}
@@ -35,7 +35,7 @@ static void		print_buffer(t_buff *buffer)
 
 static void		clear_prompt(t_cursor *cursor)
 {
-	ft_printf("%c[%d;%dH", ESCAPE , cursor->start.y, 0);
+	ft_printf("%c[%d;%dH", ESCAPE, cursor->start.y, 0);
 	send_terminal("cd");
 }
 
@@ -44,11 +44,10 @@ static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 	clear_prompt(cursor);
 	ft_printf("%s", PROMPT_STR);
 	print_buffer(buffer);
-	ft_printf("%s",  cursor->cur_buff);
+	ft_printf("%s", cursor->cur_buff);
 }
 
-
-int			prompt_shell(t_shell *shell)
+int				prompt_shell(t_shell *shell)
 {
 	while (42)
 	{

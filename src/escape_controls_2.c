@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
+/*   escape_controls_2.c                                :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
@@ -13,38 +13,29 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-int			cetushell(char **env)
+void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
-	t_shell		*shell;
-
-	shell = ft_memalloc(sizeof(t_shell));
-	shell->buffer = ft_memalloc(sizeof(t_buff));
-	if (shell->buffer == NULL || shell == NULL)
-		return (1);
-	shell->envi = env;
-	configure_terminal(shell, 1);
-	while (1)
+	if (ft_strncmp(seq, ARROW_LEFT, ft_strlen(ARROW_LEFT)) == 0 &&
+	cursor->current.x > 0)
 	{
-		if (init_buffs(shell->buffer, &shell->cursor) == 1)
-			return (1);
-		if (prompt_shell(shell) == 1)
+		buffer->rv_start = buffer->rv_end;
+		if (buffer->index != 0)
 		{
-			configure_terminal(shell, 0);
-			return (1);
+			buffer->index--;
+			cursor->current.x--;
 		}
 	}
-	return (0);
 }
 
-int			main(int ac, char **av, char **env)
+void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
-	if (ac != 1)
-		ft_dprintf(2, "Huh? why %s? No arguments needed!\n", av[1]);
-	else
+	if (ft_strncmp(seq, ARROW_RIGHT, ft_strlen(ARROW_RIGHT)) == 0)
 	{
-		while (21)
-			if (cetushell(env) == 1)
-				return (0);
+		buffer->rv_start = buffer->rv_end;
+		if (buffer->index < buffer->len)
+		{
+			cursor->current.x++;
+			buffer->index++;
+		}
 	}
-	return (1);
 }

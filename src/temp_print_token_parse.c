@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   TEMP_print_token_parse.c                           :+:    :+:            */
+/*   temp_print_token_parse.c                           :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "TEMP_print_token_parse.h"
+#include "temp_print_token_parse.h"
 
 static const char *g_token_types[GREATAMP + 1] =
 {
@@ -29,15 +29,6 @@ static const char *g_token_types[GREATAMP + 1] =
 	[GREATAMP] = "GREATAMP"
 };
 
-void	print_arguments(t_argument *arguments)
-{
-	while (arguments != NULL)
-	{
-		ft_printf("\t\t\t- %s\n", arguments->argument);
-		arguments = arguments->next;
-	}
-}
-
 void	print_io_redirect(t_io_redirect *io_redirect)
 {
 	while (io_redirect != NULL)
@@ -45,7 +36,9 @@ void	print_io_redirect(t_io_redirect *io_redirect)
 		if (io_redirect->io_number != NULL)
 			ft_printf("\t\t\tio_number: %s\n", io_redirect->io_number);
 		if (io_redirect->io_file != NULL)
-			ft_printf("\t\t\tio_file: op: %s; filename: %s\n", g_token_types[io_redirect->io_file->redirect_op], io_redirect->io_file->filename);
+			ft_printf("\t\t\tio_file: op: %s; filename: %s\n",\
+			g_token_types[io_redirect->io_file->redirect_op],\
+			io_redirect->io_file->filename);
 		if (io_redirect->io_here != NULL)
 			ft_printf("\t\t\tio_here: %s\n", io_redirect->io_here->here_end);
 		io_redirect = io_redirect->next;
@@ -55,6 +48,8 @@ void	print_io_redirect(t_io_redirect *io_redirect)
 
 void	print_simple_command(t_simple_cmd *simple_command)
 {
+	t_argument *arguments;
+
 	if (simple_command->redirects != NULL)
 	{
 		ft_printf("\t\tREDIRECTIONS:\n");
@@ -63,7 +58,12 @@ void	print_simple_command(t_simple_cmd *simple_command)
 	if (simple_command->arguments != NULL)
 	{
 		ft_printf("\t\tARGUMENTS:\n");
-		print_arguments(simple_command->arguments);
+		arguments = simple_command->arguments;
+		while (arguments != NULL)
+		{
+			ft_printf("\t\t\t- %s\n", arguments->argument);
+			arguments = arguments->next;
+		}
 	}
 }
 
@@ -107,7 +107,8 @@ void	print_tokens(t_token *tokens)
 {
 	while (tokens != NULL)
 	{
-		ft_printf("token type: %s\n token value: [%s]\n\n", g_token_types[tokens->type], tokens->value);
+		ft_printf("token type: %s\n token value: [%s]\n\n",\
+		g_token_types[tokens->type], tokens->value);
 		tokens = tokens->next;
 	}
 }
