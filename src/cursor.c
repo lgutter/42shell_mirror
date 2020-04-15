@@ -13,9 +13,9 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-static void	cursor_next_line(t_cursor *cursor, size_t len)
+static void	cursor_next_line(t_cursor *cursor, size_t len, size_t prompt_len)
 {
-	if ((((len - 1 + PROMPT_LEN) / cursor->max.x) + cursor->start.y) >
+	if ((((len - 1 + prompt_len) / cursor->max.x) + cursor->start.y) >
 	cursor->max.y)
 	{
 		send_terminal(CURSOR_DOWN);
@@ -36,20 +36,20 @@ static void	cursor_next_line(t_cursor *cursor, size_t len)
 	}
 }
 
-void		set_cursor_pos(t_cursor *cursor, size_t len)
+void		set_cursor_pos(t_cursor *cursor, size_t buff_len, size_t prompt_len)
 {
-	cursor_next_line(cursor, len);
+	cursor_next_line(cursor, buff_len, prompt_len);
 	ft_memset(&cursor->cur_buff, '\0', CUR_BUFF_SIZE);
-	if (cursor->current.x < PROMPT_LEN && cursor->current.y == cursor->start.y)
-		cursor->current.x = PROMPT_LEN;
-	if (cursor->current.x > (len + PROMPT_LEN) &&
+	if (cursor->current.x < prompt_len && cursor->current.y == cursor->start.y)
+		cursor->current.x = prompt_len;
+	if (cursor->current.x > (buff_len + prompt_len) &&
 			cursor->current.y == cursor->start.y)
-		cursor->current.x = len + PROMPT_LEN;
+		cursor->current.x = buff_len + prompt_len;
 	ft_snprintf(cursor->cur_buff, CUR_BUFF_SIZE, "%c[%d;%dH", ESCAPE \
 				, cursor->current.y, cursor->current.x);
 }
 
-void		get_cursor_pos(t_cursor *cursor)
+void		get_cursor_pos(t_cursor *cursor, size_t prompt_len)
 {
 	char	pos[16];
 	int		ret;
@@ -73,6 +73,6 @@ void		get_cursor_pos(t_cursor *cursor)
 			ret = ret - 1;
 		cursor->start.x = ft_atoi(&pos[ret]);
 	}
-	cursor->current.x = PROMPT_LEN;
+	cursor->current.x = prompt_len;
 	cursor->current.y = cursor->start.y;
 }

@@ -60,7 +60,7 @@ int		paste(t_buff *buffer, t_cursor *cursor)
 		if (insert_char(buffer, buffer->copy[i]) != 0)
 			return (1);
 		cursor->current.x++;
-		set_cursor_pos(cursor, buffer->len);
+		set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
 		i++;
 	}
 	return (0);

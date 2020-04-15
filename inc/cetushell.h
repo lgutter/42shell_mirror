@@ -28,9 +28,12 @@ typedef struct		s_buff
 {
 	char			*buff;
 	char			*copy;
+	char			*prompt;
+	size_t			prompt_len;
+	size_t			state;
 	size_t			copy_size;
 	size_t			buff_size;
-	size_t			len;
+	size_t			buff_len;
 	size_t			index;
 	size_t			rv_start;
 	size_t			rv_end;

@@ -121,7 +121,7 @@ int			read_input(t_shell *shell);
 **
 ** arg: *shell: pointer to struct defined in cetushell.h.
 */
-int			init_buffs(t_buff *buffer, t_cursor *cursor);
+int			init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt);
 
 /*
 ** insert_char requires a pointer to the struct t_buff defined in cetushell.h
@@ -291,7 +291,8 @@ void		remove_word(t_buff *buffer, t_cursor *cursor);
 ** arg: *cursor: pointer to t_cursor struct defined in cetushell.h.
 ** arg: len: the buffer max len to prevent the cursor from going over it.
 */
-void		set_cursor_pos(t_cursor *cursor, size_t len);
+void		set_cursor_pos(t_cursor *cursor, size_t buff_len, 
+								size_t prompt_len);
 
 /*
 ** get_cursor_pos will get the starting cursor position and will set its
@@ -299,7 +300,7 @@ void		set_cursor_pos(t_cursor *cursor, size_t len);
 **
 ** arg: *cursor: pointer to t_cursor struct defined in cetushell.h
 */
-void		get_cursor_pos(t_cursor *cursor);
+void		get_cursor_pos(t_cursor *cursor, size_t prompt_len);
 
 /*
 ** prompt_shell will require the t_shell struct as input and will show  and
@@ -307,6 +308,6 @@ void		get_cursor_pos(t_cursor *cursor);
 **
 ** arg: *shell: pointer to t_shell struct defined in cetushell.h
 */
-int			prompt_shell(t_shell *shell);
+char		*prompt_shell(t_shell *shell, const char *prompt);
 
 #endif
