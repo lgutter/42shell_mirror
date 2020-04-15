@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "tokenizer.h"
+#include "utils.h"
 
 /*
 **	expand_buff will expand the buffer where the value to be stored in a token
@@ -53,11 +54,11 @@ static int		expand_buff(char **buff, char new)
 	return (0);
 }
 
-static t_rules	init_state(t_state cur_state, char input)
+static t_rules	init_state(t_state cur_state, char next)
 {
 	t_rules	state_rules;
 
-	state_rules = g_token_trans[cur_state].rules[(size_t)input];
+	state_rules = g_token_trans[cur_state].rules[(size_t)next];
 	if (state_rules.next_state == invalid)
 	{
 		state_rules = g_token_trans[cur_state].catch_state;
@@ -80,26 +81,44 @@ static int		handle_token(t_rules state_rules, t_token **start,
 	return (ret);
 }
 
-t_token			*tokenizer(const char *input)
+static int		check_unquoted(t_rules *state_rules, char **input)
+{
+	if (state_rules->next_state == unt_dquote)
+	{
+		if (complete_quote(input) != 0)
+			return (-1);
+		*state_rules = init_state(unt_dquote, '\0');
+	}
+	else if (state_rules->next_state == unt_squote)
+	{
+		if (complete_quote(input) != 0)
+			return (-1);
+		*state_rules = init_state(unt_squote, '\0');
+	}
+	return (0);
+}
+
+t_token			*tokenizer(char *input)
 {
 	t_rules		state_rules;
 	t_token		*start;
 	t_state		cur_state;
 	static char	*buff = NULL;
+	size_t		i;
 
 	start = NULL;
 	cur_state = blank;
+	i = 0;
 	while (1)
 	{
-		state_rules = init_state(cur_state, *input);
-		if (handle_token(state_rules, &start, &buff, *input) != 0)
-		{
-			free_token_list(&start);
-			return (NULL);
-		}
+		state_rules = init_state(cur_state, input[i]);
+		if (check_unquoted(&state_rules, &input) != 0)
+			return (free_token_list(&start));
+		if (handle_token(state_rules, &start, &buff, input[i]) != 0)
+			return (free_token_list(&start));
 		if (state_rules.next_state == eof)
 			return (start);
 		cur_state = state_rules.next_state;
-		input++;
+		i++;
 	}
 }

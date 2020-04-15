@@ -21,7 +21,25 @@ char	*ft_getenv(t_env *env, const char *key)
 	{
 		if (ft_strcmp(key, current->key) == 0)
 		{
-			return (current->value);
+			return (ft_strdup(current->value));
+		}
+		current = current->next;
+	}
+	return (NULL);
+}
+
+char	*ft_getenv_quote(t_env *env, const char *key)
+{
+	t_env	*current;
+	char	*temp;
+
+	current = env;
+	while (current != NULL)
+	{
+		if (ft_strcmp(key, current->key) == 0)
+		{
+			temp = backslash_quotes(current->value);
+			return (temp);
 		}
 		current = current->next;
 	}

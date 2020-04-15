@@ -65,7 +65,9 @@ typedef enum		e_state
 	state_newline,
 	semicolon,
 	squote,
+	unt_squote,
 	dquote,
+	unt_dquote,
 	backslash,
 	dq_backslash
 }					t_state;
@@ -363,6 +365,13 @@ static const t_trans g_token_trans[] = {
 		},
 		.catch_state	= {squote, undetermined, ADD_CHAR_POST}
 	},
+	[unt_squote] =
+	{
+		.rules = {
+			['\0']		= {squote, undetermined, SKIP_CHAR}
+		},
+		.catch_state	= {squote, undetermined, SKIP_CHAR}
+	},
 	[dquote] =
 	{
 		.rules = {
@@ -371,6 +380,13 @@ static const t_trans g_token_trans[] = {
 			['\\']		= {dq_backslash, undetermined, ADD_CHAR_POST}
 		},
 		.catch_state	= {dquote, undetermined, ADD_CHAR_POST}
+	},
+	[unt_dquote] =
+	{
+		.rules = {
+			['\0']		= {dquote, undetermined, SKIP_CHAR}
+		},
+		.catch_state	= {dquote, undetermined, SKIP_CHAR}
 	},
 	[backslash] =
 	{

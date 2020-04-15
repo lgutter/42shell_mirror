@@ -12,13 +12,13 @@
 
 #include "tokenizer.h"
 
-void			free_token_list(t_token **start)
+t_token			*free_token_list(t_token **start)
 {
 	t_token	*temp;
 	t_token	*current;
 
 	if (start == NULL || *start == NULL)
-		return ;
+		return (NULL);
 	current = *start;
 	while (current != NULL)
 	{
@@ -30,6 +30,7 @@ void			free_token_list(t_token **start)
 		current = temp;
 	}
 	*start = NULL;
+	return (NULL);
 }
 
 static t_token	*init_token(t_token **start)

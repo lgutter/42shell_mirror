@@ -38,12 +38,23 @@ typedef struct		s_env
 t_env				*dup_sys_env(void);
 
 /*
-**	takes the env and a key as argument and returns the value.
+**	takes the env and a key as argument and returns a
+**	freshy allocated copy of the value.
 **	example: 'ft_getenv("PWD");' will return the path of our current directory.
 **	when an error occurs, returns NULL.
 **	(on failure, error will be printed)
 */
 char				*ft_getenv(t_env *env, const char *key);
+
+/*
+**	takes the env and a key as argument and returns a freshy allocated copy
+**	the value, but with any quote characters
+**	(["], ['], [\]) escaped with a backslash([\]).
+**	example: with 'FOO=hel"lo', 'ft_getenv("FOO");' will return 'hel\"lo'.
+**	when an error occurs, returns NULL.
+**	(on failure, error will be printed)
+*/
+char				*ft_getenv_quote(t_env *env, const char *key);
 
 /*
 **	Takes env, a key, value, and either 'y' or 'n' as arguments.
