@@ -32,6 +32,9 @@ typedef enum		e_error
 	invalid_token,
 	parsing_error,
 	read_error,
+	env_write_error,
+	env_not_found,
+	env_empty_error,
 	error_count
 }					t_error;
 

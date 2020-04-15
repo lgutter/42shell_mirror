@@ -24,5 +24,8 @@ static const char	*g_error_str[error_count] = {
 	[invalid_token] = "Token is invalid",
 	[parsing_error] = "Parsing error detected",
 	[read_error] = "Error while read() call",
+	[env_write_error] = "Environment key exists and overwrite is off",
+	[env_not_found] = "Environment key not found",
+	[env_empty_error] = "Environment is empty"
 };
 #endif

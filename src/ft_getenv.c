@@ -1,26 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   utils.c                                            :+:    :+:            */
+/*   ft_getenv.c                                        :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/04/06 17:03:13 by dkroeke       ########   odam.nl         */
+/*   Created: 2020/01/13 15:49:17 by lgutter       #+#    #+#                 */
+/*   Updated: 2020/02/04 21:37:31 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
+#include "environment.h"
 
-void	ft_swap_rv(t_buff *buffer)
+char	*ft_getenv(t_env *env, const char *key)
 {
-	size_t		temp;
+	t_env *current;
 
-	if (buffer->rv_start < buffer->rv_end)
+	current = env;
+	while (current != NULL)
 	{
-		temp = buffer->rv_start;
-		buffer->rv_start = buffer->rv_end;
-		buffer->rv_end = temp;
-		buffer->rv_start++;
+		if (ft_strcmp(key, current->key) == 0)
+		{
+			return (current->value);
+		}
+		current = current->next;
 	}
+	return (NULL);
 }
