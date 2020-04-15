@@ -52,6 +52,7 @@ src_files = files([
   'src/parser_utils.c',
   'src/handle_error.c',
   'src/utils.c',
+  'src/str_utils.c',
   'src/handle_input.c',
   'src/convert_env_to_envp.c',
   'src/dup_sys_env.c',
