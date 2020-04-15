@@ -3,17 +3,17 @@
 /*                                                        ::::::::            */
 /*   buffer.c                                           :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
+/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: Invalid date        by                #+#   #+#                 */
-/*   Updated: 2020/04/06 17:28:38 by devan         ########   odam.nl         */
+/*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
+/*   Updated: 2020/04/06 17:03:13 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cetushell.h"
 #include "input_control.h"
 
-int		init_buffs(t_buff *buffer, t_cursor *cursor)
+int			init_buffs(t_buff *buffer, t_cursor *cursor)
 {
 	buffer->len = 0;
 	buffer->index = 0;
@@ -80,7 +80,7 @@ void		remove_char(t_buff *buffer)
 	}
 }
 
-void	remove_word(t_buff *buffer, t_cursor *cursor)
+void		remove_word(t_buff *buffer, t_cursor *cursor)
 {
 	size_t	i;
 
@@ -101,7 +101,7 @@ void	remove_word(t_buff *buffer, t_cursor *cursor)
 	}
 }
 
-int		buff_realloc(t_buff *buffer, size_t len, size_t size)
+int			buff_realloc(t_buff *buffer, size_t len, size_t size)
 {
 	char	*temp;
 

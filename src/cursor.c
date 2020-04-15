@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   cursor.c                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: 2020/04/14 11:52:43 by dkroeke       #+#    #+#                 */
+/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cetushell.h"
 #include "input_control.h"
 
-static void		cursor_next_line(t_cursor *cursor, size_t len)
+static void	cursor_next_line(t_cursor *cursor, size_t len)
 {
 	if ((((len - 1 + PROMPT_LEN) / cursor->max.x) + cursor->start.y) >
 	cursor->max.y)

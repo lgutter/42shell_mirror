@@ -37,7 +37,8 @@ src_files = files([
   'src/cursor.c',
   'src/buffer.c',
   'src/controls.c',
-  'src/escape_controls.c',
+  'src/escape_controls_1.c',
+  'src/escape_controls_2.c',
   'src/cut_copy.c',
   'src/tokenizer.c',
   'src/token_list_util.c',
@@ -61,7 +62,7 @@ src_files = files([
   'src/ft_setenv.c',
   'src/ft_unsetenv.c',
   'src/free_env_list.c',
-  'src/TEMP_print_token_parse.c',
+  'src/temp_print_token_parse.c',
 ])
 
 main_file = files('src/main.c')
