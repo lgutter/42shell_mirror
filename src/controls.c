@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   controls.c                                         :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: 2020/04/14 11:52:43 by dkroeke       #+#    #+#                 */
+/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cetushell.h"
 #include "input_control.h"
+#include "handle_input.h"
 
 int			return_key(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (c == RETURN)
 	{
 		send_terminal(CURSOR_DOWN);
-		ft_printf("output : %s\n", buffer->buff);
+		handle_input(buffer->buff);
 		get_cursor_pos(cursor);
 		ft_memset(buffer->buff, '\0', buffer->buff_size);
 		buffer->len = 0;

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   handle_error.spec.c                                :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: Invalid date        by               #+#    #+#                 */
+/*   Updated: 0003/01/01 00:00:00 by               ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,9 @@ ParameterizedTestParameters(handle_error_tests, param_test_all_error_codes)
     static int err_params[] = {
 		0,
 		1,
+		2,
+		3,
+		4,
     };
 
     size_t nb_params = sizeof (err_params) / sizeof (int);
@@ -57,6 +60,9 @@ ParameterizedTestParameters(handle_error_str_tests, param_test_all_error_codes_w
     static struct s_err_str_params err_str_params[] = {
 		{0, "foo"},
 		{1, "foo bar"},
+		{2, "foo"},
+		{3, "bar"},
+		{4, "baz"}
     };
 
     size_t nb_params = sizeof (err_str_params) / sizeof (struct s_err_str_params);
@@ -68,6 +74,9 @@ ParameterizedTestParameters(handle_error_p_tests, param_test_all_error_codes_wit
     static struct s_err_p_params err_p_params[] = {
 		{0, (void *)21},
 		{1, (void *)42},
+		{2, (void *)12},
+		{3, (void *)26},
+		{4, (void *)420},
     };
 
     size_t nb_params = sizeof (err_p_params) / sizeof (struct s_err_p_params);
@@ -79,6 +88,9 @@ ParameterizedTestParameters(handle_error_str_p_tests, param_test_all_error_codes
     static struct s_err_str_p_params err_str_params[] = {
 		{0, "foo", (void *)21},
 		{1, "foo bar", (void *)42},
+		{2, "foo bar", (void *)26},
+		{3, "foo bar", (void *)13},
+		{4, "foo foo", (void *)457},
     };
 
     size_t nb_params = sizeof (err_str_params) / sizeof (struct s_err_str_p_params);

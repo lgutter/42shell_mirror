@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   handle_error.h                                     :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: Invalid date        by               #+#    #+#                 */
+/*   Updated: 0003/01/01 00:00:00 by               ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ typedef enum		e_error
 {
 	no_error,
 	malloc_error,
+	invalid_token,
+	parsing_error,
 	read_error,
 	error_count
 }					t_error;

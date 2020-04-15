@@ -9,6 +9,15 @@ project(
 
 cc = meson.get_compiler('c')
 
+add_project_arguments(cc.get_supported_arguments([
+  '-Woverflow',
+  '-Wassign-enum',
+  '-Wno-missing-braces',
+  '-Wno-missing-field-initializers',
+  '-Wno-unused-parameter',
+  '-Wno-unused-result',
+]), language: 'c')
+
 libft_proj = subproject('libft')
 libft_deb = libft_proj.get_variable('libft_deb')
 
@@ -17,7 +26,7 @@ libftprintf_deb = libftprintf_proj.get_variable('libftprintf_deb')
 
 libcurses_deb = cc.find_library('curses', required: false)
 if not libcurses_deb.found()
-	libcurses_deb = dependency('ncurses')
+  libcurses_deb = dependency('ncurses')
 endif
 
 inc_dir = include_directories('inc')
@@ -31,9 +40,20 @@ src_files = files([
   'src/escape_controls.c',
   'src/cut_copy.c',
   'src/tokenizer.c',
-  'src/free_token_list.c',
+  'src/token_list_util.c',
+  'src/handle_error.c',
+  'src/parse_complete_command.c',
+  'src/parse_pipe_sequence.c',
+  'src/parse_simple_command.c',
+  'src/parse_arguments.c',
+  'src/parse_io_redirect.c',
+  'src/parse_io_file.c',
+  'src/parse_io_here.c',
+  'src/parser_utils.c',
   'src/handle_error.c',
   'src/utils.c',
+  'src/handle_input.c',
+  'src/TEMP_print_token_parse.c',
 ])
 
 main_file = files('src/main.c')
@@ -52,7 +72,15 @@ if libcriterion_deb.found()
     'src/buffer.spec.c',
     'src/tokenizer.spec.c',
     'src/handle_error.spec.c',
-    'src/free_token_list.spec.c',
+    'src/token_list_util.spec.c',
+    'src/parse_complete_command.spec.c',
+    'src/parse_pipe_sequence.spec.c',
+    'src/parse_simple_command.spec.c',
+    'src/parse_arguments.spec.c',
+    'src/parse_io_redirect.spec.c',
+    'src/parse_io_here.spec.c',
+    'src/parse_io_file.spec.c',
+    'src/parser_utils.spec.c',
     'src/cut_copy.spec.c',
   ])
 

@@ -1,26 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   utils.c                                            :+:    :+:            */
+/*   handle_input.h                                     :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/04/06 17:03:13 by dkroeke       ########   odam.nl         */
+/*   Created: 2020/04/14 11:52:43 by lgutter       #+#    #+#                 */
+/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cetushell.h"
+#ifndef HANDLE_INPUT_H
+# define HANDLE_INPUT_H
+# include "tokenizer.h"
+# include "parser.h"
 
-void	ft_swap_rv(t_buff *buffer)
-{
-	size_t 		temp;
-
-	if (buffer->rv_start < buffer->rv_end)
-	{
-		temp = buffer->rv_start;
-		buffer->rv_start = buffer->rv_end;
-		buffer->rv_end = temp;
-		buffer->rv_start++;
-	}
-}
+int		handle_input(const char *buffer);
+#endif

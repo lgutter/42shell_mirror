@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   buffer.spec.c                                      :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
+/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: Invalid date        by               #+#    #+#                 */
-/*   Updated: 2020/04/06 17:42:50 by devan         ########   odam.nl         */
+/*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
+/*   Updated: 2020/04/06 17:03:13 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
