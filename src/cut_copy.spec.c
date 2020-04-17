@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*   cetushell - 21 Shell                                 ::::::::            */
-/*                                                      :+:    :+:            */
-/*   By: dkroeke <dkroeke@student.codam.nl>            +:+                    */
-/*       lgutter <lgutter@student.codam.nl>           +#+                     */
+/*                                                        ::::::::            */
+/*   cut_copy.spec.c                                    :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*                                                 #+#    #+#                 */
-/*   License: GPLv3                                ########   odam.nl         */
+/*   Created: Invalid date        by               #+#    #+#                 */
+/*   Updated: 0003/01/01 00:00:00 by               ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ Test(copy, at_start_from_left_to_right) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 4;
 	buffer->rv_start = 0;
 	buffer->rv_end = 4;
@@ -50,7 +50,7 @@ Test(copy, at_start_from_right_to_left) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 0;
 	buffer->rv_start = 5;
 	buffer->rv_end = 0;
@@ -75,7 +75,7 @@ Test(copy, at_start_length_null) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 4;
 	buffer->rv_start = 4;
 	buffer->rv_end = 4;
@@ -100,7 +100,7 @@ Test(copy, at_end_from_left_to_right) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 10;
 	buffer->rv_start = 6;
 	buffer->rv_end = 11;
@@ -125,7 +125,7 @@ Test(copy, at_end_from_right_to_left) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 6;
 	buffer->rv_start = 11;
 	buffer->rv_end = 6;
@@ -150,7 +150,7 @@ Test(copy, all_from_right_to_left) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 0;
 	buffer->rv_start = 11;
 	buffer->rv_end = 0;
@@ -175,7 +175,7 @@ Test(copy, two_characters_from_right_to_left) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 10;
 	buffer->rv_start = 1;
 	buffer->rv_end = 2;
@@ -200,7 +200,7 @@ Test(copy, two_character_from_left_to_right) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 10;
 	buffer->rv_start = 3;
 	buffer->rv_end = 1;
@@ -225,7 +225,7 @@ Test(cut, at_start_from_left_to_right) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 4;
 	buffer->rv_start = 0;
 	buffer->rv_end = 4;
@@ -250,7 +250,7 @@ Test(cut, at_start_from_right_to_left) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 0;
 	buffer->rv_start = 5;
 	buffer->rv_end = 0;
@@ -275,7 +275,7 @@ Test(cut, at_start_length_null) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 4;
 	buffer->rv_start = 4;
 	buffer->rv_end = 4;
@@ -299,7 +299,7 @@ Test(cut, at_end_from_left_to_right) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 10;
 	buffer->rv_start = 6;
 	buffer->rv_end = 10;
@@ -324,7 +324,7 @@ Test(cut, at_end_from_right_to_left) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 6;
 	buffer->rv_start = 11;
 	buffer->rv_end = 6;
@@ -349,7 +349,7 @@ Test(cut, all_from_right_to_left) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 0;
 	buffer->rv_start = 11;
 	buffer->rv_end = 0;
@@ -374,7 +374,7 @@ Test(cut, all_from_left_to_right) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 10;
 	buffer->rv_start = 0;
 	buffer->rv_end = 10;
@@ -399,7 +399,7 @@ Test(cut, two_character_right_to_left) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 11;
 	buffer->rv_start = 11;
 	buffer->rv_end = 9;
@@ -424,7 +424,7 @@ Test(cut, two_character_left_to_right) {
 	cr_assert_neq(buffer->buff, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->copy, NULL, "Malloc failed!");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 11;
 	buffer->rv_start = 9;
 	buffer->rv_end = 10;

@@ -12,38 +12,44 @@
 
 #include "cetushell.h"
 #include "input_control.h"
+#include "handle_input.h"
 
-int			cetushell(char **env)
+int			cetushell(void)
 {
 	t_shell		*shell;
+	char		*input;
 
 	shell = ft_memalloc(sizeof(t_shell));
 	shell->buffer = ft_memalloc(sizeof(t_buff));
-	if (shell->buffer == NULL || shell == NULL)
+	if (shell == NULL || shell->buffer == NULL)
 		return (1);
-	shell->envi = env;
 	configure_terminal(shell, 1);
 	while (1)
 	{
-		if (init_buffs(shell->buffer, &shell->cursor) == 1)
-			return (1);
-		if (prompt_shell(shell) == 1)
+		input = prompt_shell(shell, PROMPT_NORMAL);
+		if (input == NULL)
 		{
+			free(shell->buffer->prompt);
+			free(shell->buffer);
+			free(shell);
 			configure_terminal(shell, 0);
 			return (1);
 		}
+		handle_input(input);
+		free(input);
+		input = NULL;
 	}
 	return (0);
 }
 
-int			main(int ac, char **av, char **env)
+int			main(int ac, char **av)
 {
 	if (ac != 1)
 		ft_dprintf(2, "Huh? why %s? No arguments needed!\n", av[1]);
 	else
 	{
 		while (21)
-			if (cetushell(env) == 1)
+			if (cetushell() == 1)
 				return (0);
 	}
 	return (1);

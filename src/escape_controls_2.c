@@ -32,7 +32,7 @@ void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 	if (ft_strncmp(seq, ARROW_RIGHT, ft_strlen(ARROW_RIGHT)) == 0)
 	{
 		buffer->rv_start = buffer->rv_end;
-		if (buffer->index < buffer->len)
+		if (buffer->index < buffer->buff_len)
 		{
 			cursor->current.x++;
 			buffer->index++;

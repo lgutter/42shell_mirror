@@ -42,20 +42,35 @@ static void		clear_prompt(t_cursor *cursor)
 static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 {
 	clear_prompt(cursor);
-	ft_printf("%s", PROMPT_STR);
+	ft_printf("%s", buffer->prompt);
 	print_buffer(buffer);
 	ft_printf("%s", cursor->cur_buff);
 }
 
-int				prompt_shell(t_shell *shell)
+char			*prompt_shell(t_shell *shell, const char *prompt)
 {
-	while (42)
+	char	*temp;
+
+	if (init_buffs(shell->buffer, &shell->cursor, shell->copy, prompt) == 1)
+		return (NULL);
+	while (shell->buffer->state == 0)
 	{
 		get_winsize(shell);
-		set_cursor_pos(&shell->cursor, shell->buffer->len);
+		set_cursor_pos(&shell->cursor, shell->buffer->buff_len,
+		shell->buffer->prompt_len);
 		refresh_prompt(shell->buffer, &shell->cursor);
 		if (read_input(shell) == 1)
-			return (1);
+		{
+			free(shell->buffer->buff);
+			if (shell->buffer->copy != NULL)
+				free(shell->buffer->copy);
+			shell->buffer->copy = NULL;
+			shell->buffer->buff = NULL;
+			return (NULL);
+		}
 	}
-	return (0);
+	temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);
+	free(shell->buffer->buff);
+	shell->buffer->buff = NULL;
+	return (temp);
 }

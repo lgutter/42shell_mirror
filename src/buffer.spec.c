@@ -22,7 +22,7 @@ Test(remove_char, middle) {
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 4;
 	remove_char(buffer);
 	cr_expect_str_eq(buffer->buff, "Helo world");
@@ -38,7 +38,7 @@ Test(remove_char, begin) {
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 0;
 	remove_char(buffer);
 	cr_expect_str_eq(buffer->buff, "Hello world");
@@ -54,7 +54,7 @@ Test(remove_char, end) {
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 11;
 	remove_char(buffer);
 	cr_expect_str_eq(buffer->buff, "Hello worl");
@@ -70,7 +70,7 @@ Test(remove_char, multiple) {
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 5;
 	remove_char(buffer);
 	remove_char(buffer);
@@ -89,7 +89,7 @@ Test(remove_char, empty_string) {
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 0;
 	remove_char(buffer);
 	cr_expect_str_eq(buffer->buff, "");
@@ -105,7 +105,7 @@ Test(insert_char, begin) {
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 0;
 	insert_char(buffer, '!');
 	cr_expect_str_eq(buffer->buff, "!Hello world");
@@ -121,7 +121,7 @@ Test(insert_char, middle) {
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 5;
 	insert_char(buffer, '!');
 	cr_expect_str_eq(buffer->buff, "Hello! world");
@@ -137,7 +137,7 @@ Test(insert_char, end) {
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 11;
 	insert_char(buffer, '!');
 	cr_expect_str_eq(buffer->buff, "Hello world!");
@@ -154,7 +154,7 @@ Test(remove_word, start) {
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 5;
 	buffer->rv_end = 0;
 	buffer->rv_start = 5;
@@ -175,7 +175,7 @@ Test(remove_word, middle) {
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 8;
 	buffer->rv_end = 3;
 	buffer->rv_start = 8;
@@ -196,7 +196,7 @@ Test(remove_word, end) {
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
 	cr_assert_neq(buffer->buff, NULL, "Malloc Failed");
 	ft_strcpy(buffer->buff, "Hello world");
-	buffer->len = 11;
+	buffer->buff_len = 11;
 	buffer->index = 10;
 	buffer->rv_end = 8;
 	buffer->rv_start = 11;

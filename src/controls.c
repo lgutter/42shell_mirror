@@ -12,18 +12,15 @@
 
 #include "cetushell.h"
 #include "input_control.h"
-#include "handle_input.h"
 
 int			return_key(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (c == RETURN)
 	{
 		send_terminal(CURSOR_DOWN);
-		handle_input(buffer->buff);
-		get_cursor_pos(cursor);
-		ft_memset(buffer->buff, '\0', buffer->buff_size);
-		buffer->len = 0;
+		buffer->buff_len = 0;
 		buffer->index = 0;
+		buffer->state = 1;
 	}
 	return (0);
 }

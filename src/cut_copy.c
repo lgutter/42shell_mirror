@@ -19,15 +19,18 @@ int		copy(t_buff *buffer)
 
 	ft_swap_rv(buffer);
 	len = buffer->rv_start - buffer->rv_end;
+	if (len < 1)
+		return (0);
 	if (len == 1)
 	{
 		buffer->rv_end--;
 		len++;
 	}
-	while (len > buffer->copy_size)
-		if (buff_realloc(buffer, len, buffer->copy_size) == 1)
-			return (1);
-	ft_memset(buffer->copy, '\0', buffer->copy_size);
+	ft_memdel((void **)&buffer->copy);
+	buffer->copy = NULL;
+	buffer->copy = ft_memalloc(sizeof(char) * len + 1);
+	if (buffer->copy == NULL)
+		return (1);
 	ft_strncpy(buffer->copy, &buffer->buff[buffer->rv_end], len);
 	return (0);
 }
@@ -60,7 +63,7 @@ int		paste(t_buff *buffer, t_cursor *cursor)
 		if (insert_char(buffer, buffer->copy[i]) != 0)
 			return (1);
 		cursor->current.x++;
-		set_cursor_pos(cursor, buffer->len);
+		set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
 		i++;
 	}
 	return (0);
