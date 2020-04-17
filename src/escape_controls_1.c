@@ -17,7 +17,7 @@ void		shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (ft_strncmp(seq, SHIFT_RIGHT, ft_strlen(SHIFT_RIGHT)) == 0)
 	{
-		if (buffer->index < buffer->len - 1)
+		if (buffer->index < buffer->buff_len - 1)
 		{
 			if (buffer->rv_start == buffer->rv_end)
 			{
@@ -37,7 +37,7 @@ void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq)
 	if (ft_strncmp(seq, SHIFT_LEFT, ft_strlen(SHIFT_LEFT)) == 0 &&
 					cursor->current.x > 0)
 	{
-		if (buffer->index == buffer->len)
+		if (buffer->index == buffer->buff_len)
 		{
 			buffer->index--;
 			cursor->current.x--;
@@ -71,8 +71,9 @@ void		end_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (strncmp(seq, END, ft_strlen(END)) == 0)
 	{
-		cursor->current.x = (buffer->len + PROMPT_LEN) % cursor->max.x;
-		cursor->current.y = cursor->current.y + (buffer->len / cursor->max.x);
-		buffer->index = buffer->len;
+		cursor->current.x = (buffer->buff_len + PROMPT_LEN) % cursor->max.x;
+		cursor->current.y = cursor->current.y + (buffer->buff_len
+		/ cursor->max.x);
+		buffer->index = buffer->buff_len;
 	}
 }

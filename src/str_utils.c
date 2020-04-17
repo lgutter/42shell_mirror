@@ -28,7 +28,7 @@ void	ft_strexpand(char **source, const char *addition)
 	}
 }
 
-void		str_expand_triple(char **source, char *add1, char *add2)
+void	str_expand_triple(char **source, char *add1, char *add2)
 {
 	ft_strexpand(source, add1);
 	if (*source == NULL)

@@ -45,7 +45,7 @@ int			read_input(t_shell *shell)
 	int			ret;
 
 	c = '\0';
-	shell->buffer->len = ft_strlen(shell->buffer->buff);
+	shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
 	ret = read(STDIN_FILENO, &c, 1);
 	if (ret == -1)
 		return (2);

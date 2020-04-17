@@ -11,9 +11,7 @@
 /* ************************************************************************** */
 
 #include "utils.h"
-
-#define DQUOTE 2
-#define QUOTE 1
+#include "input_control.h"
 
 int			check_quote(char *word)
 {
@@ -93,15 +91,6 @@ int			remove_quotes(char **word)
 	return (0);
 }
 
-static char	*prompt_shell_temp(t_shell *shell, int type)
-{
-	ft_printf("terminated quote.\n");
-	if (type == 2)
-		return (ft_strdup("\""));
-	else
-		return (ft_strdup("'"));
-}
-
 int			complete_quote(t_shell *shell, char **word)
 {
 	char	*buff;
@@ -113,7 +102,7 @@ int			complete_quote(t_shell *shell, char **word)
 	quotes = check_quote(temp);
 	while (quotes < 0)
 	{
-		buff = prompt_shell_temp(shell, quotes == -2 ? DQUOTE : QUOTE);
+		buff = prompt_shell(shell, quotes == -2 ? PROMPT_DQUOTE : PROMPT_QUOTE);
 		ft_strexpand(&temp, buff);
 		free(buff);
 		if (temp == NULL)
