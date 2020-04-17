@@ -42,7 +42,7 @@ static int	words_simple_command(t_shell *shell, t_env *env_list,
 								t_simple_cmd *simple_command)
 {
 	t_io_redirect	*redirect;
-	t_argument		*argument;
+	t_argument		*current_arg;
 
 	redirect = simple_command->redirects;
 	while (redirect != NULL)
@@ -54,15 +54,15 @@ static int	words_simple_command(t_shell *shell, t_env *env_list,
 		}
 		redirect = redirect->next;
 	}
-	argument = simple_command->arguments;
-	while (argument != NULL)
+	current_arg = simple_command->arguments;
+	while (current_arg != NULL)
 	{
-		if (argument->argument != NULL)
+		if (current_arg->argument != NULL)
 		{
-			if (process_word(shell, env_list, &(argument->argument)) != 0)
+			if (process_word(shell, env_list, &(current_arg->argument)) != 0)
 				return (-1);
 		}
-		argument = argument->next;
+		current_arg = current_arg->next;
 	}
 	return (0);
 }
