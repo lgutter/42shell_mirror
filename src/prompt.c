@@ -64,7 +64,7 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 			free(shell->buffer->buff);
 			if (shell->buffer->copy != NULL)
 				free(shell->buffer->copy);
-			shell->buffer->copy =  NULL;
+			shell->buffer->copy = NULL;
 			shell->buffer->buff = NULL;
 			return (NULL);
 		}
