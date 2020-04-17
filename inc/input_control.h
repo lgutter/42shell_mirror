@@ -26,8 +26,11 @@
 */
 
 # define PROMPT_LEN 10
-# define PROMPT_STR "Cetush >>"
-
+# define PROMPT_NORMAL "Cetush >>"
+# define PROMPT_QUOTE "quote>"
+# define PROMPT_DQUOTE "dquote>"
+# define PROMPT_PIPE "pipe>"
+# define PROMPT_HEREDOC "heredoc>"
 # define CLEAR_TO_END "ce"
 # define CURSOR_DOWN "do"
 # define CLEAR_SCREEN "cl"
@@ -121,7 +124,8 @@ int			read_input(t_shell *shell);
 **
 ** arg: *shell: pointer to struct defined in cetushell.h.
 */
-int			init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt);
+int			init_buffs(t_buff *buffer, t_cursor *cursor, char *shell_copy, \
+	const char *prompt);
 
 /*
 ** insert_char requires a pointer to the struct t_buff defined in cetushell.h
@@ -153,7 +157,7 @@ void		remove_char(t_buff *buffer);
 ** arg: buff_size: The size of the current allocation of buffer.
 ** arg: len: The actual length (characters) of the buffer
 */
-int			buff_realloc(t_buff *buffer, size_t len, size_t size);
+int			buff_realloc(t_buff *buffer);
 
 /*
 ** read_esc_seq requires as input a char, a pointer to the t_cursor and t_buff
@@ -291,8 +295,8 @@ void		remove_word(t_buff *buffer, t_cursor *cursor);
 ** arg: *cursor: pointer to t_cursor struct defined in cetushell.h.
 ** arg: len: the buffer max len to prevent the cursor from going over it.
 */
-void		set_cursor_pos(t_cursor *cursor, size_t buff_len, 
-								size_t prompt_len);
+void		set_cursor_pos(t_cursor *cursor, size_t buff_len,
+	size_t prompt_len);
 
 /*
 ** get_cursor_pos will get the starting cursor position and will set its

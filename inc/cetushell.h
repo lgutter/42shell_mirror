@@ -60,6 +60,7 @@ typedef struct		s_shell
 	t_cursor		cursor;
 	struct winsize	winsize;
 	t_buff			*buffer;
+	char			*copy;
 }					t_shell;
 
 #endif

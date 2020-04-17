@@ -15,6 +15,8 @@
 
 static void	cursor_next_line(t_cursor *cursor, size_t len, size_t prompt_len)
 {
+	if (cursor->max.x == 0)
+		return ;
 	if ((((len - 1 + prompt_len) / cursor->max.x) + cursor->start.y) >
 	cursor->max.y)
 	{

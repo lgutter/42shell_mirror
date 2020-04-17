@@ -12,7 +12,7 @@
 
 #include "cetushell.h"
 #include "input_control.h"
-#include "prompt_str.h"
+#include "handle_input.h"
 
 int			cetushell(void)
 {
@@ -20,17 +20,24 @@ int			cetushell(void)
 	char		*input;
 
 	shell = ft_memalloc(sizeof(t_shell));
-	if (shell == NULL)
+	shell->buffer = ft_memalloc(sizeof(t_buff));
+	if (shell == NULL || shell->buffer == NULL)
 		return (1);
 	configure_terminal(shell, 1);
 	while (1)
 	{
-		input = prompt_shell(shell, g_prompt[NORMAL]);
+		input = prompt_shell(shell, PROMPT_NORMAL);
 		if (input == NULL)
 		{
+			free(shell->buffer->prompt);
+			free(shell->buffer);
+			free(shell);
 			configure_terminal(shell, 0);
 			return (1);
 		}
+		handle_input(input);
+		free(input);
+		input = NULL;
 	}
 	return (0);
 }

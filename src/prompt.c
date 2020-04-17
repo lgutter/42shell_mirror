@@ -47,14 +47,11 @@ static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 	ft_printf("%s", cursor->cur_buff);
 }
 
-char		*prompt_shell(t_shell *shell, const char *prompt)
+char			*prompt_shell(t_shell *shell, const char *prompt)
 {
 	char	*temp;
 
-	shell->buffer = ft_memalloc(sizeof(t_buff));
-	if (shell->buffer == NULL || prompt == NULL)
-		return (NULL);
-	if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
+	if (init_buffs(shell->buffer, &shell->cursor, shell->copy, prompt) == 1)
 		return (NULL);
 	while (shell->buffer->state == 0)
 	{
@@ -63,9 +60,17 @@ char		*prompt_shell(t_shell *shell, const char *prompt)
 		shell->buffer->prompt_len);
 		refresh_prompt(shell->buffer, &shell->cursor);
 		if (read_input(shell) == 1)
+		{
+			free(shell->buffer->buff);
+			if (shell->buffer->copy != NULL)
+				free(shell->buffer->copy);
+			shell->buffer->copy =  NULL;
+			shell->buffer->buff = NULL;
 			return (NULL);
+		}
 	}
 	temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);
 	free(shell->buffer->buff);
+	shell->buffer->buff = NULL;
 	return (temp);
 }
