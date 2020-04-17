@@ -27,12 +27,15 @@ static size_t	env_str_len(char *string)
 	return (index);
 }
 
-static void		str_expand_triple(char **source, char *add1, char *add2)
+static int		abort_dollar(char *key, char *ret, char **start, size_t len)
 {
-	ft_strexpand(source, add1);
-	if (*source == NULL)
-		return ;
-	ft_strexpand(source, add2);
+	free(ret);
+	free(key);
+	if (len == 0)
+		(*start)++;
+	if (len == 0)
+		return (0);
+	return (-1);
 }
 
 static int		expand_dollar(t_env *env_list, char **string, char **start)
@@ -46,19 +49,18 @@ static int		expand_dollar(t_env *env_list, char **string, char **start)
 	len = env_str_len((*start) + 1);
 	key = ft_strndup((*start) + 1, len);
 	if (ret == NULL || key == NULL || len == 0)
-	{
-		free(ret);
-		free(key);
-		if (len == 0)
-			(*start)++;
-		return (len == 0 ? 0 : -1);
-	}
-	value = ft_getenv(env_list, key);
+		return (abort_dollar(key, ret, start, len));
+	value = ft_getenv_quote(env_list, key);
 	free(key);
 	str_expand_triple(&ret, value, (*start) + len + 1);
 	if (ret == NULL)
 		return (-1);
-	*start = ret + (*start - *string) + (ft_strlen(value));
+	if (value == NULL)
+		len = 0;
+	else
+		len = ft_strlen(value);
+	*start = ret + (*start - *string) + len;
+	free(value);
 	free(*string);
 	*string = ret;
 	return (0);
@@ -74,10 +76,11 @@ static int		expand_home(t_env *env_list, char **string)
 	temp = *string;
 	if (temp[0] == '~' && (temp[1] == '\0' || temp[1] == '/'))
 	{
-		value = ft_getenv(env_list, "HOME");
+		value = ft_getenv_quote(env_list, "HOME");
 		if (value != NULL)
 		{
 			temp = ft_strjoin(value, (temp + 1));
+			free(value);
 			if (temp == NULL)
 				return (-1);
 			free(*string);

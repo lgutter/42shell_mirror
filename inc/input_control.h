@@ -25,7 +25,6 @@
 **--------------------------Defines-------------------------------------------
 */
 
-# define PROMPT_LEN 10
 # define PROMPT_NORMAL "Cetush >>"
 # define PROMPT_QUOTE "quote>"
 # define PROMPT_DQUOTE "dquote>"

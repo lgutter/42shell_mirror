@@ -65,7 +65,9 @@ typedef enum		e_state
 	state_newline,
 	semicolon,
 	squote,
+	unt_squote,
 	dquote,
+	unt_dquote,
 	backslash,
 	dq_backslash
 }					t_state;
@@ -358,17 +360,31 @@ static const t_trans g_token_trans[] = {
 	[squote] =
 	{
 		.rules = {
-			['\0']		= {eof, WORD, SKIP_CHAR},
+			['\0']		= {unt_squote, undetermined, ADD_CHAR_POST},
 			['\'']		= {state_word, undetermined, ADD_CHAR_POST}
+		},
+		.catch_state	= {squote, undetermined, ADD_CHAR_POST}
+	},
+	[unt_squote] =
+	{
+		.rules = {
+			['\0']		= {squote, undetermined, ADD_CHAR_POST}
 		},
 		.catch_state	= {squote, undetermined, ADD_CHAR_POST}
 	},
 	[dquote] =
 	{
 		.rules = {
-			['\0']		= {eof, WORD, SKIP_CHAR},
+			['\0']		= {unt_dquote, undetermined, ADD_CHAR_POST},
 			['"']		= {state_word, undetermined, ADD_CHAR_POST},
 			['\\']		= {dq_backslash, undetermined, ADD_CHAR_POST}
+		},
+		.catch_state	= {dquote, undetermined, ADD_CHAR_POST}
+	},
+	[unt_dquote] =
+	{
+		.rules = {
+			['\0']		= {dquote, undetermined, ADD_CHAR_POST}
 		},
 		.catch_state	= {dquote, undetermined, ADD_CHAR_POST}
 	},

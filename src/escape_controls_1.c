@@ -61,7 +61,7 @@ void		home_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (strncmp(seq, HOME, ft_strlen(HOME)) == 0)
 	{
-		cursor->current.x = PROMPT_LEN;
+		cursor->current.x = buffer->prompt_len;
 		cursor->current.y = cursor->start.y;
 		buffer->index = 0;
 	}
@@ -71,7 +71,8 @@ void		end_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (strncmp(seq, END, ft_strlen(END)) == 0)
 	{
-		cursor->current.x = (buffer->buff_len + PROMPT_LEN) % cursor->max.x;
+		cursor->current.x = (buffer->buff_len + buffer->prompt_len)\
+							% cursor->max.x;
 		cursor->current.y = cursor->current.y + (buffer->buff_len
 		/ cursor->max.x);
 		buffer->index = buffer->buff_len;

@@ -51,7 +51,8 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
 			remove_word(buffer, cursor);
 		}
 		else if ((cursor->current.y == cursor->start.y && \
-		cursor->current.x > PROMPT_LEN) || cursor->current.y != cursor->start.y)
+		cursor->current.x > buffer->prompt_len) ||
+		cursor->current.y != cursor->start.y)
 		{
 			cursor->current.x--;
 			remove_char(buffer);

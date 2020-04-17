@@ -54,6 +54,8 @@ src_files = files([
   'src/handle_error.c',
   'src/utils.c',
   'src/str_utils.c',
+  'src/quote_utils_1.c',
+  'src/quote_utils_2.c',
   'src/handle_input.c',
   'src/convert_env_to_envp.c',
   'src/dup_sys_env.c',
@@ -62,6 +64,7 @@ src_files = files([
   'src/ft_setenv.c',
   'src/ft_unsetenv.c',
   'src/free_env_list.c',
+  'src/word_processing.c',
   'src/temp_print_token_parse.c',
 ])
 
@@ -97,6 +100,8 @@ if libcriterion_deb.found()
     'src/ft_getenv.spec.c',
     'src/ft_setenv.spec.c',
     'src/ft_unsetenv.spec.c',
+    'src/quote_utils.spec.c',
+    'src/word_processing.spec.c',
   ])
 
   tester = executable('test-cetushell',

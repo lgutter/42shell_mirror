@@ -35,7 +35,7 @@ int			cetushell(void)
 			configure_terminal(shell, 0);
 			return (1);
 		}
-		handle_input(input);
+		handle_input(shell, &input);
 		free(input);
 		input = NULL;
 	}
