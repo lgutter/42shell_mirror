@@ -46,6 +46,8 @@ char	*ft_strndup(const char *string, size_t len)
 	{
 		return (NULL);
 	}
+	if (ft_strlen(string) < len)
+		len = ft_strlen(string);
 	ret = (char *)malloc(sizeof(char) * (len + 1));
 	if (ret != NULL)
 	{

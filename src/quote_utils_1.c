@@ -65,7 +65,7 @@ static void	str_cpy_no_quotes(char *dst, const char *src)
 			i++;
 		}
 		dst[j] = src[i];
-		i++;
+		i = (src[i] == '\0') ? i : i + 1;
 		j++;
 	}
 }
@@ -98,10 +98,13 @@ int			complete_quote(t_shell *shell, char **word)
 	int		quotes;
 
 	temp = ft_strdup(*word);
+	if (temp == NULL)
+		return (-1);
 	buff = NULL;
 	quotes = check_quote(temp);
 	while (quotes < 0)
 	{
+		ft_strexpand(&temp, "\n");
 		buff = prompt_shell(shell, quotes == -2 ? PROMPT_DQUOTE : PROMPT_QUOTE);
 		ft_strexpand(&temp, buff);
 		free(buff);

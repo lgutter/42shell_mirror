@@ -16,7 +16,7 @@
 # include "parser.h"
 # include "environment.h"
 
-int		handle_input(t_shell *shell, char *buffer);
+int		handle_input(t_shell *shell, char **buffer);
 
 int		word_processing(t_shell *shell, t_env *env_list,
 						t_complete_cmd *complete_command);

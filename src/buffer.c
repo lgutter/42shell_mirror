@@ -24,6 +24,11 @@ const char *prompt)
 	buffer->prompt_len = ft_strlen(prompt) + 1;
 	if (buffer->prompt == NULL)
 		buffer->prompt = ft_strndup(prompt, buffer->prompt_len);
+	else if (prompt != NULL && ft_strcmp(prompt, buffer->prompt) != 0)
+	{
+		free(buffer->prompt);
+		buffer->prompt = ft_strndup(prompt, buffer->prompt_len);
+	}
 	buffer->buff = (char *)ft_memalloc(sizeof(char) * INPUT_BUFF_SIZE + 1);
 	if (buffer->copy == NULL)
 		buffer->copy = (char *)ft_memalloc(sizeof(char) * INPUT_BUFF_SIZE + 1);

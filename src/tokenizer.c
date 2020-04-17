@@ -81,24 +81,25 @@ static int		handle_token(t_rules state_rules, t_token **start,
 	return (ret);
 }
 
-static int		check_unquoted(t_shell *shell, t_rules *rules, char **input)
+static int		check_unquoted(t_shell *shell, t_rules *rules,
+								char **input, size_t *i)
 {
 	if (rules->next_state == unt_dquote)
 	{
 		if (complete_quote(shell, input) != 0)
 			return (-1);
-		*rules = init_state(unt_dquote, '\0');
+		*rules = init_state(dquote, (*input)[*i]);
 	}
 	else if (rules->next_state == unt_squote)
 	{
 		if (complete_quote(shell, input) != 0)
 			return (-1);
-		*rules = init_state(unt_squote, '\0');
+		*rules = init_state(squote, (*input)[*i]);
 	}
 	return (0);
 }
 
-t_token			*tokenizer(t_shell *shell, char *input)
+t_token			*tokenizer(t_shell *shell, char **input)
 {
 	t_rules		state_rules;
 	t_token		*start;
@@ -111,10 +112,10 @@ t_token			*tokenizer(t_shell *shell, char *input)
 	i = 0;
 	while (1)
 	{
-		state_rules = init_state(cur_state, input[i]);
-		if (check_unquoted(shell, &state_rules, &input) != 0)
+		state_rules = init_state(cur_state, (*input)[i]);
+		if (check_unquoted(shell, &state_rules, input, &i) != 0)
 			return (free_token_list(&start));
-		if (handle_token(state_rules, &start, &buff, input[i]) != 0)
+		if (handle_token(state_rules, &start, &buff, (*input)[i]) != 0)
 			return (free_token_list(&start));
 		if (state_rules.next_state == eof)
 			return (start);

@@ -30,7 +30,7 @@ static int	process_word(t_shell *shell, t_env *env_list, char **word)
 		if (expand_variable(env_list, word) != 0)
 			return (-1);
 	}
-	if (quote_type > 0)
+	if (count_quote_chars(*word) > 0)
 	{
 		if (remove_quotes(word) != 0)
 			return (-1);

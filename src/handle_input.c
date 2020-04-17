@@ -13,14 +13,14 @@
 #include "handle_input.h"
 #include "temp_print_token_parse.h"
 
-int		handle_input(t_shell *shell, char *buffer)
+int		handle_input(t_shell *shell, char **buffer)
 {
 	t_token			*tokens;
 	t_token			*tokens_start;
 	t_complete_cmd	*complete_command;
 	t_env			*env_list;
 
-	if (buffer == NULL)
+	if (buffer == NULL || *buffer == NULL)
 		return (-1);
 	tokens = tokenizer(shell, buffer);
 	tokens_start = tokens;

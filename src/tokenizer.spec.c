@@ -17,24 +17,27 @@
 Test(tokenizer_tests, basic_mandatory_no_tokens)
 {
 	t_token *result = NULL;
+	char 	*input = "";
 
-	result = tokenizer(NULL, "");
+	result = tokenizer(NULL, &input);
 	cr_expect_eq(result, NULL);
 }
 
 Test(tokenizer_tests, basic_mandatory_extra_blanks_no_tokens)
 {
 	t_token *result = NULL;
+	char 	*input = "  		 	";
 
-	result = tokenizer(NULL, "  		 	");
+	result = tokenizer(NULL, &input);
 	cr_expect_eq(result, NULL);
 }
 
 Test(tokenizer_tests, basic_mandatory_one_word_token)
 {
 	t_token *result = NULL;
+	char 	*input = "7oo";
 
-	result = tokenizer(NULL, "7oo");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "7oo");
@@ -43,8 +46,9 @@ Test(tokenizer_tests, basic_mandatory_one_word_token)
 Test(tokenizer_tests, basic_mandatory_one_word_token_extra_blanks)
 {
 	t_token *result = NULL;
+	char 	*input = "  		  7oo			  ";
 
-	result = tokenizer(NULL, "  		  7oo			  ");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "7oo");
@@ -54,8 +58,9 @@ Test(tokenizer_tests, basic_mandatory_one_word_token_extra_blanks)
 Test(tokenizer_tests, basic_mandatory_one_word_token_dquote)
 {
 	t_token *result = NULL;
+	char 	*input = "\"author';foo'\"";
 
-	result = tokenizer(NULL, "\"author';foo'\"");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "\"author';foo'\"");
@@ -65,8 +70,9 @@ Test(tokenizer_tests, basic_mandatory_one_word_token_dquote)
 Test(tokenizer_tests, basic_mandatory_one_word_token_dquote_continued)
 {
 	t_token *result = NULL;
+	char 	*input = "foo\"bar\"baz";
 
-	result = tokenizer(NULL, "foo\"bar\"baz");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "foo\"bar\"baz");
@@ -76,8 +82,9 @@ Test(tokenizer_tests, basic_mandatory_one_word_token_dquote_continued)
 Test(tokenizer_tests, basic_mandatory_one_word_token_squote_continued)
 {
 	t_token *result = NULL;
+	char 	*input = "foo'bar'baz";
 
-	result = tokenizer(NULL, "foo'bar'baz");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "foo'bar'baz");
@@ -87,8 +94,9 @@ Test(tokenizer_tests, basic_mandatory_one_word_token_squote_continued)
 Test(tokenizer_tests, basic_mandatory_one_word_token_squote_everything)
 {
 	t_token *result = NULL;
+	char 	*input = "		 '&>&<;|\n\"2<&	 \\'  ";
 
-	result = tokenizer(NULL, "		 '&>&<;|\n\"2<&	 \\'  ");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "'&>&<;|\n\"2<&	 \\'");
@@ -98,8 +106,9 @@ Test(tokenizer_tests, basic_mandatory_one_word_token_squote_everything)
 Test(tokenizer_tests, basic_mandatory_one_word_token_dquote_everything)
 {
 	t_token *result = NULL;
+	char 	*input = "	 \"&>&<;|\n\\\"2<&	 \\\"\" 	 ";
 
-	result = tokenizer(NULL, "	 \"&>&<;|\n\\\"2<&	 \\\"\" 	 ");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "\"&>&<;|\n\\\"2<&	 \\\"\"");
@@ -109,8 +118,9 @@ Test(tokenizer_tests, basic_mandatory_one_word_token_dquote_everything)
 Test(tokenizer_tests, basic_mandatory_three_tokens_word_semi_word)
 {
 	t_token *result = NULL;
+	char 	*input = "\\\"\\ ;\\;";
 
-	result = tokenizer(NULL, "\\\"\\ ;\\;");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "\\\"\\ ");
@@ -128,8 +138,9 @@ Test(tokenizer_tests, basic_mandatory_three_tokens_word_semi_word)
 Test(tokenizer_tests, basic_mandatory_two_word_tokens_extra_blanks)
 {
 	t_token *result = NULL;
+	char 	*input = "  		  7oo		foo42	  ";
 
-	result = tokenizer(NULL, "  		  7oo		foo42	  ");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "7oo");
@@ -143,8 +154,9 @@ Test(tokenizer_tests, basic_mandatory_two_word_tokens_extra_blanks)
 Test(tokenizer_tests, basic_mandatory_two_word_tokens_with_punctuation)
 {
 	t_token *result = NULL;
+	char 	*input = "ca,t meson.build";
 
-	result = tokenizer(NULL, "ca,t meson.build");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "ca,t");
@@ -158,8 +170,9 @@ Test(tokenizer_tests, basic_mandatory_two_word_tokens_with_punctuation)
 Test(tokenizer_tests, basic_mandatory_four_tokens_word_io_number_lessamp_word)
 {
 	t_token *result = NULL;
+	char 	*input = "7oo		42>&2";
 
-	result = tokenizer(NULL, "7oo		42>&2");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "7oo");
@@ -181,8 +194,9 @@ Test(tokenizer_tests, basic_mandatory_four_tokens_word_io_number_lessamp_word)
 Test(tokenizer_tests, basic_mandatory_four_tokens_word_dless_lessamp_great)
 {
 	t_token *result = NULL;
+	char 	*input = "7oo		<<<&>";
 
-	result = tokenizer(NULL, "7oo		<<<&>");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "7oo");
@@ -204,8 +218,9 @@ Test(tokenizer_tests, basic_mandatory_four_tokens_word_dless_lessamp_great)
 Test(tokenizer_tests, basic_mandatory_four_tokens_word_dgreat_greatamp_less)
 {
 	t_token *result = NULL;
+	char 	*input = "7oo		>>>&<";
 
-	result = tokenizer(NULL, "7oo		>>>&<");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "7oo");
@@ -227,8 +242,9 @@ Test(tokenizer_tests, basic_mandatory_four_tokens_word_dgreat_greatamp_less)
 Test(tokenizer_tests, basic_mandatory_four_tokens_word_pipe_squote_amp)
 {
 	t_token *result = NULL;
+	char 	*input = "echo|'\\$(CC)' &";
 
-	result = tokenizer(NULL, "echo|'\\$(CC)' &");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, "echo");
@@ -250,8 +266,9 @@ Test(tokenizer_tests, basic_mandatory_four_tokens_word_pipe_squote_amp)
 Test(tokenizer_tests, basic_mandatory_four_tokens_newline_word_semi_word)
 {
 	t_token *result = NULL;
+	char 	*input = "\n $PWD;	 foo";
 
-	result = tokenizer(NULL, "\n $PWD;	 foo");
+	result = tokenizer(NULL, &input);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, NEWLINE);
 	cr_expect_str_eq(result->value, "\n");
@@ -277,7 +294,7 @@ Test(tokenizer_tests, edge_case_mandatory_buffer_expansion)
 
 	longstr = ft_memalloc(BUFFER_SIZE + 43);
 	ft_memset(longstr, 'a', BUFFER_SIZE + 42);
-	result = tokenizer(NULL, longstr);
+	result = tokenizer(NULL, &longstr);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);
 	cr_expect_str_eq(result->value, longstr);
@@ -286,7 +303,8 @@ Test(tokenizer_tests, edge_case_mandatory_buffer_expansion)
 Test(tokenizer_tests, edge_case_mandatory_extra_blanks_null_term_no_tokens)
 {
 	t_token *result = NULL;
+	char 	*input = "  	\0	 foo	";
 
-	result = tokenizer(NULL, "  	\0	 foo	");
+	result = tokenizer(NULL, &input);
 	cr_expect_eq(result, NULL);
 }

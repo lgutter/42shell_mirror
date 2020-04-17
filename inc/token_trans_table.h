@@ -360,7 +360,7 @@ static const t_trans g_token_trans[] = {
 	[squote] =
 	{
 		.rules = {
-			['\0']		= {eof, WORD, SKIP_CHAR},
+			['\0']		= {unt_squote, undetermined, ADD_CHAR_POST},
 			['\'']		= {state_word, undetermined, ADD_CHAR_POST}
 		},
 		.catch_state	= {squote, undetermined, ADD_CHAR_POST}
@@ -368,14 +368,14 @@ static const t_trans g_token_trans[] = {
 	[unt_squote] =
 	{
 		.rules = {
-			['\0']		= {squote, undetermined, SKIP_CHAR}
+			['\0']		= {squote, undetermined, ADD_CHAR_POST}
 		},
-		.catch_state	= {squote, undetermined, SKIP_CHAR}
+		.catch_state	= {squote, undetermined, ADD_CHAR_POST}
 	},
 	[dquote] =
 	{
 		.rules = {
-			['\0']		= {eof, WORD, SKIP_CHAR},
+			['\0']		= {unt_dquote, undetermined, ADD_CHAR_POST},
 			['"']		= {state_word, undetermined, ADD_CHAR_POST},
 			['\\']		= {dq_backslash, undetermined, ADD_CHAR_POST}
 		},
@@ -384,9 +384,9 @@ static const t_trans g_token_trans[] = {
 	[unt_dquote] =
 	{
 		.rules = {
-			['\0']		= {dquote, undetermined, SKIP_CHAR}
+			['\0']		= {dquote, undetermined, ADD_CHAR_POST}
 		},
-		.catch_state	= {dquote, undetermined, SKIP_CHAR}
+		.catch_state	= {dquote, undetermined, ADD_CHAR_POST}
 	},
 	[backslash] =
 	{
