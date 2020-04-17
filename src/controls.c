@@ -19,7 +19,7 @@ int			return_key(t_buff *buffer, t_cursor *cursor, char c)
 	if (c == RETURN)
 	{
 		send_terminal(CURSOR_DOWN);
-		handle_input(buffer->buff);
+		handle_input(NULL, buffer->buff);
 		get_cursor_pos(cursor);
 		ft_memset(buffer->buff, '\0', buffer->buff_size);
 		buffer->len = 0;

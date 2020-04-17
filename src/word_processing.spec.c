@@ -154,7 +154,7 @@ Test(word_processing_unit, valid_single_token_no_processing)
 	expected_command = parse_complete_command(&token1);
 	ret = diff_complete_command(command, expected_command);
 	cr_assert_eq(ret, expected_diff_ret, "FATAL in prep: expected return %i, got %i.", expected_diff_ret, ret);
-	ret = word_processing(NULL, command);
+	ret = word_processing(NULL, NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
@@ -177,7 +177,7 @@ Test(word_processing_unit, valid_single_token_remove_quotes)
 	expected_command = parse_complete_command(&token1);
 	ret = diff_complete_command(command, expected_command);
 	cr_assert_eq(ret, 0, "FATAL in prep: expected return %i, got %i.", 0, ret);
-	ret = word_processing(NULL, command);
+	ret = word_processing(NULL, NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
@@ -217,7 +217,7 @@ Test(word_processing_unit, valid_argument_redir_remove_quotes)
 	command = parse_complete_command(&token1);
 	token1 = token_start;
 	expected_command = parse_complete_command(&token1);
-	ret = word_processing(NULL, command);
+	ret = word_processing(NULL, NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
@@ -268,7 +268,7 @@ Test(word_processing_unit, valid_two_arguments_redir_remove_quotes)
 	command = parse_complete_command(&token1);
 	token1 = token_start;
 	expected_command = parse_complete_command(&token1);
-	ret = word_processing(NULL, command);
+	ret = word_processing(NULL, NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
@@ -326,7 +326,7 @@ Test(word_processing_unit, valid_argument_redir_expansion_with_quotes)
 	command = parse_complete_command(&token1);
 	token1 = token_start;
 	expected_command = parse_complete_command(&token1);
-	ret = word_processing(env_list, command);
+	ret = word_processing(NULL, env_list, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
@@ -368,7 +368,7 @@ Test(word_processing_unit, valid_redir_here_doc)
 	char			*expected_str = "\"$foo";
 
 	command = parse_complete_command(&token1);
-	ret = word_processing(NULL, command);
+	ret = word_processing(NULL, NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	cr_assert_neq(command, NULL);
 	cr_expect_eq(NULL, command->next);

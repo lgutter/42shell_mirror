@@ -83,7 +83,7 @@ int			remove_quotes(char **word);
 **	-1: on failure.
 **	 0:	on succes.
 */
-int			complete_quote(char **word);
+int			complete_quote(t_shell *shell, char **word);
 
 /*
 **	counts the number of quote symbols (["], ['], [\]) in str.

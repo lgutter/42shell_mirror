@@ -12,6 +12,9 @@
 
 #include "utils.h"
 
+#define DQUOTE 2
+#define QUOTE 1
+
 int			check_quote(char *word)
 {
 	char	current_quote;
@@ -90,26 +93,34 @@ int			remove_quotes(char **word)
 	return (0);
 }
 
-int			complete_quote(char **word)
+static char	*prompt_shell_temp(t_shell *shell, int type)
 {
-	// char	*buff;
+	ft_printf("terminated quote.\n");
+	if (type == 2)
+		return (ft_strdup("\""));
+	else
+		return (ft_strdup("'"));
+}
+
+int			complete_quote(t_shell *shell, char **word)
+{
+	char	*buff;
 	char	*temp;
 	int		quotes;
 
 	temp = ft_strdup(*word);
-	// buff = NULL;
+	buff = NULL;
 	quotes = check_quote(temp);
 	while (quotes < 0)
 	{
-		// buff = get_input(quotes == -2 ? DQUOTE : QUOTE);
-		// ft_strexpand(&temp, buff);
-		// free(buff);
-		// if (temp == NULL)
-		// 	return (-1);
+		buff = prompt_shell_temp(shell, quotes == -2 ? DQUOTE : QUOTE);
+		ft_strexpand(&temp, buff);
+		free(buff);
+		if (temp == NULL)
+			return (-1);
 		quotes = check_quote(temp);
 	}
 	free(*word);
 	*word = temp;
 	return (0);
 }
-

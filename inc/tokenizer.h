@@ -16,6 +16,7 @@
 # include "libft.h"
 # include "token_trans_table.h"
 # include "handle_error.h"
+# include "cetushell.h"
 # include <stdlib.h>
 
 /*
@@ -47,7 +48,7 @@ typedef struct			s_token
 **
 **	return: a linked list of tokens, containing a token type and value.
 */
-t_token					*tokenizer(char *input);
+t_token					*tokenizer(t_shell *shell, char *input);
 
 /*
 **	The add_token function creates a new node in the list of tokens,

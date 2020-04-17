@@ -13,7 +13,7 @@
 #include "handle_input.h"
 #include "temp_print_token_parse.h"
 
-int		handle_input(char *buffer)
+int		handle_input(t_shell *shell, char *buffer)
 {
 	t_token			*tokens;
 	t_token			*tokens_start;
@@ -22,7 +22,7 @@ int		handle_input(char *buffer)
 
 	if (buffer == NULL)
 		return (-1);
-	tokens = tokenizer(buffer);
+	tokens = tokenizer(shell, buffer);
 	tokens_start = tokens;
 	print_tokens(tokens);
 	env_list = dup_sys_env();
@@ -31,7 +31,7 @@ int		handle_input(char *buffer)
 		complete_command = parse_complete_command(&tokens);
 		if (complete_command != NULL)
 		{
-			word_processing(env_list, complete_command);
+			word_processing(shell, env_list, complete_command);
 			print_complete_command(complete_command);
 			free_complete_command(complete_command);
 		}

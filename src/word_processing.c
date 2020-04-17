@@ -14,14 +14,14 @@
 #include "utils.h"
 #include "environment.h"
 
-static int	process_word(t_env *env_list, char **word)
+static int	process_word(t_shell *shell, t_env *env_list, char **word)
 {
 	int	quote_type;
 
 	quote_type = check_quote(*word);
 	if (quote_type < 0)
 	{
-		if (complete_quote(word) != 0)
+		if (complete_quote(shell, word) != 0)
 			return (-1);
 		quote_type = check_quote(*word);
 	}
@@ -38,7 +38,8 @@ static int	process_word(t_env *env_list, char **word)
 	return (0);
 }
 
-static int	words_simple_command(t_env *env_list, t_simple_cmd *simple_command)
+static int	words_simple_command(t_shell *shell, t_env *env_list,
+								t_simple_cmd *simple_command)
 {
 	t_io_redirect	*redirect;
 	t_argument		*argument;
@@ -48,7 +49,7 @@ static int	words_simple_command(t_env *env_list, t_simple_cmd *simple_command)
 	{
 		if (redirect->io_file != NULL && redirect->io_file->filename != NULL)
 		{
-			if (process_word(env_list, &(redirect->io_file->filename)) != 0)
+			if (process_word(shell, env_list, &(redirect->io_file->filename)))
 				return (-1);
 		}
 		redirect = redirect->next;
@@ -58,7 +59,7 @@ static int	words_simple_command(t_env *env_list, t_simple_cmd *simple_command)
 	{
 		if (argument->argument != NULL)
 		{
-			if (process_word(env_list, &(argument->argument)) != 0)
+			if (process_word(shell, env_list, &(argument->argument)) != 0)
 				return (-1);
 		}
 		argument = argument->next;
@@ -66,7 +67,8 @@ static int	words_simple_command(t_env *env_list, t_simple_cmd *simple_command)
 	return (0);
 }
 
-int			word_processing(t_env *env_list, t_complete_cmd *complete_command)
+int			word_processing(t_shell *shell, t_env *env_list,
+							t_complete_cmd *complete_command)
 {
 	t_complete_cmd	*command;
 	t_pipe_sequence	*pipe_seq;
@@ -77,7 +79,7 @@ int			word_processing(t_env *env_list, t_complete_cmd *complete_command)
 		pipe_seq = command->pipe_sequence;
 		while (pipe_seq != NULL)
 		{
-			if (words_simple_command(env_list, pipe_seq->simple_command) != 0)
+			if (words_simple_command(shell, env_list, pipe_seq->simple_command))
 				return (-1);
 			pipe_seq = pipe_seq->next;
 		}
