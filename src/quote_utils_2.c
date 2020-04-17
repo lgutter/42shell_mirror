@@ -12,10 +12,10 @@
 
 #include "utils.h"
 
-size_t		count_quote_chars(char *str)
+int			count_quote_chars(char *str)
 {
-	size_t	i;
-	size_t	count;
+	int		i;
+	int		count;
 	char	quote;
 
 	i = 0;

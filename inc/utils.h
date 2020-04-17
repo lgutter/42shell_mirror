@@ -90,7 +90,7 @@ int			complete_quote(t_shell *shell, char **word);
 **	returns:
 **	number of quote characters in the string passed as argument.
 */
-size_t		count_quote_chars(char *str);
+int			count_quote_chars(char *str);
 
 /*
 **	makes a copy of str with a backslash ([\]) in front of every
