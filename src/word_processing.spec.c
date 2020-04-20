@@ -360,12 +360,12 @@ Test(word_processing_unit, valid_argument_redir_expansion_with_quotes)
 
 Test(word_processing_unit, valid_redir_here_doc)
 {
-	t_token 		*token2 = init_token(WORD, "\"$foo", NULL);
+	t_token 		*token2 = init_token(WORD, "\"$foo\"", NULL);
 	t_token 		*token1 = init_token(DLESS, "<<", token2);
 	t_complete_cmd	*command;
 	int				ret;
 	int				expected_ret = 0;
-	char			*expected_str = "\"$foo";
+	char			*expected_str = "$foo";
 
 	command = parse_complete_command(&token1);
 	ret = word_processing(NULL, NULL, command);

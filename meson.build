@@ -64,6 +64,7 @@ src_files = files([
   'src/ft_setenv.c',
   'src/ft_unsetenv.c',
   'src/free_env_list.c',
+  'src/process_word.c',
   'src/word_processing.c',
   'src/temp_print_token_parse.c',
 ])
