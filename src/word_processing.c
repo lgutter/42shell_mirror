@@ -11,58 +11,46 @@
 /* ************************************************************************** */
 
 #include "handle_input.h"
-#include "utils.h"
-#include "environment.h"
 
-static int	process_word(t_shell *shell, t_env *env_list, char **word)
+static int	process_redirects(t_shell *shell, t_env *env_list,
+								t_simple_cmd *simple_command)
 {
-	int	quote_type;
+	t_io_redirect	*redir;
 
-	quote_type = check_quote(*word);
-	if (quote_type < 0)
+	redir = simple_command->redirects;
+	while (redir != NULL)
 	{
-		if (complete_quote(shell, word) != 0)
-			return (-1);
-		quote_type = check_quote(*word);
-	}
-	if (quote_type == 0 || quote_type == 2)
-	{
-		if (expand_variable(env_list, word) != 0)
-			return (-1);
-	}
-	if (count_quote_chars(*word) > 0)
-	{
-		if (remove_quotes(word) != 0)
-			return (-1);
+		if (redir->io_file != NULL && redir->io_file->filename != NULL)
+		{
+			if (process_word(shell, env_list, &(redir->io_file->filename), 'y'))
+				return (-1);
+		}
+		if (redir->io_here != NULL && redir->io_here->here_end != NULL)
+		{
+			if (process_word(shell, env_list, &(redir->io_here->here_end), 'n'))
+				return (-1);
+		}
+		redir = redir->next;
 	}
 	return (0);
 }
 
-static int	words_simple_command(t_shell *shell, t_env *env_list,
+static int	process_simple_cmd(t_shell *shell, t_env *env_list,
 								t_simple_cmd *simple_command)
 {
-	t_io_redirect	*redirect;
-	t_argument		*current_arg;
+	t_argument		*cur_arg;
 
-	redirect = simple_command->redirects;
-	while (redirect != NULL)
+	if (process_redirects(shell, env_list, simple_command) != 0)
+		return (-1);
+	cur_arg = simple_command->arguments;
+	while (cur_arg != NULL)
 	{
-		if (redirect->io_file != NULL && redirect->io_file->filename != NULL)
+		if (cur_arg->argument != NULL)
 		{
-			if (process_word(shell, env_list, &(redirect->io_file->filename)))
+			if (process_word(shell, env_list, &(cur_arg->argument), 'y') != 0)
 				return (-1);
 		}
-		redirect = redirect->next;
-	}
-	current_arg = simple_command->arguments;
-	while (current_arg != NULL)
-	{
-		if (current_arg->argument != NULL)
-		{
-			if (process_word(shell, env_list, &(current_arg->argument)) != 0)
-				return (-1);
-		}
-		current_arg = current_arg->next;
+		cur_arg = cur_arg->next;
 	}
 	return (0);
 }
@@ -79,7 +67,7 @@ int			word_processing(t_shell *shell, t_env *env_list,
 		pipe_seq = command->pipe_sequence;
 		while (pipe_seq != NULL)
 		{
-			if (words_simple_command(shell, env_list, pipe_seq->simple_command))
+			if (process_simple_cmd(shell, env_list, pipe_seq->simple_command))
 				return (-1);
 			pipe_seq = pipe_seq->next;
 		}
