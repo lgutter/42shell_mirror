@@ -11,34 +11,30 @@
 /* ************************************************************************** */
 
 #include "utils.h"
+#include "quote_trans_table.h"
 
 int			count_quote_chars(char *str)
 {
-	int		i;
-	int		count;
-	char	quote;
+	int			count;
+	size_t		i;
+	t_q_rules	rules;
+	t_q_state	state;
 
+	state = no_quote;
 	i = 0;
 	count = 0;
-	quote = '\0';
-	if (str == NULL)
-		return (0);
-	while (str[i] != '\0')
+	while (1)
 	{
-		if (str[i] == '\\' && quote != '\'' && (i == 0 || str[i - 1] != '\\'))
+		rules = g_quote_trans[state].rules[(size_t)str[i]];
+		if (rules.next_state == invalid)
+			rules = g_quote_trans[state].catch_state;
+		if (rules.add_char == SKIP_CHAR)
 			count++;
-		else if ((str[i] == '"' || str[i] == '\'') &&
-				(i == 0 || str[i - 1] != '\\'))
-		{
-			if (quote == '\0')
-				quote = str[i];
-			else if (quote == str[i])
-				quote = '\0';
-			count++;
-		}
+		if (rules.next_state == eof)
+			return (count);
+		state = rules.next_state;
 		i++;
 	}
-	return (count);
 }
 
 char		*backslash_quotes(char *str)

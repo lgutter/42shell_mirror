@@ -12,61 +12,60 @@
 
 #include "utils.h"
 #include "input_control.h"
+#include "quote_trans_table.h"
 
 int			check_quote(char *word)
 {
-	char	current_quote;
-	int		i;
+	int			quote;
+	size_t		i;
+	t_q_rules	rules;
+	t_q_state	state;
 
+	state = no_quote;
 	i = 0;
-	current_quote = '\0';
-	while (word != NULL && word[i] != '\0')
+	quote = 0;
+	while (1)
 	{
-		if (word[i] == '\\')
-			i += 2;
-		else if (word[i] == '"' || word[i] == '\'')
-		{
-			current_quote = word[i];
-			i++;
-			while (word[i] != '\0' && (word[i] != current_quote ||
-				(word[i - 1] == '\\' && current_quote != '\'')))
-				i++;
-			if (word[i] == '\0')
-				return (current_quote == '"' ? -2 : -1);
-		}
+		rules = g_quote_trans[state].rules[(size_t)word[i]];
+		if (rules.next_state == invalid)
+			rules = g_quote_trans[state].catch_state;
+		if (state == dquote && rules.next_state == no_quote)
+			quote = 2;
+		if (state == squote && rules.next_state == no_quote)
+			quote = 1;
+		if (rules.next_state == eof && (state == squote || state == dquote))
+			return (state == squote ? -1 : -2);
+		else if (rules.next_state == eof)
+			return (quote);
+		state = rules.next_state;
 		i++;
 	}
-	if (current_quote != 0)
-		current_quote = current_quote == '"' ? 2 : 1;
-	return (current_quote);
 }
 
 static void	str_cpy_no_quotes(char *dst, const char *src)
 {
-	size_t	i;
-	size_t	j;
-	char	state;
+	size_t		i;
+	size_t		j;
+	t_q_rules	rules;
+	t_q_state	state;
 
 	i = 0;
 	j = 0;
-	state = '\0';
-	while (src[i] != '\0')
+	state = no_quote;
+	while (1)
 	{
-		if (src[i] == '\\' && state != '\'')
-			i++;
-		else if (src[i] == '"' || src[i] == '\'')
+		rules = g_quote_trans[state].rules[(size_t)src[i]];
+		if (rules.next_state == invalid)
+			rules = g_quote_trans[state].catch_state;
+		if (rules.add_char == ADD_CHAR)
 		{
-			if (state == '\0' && src[i] != src[i + 1])
-				state = src[i];
-			else if (state == src[i])
-				state = '\0';
-			if ((state != '\'' && src[i + 1] == '\\') || src[i] == src[i + 1])
-				i++;
-			i++;
+			dst[j] = src[i];
+			j++;
 		}
-		dst[j] = src[i];
-		i = (src[i] == '\0') ? i : i + 1;
-		j++;
+		if (rules.next_state == eof)
+			return ;
+		state = rules.next_state;
+		i++;
 	}
 }
 
