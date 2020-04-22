@@ -36,6 +36,7 @@ src_files = files([
   'src/terminal_input/configure_terminal.c',
   'src/terminal_input/cursor.c',
   'src/terminal_input/buffer.c',
+  'src/terminal_input/buffer_utils.c',
   'src/terminal_input/controls.c',
   'src/terminal_input/escape_controls_1.c',
   'src/terminal_input/escape_controls_2.c',
@@ -66,9 +67,16 @@ src_files = files([
   'src/environment/free_env_list.c',
   'src/temp_print_token_parse.c',
   'src/handle_input.c',
+  'src/history/history.c',
+  'src/history/history_list_1.c',
+  'src/history/history_list_2.c',
+  'src/history/history_utils_1.c',
+  'src/history/history_utils_2.c',
 ])
 
 main_file = files('src/main.c')
+
+default_test_timeout = 90
 
 executable(
   'cetushell',
@@ -109,9 +117,12 @@ if libcriterion_deb.found()
     include_directories: inc_dir,
     dependencies: [libft_deb, libftprintf_deb, libcurses_deb, libcriterion_deb])
 
+default_test_timeout = 90
+
   test('cetushell',
   tester,
-  args: '--verbose')
+  args: '--verbose',
+  timeout: default_test_timeout,)
 endif
 
 norminette = find_program('norminette', required: false)

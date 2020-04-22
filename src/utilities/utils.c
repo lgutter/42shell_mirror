@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "utils.h"
+#include "input_control.h"
 
 void	ft_swap_rv(t_buff *buffer)
 {
@@ -23,4 +24,29 @@ void	ft_swap_rv(t_buff *buffer)
 		buffer->rv_end = temp;
 		buffer->rv_start++;
 	}
+}
+
+void	free_dchar_arr(char **string)
+{
+	size_t		i;
+
+	i = 0;
+	if (string == NULL)
+		return ;
+	while (string[i] != NULL)
+	{
+		free(string[i]);
+		i++;
+	}
+	free(string);
+}
+
+int		free_shell(t_shell *shell, int ret)
+{
+	free_history(shell->hist);
+	free(shell->buffer->prompt);
+	free(shell->buffer);
+	free(shell);
+	configure_terminal(shell, 0);
+	return (ret);
 }

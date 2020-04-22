@@ -13,8 +13,7 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-int			init_buffs(t_buff *buffer, t_cursor *cursor, char *shell_copy, \
-const char *prompt)
+int			init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
 {
 	buffer->buff_len = 0;
 	buffer->index = 0;
@@ -45,7 +44,9 @@ int			insert_char(t_buff *buffer, char c)
 {
 	size_t			temp;
 
-	temp = buffer->buff_len - 1;
+	temp = 0;
+	if (buffer->buff_len != 0)
+		temp = buffer->buff_len - 1;
 	if (buffer->buff_len == buffer->buff_size)
 		if (buff_realloc(buffer) == 1)
 			return (1);
@@ -53,6 +54,7 @@ int			insert_char(t_buff *buffer, char c)
 	{
 		while (temp != buffer->index)
 		{
+			ft_printf("\nTEST %d\n", temp);
 			buffer->buff[temp + 1] = buffer->buff[temp];
 			temp--;
 		}
@@ -97,6 +99,8 @@ void		remove_word(t_buff *buffer, t_cursor *cursor)
 
 	i = 0;
 	buffer->index = buffer->rv_start;
+	if (cursor->max.x == 0)
+		return ;
 	cursor->current.x = ((buffer->rv_start + buffer->prompt_len) \
 	% cursor->max.x);
 	if (cursor->current.y == (cursor->start.y + ((buffer->rv_end \
@@ -113,7 +117,7 @@ void		remove_word(t_buff *buffer, t_cursor *cursor)
 	}
 }
 
-int			buff_realloc(t_buff *buffer)
+size_t		buff_realloc(t_buff *buffer)
 {
 	char	*temp;
 

@@ -21,21 +21,19 @@ int			cetushell(void)
 
 	shell = ft_memalloc(sizeof(t_shell));
 	shell->buffer = ft_memalloc(sizeof(t_buff));
-	if (shell == NULL || shell->buffer == NULL)
+	shell->hist = (t_history *)ft_memalloc(sizeof(t_history));
+	if (shell == NULL || shell->buffer == NULL || shell->hist == NULL)
 		return (1);
 	configure_terminal(shell, 1);
+	if (initialize_history(shell->hist) != (1 || 0))
+		ft_dprintf(STDERR_FILENO, "Error with history");
 	while (1)
 	{
 		input = prompt_shell(shell, PROMPT_NORMAL);
 		if (input == NULL)
-		{
-			free(shell->buffer->prompt);
-			free(shell->buffer);
-			free(shell);
-			configure_terminal(shell, 0);
-			return (1);
-		}
+			return (free_shell(shell, 1));
 		handle_input(shell, &input);
+		add_remove_update_history(shell->hist, input);
 		free(input);
 		input = NULL;
 	}
