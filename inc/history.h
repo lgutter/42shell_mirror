@@ -59,11 +59,67 @@ int				add_remove_update_history(t_history *hist, char *buff);
 char			*read_history(t_history *hist);
 void			free_history(t_history *hist);
 
-void			remove_first_element(t_hist_list **start);
 int				initialize_history(t_history *hist);
+
+/**
+ ** This function will remove the first element of the t_hist_list linked list.
+ ** The input will be a pointer to the struct marking the start of the list.
+ ** This function does not check if *start is null and assumes there is always
+ ** a list since this funtion is only called when there is one. The function
+ ** moves the pointer to *start to the next element and will free the previous
+ ** one.
+ **
+ ** arg: **start: a double pointer marking the start of t_hist_list structs.
+ */
+void			remove_first_element(t_hist_list **start);
+
+/**
+ ** Create_history_list will create a linked list of t_hist_list struct with as
+ ** many elements as the buff[n] has. it allocatate memory for the t_hist_list
+ ** elements and will assign a pointer to the next and previous linked list
+ ** elements if present. it will then copy the content of buff[n] into the
+ ** t_hist_list struct.
+ **
+ ** arg: **start: a double pointer marking the start of t_hist_list structs.
+ ** arg **buff: duble char array containing history lines.
+ ** return: int: Succes(0) or failure(0) when failed to allocate for t_hist_list
+ ** 			 or element->hist_buff.
+**/
 int				create_history_list(t_hist_list **start, char **buff);
+
+/*
+** Add history element will add an t_hist_list to the existing list of **start
+** or it will create one if *start == NULL. It will copy the string *buff into
+** element->hist_buff. This function will returns NULL if allocation fails for
+** either t_hist_list struct or the content hist_buff.
+**
+** arg: **start: a double pointer marking the start of t_hist_list structs.
+** arg: *buff: a character array containing a history line
+** arg: i: the index that shoudl be given to the new element of t_hist_list.
+** return: t_hist_list*: a pointer to the first element of the likenked list.
+**			if allocation fails it will return NULL.
+*/
 t_hist_list		*add_history_element(t_hist_list **start, char *buff, size_t i);
+
+/*
+** Get hist string will take a pointer to the start of a t_hist_list list and
+** will search the hist_list element->index for comparison with size_t index.
+** When element is found it will return an allocated string with the history
+** lines without the index markings (:int:string).
+**
+** arg: **start: a double pointer marking the start of t_hist_list structs.
+** arg: index: the index indicating which element to find.
+** return: char*: a string which holds the history line. if allocation fails,
+** 				 it will return NULL some for a non existing index and .
+*/
 char			*get_hist_str(t_hist_list **start, size_t index);
+
+/*
+** Free hist list will free all the elements of the t_hist_list list pointed by
+** **start. It will also free the buffer within the elements.
+**
+** arg: **start: a double pointer marking the start of t_hist_list structs.
+**/
 void			free_hist_list(t_hist_list **start);
 
 #endif
