@@ -49,23 +49,16 @@ int		cut(t_buff *buffer, t_cursor *cursor)
 int		paste(t_buff *buffer, t_cursor *cursor)
 {
 	size_t len;
-	size_t i;
 
-	i = 0;
+	buffer->state = INPUT_STATE;
 	len = ft_strlen(buffer->copy);
 	if (len == 0)
 		return (0);
 	ft_swap_rv(buffer);
 	if (buffer->rv_start != buffer->rv_end)
 		remove_word(buffer, cursor);
-	while (len > i)
-	{
-		if (insert_char(buffer, buffer->copy[i]) != 0)
-			return (1);
-		cursor->current.x++;
-		set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
-		i++;
-	}
+	if (insert_word(buffer, cursor, buffer->copy, len) != 0)
+		return (1);
 	return (0);
 }
 

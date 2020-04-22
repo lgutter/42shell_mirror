@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   cursor.c                                           :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/04/14 11:52:43 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
+/*   Created: Invalid date        by               #+#    #+#                 */
+/*   Updated: 0003/01/01 00:00:00 by               ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	cursor_next_line(t_cursor *cursor, size_t len, size_t prompt_len)
 	{
 		cursor->current.x = cursor->max.x;
 		if (cursor->current.y != cursor->start.y)
-			cursor->current.y--;
+			cursor->current.y++;
 	}
 }
 
@@ -73,7 +73,7 @@ void		get_cursor_pos(t_cursor *cursor, size_t prompt_len)
 			ret = ret - 1;
 		while (ft_isdigit(pos[ret - 1]) == 1)
 			ret = ret - 1;
-		cursor->start.x = ft_atoi(&pos[ret]);
+		cursor->start.x = prompt_len + 4;
 	}
 	cursor->current.x = prompt_len;
 	cursor->current.y = cursor->start.y;

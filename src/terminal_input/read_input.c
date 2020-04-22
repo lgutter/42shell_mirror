@@ -17,6 +17,7 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (ft_isprint(c) != 0)
 	{
+		buffer->state = INPUT_STATE;
 		if (c == 'q')
 			return (1);
 		if (c == '=')
@@ -33,9 +34,9 @@ int			handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 	}
 	if (cut_copy_paste(buffer, cursor, NULL, c) != 0)
 		return (1);
-	return_key(buffer, cursor, c);
 	tab_key(buffer, cursor, c);
 	backspace_key(buffer, cursor, c);
+	return_key(buffer, cursor, c);
 	return (0);
 }
 
@@ -51,7 +52,7 @@ int			read_input(t_shell *shell)
 		return (2);
 	if (ret == 1)
 	{
-		ret = read_esc_seq(c, &shell->cursor, shell->buffer);
+		ret = read_esc_seq(c, &shell->cursor, shell->buffer, shell->hist);
 		if (ret != 0)
 			return (ret);
 		if (handle_control_char(shell->buffer, &shell->cursor, c) != 0)
@@ -60,7 +61,8 @@ int			read_input(t_shell *shell)
 	return (0);
 }
 
-int			read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
+int			read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
+							t_history *hist)
 {
 	char	seq[ESC_SEQ_SIZE];
 	int		ret;
@@ -76,6 +78,9 @@ int			read_esc_seq(char c, t_cursor *cursor, t_buff *buffer)
 		shift_right_key(buffer, cursor, seq);
 		shift_left_key(buffer, cursor, seq);
 		left_arrow_key(buffer, cursor, seq);
+		if (up_arrow_key(buffer, cursor, hist, seq) != 0 ||
+		down_arrow_key(buffer, cursor, hist, seq) != 0)
+			return (1);
 		right_arrow_key(buffer, cursor, seq);
 		home_key(buffer, cursor, seq);
 		end_key(buffer, cursor, seq);
