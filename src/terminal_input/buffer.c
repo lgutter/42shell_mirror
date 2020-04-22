@@ -52,9 +52,8 @@ int			insert_char(t_buff *buffer, char c)
 			return (1);
 	if (ft_isprint(buffer->buff[buffer->index]))
 	{
-		while (temp != buffer->index)
+		while (temp > buffer->index)
 		{
-			ft_printf("\nTEST %d\n", temp);
 			buffer->buff[temp + 1] = buffer->buff[temp];
 			temp--;
 		}
