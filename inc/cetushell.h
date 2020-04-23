@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: Invalid date        by               #+#    #+#                 */
-/*   Updated: 0003/01/01 00:00:00 by               ########   odam.nl         */
+/*   Created: 2020/01/10 17:35:25 by dkroeke       #+#    #+#                 */
+/*   Updated: 2020/02/10 16:45:21 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef struct		s_shell
 	t_history		*hist;
 }					t_shell;
 
-int		free_shell(t_shell *shell, int ret);
-void	configure_terminal(t_shell *shell, int activator);
+int					free_shell(t_shell *shell, int ret);
+void				configure_terminal(t_shell *shell, int activator);
 
 #endif

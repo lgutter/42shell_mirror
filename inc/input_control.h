@@ -163,11 +163,12 @@ void		remove_char(t_buff *buffer);
 ** arg: buff_size: The size of the current allocation of buffer.
 ** arg: len: The actual length (characters) of the buffer
 */
-size_t	buff_realloc(t_buff *buffer);
+size_t		buff_realloc(t_buff *buffer);
 
-size_t	scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor, char dir);
+size_t		scroll_hist(t_history *hist, t_buff *buffer,
+						t_cursor *cursor, char dir);
 
-size_t	get_temp_hist_buff(t_buff *buffer, t_history *hist);
+size_t		get_temp_hist_buff(t_buff *buffer, t_history *hist);
 
 size_t		scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor,
 			char dir);
