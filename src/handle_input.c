@@ -23,11 +23,11 @@ int		handle_input(t_shell *shell, char **buffer)
 	if (buffer == NULL || *buffer == NULL)
 		return (-1);
 	tokens = tokenizer(shell, buffer);
-	tokens_start = tokens;
-	print_tokens(tokens);
-	env_list = dup_sys_env();
 	if (tokens != NULL)
 	{
+		tokens_start = tokens;
+		print_tokens(tokens);
+		env_list = dup_sys_env();
 		complete_command = parse_complete_command(&tokens);
 		if (complete_command != NULL)
 		{
@@ -35,7 +35,8 @@ int		handle_input(t_shell *shell, char **buffer)
 			print_complete_command(complete_command);
 			free_complete_command(complete_command);
 		}
+		free_token_list(&tokens_start);
+		free_env_list(env_list);
 	}
-	free_token_list(&tokens_start);
 	return (0);
 }
