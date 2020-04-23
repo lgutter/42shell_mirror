@@ -308,3 +308,20 @@ Test(tokenizer_tests, edge_case_mandatory_extra_blanks_null_term_no_tokens)
 	result = tokenizer(NULL, &input);
 	cr_expect_eq(result, NULL);
 }
+
+Test(tokenizer_tests, basic_mandatory_error_NULL_input)
+{
+	t_token *result = NULL;
+	char 	*input = NULL;
+
+	result = tokenizer(NULL, &input);
+	cr_expect_eq(result, NULL);
+}
+
+Test(tokenizer_tests, basic_mandatory_error_NULL_input_pointer)
+{
+	t_token *result = NULL;
+
+	result = tokenizer(NULL, NULL);
+	cr_expect_eq(result, NULL);
+}

@@ -138,12 +138,36 @@ Test(unit_ft_setenv, mandatory_error_deny_overwrite_in_full_list, .init = redire
 	cr_assert_stderr_eq_str("Environment key exists and overwrite is off\n");
 }
 
-Test(unit_ft_setenv, mandatory_error_empty_list, .init = redirect_std_err)
+Test(unit_ft_setenv, mandatory_error_NULL_key, .init = redirect_std_err)
+{
+	int ret;
+	t_env *env = dup_sys_env();
+
+	ret = ft_setenv(env, NULL, "TEST_VALUE_NEW", 'y');
+	cr_assert_eq(ret, -1);
+	dprintf(2, "-");
+	fflush(stderr);
+	cr_assert_stderr_eq_str("-");
+}
+
+Test(unit_ft_setenv, mandatory_error_NULL_value, .init = redirect_std_err)
+{
+	int ret;
+	t_env *env = dup_sys_env();
+
+	ret = ft_setenv(env, "MINISHELL_TEST_KEY", NULL, 'y');
+	cr_assert_eq(ret, -1);
+	dprintf(2, "-");
+	fflush(stderr);
+	cr_assert_stderr_eq_str("-");
+}
+
+Test(unit_ft_setenv, mandatory_error_NULL_list, .init = redirect_std_err)
 {
 	int ret;
 	t_env *env = NULL;
 
-	ret = ft_setenv(env, "MINISHELL_TEST_KEY", "TEST_VALUE_NEW", 'n');
+	ret = ft_setenv(env, "MINISHELL_TEST_KEY", "TEST_VALUE_NEW", 'y');
 	cr_assert_eq(ret, env_empty_error);
 	fflush(stderr);
 	cr_assert_stderr_eq_str("Environment is empty\n");

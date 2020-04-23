@@ -131,3 +131,15 @@ Test(unit_ft_unsetenv, mandatory_error_unset_NULL_list, .init = redirect_std_err
 	fflush(stderr);
 	cr_assert_stderr_eq_str("Environment is empty\n");
 }
+
+Test(unit_ft_unsetenv, mandatory_error_unset_NULL_key, .init = redirect_std_err)
+{
+	int ret;
+	t_env *env = dup_sys_env();
+
+	ret = ft_unsetenv(env, NULL);
+	cr_assert_eq(ret, -1);
+	dprintf(2, "-");
+	fflush(stderr);
+	cr_assert_stderr_eq_str("-");
+}

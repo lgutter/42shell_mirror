@@ -61,6 +61,8 @@ int			word_processing(t_shell *shell, t_env *env_list,
 	t_complete_cmd	*command;
 	t_pipe_sequence	*pipe_seq;
 
+	if (complete_command == NULL)
+		return (-1);
 	command = complete_command;
 	while (command != NULL)
 	{

@@ -95,6 +95,8 @@ int				expand_variable(t_env *env_list, char **string)
 	int		ret;
 	char	*offset;
 
+	if (string == NULL || *string == NULL)
+		return (-1);
 	ret = 0;
 	if ((*string)[0] == '~' && ((*string)[1] == '\0' || (*string)[1] == '/'))
 	{

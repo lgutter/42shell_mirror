@@ -16,6 +16,8 @@ int	process_word(t_shell *shell, t_env *env_list, char **word, char expand)
 {
 	int	quote_type;
 
+	if (word == NULL || *word == NULL)
+		return (-1);
 	quote_type = check_quote(*word);
 	if (quote_type < 0)
 	{

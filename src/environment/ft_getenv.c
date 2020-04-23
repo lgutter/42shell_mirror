@@ -16,6 +16,8 @@ char	*ft_getenv(t_env *env, const char *key)
 {
 	t_env *current;
 
+	if (key == NULL)
+		return (NULL);
 	current = env;
 	while (current != NULL)
 	{
@@ -33,6 +35,8 @@ char	*ft_getenv_quote(t_env *env, const char *key)
 	t_env	*current;
 	char	*temp;
 
+	if (key == NULL)
+		return (NULL);
 	current = env;
 	while (current != NULL)
 	{
