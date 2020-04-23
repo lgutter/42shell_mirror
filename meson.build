@@ -109,6 +109,7 @@ if libcriterion_deb.found()
     'src/environment/ft_unsetenv.spec.c',
     'src/utilities/quote_utils.spec.c',
     'src/utilities/word_processing.spec.c',
+    'src/history/history_list.spec.c',
   ])
 
   tester = executable('test-cetushell',

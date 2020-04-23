@@ -24,7 +24,7 @@
 
 typedef struct s_hist_list	t_hist_list;
 
-struct				s_hist_list
+struct						s_hist_list
 {
 	char			*hist_buff;
 	size_t			index;
@@ -32,7 +32,7 @@ struct				s_hist_list
 	t_hist_list		*prev;
 };
 
-typedef	struct			s_history
+typedef	struct				s_history
 {
 	t_hist_list			*hist_list;
 	size_t				current_index;
@@ -41,7 +41,7 @@ typedef	struct			s_history
 	size_t				file_size;
 	char				*hist_path;
 	char				*buff_temp;
-}						t_history;
+}							t_history;
 
 int				get_histfile(t_history *hist);
 char			**cut_split_history(t_history *hist, char *history, size_t i);

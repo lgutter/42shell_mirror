@@ -18,8 +18,13 @@
 static void check_list_item(t_hist_list *item, char *buff, size_t index, t_hist_list *next, t_hist_list *prev, char *testname)
 {
 	cr_assert_neq(item, NULL, "in %s: list item is NULL!", testname);
+<<<<<<< HEAD
 	cr_expect_eq(item->prev, prev, "in %s: expected prev to be %p, but is %p!", testname, prev, item->prev);
 	cr_expect_eq(item->next, next, "in %s: expected next to be %p, but is %p!", testname, next, item->next);
+=======
+	cr_expect_eq(item->prev, prev, "in %s: expected prev to be %p, but is %p!", testname, (void *)prev, (void *)item->prev);
+	cr_expect_eq(item->next, next, "in %s: expected next to be %p, but is %p!", testname, (void *)next, (void *)item->next);
+>>>>>>> c81b491d5bbefb5e86fed1ddc951da1474253d5b
 	cr_expect_eq(item->index, index, "in %s: expected index to be %zu, but is %zu!", testname, index, item->index);
 	cr_assert_neq(item->hist_buff, NULL, "in %s: hist_buff is NULL!", testname);
 	cr_expect_str_eq(item->hist_buff, buff, "in %s: expected hist_buff to be |%s|, but is |%s|", testname, buff, item->hist_buff);
@@ -58,7 +63,7 @@ Test(remove_first_element_unit, valid_2_elements)
 
 	remove_first_element(&list);
 	cr_assert_neq(list, NULL);
-	cr_expect_eq(list->index, 0, "expected index %zu but got %zu!", 0, list->index);
+	cr_expect_eq(list->index, 0, "expected index %d but got %zu!", 0, list->index);
 	cr_expect_eq(list->next, NULL);
 	cr_expect_eq(list->prev, NULL);
 	cr_assert_neq(list->hist_buff, NULL);
@@ -85,14 +90,14 @@ Test(remove_first_element_unit, valid_3_elements)
 
 	remove_first_element(&list);
 	cr_assert_neq(list, NULL);
-	cr_expect_eq(list->index, 0, "expected index %zu but got %zu!", 0, list->index);
+	cr_expect_eq(list->index, 0, "expected index %d but got %zu!", 0, list->index);
 	cr_expect_eq(list->prev, NULL);
 	cr_assert_neq(list->hist_buff, NULL);
 	cr_expect_str_eq(list->hist_buff, str2);
 	cr_assert_eq(list->next, list3);
 	temp = list;
 	list = list->next;
-	cr_expect_eq(list->index, 1, "expected index %zu but got %zu!", 1, list->index);
+	cr_expect_eq(list->index, 1, "expected index %d but got %zu!", 1, list->index);
 	cr_expect_eq(list->prev, temp);
 	cr_expect_eq(list->next, NULL);
 	cr_assert_neq(list->hist_buff, NULL);
