@@ -67,16 +67,15 @@ src_files = files([
   'src/environment/free_env_list.c',
   'src/temp_print_token_parse.c',
   'src/handle_input.c',
-  'src/history/history.c',
-  'src/history/history_list_1.c',
-  'src/history/history_list_2.c',
-  'src/history/history_utils_1.c',
-  'src/history/history_utils_2.c',
+  'src/history/history_list.c',
+  'src/history/init_history.c',
+  'src/history/init_history_utils.c',
+  'src/history/history_utils.c',
 ])
 
 main_file = files('src/main.c')
 
-default_test_timeout = 90
+default_test_timeout = 180
 
 executable(
   'cetushell',
@@ -110,7 +109,6 @@ if libcriterion_deb.found()
     'src/environment/ft_unsetenv.spec.c',
     'src/utilities/quote_utils.spec.c',
     'src/utilities/word_processing.spec.c',
-    'src/history/history_list.spec.c',
   ])
 
   tester = executable('test-cetushell',
@@ -118,7 +116,7 @@ if libcriterion_deb.found()
     include_directories: inc_dir,
     dependencies: [libft_deb, libftprintf_deb, libcurses_deb, libcriterion_deb])
 
-default_test_timeout = 90
+default_test_timeout = 360
 
   test('cetushell',
   tester,
