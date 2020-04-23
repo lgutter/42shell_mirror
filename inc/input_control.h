@@ -117,13 +117,7 @@ void		configure_terminal(t_shell *shell, int activator);
 */
 int			read_input(t_shell *shell);
 
-/*
-** init_buffs will initialize all the buffers needed for input of the shell. It
-** requires s pointer to the struct t_shell defined in cethushell.h.
-**
-** arg: *shell: pointer to struct defined in cetushell.h.
-*/
-int			init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt);
+void	free_buffer_buffs(t_shell *shell, size_t with_copy);
 
 /*
 ** insert_char requires a pointer to the struct t_buff defined in cetushell.h
@@ -163,31 +157,11 @@ void		remove_char(t_buff *buffer);
 ** arg: buff_size: The size of the current allocation of buffer.
 ** arg: len: The actual length (characters) of the buffer
 */
-size_t	buff_realloc(t_buff *buffer);
-
-size_t	scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor, char dir);
-
-size_t	get_temp_hist_buff(t_buff *buffer, t_history *hist);
 
 size_t		scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor,
 			char dir);
 
-size_t		get_temp_hist_buff(t_buff *buffer, t_history *hist);
-
-void		remove_buff(t_buff *buffer, t_cursor *cursor, t_history *hist);
-
-/*
-** read_esc_seq requires as input a char, a pointer to the t_cursor and t_buff
-** struct. When the first character is an escape character, this function will
-** read out the additional sequence characters. this is required for some keys
-** to work in RAW mode of the terminal.
-**
-** arg: c: character input from user which must be ESCAPE (\033)
-** arg: *cursor: pointer to struct t_cursor defined in cetushell.h
-** arg: *buffer: pointer to struct t_buff defined in cetushell.h
-*/
-int			read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
-			t_history *hist);
+void	remove_buff(t_buff *buffer, t_cursor *cursor);
 
 /*
 ** the tab_key requires as input a pointer to a t_buff and t_cursor struct and

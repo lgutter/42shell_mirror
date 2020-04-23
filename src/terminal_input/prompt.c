@@ -48,31 +48,58 @@ static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 	ft_printf("%s", cursor->cur_buff);
 }
 
+static int		init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
+{
+	buffer->buff_len = 0;
+	buffer->index = 0;
+	buffer->rv_start = 0;
+	buffer->rv_end = 0;
+	buffer->state = 0;
+	buffer->prompt_len = ft_strlen(prompt) + 1;
+	if (buffer->prompt == NULL)
+		buffer->prompt = ft_strndup(prompt, buffer->prompt_len);
+	else if (prompt != NULL && ft_strcmp(prompt, buffer->prompt) != 0)
+	{
+		free(buffer->prompt);
+		buffer->prompt = ft_strndup(prompt, buffer->prompt_len);
+	}
+	buffer->buff = (char *)ft_memalloc(sizeof(char) * INPUT_BUFF_SIZE + 1);
+	if (buffer->copy == NULL)
+		buffer->copy = (char *)ft_memalloc(sizeof(char) * INPUT_BUFF_SIZE + 1);
+	ft_memset(cursor->cur_buff, '\0', CUR_BUFF_SIZE);
+	if (buffer->buff == NULL || buffer->copy == NULL || buffer->prompt == NULL)
+		return (1);
+	buffer->buff_size = INPUT_BUFF_SIZE;
+	buffer->copy_size = INPUT_BUFF_SIZE;
+	get_cursor_pos(cursor, buffer->prompt_len);
+	return (0);
+}
+
 char			*prompt_shell(t_shell *shell, const char *prompt)
 {
 	char	*temp;
 
-	if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
-		return (NULL);
-	while (shell->buffer->state != RETURN_STATE)
+	temp = NULL;
+	if (shell != NULL && prompt != NULL)
 	{
-		get_winsize(shell);
-		set_cursor_pos(&shell->cursor, shell->buffer->buff_len,
-		shell->buffer->prompt_len);
-		refresh_prompt(shell->buffer, &shell->cursor);
-		if (read_input(shell) == 1)
-		{
-			free(shell->buffer->buff);
-			if (shell->buffer->copy != NULL)
-				free(shell->buffer->copy);
-			shell->buffer->copy = NULL;
-			shell->buffer->buff = NULL;
+		if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
 			return (NULL);
+		while (shell->buffer->state != RETURN_STATE)
+		{
+			get_winsize(shell);
+			set_cursor_pos(&shell->cursor, shell->buffer->buff_len,
+			shell->buffer->prompt_len);
+			refresh_prompt(shell->buffer, &shell->cursor);
+			if (read_input(shell) == 1)
+			{
+				free_buffer_buffs(shell, 1);
+				return (NULL);
+			}
 		}
+		shell->buffer->state = INPUT_STATE;
+		temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);
+		free_buffer_buffs(shell, 0);
+		shell->buffer->buff = NULL;
 	}
-	shell->buffer->state = INPUT_STATE;
-	temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);
-	free(shell->buffer->buff);
-	shell->buffer->buff = NULL;
 	return (temp);
 }

@@ -68,6 +68,7 @@ typedef struct		s_shell
 }					t_shell;
 
 int		free_shell(t_shell *shell, int ret);
+void	free_dchar_arr(char **string);
 void	configure_terminal(t_shell *shell, int activator);
 
 #endif

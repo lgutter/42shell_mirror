@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   history_list_1.c                                   :+:    :+:            */
+/*   history_list.c                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
@@ -13,7 +13,7 @@
 #include "cetushell.h"
 #include "history.h"
 
-void			remove_first_element(t_hist_list **start)
+static void		remove_first_element(t_hist_list **start)
 {
 	t_hist_list		*temp;
 	size_t			i;
@@ -26,19 +26,60 @@ void			remove_first_element(t_hist_list **start)
 		(*start)->prev = NULL;
 		free(temp->hist_buff);
 		free(temp);
-	}
-	temp = *start;
-	while (temp->next != NULL)
-	{
-		temp->index = i;
-		i++;
-		temp = temp->next;
+		temp = *start;
+		while (temp->next != NULL)
+		{
+			temp->index = i;
+			i++;
+			temp = temp->next;
+		}
 	}
 	temp->index = i;
 }
 
+static void		print_new_history_line(char *path, int oflag, char *buff)
+{
+	int			fd_open;
+
+	if (path == NULL || buff == NULL)
+		return ;
+	fd_open = open(path, oflag, 0644);
+	if (fd_open == -1)
+		return ;
+	ft_dprintf(fd_open, "%s\n", buff);
+	close(fd_open);
+}
+
+int				add_remove_update_history(t_history *hist, char *buff)
+{
+	char	*tmp;
+	size_t	len;
+
+	tmp = NULL;
+	if (buff == NULL || ft_strlen(buff) == 0 || hist == NULL)
+		return (0);
+	if (hist->hist_list != NULL)
+		hist->real_num_index++;
+	len = ft_intlen(hist->real_num_index) + ft_strlen(buff) + 3;
+	tmp = (char *)ft_memalloc(sizeof(char) * len + 1);
+	if (tmp == NULL)
+		return (1);
+	ft_snprintf(tmp, len, ":%d:%s", hist->real_num_index, buff);
+	if (hist->max_index < HISTSIZE && hist->hist_list != NULL)
+		hist->max_index++;
+	add_history_element(&hist->hist_list, tmp, hist->max_index);
+	if (hist->max_index >= HISTSIZE)
+		remove_first_element(&hist->hist_list);
+	print_new_history_line(hist->hist_path, O_WRONLY | O_CREAT | O_APPEND, tmp);
+	hist->current_index = hist->max_index + 1;
+	free(hist->buff_temp);
+	hist->buff_temp = NULL;
+	free(tmp);
+	return (0);
+}
+
 static int		change_values(t_hist_list *current, t_hist_list *prev,
-	size_t i, char *buff)
+size_t i, char *buff)
 {
 	current->prev = prev;
 	current->next = NULL;
@@ -49,7 +90,8 @@ static int		change_values(t_hist_list *current, t_hist_list *prev,
 	return (0);
 }
 
-t_hist_list		*add_history_element(t_hist_list **start, char *buff, size_t i)
+t_hist_list		*add_history_element(t_hist_list **start, char *buff
+, size_t i)
 {
 	t_hist_list *current;
 	t_hist_list *prev;
@@ -74,42 +116,4 @@ t_hist_list		*add_history_element(t_hist_list **start, char *buff, size_t i)
 	if (change_values(current, prev, i, buff) != 0)
 		return (NULL);
 	return (*start);
-}
-
-int				create_history_list(t_hist_list **start, char **buff)
-{
-	int i;
-
-	i = 0;
-	while (buff[i] != NULL)
-	{
-		*start = add_history_element(start, buff[i], i);
-		if (*start == NULL)
-			return (0);
-		i++;
-	}
-	return (i);
-}
-
-char			*get_hist_str(t_hist_list **start, size_t index)
-{
-	t_hist_list		*temp;
-	char			*string;
-	size_t			i;
-
-	i = 0;
-	if (start == NULL)
-		return (NULL);
-	temp = *start;
-	while (temp != NULL && index != temp->index)
-		temp = temp->next;
-	if (temp != NULL && temp->hist_buff != NULL)
-	{
-		while (ft_isdigit(temp->hist_buff[i + 1]))
-			i++;
-		i = i + 2;
-		string = ft_strdup(&temp->hist_buff[i]);
-		return (string);
-	}
-	return (NULL);
 }
