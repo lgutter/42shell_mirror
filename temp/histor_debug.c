@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "history.h"
+#include "cetushell.h"
 
 void	print_hist_list(t_hist_list **start)
 {

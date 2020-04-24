@@ -52,11 +52,14 @@ void	free_buffer_buffs(t_shell *shell, size_t with_copy)
 	{
 		if (shell->buffer->prompt != NULL)
 			free(shell->buffer->prompt);
+		shell->buffer->prompt = NULL;
 		if (shell->buffer->buff != NULL)
 			free(shell->buffer->buff);
-		if (shell->buffer->copy != NULL && with_copy == 1)
-			free(shell->buffer->copy);
-		shell->buffer->copy = NULL;
 		shell->buffer->buff = NULL;
+		if (shell->buffer->copy != NULL && with_copy == 1)
+		{
+			free(shell->buffer->copy);
+			shell->buffer->copy = NULL;
+		}
 	}
 }

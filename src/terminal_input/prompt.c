@@ -80,7 +80,7 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 	char	*temp;
 
 	temp = NULL;
-	if (shell != NULL && prompt != NULL)
+	if (shell != NULL && prompt != NULL && shell->buffer != NULL)
 	{
 		if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
 			return (NULL);
@@ -99,7 +99,6 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 		shell->buffer->state = INPUT_STATE;
 		temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);
 		free_buffer_buffs(shell, 0);
-		shell->buffer->buff = NULL;
 	}
 	return (temp);
 }
