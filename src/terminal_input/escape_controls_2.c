@@ -44,9 +44,14 @@ int			up_arrow_key(t_buff *buffer, t_cursor *cursor, t_history *hist,
 						char *seq)
 {
 	if (ft_strncmp(seq, ARROW_UP, ft_strlen(ARROW_UP)) == 0)
+	{
 		if (hist->current_index > 0)
+		{
+			hist->current_index--;
 			if (scroll_hist(hist, buffer, cursor, 'U') != 0)
-				return (0);
+				return (1);
+		}
+	}
 	return (0);
 }
 
@@ -54,8 +59,13 @@ int			down_arrow_key(t_buff *buffer, t_cursor *cursor, t_history *hist,
 							char *seq)
 {
 	if (ft_strncmp(seq, ARROW_DOWN, ft_strlen(ARROW_DOWN)) == 0)
+	{
 		if (hist->current_index != hist->max_index + 1)
+		{
+			hist->current_index++;
 			if (scroll_hist(hist, buffer, cursor, 'D') != 0)
-				return (0);
+				return (1);
+		}
+	}
 	return (0);
 }

@@ -12,6 +12,7 @@
 
 #include "cetushell.h"
 #include "history.h"
+#include "handle_error.h"
 
 static size_t	get_history_size(t_history *hist)
 {
@@ -28,6 +29,8 @@ static int		get_hist_path(t_history *hist)
 	char	*temp;
 
 	temp = getenv("HOME");
+	if (hist->hist_path != NULL)
+		return (0);
 	if (temp == NULL)
 		return (1);
 	hist->hist_path = ft_strjoin(temp, HISTFILE);
@@ -39,14 +42,17 @@ static int		get_hist_path(t_history *hist)
 int				get_histfile(t_history *hist)
 {
 	if (hist == NULL)
-		return (1);
+		return (malloc_error);
 	if (get_hist_path(hist) == 1)
-		return (2);
-	if (access(hist->hist_path, F_OK) == 0)
-		if (access(hist->hist_path, R_OK | W_OK) != 0)
-			return (3);
+		return (error_histpath);
+	if (access(hist->hist_path, F_OK) != 0)
+		return (0);
+	if (access(hist->hist_path, R_OK) != 0)
+		return (no_read_permission_hist);
+	if (access(hist->hist_path, W_OK) != 0)
+		return (no_write_permission_hist);
 	if (get_history_size(hist) == 1)
-		return (4);
+		return (history_filesize_error);
 	return (0);
 }
 
@@ -82,7 +88,7 @@ char			**cut_split_history(t_history *hist, char *history, size_t i)
 		return (NULL);
 	i = offset_i(hist, history, i);
 	cut = ft_strdup(&history[i]);
-	if (cut == NULL)
+	if (cut == NULL || ft_strlen(cut) <= 0)
 		return (NULL);
 	split = ft_strsplit(cut, '\n');
 	free(cut);

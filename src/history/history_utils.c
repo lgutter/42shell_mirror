@@ -39,7 +39,7 @@ static char		*get_hist_str(t_hist_list **start, size_t index)
 
 	i = 0;
 	if (start == NULL || *start == NULL)
-		return (NULL);
+		return (ft_strdup(""));
 	temp = *start;
 	while (temp != NULL && index != temp->index)
 		temp = temp->next;
@@ -62,12 +62,8 @@ size_t			scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor
 
 	i = 0;
 	if (hist == NULL || buffer == NULL || buffer->buff == NULL
-		|| cursor == NULL)
+	|| cursor == NULL)
 		return (1);
-	if (dir == 'U')
-		hist->current_index--;
-	else if (dir == 'D')
-		hist->current_index++;
 	if (get_temp_hist_buff(buffer, hist) != 0)
 		return (1);
 	remove_buff(buffer, cursor);
@@ -79,7 +75,10 @@ size_t			scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor
 		return (1);
 	if (ft_strlen(temp) != 0 &&
 	insert_word(buffer, cursor, &temp[i], ft_strlen(&temp[i])) != 0)
+	{
+		free(temp);
 		return (1);
+	}
 	free(temp);
 	return (0);
 }
@@ -100,6 +99,8 @@ void			free_hist_list(t_hist_list **start)
 	t_hist_list	*temp;
 	t_hist_list	*temp2;
 
+	if (start == NULL && *start == NULL)
+		return ;
 	temp = *start;
 	if (temp == NULL)
 		return ;

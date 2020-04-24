@@ -22,11 +22,10 @@ int			cetushell(void)
 	shell = ft_memalloc(sizeof(t_shell));
 	shell->buffer = ft_memalloc(sizeof(t_buff));
 	shell->hist = (t_history *)ft_memalloc(sizeof(t_history));
-	if (shell == NULL || shell->buffer == NULL || shell->hist == NULL)
-		return (1);
+	if (shell == NULL || shell->buffer == NULL)
+		return (handle_error(malloc_error));
 	configure_terminal(shell, 1);
-	if (initialize_history(shell->hist) != (1 || 0))
-		ft_dprintf(STDERR_FILENO, "Error with history");
+	initialize_history(shell->hist);
 	while (1)
 	{
 		input = prompt_shell(shell, PROMPT_NORMAL);

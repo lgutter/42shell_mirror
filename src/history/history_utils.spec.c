@@ -1,89 +1,74 @@
-// /* ************************************************************************** */
-// /*                                                                            */
-// /*                                                        ::::::::            */
-// /*   history_utils.spec.c                               :+:    :+:            */
-// /*                                                     +:+                    */
-// /*   By: devan <devan@student.codam.nl>               +#+                     */
-// /*                                                   +#+                      */
-// /*   Created: 2020/04/22 17:52:32 by devan         #+#    #+#                 */
-// /*   Updated: 2020/04/22 17:52:32 by devan         ########   odam.nl         */
-// /*                                                                            */
-// /* ************************************************************************** */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   history_utils.spec.c                               :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: devan <devan@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2020/04/22 17:52:32 by devan         #+#    #+#                 */
+/*   Updated: 2020/04/22 17:52:32 by devan         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
-// #include "cetushell.h"
-// #include "history.h"
-// #include <criterion/criterion.h>
-// #include <criterion/redirect.h>
-// #include <criterion/assert.h>
+#include "cetushell.h"
+#include "history.h"
+#include <stdio.h>
+#include "handle_error.h"
+#include <criterion/criterion.h>
+#include <criterion/redirect.h>
+#include <criterion/assert.h>
 
-// #ifdef HISTSIZE
-// # undef HISTSIZE
-// # define HISTSIZE 5
-// #endif
+#ifdef HISTSIZE
+# undef HISTSIZE
+# define HISTSIZE 5
+#endif
 
-// #ifdef HISTFILE
-// # undef HISTFILE
-// # define HISTFILE
-// #endif
 
-// Test(split_test, correct_string)
-// {
-// 	char	**split;
-// 	t_history hist = {.file_size = 128,
-// 	.current_index = 0, .max_index = 0};
-// 	char	correct_hist[128] = ":0:dit is de eerste test\n:1:dit is de tweede\
-//  	test\n:2:dit is de derde test\n:3:dit is de vierde test\n:4:dit is de\
-// 	 vijfde test\n";
+void	print_history_file(char *path, int oflag, size_t size)
+{
+	size_t		i;
+	int			fd_open;
 
-// 	split = cut_split_history(&hist, correct_hist, hist.file_size);
-// 	cr_expect_not_null(split, "cut_split_history Failed");
-// 	cr_expect_not_null(split[0], "cut_split_history Failed");
-// 	cr_assert_str_eq(split[0], ":0:dit is de eerste test");
-// 	cr_assert_str_eq(split[1], ":1:dit is de tweede test");
-// 	cr_assert_str_eq(split[2], ":2:dit is de derde test");
-// 	cr_assert_str_eq(split[3], ":3:dit is de vierde test");
-// 	cr_assert_str_eq(split[4], ":4:dit is de vijfde test");
-// }
+	i = 0;
+	fd_open = open(path, oflag, 0644);
+	if (i == 0)
+		ft_dprintf(fd_open, "");
+	while (i < size)
+	{
+		ft_dprintf(fd_open, ":%d:TESTTINGHISTORY%d\n", i, i);
+		i++;
+	}
+	close(fd_open);
+}
 
-// Test(split_test, NULL_string)
-// {
-// 	char	**split;
-// 	t_history hist = {.file_size = 128,
-// 	.current_index = 0, .max_index = 0};
+Test(initialize_hist, no_histfile)
+{
+	t_history	*hist;
+	int			ret;
 
-// 	split = cut_split_history(&hist, NULL, hist.file_size);
-// 	cr_expect_null(split, "cut_split_history Failed");
-// }
+	ret = 0;
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+	cr_expect_not_null(hist->hist_path, "MALLOC failed");
+	remove(hist->hist_path);
+	ret = initialize_history(hist);
+	cr_expect_eq(0, ret);
+	ret = initialize_history(hist);
+	cr_expect_eq(0, ret);
+	cr_assert_str_eq(hist->hist_list->hist_buff, "");
+	free_history(hist);
+}
 
-// Test(split_test, empty_string)
-// {
-// 	char	**split;
-// 	t_history hist = {.file_size = 128,
-// 	.current_index = 0, .max_index = 0};
+Test(initialize_hist, empty_histfile)
+{
+	t_history	*hist;
+	int			ret;
 
-// 	split = cut_split_history(&hist, "", hist.file_size);
-// 	cr_expect_not_null(split, "cut_split_history Failed");
-// 	cr_expect_not_null(split[0], "cut_split_history Failed");
-// 	cr_assert_str_eq(split[0], "");
-// }
-
-// Test(offset_i_test, correct_string)
-// {
-// 	size_t	i;
-// 	char	correct_hist[128] = ":0:dit is de eerste test\n:1:dit is de tweede\
-//  	test\n:2:dit is de derde test\n:3:dit is de vierde test\n:4:dit is de\
-// 	 vijfde test\n";
-// 	t_history hist = {.file_size = 128,
-// 	.current_index = 0, .max_index = 0};
-
-// 	i = offset_i(&hist, correct_hist, 128);
-// 	cr_assert_eq(i, 0);
-// 	cr_assert_eq(hist.current_index, HISTSIZE + 1);
-// 	cr_assert_eq(hist.max_index, HISTSIZE);
-// }
-
-// Test(init_hist, normal)
-// {
-// `	t_history	hist;
-// 	initialize_history(&hist);
-// }
+	ret = 0;
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+	cr_expect_not_null(hist->hist_path, "MALLOC failed");
+	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
+	ret = initialize_history(hist);
+	cr_expect_eq(0, ret);
+}

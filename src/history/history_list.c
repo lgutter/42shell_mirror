@@ -12,6 +12,7 @@
 
 #include "cetushell.h"
 #include "history.h"
+#include "handle_error.h"
 
 static void		remove_first_element(t_hist_list **start)
 {
@@ -20,7 +21,7 @@ static void		remove_first_element(t_hist_list **start)
 
 	i = 0;
 	temp = *start;
-	if ((*start)->next != NULL)
+	if (start != NULL && *start != NULL && (*start)->next != NULL)
 	{
 		*start = (*start)->next;
 		(*start)->prev = NULL;
@@ -86,7 +87,7 @@ size_t i, char *buff)
 	current->index = i;
 	current->hist_buff = ft_strdup(buff);
 	if (current->hist_buff == NULL)
-		return (1);
+		return (handle_error(malloc_error));
 	return (0);
 }
 
@@ -112,7 +113,7 @@ t_hist_list		*add_history_element(t_hist_list **start, char *buff
 		current = current->next;
 	}
 	if (current == NULL)
-		return (NULL);
+		return (handle_error_p(malloc_error, NULL));
 	if (change_values(current, prev, i, buff) != 0)
 		return (NULL);
 	return (*start);
