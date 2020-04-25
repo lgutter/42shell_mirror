@@ -58,9 +58,7 @@ size_t			scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor
 , char dir)
 {
 	char	*temp;
-	size_t	i;
 
-	i = 0;
 	if (hist == NULL || buffer == NULL || buffer->buff == NULL
 	|| cursor == NULL)
 		return (1);
@@ -74,7 +72,7 @@ size_t			scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor
 	if (temp == NULL)
 		return (1);
 	if (ft_strlen(temp) != 0 &&
-	insert_word(buffer, cursor, &temp[i], ft_strlen(&temp[i])) != 0)
+	insert_word(buffer, cursor, temp, ft_strlen(temp)) != 0)
 	{
 		free(temp);
 		return (1);
