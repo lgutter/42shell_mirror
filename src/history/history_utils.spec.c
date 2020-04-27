@@ -168,35 +168,55 @@ Test(initialize_hist, single_element)
 	cr_expect_null(hist->hist_list->next);
 }
 
-// Test(initialize_hist, no_read_acc)
-// {
-// 	t_history	*hist;
-// 	int			ret;
+Test(initialize_hist, no_read_acc)
+{
+	t_history	*hist;
+	int			ret;
 
-// 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-// 	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
-// 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
-// 	remove(hist->hist_path);
-// 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
-// 	chmod(hist->hist_path, 0222);
-// 	ret = initialize_history(hist);
-// 	cr_expect_eq(ret, no_read_permission_hist);
-// }
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	if (getenv("HIST_PERM_TEST") != NULL)
+	{
+		hist->hist_path = ft_strdup("/tmp/.test_read_acc");
+		cr_expect_not_null(hist->hist_path, "MALLOC failed");
+		ret = initialize_history(hist);
+		cr_expect_eq(ret, no_read_permission_hist);
+	}
+	else
+	{
+		hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+		cr_expect_not_null(hist->hist_path, "MALLOC failed");
+		remove(hist->hist_path);
+		print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
+		chmod(hist->hist_path, 0222);
+		ret = initialize_history(hist);
+		cr_expect_eq(ret, no_read_permission_hist);
+	}
+}
 
-// Test(initialize_hist, no_write_acc)
-// {
-// 	t_history	*hist;
-// 	int			ret;
+Test(initialize_hist, no_write_acc)
+{
+	t_history	*hist;
+	int			ret;
 
-// 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-// 	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
-// 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
-// 	remove(hist->hist_path);
-// 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
-// 	chmod(hist->hist_path, 0444);
-// 	ret = initialize_history(hist);
-// 	cr_expect_eq(ret, no_write_permission_hist);
-// }
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	if (getenv("HIST_PERM_TEST") != NULL)
+	{
+		hist->hist_path = ft_strdup("/tmp/.test_write_acc");
+		cr_expect_not_null(hist->hist_path, "MALLOC failed");
+		ret = initialize_history(hist);
+		cr_expect_eq(ret, no_write_permission_hist);
+	}
+	else
+	{
+		hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+		cr_expect_not_null(hist->hist_path, "MALLOC failed");
+		remove(hist->hist_path);
+		print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
+		chmod(hist->hist_path, 0444);
+		ret = initialize_history(hist);
+		cr_expect_eq(ret, no_write_permission_hist);
+	}
+}
 
 Test(scroll_hist, all_null)
 {
@@ -425,4 +445,6 @@ Test(free_hist_list_unit, valid_last_of_3_elements)
 	list3->prev = list2;
 
 	free_hist_list(&list);
+	cr_expect_null(list);
+
 }
