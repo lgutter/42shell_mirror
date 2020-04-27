@@ -9,6 +9,9 @@ stages:
 gcc-test:
   stage: test
   before_script:
+    - export HIST_PERM_TEST="true"
+    - touch /tmp/.test_read_acc && chmod 0222 /tmp/.test_read_acc
+    - touch /tmp/.test_write_acc && chmod 0444 /tmp/.test_write_acc
     - meson --version
     - ninja --version
     - meson build -Db_coverage=true

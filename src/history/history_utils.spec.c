@@ -445,9 +445,5 @@ Test(free_hist_list_unit, valid_last_of_3_elements)
 	list3->prev = list2;
 
 	free_hist_list(&list);
-<<<<<<< HEAD
 	cr_expect_null(list);
-
-=======
->>>>>>> c7d41c4dd2903005abf0adab67b6749e4480a52a
 }
