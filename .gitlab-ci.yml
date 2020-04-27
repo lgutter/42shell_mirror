@@ -10,6 +10,7 @@ gcc-test:
   stage: test
   before_script:
     - export HIST_PERM_TEST="true"
+    - mkdir tmp
     - touch tmp/.test_read_acc
     - chmod 0222 tmp/.test_read_acc
     - touch tmp/.test_write_acc &&
