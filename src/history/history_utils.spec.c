@@ -93,6 +93,25 @@ Test(add_history_element_unit, valid_2_elements)
 	cr_expect_str_eq(list->hist_buff, "foo");
 }
 
+Test(cut_split, null_checks)
+{
+	t_history	*hist;
+	char		**split;
+
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_empty_h");
+	cr_expect_not_null(hist->hist_path, "MALLOC failed");
+	hist->max_index = 0;
+	hist->current_index = 0;
+	split = cut_split_history(NULL, "test1", 4);
+	cr_expect_null(split);
+	split = cut_split_history(hist, "", 0);
+	cr_expect_null(split);
+	split = cut_split_history(hist, "\n", 1);
+	cr_expect_not_null(split);
+	cr_assert_str_eq(split[0], "");
+}
+
 Test(initialize_hist, empty_histfile)
 {
 	t_history	*hist;
@@ -122,6 +141,30 @@ Test(initialize_hist, bad_hist_path)
 	cr_expect_eq(0, ret);
 }
 
+Test(initialize_hist, check_format)
+{
+	t_history	*hist;
+	int			ret;
+	char		temp[32];
+	int			fd;
+
+	ret = 0;
+	ft_bzero(temp, 32);
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_check_format");
+	cr_expect_not_null(hist->hist_path, "MALLOC failed");
+	remove(hist->hist_path);
+	fd = open(hist->hist_path, O_CREAT | O_WRONLY , 0644);
+	cr_assert_neq(fd, -1);
+	ft_dprintf(fd, ":meh:The wheels of the bus go round and round");
+	cr_redirect_stderr();
+	fflush(stderr);
+	ret = initialize_history(hist);
+	cr_assert_eq(ret, histfile_format_error);
+	cr_assert_stderr_eq_str("Histfile formatted incorrectly\n");
+	close(fd);
+}
+
 Test(initialize_hist, check_elements)
 {
 	t_history	*hist;
@@ -138,6 +181,7 @@ Test(initialize_hist, check_elements)
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
 	ret = initialize_history(hist);
+	cr_assert_eq(ret, 0, "expected ret of %d, got %zu!", 0, ret);
 	cr_assert_eq(hist->max_index, 199, "expected max index of %du, got %zu!", 199, hist->max_index);
 	cr_assert_eq(hist->real_num_index, 199, "expected real num index of %d, got %zu!", 199, hist->real_num_index);
 	while(hist->hist_list->next != NULL)
@@ -220,20 +264,54 @@ Test(initialize_hist, no_write_acc)
 	}
 }
 
-Test(scroll_hist, all_null)
+Test(scroll_hist, scroll_hist_null_checks)
 {
 	t_history	hist;
 	t_buff		buffer;
 	t_cursor	cursor;
 	int			ret;
 
-	ft_bzero(&hist, sizeof(t_history));
+	ret = 0;
+	hist.hist_path = ft_strjoin(getenv("HOME"), "/.test_up_down");
+	cr_expect_not_null(hist.hist_path, "MALLOC failed");
+	remove(hist.hist_path);
+	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
+	ret = initialize_history(&hist);
+	remove(hist.hist_path);
+	cr_assert_eq(hist.max_index, 199);
+	cr_assert_eq(hist.real_num_index, 199);
+	cr_assert_str_eq(hist.hist_list->hist_buff, ":0:TESTTINGHISTORY0");
+	cr_assert_str_eq(hist.hist_list->next->hist_buff, ":1:TESTTINGHISTORY1");
+	cr_assert_str_eq(hist.hist_list->next->next->hist_buff, ":2:TESTTINGHISTORY2");
+	cr_expect_eq(0, ret);
+
 	ft_bzero(&buffer, sizeof(t_buff));
 	ft_bzero(&cursor, sizeof(t_cursor));
 
+	buffer.state = INPUT_STATE;
+	hist.buff_temp = ft_strdup("temp");
+	buffer.buff = NULL;
+	buffer.buff_len = 4;
+	buffer.prompt_len = 10;
+	cr_expect_not_null(hist.buff_temp);
+	ret = scroll_hist(NULL, &buffer, &cursor);
+	cr_assert_eq(ret, 1);
+	ret = scroll_hist(&hist, NULL, &cursor);
+	cr_assert_eq(ret, 1);
+	ret = scroll_hist(&hist, &buffer, NULL);
+	cr_assert_eq(ret, 1);
 	ret = scroll_hist(&hist, &buffer, &cursor);
 	cr_assert_eq(ret, 1);
-}
+	hist.buff_temp = ft_strdup("This is the hist.buff_temp");
+	buffer.buff = ft_strdup("This is the buffer.buff");
+	ret = scroll_hist(&hist, &buffer, &cursor);
+	cr_assert_eq(ret, 0);
+	cr_assert_str_eq(hist.buff_temp, buffer.buff);
+	hist.current_index--;
+	hist.hist_list = NULL;
+	ret = scroll_hist(&hist, &buffer, &cursor);
+	cr_assert_eq(ret, 0);
+	}
 
 Test(scroll_hist, up_down_test)
 {
@@ -365,6 +443,13 @@ Test(add_remove_update_hist, empty_histlist)
 		i++;
 	}
 	cr_assert_str_eq(temp, ":0:testing add_remove_update_hist\n");
+	ret = add_remove_update_history(hist, NULL);
+	cr_expect_eq(0, ret);
+	cr_assert_str_eq(hist->hist_list->hist_buff, ":0:testing add_remove_update_hist");
+
+	hist->hist_list = NULL;
+	ret = add_remove_update_history(hist, "Hist list Null test");
+	cr_expect_eq(0, ret);
 	remove(hist->hist_path);
 }
 

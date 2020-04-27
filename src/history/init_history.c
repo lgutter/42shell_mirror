@@ -75,7 +75,10 @@ static int		check_history(char **buff)
 		j = 0;
 		if (buff[i][j] != ':')
 			return (1);
-		while (ft_isdigit(buff[i][0]))
+		j++;
+		if (ft_isdigit(buff[i][j]) == 0)
+			return (1);
+		while (ft_isdigit(buff[i][j]))
 			j++;
 		if (buff[i][j] != ':')
 			return (1);
