@@ -138,8 +138,8 @@ Test(initialize_hist, check_elements)
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
 	ret = initialize_history(hist);
-	cr_assert_eq(hist->max_index, 199, "expected max index of %zu, got %zu!", 199, hist->max_index);
-	cr_assert_eq(hist->real_num_index, 199, "expected real num index of %zu, got %zu!", 199, hist->real_num_index);
+	cr_assert_eq(hist->max_index, 199, "expected max index of %du, got %zu!", 199, hist->max_index);
+	cr_assert_eq(hist->real_num_index, 199, "expected real num index of %d, got %zu!", 199, hist->real_num_index);
 	while(hist->hist_list->next != NULL)
 	{
 		ft_snprintf(temp, 32, ":%d:TESTTINGHISTORY%d", i, i);
