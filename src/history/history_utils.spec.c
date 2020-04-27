@@ -209,7 +209,7 @@ Test(scroll_hist, all_null)
 	ft_bzero(&buffer, sizeof(t_buff));
 	ft_bzero(&cursor, sizeof(t_cursor));
 
-	ret = scroll_hist(&hist, &buffer, &cursor, 'U');
+	ret = scroll_hist(&hist, &buffer, &cursor);
 	cr_assert_eq(ret, 1);
 }
 
@@ -244,19 +244,19 @@ Test(scroll_hist, up_down_test)
 	cr_expect_not_null(hist.buff_temp);
 	cr_expect_not_null(buffer.buff);
 	hist.current_index--;
-	ret = scroll_hist(&hist, &buffer, &cursor, 'U');
+	ret = scroll_hist(&hist, &buffer, &cursor);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(buffer.buff, "TESTTINGHISTORY199");
 	hist.current_index--;
-	ret = scroll_hist(&hist, &buffer, &cursor, 'U');
+	ret = scroll_hist(&hist, &buffer, &cursor);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(buffer.buff, "TESTTINGHISTORY198");
 	hist.current_index++;
-	ret = scroll_hist(&hist, &buffer, &cursor, 'D');
+	ret = scroll_hist(&hist, &buffer, &cursor);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(buffer.buff, "TESTTINGHISTORY199");
 	hist.current_index++;
-	ret = scroll_hist(&hist, &buffer, &cursor, 'U');
+	ret = scroll_hist(&hist, &buffer, &cursor);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(buffer.buff, "temp");
 }
@@ -295,7 +295,7 @@ Test(scroll_hist, whole_list)
 	while (i < 200)
 	{
 		hist.current_index--;
-		ret = scroll_hist(&hist, &buffer, &cursor, 'U');
+		ret = scroll_hist(&hist, &buffer, &cursor);
 		cr_assert_eq(ret, 0);
 		i++;
 	}
@@ -303,7 +303,7 @@ Test(scroll_hist, whole_list)
 	while (i  > 0)
 	{
 		hist.current_index++;
-		ret = scroll_hist(&hist, &buffer, &cursor, 'D');
+		ret = scroll_hist(&hist, &buffer, &cursor);
 		cr_assert_eq(ret, 0);
 		i--;
 

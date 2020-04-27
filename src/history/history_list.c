@@ -20,9 +20,9 @@ static void		remove_first_element(t_hist_list **start)
 	size_t			i;
 
 	i = 0;
-	temp = *start;
 	if (start != NULL && *start != NULL && (*start)->next != NULL)
 	{
+		temp = *start;
 		*start = (*start)->next;
 		(*start)->prev = NULL;
 		free(temp->hist_buff);
@@ -97,6 +97,8 @@ t_hist_list		*add_history_element(t_hist_list **start, char *buff
 	t_hist_list *current;
 	t_hist_list *prev;
 
+	if (start == NULL || buff == NULL)
+		return (NULL);
 	if (*start == NULL)
 	{
 		*start = (t_hist_list *)ft_memalloc(sizeof(t_hist_list));
