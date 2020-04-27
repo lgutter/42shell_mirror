@@ -351,6 +351,7 @@ Test(add_remove_update_hist, normal_small_size)
 	int			i;
 
 	ret = 0;
+	i = 0;
 	ft_bzero(temp, 64);
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
 	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
