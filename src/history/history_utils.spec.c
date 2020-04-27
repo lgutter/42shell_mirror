@@ -138,8 +138,8 @@ Test(initialize_hist, check_elements)
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
 	ret = initialize_history(hist);
-	cr_assert_eq(hist->max_index, 199);
-	cr_assert_eq(hist->real_num_index, 199);
+	cr_assert_eq(hist->max_index, 199, "expected max index of %zu, got %zu!", 199, hist->max_index);
+	cr_assert_eq(hist->real_num_index, 199, "expected real num index of %zu, got %zu!", 199, hist->real_num_index);
 	while(hist->hist_list->next != NULL)
 	{
 		ft_snprintf(temp, 32, ":%d:TESTTINGHISTORY%d", i, i);
@@ -174,14 +174,7 @@ Test(initialize_hist, no_read_acc)
 	int			ret;
 
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	if (getenv("HIST_PERM_TEST") != NULL)
-	{
-		hist->hist_path = ft_strjoin(getenv("HOME"), "/tmp/.test_read_acc");
-		cr_expect_not_null(hist->hist_path, "MALLOC failed");
-		ret = initialize_history(hist);
-		cr_expect_eq(ret, no_read_permission_hist);
-	}
-	else
+	if (getenv("HIST_PERM_TEST") == NULL)
 	{
 		hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
 		cr_expect_not_null(hist->hist_path, "MALLOC failed");
@@ -189,7 +182,11 @@ Test(initialize_hist, no_read_acc)
 		print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
 		chmod(hist->hist_path, 0222);
 		ret = initialize_history(hist);
-		cr_expect_eq(ret, no_read_permission_hist);
+		cr_expect_eq(ret, no_read_permission_hist, "expected ret %i, got %i!", no_read_permission_hist, ret);
+	}
+	else
+	{
+		cr_assert_eq(1, 1);
 	}
 }
 
@@ -199,22 +196,20 @@ Test(initialize_hist, no_write_acc)
 	int			ret;
 
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	if (getenv("HIST_PERM_TEST") != NULL)
+	if (getenv("HIST_PERM_TEST") == NULL)
 	{
-		hist->hist_path = ft_strjoin(getenv("HOME"), "/tmp/.test_write_acc");
-		cr_expect_not_null(hist->hist_path, "MALLOC failed");
-		ret = initialize_history(hist);
-		cr_expect_eq(ret, no_write_permission_hist);
-	}
-	else
-	{
+
 		hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
 		cr_expect_not_null(hist->hist_path, "MALLOC failed");
 		remove(hist->hist_path);
 		print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
 		chmod(hist->hist_path, 0444);
 		ret = initialize_history(hist);
-		cr_expect_eq(ret, no_write_permission_hist);
+		cr_expect_eq(ret, no_write_permission_hist, "expected ret %i, got %i!", no_write_permission_hist, ret);
+	}
+	else
+	{
+		cr_expect_eq(1, 1);
 	}
 }
 
