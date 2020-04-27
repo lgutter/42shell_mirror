@@ -100,7 +100,7 @@ Test(initialize_hist, empty_histfile)
 
 	ret = 0;
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_empty_histfile");
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 0);
@@ -133,7 +133,7 @@ Test(initialize_hist, check_elements)
 	ret = 0;
 	ft_bzero(temp, 32);
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_check_elements");
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
@@ -158,11 +158,12 @@ Test(initialize_hist, single_element)
 
 	ret = 0;
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_single_element");
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
 	ret = initialize_history(hist);
+	remove(hist->hist_path);
 	cr_expect_eq(0, ret);
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":0:TESTTINGHISTORY0");
 	cr_expect_null(hist->hist_list->next);
@@ -176,13 +177,14 @@ Test(initialize_hist, no_read_acc)
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
 	if (getenv("HIST_PERM_TEST") == NULL)
 	{
-		hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+		hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_read_acc");
 		cr_expect_not_null(hist->hist_path, "MALLOC failed");
 		remove(hist->hist_path);
 		print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
 		chmod(hist->hist_path, 0222);
 		ret = initialize_history(hist);
 		cr_expect_eq(ret, no_read_permission_hist, "expected ret %i, got %i!", no_read_permission_hist, ret);
+		remove(hist->hist_path);
 	}
 	else
 	{
@@ -199,7 +201,7 @@ Test(initialize_hist, no_write_acc)
 	if (getenv("HIST_PERM_TEST") == NULL)
 	{
 
-		hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+		hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_write_acc");
 		cr_expect_not_null(hist->hist_path, "MALLOC failed");
 		remove(hist->hist_path);
 		print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
@@ -236,11 +238,12 @@ Test(scroll_hist, up_down_test)
 	int			ret;
 
 	ret = 0;
-	hist.hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+	hist.hist_path = ft_strjoin(getenv("HOME"), "/.test_up_down");
 	cr_expect_not_null(hist.hist_path, "MALLOC failed");
 	remove(hist.hist_path);
 	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
 	ret = initialize_history(&hist);
+	remove(hist.hist_path);
 	cr_assert_eq(hist.max_index, 199);
 	cr_assert_eq(hist.real_num_index, 199);
 	cr_assert_str_eq(hist.hist_list->hist_buff, ":0:TESTTINGHISTORY0");
@@ -284,11 +287,12 @@ Test(scroll_hist, whole_list)
 	int			ret;
 
 	ret = 0;
-	hist.hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+	hist.hist_path = ft_strjoin(getenv("HOME"), "/.test_whole_list");
 	cr_expect_not_null(hist.hist_path, "MALLOC failed");
 	remove(hist.hist_path);
 	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
 	ret = initialize_history(&hist);
+	remove(hist.hist_path);
 	cr_assert_eq(hist.max_index, 199);
 	cr_assert_eq(hist.real_num_index, 199);
 	cr_assert_str_eq(hist.hist_list->hist_buff, ":0:TESTTINGHISTORY0");
@@ -336,7 +340,7 @@ Test(add_remove_update_hist, empty_histlist)
 	ret = 0;
 	ft_bzero(temp, 64);
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_empty_hist");
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 0);
@@ -356,6 +360,7 @@ Test(add_remove_update_hist, empty_histlist)
 		i++;
 	}
 	cr_assert_str_eq(temp, ":0:testing add_remove_update_hist\n");
+	remove(hist->hist_path);
 }
 
 Test(add_remove_update_hist, normal_small_size)
@@ -369,7 +374,7 @@ Test(add_remove_update_hist, normal_small_size)
 	i = 0;
 	ft_bzero(temp, 64);
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_small_size");
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
@@ -387,6 +392,7 @@ Test(add_remove_update_hist, normal_small_size)
 		hist->hist_list = hist->hist_list->next;
 	}
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":200:testing add_remove_update_hist");
+	remove(hist->hist_path);
 }
 
 Test(add_remove_update_hist, normal_larger_size)
@@ -399,7 +405,7 @@ Test(add_remove_update_hist, normal_larger_size)
 	ret = 0;
 	ft_bzero(temp, 64);
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_hist");
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_larger_size");
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 600);
@@ -420,6 +426,7 @@ Test(add_remove_update_hist, normal_larger_size)
 		hist->hist_list = hist->hist_list->next;
 	}
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":600:testing add_remove_update_hist");
+	remove(hist->hist_path);
 }
 
 Test(free_hist_list_unit, valid_last_of_3_elements)
