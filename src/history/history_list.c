@@ -34,8 +34,8 @@ static void		remove_first_element(t_hist_list **start)
 			i++;
 			temp = temp->next;
 		}
+		temp->index = i;
 	}
-	temp->index = i;
 }
 
 static void		print_new_history_line(char *path, int oflag, char *buff)
