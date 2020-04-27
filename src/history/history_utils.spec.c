@@ -176,7 +176,7 @@ Test(initialize_hist, no_read_acc)
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
 	if (getenv("HIST_PERM_TEST") != NULL)
 	{
-		hist->hist_path = ft_strdup("/tmp/.test_read_acc");
+		hist->hist_path = ft_strjoin(getenv("HOME"), "/tmp/.test_read_acc");
 		cr_expect_not_null(hist->hist_path, "MALLOC failed");
 		ret = initialize_history(hist);
 		cr_expect_eq(ret, no_read_permission_hist);
@@ -201,7 +201,7 @@ Test(initialize_hist, no_write_acc)
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
 	if (getenv("HIST_PERM_TEST") != NULL)
 	{
-		hist->hist_path = ft_strdup("/tmp/.test_write_acc");
+		hist->hist_path = ft_strjoin(getenv("HOME"), "/tmp/.test_write_acc");
 		cr_expect_not_null(hist->hist_path, "MALLOC failed");
 		ret = initialize_history(hist);
 		cr_expect_eq(ret, no_write_permission_hist);
