@@ -54,8 +54,7 @@ static char		*get_hist_str(t_hist_list **start, size_t index)
 	return (NULL);
 }
 
-size_t			scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor
-, char dir)
+size_t			scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor)
 {
 	char	*temp;
 
@@ -94,21 +93,19 @@ void			free_history(t_history *hist)
 
 void			free_hist_list(t_hist_list **start)
 {
+	t_hist_list	*first;
 	t_hist_list	*temp;
-	t_hist_list	*temp2;
 
-	if (start == NULL && *start == NULL)
+	if (start == NULL || *start == NULL)
 		return ;
-	temp = *start;
-	if (temp == NULL)
-		return ;
-	while (temp->next != NULL)
+	first = *start;
+	while (first->next != NULL)
 	{
-		temp2 = temp;
-		temp = temp->next;
-		free(temp2->hist_buff);
-		free(temp2);
+		temp = first;
+		first = first->next;
+		free(first->hist_buff);
+		free(temp);
 	}
-	free(temp->hist_buff);
+	free(first->hist_buff);
 	free(temp);
 }

@@ -75,8 +75,6 @@ src_files = files([
 
 main_file = files('src/main.c')
 
-default_test_timeout = 180
-
 executable(
   'cetushell',
   sources: src_files + main_file,
@@ -85,6 +83,8 @@ executable(
 )
 
 libcriterion_deb = dependency('criterion', required: false)
+
+default_test_timeout = 360
 
 if libcriterion_deb.found()
   test_files = src_files + files([
@@ -116,8 +116,6 @@ if libcriterion_deb.found()
     sources: test_files,
     include_directories: inc_dir,
     dependencies: [libft_deb, libftprintf_deb, libcurses_deb, libcriterion_deb])
-
-default_test_timeout = 360
 
   test('cetushell',
   tester,

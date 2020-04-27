@@ -158,8 +158,7 @@ void		remove_char(t_buff *buffer);
 ** arg: len: The actual length (characters) of the buffer
 */
 
-size_t		scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor,
-			char dir);
+size_t		scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor);
 
 void	remove_buff(t_buff *buffer, t_cursor *cursor);
 
