@@ -25,11 +25,15 @@ void		send_terminal(char *command)
 
 void		configure_terminal(t_shell *shell, int activator)
 {
-	static struct termios orig;
+	static struct termios	orig;
+	char					*temp;
 
 	if (activator == 1)
 	{
-		tgetent(NULL, getenv("TERM"));
+		temp = getenv("TERM");
+		if (temp == NULL)
+			temp = "xterm-256color";
+		tgetent(NULL, temp);
 		tcgetattr(STDIN_FILENO, &orig);
 		shell->term = orig;
 		shell->term.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);

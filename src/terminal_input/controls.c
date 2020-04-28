@@ -20,7 +20,7 @@ int			return_key(t_buff *buffer, t_cursor *cursor, char c)
 		send_terminal(CURSOR_DOWN);
 		buffer->buff_len = 0;
 		buffer->index = 0;
-		buffer->state = 1;
+		buffer->state = RETURN_STATE;
 	}
 	return (0);
 }

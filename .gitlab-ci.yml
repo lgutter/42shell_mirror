@@ -2,6 +2,7 @@ image: lgutter/codam_ci:latest
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
+  HIST_PERM_TEST: "false"
 
 stages:
   - test

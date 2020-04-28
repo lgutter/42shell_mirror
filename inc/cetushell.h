@@ -19,10 +19,14 @@
 # include <term.h>
 # include "ft_printf.h"
 # include "libft.h"
+# include "history.h"
 
 # define INPUT_BUFF_SIZE 32
 # define CUR_BUFF_SIZE 32
 # define REALLOC_SIZE 32
+# define INPUT_STATE 0
+# define RETURN_STATE 1
+# define HISTORY_STATE 2
 
 typedef struct		s_buff
 {
@@ -60,7 +64,11 @@ typedef struct		s_shell
 	t_cursor		cursor;
 	struct winsize	winsize;
 	t_buff			*buffer;
-	char			*copy;
+	t_history		*hist;
 }					t_shell;
+
+int		free_shell(t_shell *shell, int ret);
+void	free_dchar_arr(char **string);
+void	configure_terminal(t_shell *shell, int activator);
 
 #endif

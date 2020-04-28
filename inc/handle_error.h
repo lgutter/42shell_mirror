@@ -35,7 +35,12 @@ typedef enum		e_error
 	env_write_error,
 	env_not_found,
 	env_empty_error,
-	error_count
+	histfile_format_error,
+	error_histpath,
+	no_read_permission_hist,
+	no_write_permission_hist,
+	history_filesize_error,
+	error_count,
 }					t_error;
 
 /*

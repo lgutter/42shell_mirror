@@ -36,6 +36,7 @@ src_files = files([
   'src/terminal_input/configure_terminal.c',
   'src/terminal_input/cursor.c',
   'src/terminal_input/buffer.c',
+  'src/terminal_input/buffer_utils.c',
   'src/terminal_input/controls.c',
   'src/terminal_input/escape_controls_1.c',
   'src/terminal_input/escape_controls_2.c',
@@ -64,8 +65,12 @@ src_files = files([
   'src/environment/ft_setenv.c',
   'src/environment/ft_unsetenv.c',
   'src/environment/free_env_list.c',
-  'src/temp_print_token_parse.c',
   'src/handle_input.c',
+  'src/history/history_list.c',
+  'src/history/init_history.c',
+  'src/history/init_history_utils.c',
+  'src/history/history_utils.c',
+  'temp/temp_print_token_parse.c',
 ])
 
 main_file = files('src/main.c')
@@ -78,6 +83,8 @@ executable(
 )
 
 libcriterion_deb = dependency('criterion', required: false)
+
+default_test_timeout = 360
 
 if libcriterion_deb.found()
   test_files = src_files + files([
@@ -102,6 +109,7 @@ if libcriterion_deb.found()
     'src/environment/ft_unsetenv.spec.c',
     'src/utilities/quote_utils.spec.c',
     'src/utilities/word_processing.spec.c',
+    'src/history/history_utils.spec.c',
   ])
 
   tester = executable('test-cetushell',
@@ -111,7 +119,8 @@ if libcriterion_deb.found()
 
   test('cetushell',
   tester,
-  args: '--verbose')
+  args: '--verbose',
+  timeout: default_test_timeout,)
 endif
 
 norminette = find_program('norminette', required: false)

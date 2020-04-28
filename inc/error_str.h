@@ -26,6 +26,11 @@ static const char	*g_error_str[error_count] = {
 	[read_error] = "Error while read() call",
 	[env_write_error] = "Environment key exists and overwrite is off",
 	[env_not_found] = "Environment key not found",
-	[env_empty_error] = "Environment is empty"
+	[env_empty_error] = "Environment is empty",
+	[histfile_format_error] = "Histfile formatted incorrectly",
+	[error_histpath] = "Error in resolving the history path",
+	[no_read_permission_hist] = "No read access for histfile",
+	[no_write_permission_hist] = "No write access for histfile",
+	[history_filesize_error] = "Can't resolve history filesize",
 };
 #endif
