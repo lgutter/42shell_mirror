@@ -82,30 +82,36 @@ size_t			scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor)
 
 void			free_history(t_history *hist)
 {
-	if (hist->hist_path != NULL)
-		free(hist->hist_path);
-	if (hist->buff_temp != NULL)
-		free(hist->buff_temp);
-	free_hist_list(&hist->hist_list);
 	if (hist != NULL)
+	{
+		free(hist->hist_path);
+		hist->hist_path = NULL;
+		free(hist->buff_temp);
+		hist->buff_temp = NULL;
+		free_hist_list(&hist->hist_list);
+		hist->hist_list = NULL;
 		free(hist);
+	}
 }
 
 void			free_hist_list(t_hist_list **start)
 {
-	t_hist_list	*first;
+	t_hist_list	*next;
 	t_hist_list	*temp;
 
 	if (start == NULL || *start == NULL)
 		return ;
-	first = *start;
-	while (first->next != NULL)
+	temp = *start;
+	while (temp != NULL)
 	{
-		temp = first;
-		first = first->next;
-		free(first->hist_buff);
+		free(temp->hist_buff);
+		temp->hist_buff = NULL;
+		temp->prev = NULL;
+		temp->index = 0;
+		next = temp->next;
+		temp->next = NULL;
 		free(temp);
+		temp = next;
 	}
-	free(first->hist_buff);
-	free(temp);
+	*start = NULL;
 }
