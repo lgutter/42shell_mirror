@@ -44,6 +44,8 @@ int			ft_unsetenv(t_env *env, const char *key)
 	t_env	*previous;
 
 	previous = env;
+	if (key == NULL)
+		return (-1);
 	if (env == NULL)
 		return (handle_error(env_empty_error));
 	if (ft_strcmp(previous->key, key) == 0)

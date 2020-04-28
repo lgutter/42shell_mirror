@@ -107,6 +107,8 @@ t_token			*tokenizer(t_shell *shell, char **input)
 	static char	*buff = NULL;
 	size_t		i;
 
+	if (input == NULL || *input == NULL)
+		return (NULL);
 	start = NULL;
 	cur_state = blank;
 	i = 0;

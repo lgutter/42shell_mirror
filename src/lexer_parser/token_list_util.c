@@ -62,6 +62,8 @@ int				add_token(t_token **start, t_type type, char **buff)
 {
 	t_token *temp;
 
+	if (start == NULL || buff == NULL || *buff == NULL)
+		return (-1);
 	temp = init_token(start);
 	if (temp == NULL)
 	{

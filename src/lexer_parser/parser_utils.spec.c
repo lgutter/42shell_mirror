@@ -57,7 +57,7 @@ ParameterizedTest(struct s_is_op_params *param, is_redirect_op_unit, check_all_t
 	token = NULL;
 }
 
-Test(is_redirect_op_unit, invalid_token)
+Test(is_redirect_op_unit, invalid_NULL_token)
 {
 	int result;
 
@@ -99,7 +99,7 @@ ParameterizedTest(struct s_is_op_params *param, is_seperator_op_unit, check_all_
 	token = NULL;
 }
 
-Test(is_seperator_op_unit, invalid_token)
+Test(is_seperator_op_unit, invalid_NULL_token)
 {
 	int result;
 
@@ -141,7 +141,7 @@ ParameterizedTest(struct s_is_op_params *param, is_start_of_redirect_unit, check
 	token = NULL;
 }
 
-Test(is_start_of_redirect_unit, invalid_token)
+Test(is_start_of_redirect_unit, invalid_NULL_token)
 {
 	int result;
 

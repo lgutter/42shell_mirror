@@ -20,6 +20,8 @@ int			count_quote_chars(char *str)
 	t_q_rules	rules;
 	t_q_state	state;
 
+	if (str == NULL)
+		return (-1);
 	state = no_quote;
 	i = 0;
 	count = 0;
@@ -44,10 +46,12 @@ char		*backslash_quotes(char *str)
 	size_t	count;
 	char	*temp;
 
+	if (str == NULL)
+		return (NULL);
 	s_i = 0;
 	t_i = 0;
 	count = count_quote_chars(str);
-	temp = ft_memalloc(ft_strlen(str) + count + 1);
+	temp = (char *)ft_memalloc(ft_strlen(str) + count + 1);
 	if (temp == NULL)
 		return (NULL);
 	while (str[s_i] != '\0')

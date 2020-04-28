@@ -131,6 +131,15 @@ Test(check_quote_unit, valid_double_quote_containing_escaped_d_quote)
 	cr_expect_eq(ret, 2, "expected: 2 | ret: %i", ret);
 }
 
+Test(check_quote_unit, invalid_NULL_string)
+{
+	char *str = NULL;
+	int ret;
+
+	ret = check_quote(str);
+	cr_expect_eq(ret, -1, "expected: -1 | ret: %i", ret);
+}
+
 Test(remove_quotes_unit, valid_no_quotes)
 {
 	char *str		= strdup("hello foo bar");
@@ -300,6 +309,43 @@ Test(remove_quotes_unit, valid_multiple_backslashes)
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
 }
 
+Test(remove_quotes_unit, invalid_unterminated_double_quote)
+{
+	char *str		= strdup("\"hello foo bar");
+	char *expected	= "\"hello foo bar";
+	int ret;
+	int expected_ret = -1;
+
+	ret = remove_quotes(&str);
+	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
+	cr_assert_neq(str, NULL, "malloc failed!");
+	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
+}
+
+Test(remove_quotes_unit, invalid_unterminated_single_quote)
+{
+	char *str		= strdup("\'hello foo bar");
+	char *expected	= "\'hello foo bar";
+	int ret;
+	int expected_ret = -1;
+
+	ret = remove_quotes(&str);
+	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
+	cr_assert_neq(str, NULL, "malloc failed!");
+	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
+}
+
+Test(remove_quotes_unit, invalid_NULL_string)
+{
+	char *str		= NULL;
+	int ret;
+	int expected_ret = -1;
+
+	ret = remove_quotes(&str);
+	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
+	cr_assert_eq(str, NULL);
+}
+
 Test(count_quote_chars_unit, valid_no_qoutes)
 {
 	char *str		= "no quotes here!";
@@ -415,6 +461,16 @@ Test(count_quote_chars_unit, valid_multiple_backslashes)
 	char *str		= "\\backslash\\\\es \\here!\\";
 	size_t ret;
 	size_t expected_ret = 4;
+
+	ret = count_quote_chars(str);
+	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
+}
+
+Test(count_quote_chars_unit, invalid_NULL_string)
+{
+	char *str		= NULL;
+	size_t ret;
+	size_t expected_ret = -1;
 
 	ret = count_quote_chars(str);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
@@ -583,4 +639,13 @@ Test(backslash_quotes_unit, valid_multiple_backslashes)
 	ret = backslash_quotes(str);
 	cr_assert_neq(ret, NULL, "malloc failed!");
 	cr_expect_str_eq(ret, expected, "expected string |%s|, got |%s|.", expected, ret);
+}
+
+Test(backslash_quotes_unit, invalid_NULL_string)
+{
+	char *str		= NULL;
+	char *ret;
+
+	ret = backslash_quotes(str);
+	cr_assert_eq(ret, NULL);
 }

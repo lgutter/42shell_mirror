@@ -57,6 +57,8 @@ int			ft_setenv(t_env *env, const char *key,
 {
 	t_env *current;
 
+	if (key == NULL || value == NULL)
+		return (-1);
 	current = env;
 	while (current != NULL)
 	{

@@ -17,16 +17,16 @@
 int			check_quote(char *word)
 {
 	int			quote;
-	size_t		i;
 	t_q_rules	rules;
 	t_q_state	state;
 
+	if (word == NULL)
+		return (-1);
 	state = no_quote;
-	i = 0;
 	quote = 0;
 	while (1)
 	{
-		rules = g_quote_trans[state].rules[(size_t)word[i]];
+		rules = g_quote_trans[state].rules[(size_t)*word];
 		if (rules.next_state == invalid)
 			rules = g_quote_trans[state].catch_state;
 		if (state == dquote && rules.next_state == no_quote)
@@ -38,7 +38,7 @@ int			check_quote(char *word)
 		else if (rules.next_state == eof)
 			return (quote);
 		state = rules.next_state;
-		i++;
+		word++;
 	}
 }
 
@@ -75,16 +75,20 @@ int			remove_quotes(char **word)
 	int		quotes;
 	size_t	len;
 
+	if (word == NULL || *word == NULL)
+		return (-1);
 	quotes = check_quote(*word);
-	if (quotes < 0 || (quotes == 0 && ft_strchr(*word, '\\') == NULL))
-		return (quotes);
+	if (quotes < 0)
+		return (-1);
+	else if (quotes == 0 && ft_strchr(*word, '\\') == NULL)
+		return (0);
 	quotes = count_quote_chars(*word);
 	len = ft_strlen(*word);
 	len -= (quotes);
 	temp = (char *)ft_memalloc(len + 1);
-	str_cpy_no_quotes(temp, *word);
 	if (temp == NULL)
 		return (-1);
+	str_cpy_no_quotes(temp, *word);
 	free(*word);
 	*word = temp;
 	return (0);
@@ -96,6 +100,8 @@ int			complete_quote(t_shell *shell, char **word)
 	char	*temp;
 	int		quotes;
 
+	if (shell == NULL || word == NULL || *word == NULL)
+		return (-1);
 	temp = ft_strdup(*word);
 	if (temp == NULL)
 		return (-1);

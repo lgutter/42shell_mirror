@@ -71,3 +71,28 @@ Test(unit_ft_expand_variable, basic_mandatory_loop_key, .timeout = 2)
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "$FOO");
 }
+
+Test(unit_ft_expand_variable, basic_mandatory_error_NULL_env_list)
+{
+	t_env *env = NULL;
+	char *test_string = strdup("$FOO");
+	int ret;
+
+	ret = expand_variable(env, &test_string);
+	cr_assert_eq(ret, 0);
+	cr_assert_str_eq(test_string, "");
+}
+
+Test(unit_ft_expand_variable, basic_mandatory_error_NULL_string)
+{
+	t_env *env = (t_env *)malloc(sizeof(t_env) * 1);
+	char *test_string = NULL;
+	int ret;
+
+	env->key = strdup("FOO");
+	env->value = strdup("$FOO");
+	env->next = NULL;
+	ret = expand_variable(env, &test_string);
+	cr_expect_eq(ret, -1);
+	cr_assert_eq(test_string, NULL);
+}
