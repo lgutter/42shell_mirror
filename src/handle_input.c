@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "handle_input.h"
-#include "temp_print_token_parse.h"
 
 int		handle_input(t_shell *shell, char **buffer)
 {
@@ -26,14 +25,14 @@ int		handle_input(t_shell *shell, char **buffer)
 	if (tokens != NULL)
 	{
 		tokens_start = tokens;
-		print_tokens(tokens);
 		env_list = dup_sys_env();
 		complete_command = parse_complete_command(&tokens);
 		if (complete_command != NULL)
 		{
 			word_processing(shell, env_list, complete_command);
-			print_complete_command(complete_command);
+			exec_complete_command(complete_command, env_list);
 			free_complete_command(complete_command);
+			configure_terminal(shell, 2);
 		}
 		free_token_list(&tokens_start);
 		free_env_list(env_list);

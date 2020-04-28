@@ -28,13 +28,14 @@ void		configure_terminal(t_shell *shell, int activator)
 	static struct termios	orig;
 	char					*temp;
 
-	if (activator == 1)
+	if (activator > 0)
 	{
 		temp = getenv("TERM");
 		if (temp == NULL)
 			temp = "xterm-256color";
 		tgetent(NULL, temp);
-		tcgetattr(STDIN_FILENO, &orig);
+		if (activator == 1)
+			tcgetattr(STDIN_FILENO, &orig);
 		shell->term = orig;
 		shell->term.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);
 		shell->term.c_iflag &= ~(IXON);

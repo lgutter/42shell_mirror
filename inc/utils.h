@@ -114,4 +114,35 @@ char		*backslash_quotes(char *str);
 */
 int			get_here_doc(t_io_here *io_here, t_shell *shell);
 
+/*
+**	duplicates the standard file descriptors for stdin, stdout and stderr,
+**	and places them in the array pointed to by old_fds in the following order:
+**		index 0: stdin
+**		index 1: stdout
+**		index 2: stderr
+*/
+void		std_fd_backup(int **old_fds);
+
+/*
+**	restores the standard file descriptors for stdin, stdout and stderr,
+**	using the array of ints pointed to by old_fds in the following order:
+**		index 0: stdin
+**		index 1: stdout
+**		index 2: stderr
+*/
+void		std_fd_restore(int **old_fds);
+
+/*
+**	determines if the given command name is a builtin or not.
+**	returns:
+**		1: if the name referes to a builtin.
+**		0: if the name does not refer to a builtin.
+*/
+int			is_builtin(char *exec_name);
+
+/*
+**	takes a double char array and returns the amount of char * in the array.
+*/
+size_t		str_arr_len(char **str_array);
+
 #endif

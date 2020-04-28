@@ -19,6 +19,8 @@ t_io_here		*free_io_here(t_io_here *io_here)
 		return (NULL);
 	free(io_here->here_end);
 	io_here->here_end = NULL;
+	free(io_here->here_doc);
+	io_here->here_doc = NULL;
 	free(io_here);
 	return (NULL);
 }

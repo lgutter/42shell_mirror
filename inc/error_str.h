@@ -32,5 +32,12 @@ static const char	*g_error_str[error_count] = {
 	[no_read_permission_hist] = "No read access for histfile",
 	[no_write_permission_hist] = "No write access for histfile",
 	[history_filesize_error] = "Can't resolve history filesize",
+	[no_such_file_or_dir] = "No such file or directory",
+	[cmd_not_found] = "Command not found",
+	[pipe_failure] = "Call to pipe failed",
+	[fork_failure] = "Call to fork failed",
+	[execve_failure] = "Call to execve failed",
+	[access_denied] = "Access denied",
+	[bad_fd_error] = "Bad file descriptor"
 };
 #endif

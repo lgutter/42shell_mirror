@@ -82,3 +82,17 @@ int		get_here_doc(t_io_here *io_here, t_shell *shell)
 	io_here->here_doc = here_doc;
 	return (0);
 }
+
+size_t		str_arr_len(char **str_array)
+{
+	size_t index;
+
+	index = 0;
+	if (str_array == NULL)
+		return (0);
+	while (str_array[index] != NULL)
+	{
+		index++;
+	}
+	return (index);
+}

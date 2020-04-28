@@ -18,6 +18,7 @@
 # include "utils.h"
 # include "input_control.h"
 # include "cetushell.h"
+#include "executor.h"
 
 /*
 **	takes the shell struct and a pointer to the input buffer, and runs it
