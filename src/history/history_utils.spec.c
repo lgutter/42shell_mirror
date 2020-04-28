@@ -10,14 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cetushell.h"
-#include "history.h"
-#include "input_control.h"
-#include <stdio.h>
-#include "handle_error.h"
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include <criterion/assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "cetushell.h"
+#include "history.h"
+#include "input_control.h"
+#include "handle_error.h"
 
 static t_hist_list	*init_list_item(char *buff, size_t index, t_hist_list *next)
 {
@@ -69,6 +70,28 @@ Test(add_history_element_unit, valid_init_empty_list)
 	cr_expect_eq(list->next, NULL);
 }
 
+Test(add_history_element_unit, invalid_NULL_buffer)
+{
+	t_hist_list	*list = NULL;
+	char		*str1 = NULL;
+	size_t		i = 1;
+	t_hist_list	*ret;
+
+	ret = add_history_element(&list, str1, i);
+	cr_expect_eq(ret, NULL, "expected ret to be NULL, but got %p!", (void *)ret);
+}
+
+Test(add_history_element_unit, invalid_NULL_list)
+{
+	t_hist_list	**list = NULL;
+	char		*str1 = "one";
+	size_t		i = 1;
+	t_hist_list	*ret;
+
+	ret = add_history_element(list, str1, i);
+	cr_expect_eq(ret, NULL, "expected ret to be NULL, but got %p!", (void *)ret);
+}
+
 Test(add_history_element_unit, valid_2_elements)
 {
 	t_hist_list	*list2;
@@ -93,23 +116,55 @@ Test(add_history_element_unit, valid_2_elements)
 	cr_expect_str_eq(list->hist_buff, "foo");
 }
 
-Test(cut_split, null_checks)
+Test(cut_split, null_hist_check)
+{
+	char		**split;
+
+	split = cut_split_history(NULL, "test1", 5);
+	cr_expect_null(split);
+}
+
+Test(cut_split, empty_history_str_check)
 {
 	t_history	*hist;
 	char		**split;
 
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_empty_h");
-	cr_expect_not_null(hist->hist_path, "MALLOC failed");
+	cr_assert_not_null(hist, "MALLOC failed");
+	hist->hist_path = NULL;
 	hist->max_index = 0;
 	hist->current_index = 0;
-	split = cut_split_history(NULL, "test1", 4);
-	cr_expect_null(split);
 	split = cut_split_history(hist, "", 0);
 	cr_expect_null(split);
+}
+
+Test(cut_split, only_newline_check)
+{
+	t_history	*hist;
+	char		**split;
+
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	cr_assert_not_null(hist, "MALLOC failed");
+	hist->hist_path = NULL;
+	hist->max_index = 0;
+	hist->current_index = 0;
 	split = cut_split_history(hist, "\n", 1);
-	cr_expect_not_null(split);
-	cr_assert_str_eq(split[0], "");
+	cr_assert_not_null(split);
+	cr_expect_str_eq(split[0], "");
+}
+
+Test(cut_split, null_history_str_check)
+{
+	t_history	*hist;
+	char		**split;
+
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	cr_assert_not_null(hist, "MALLOC failed");
+	hist->hist_path = NULL;
+	hist->max_index = 0;
+	hist->current_index = 0;
+	split = cut_split_history(hist, NULL, 0);
+	cr_expect_null(split);
 }
 
 Test(initialize_hist, empty_histfile)
@@ -139,6 +194,36 @@ Test(initialize_hist, bad_hist_path)
 	ret = initialize_history(hist);
 	cr_expect_null(hist->hist_list);
 	cr_expect_eq(0, ret);
+}
+
+Test(initialize_hist, invalid_NULL_hist)
+{
+	int			ret;
+
+	ret = 0;
+	cr_redirect_stderr();
+	ret = initialize_history(NULL);
+	fflush(stderr);
+	cr_expect_stderr_eq_str("Malloc failed to allocate memory\n");
+	cr_expect_eq(malloc_error, ret);
+}
+
+Test(initialize_hist, no_home_env)
+{
+	t_history	*hist;
+	int			ret;
+
+	ret = 0;
+	unsetenv("HOME");
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	cr_assert_not_null(hist);
+	hist->hist_path = NULL;
+	cr_redirect_stderr();
+	ret = initialize_history(hist);
+	fflush(stderr);
+	cr_expect_stderr_eq_str("Error in resolving the history path\n");
+	cr_expect_null(hist->hist_list);
+	cr_expect_eq(error_histpath, ret);
 }
 
 Test(initialize_hist, check_format)
@@ -264,7 +349,89 @@ Test(initialize_hist, no_write_acc)
 	}
 }
 
-Test(scroll_hist, scroll_hist_null_checks)
+Test(scroll_hist, invalid_NULL_hist)
+{
+	t_buff		buffer;
+	t_cursor	cursor;
+	int			ret;
+
+	ret = scroll_hist(NULL, &buffer, &cursor);
+	cr_assert_eq(ret, 1);
+}
+
+Test(scroll_hist, invalid_NULL_buffer)
+{
+	t_history	hist;
+	t_cursor	cursor;
+	int			ret;
+
+	ret = scroll_hist(&hist, NULL, &cursor);
+	cr_assert_eq(ret, 1);
+}
+
+Test(scroll_hist, invalid_NULL_cursor)
+{
+	t_history	hist;
+	t_buff		buffer;
+	int			ret;
+
+	ret = scroll_hist(&hist, &buffer, NULL);
+	cr_assert_eq(ret, 1);
+}
+
+Test(scroll_hist, invalid_blank_buffer_cursor_structs)
+{
+	t_history	hist;
+	t_buff		buffer;
+	t_cursor	cursor;
+	int			ret;
+
+	ft_bzero(&hist, sizeof(t_history));
+	ft_bzero(&buffer, sizeof(t_buff));
+	ft_bzero(&cursor, sizeof(t_cursor));
+	hist.hist_path = ft_strjoin(getenv("HOME"), "/.test_scroll_hist_blank_buff_cursor");
+	cr_assert_not_null(hist.hist_path, "MALLOC failed");
+	remove(hist.hist_path);
+	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 10);
+	ret = initialize_history(&hist);
+	remove(hist.hist_path);
+	cr_assert_eq(hist.max_index, 9);
+	cr_assert_eq(hist.real_num_index, 9);
+	cr_assert_str_eq(hist.hist_list->hist_buff, ":0:TESTTINGHISTORY0");
+	cr_assert_str_eq(hist.hist_list->next->hist_buff, ":1:TESTTINGHISTORY1");
+	cr_assert_str_eq(hist.hist_list->next->next->hist_buff, ":2:TESTTINGHISTORY2");
+	cr_expect_eq(0, ret);
+
+	ret = scroll_hist(&hist, &buffer, &cursor);
+	cr_assert_eq(ret, 1);
+}
+
+Test(scroll_hist, invalid_NULL_hist_list)
+{
+	t_history	hist;
+	t_buff		buffer;
+	t_cursor	cursor;
+	int			ret;
+
+	ft_bzero(&hist, sizeof(t_history));
+	ft_bzero(&buffer, sizeof(t_buff));
+	ft_bzero(&cursor, sizeof(t_cursor));
+	hist.hist_path = ft_strjoin(getenv("HOME"), "/.test_scroll_hist_NULL_hist_list");
+	cr_assert_not_null(hist.hist_path, "MALLOC failed");
+	remove(hist.hist_path);
+	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 10);
+	ret = initialize_history(&hist);
+	remove(hist.hist_path);
+	cr_expect_eq(hist.max_index, 9);
+	cr_expect_eq(hist.real_num_index, 9);
+	cr_expect_eq(0, ret);
+	hist.hist_list = NULL;
+
+	ret = scroll_hist(&hist, &buffer, &cursor);
+	cr_assert_eq(ret, 1);
+}
+
+Test(scroll_hist, valid_buffer_state_input)
 {
 	t_history	hist;
 	t_buff		buffer;
@@ -272,17 +439,17 @@ Test(scroll_hist, scroll_hist_null_checks)
 	int			ret;
 
 	ret = 0;
-	hist.hist_path = ft_strjoin(getenv("HOME"), "/.test_up_down");
+	hist.hist_path = ft_strjoin(getenv("HOME"), "/.test_scroll_hist_valid_buffer_state_input");
 	cr_expect_not_null(hist.hist_path, "MALLOC failed");
 	remove(hist.hist_path);
-	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
+	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 20);
 	ret = initialize_history(&hist);
 	remove(hist.hist_path);
-	cr_assert_eq(hist.max_index, 199);
-	cr_assert_eq(hist.real_num_index, 199);
-	cr_assert_str_eq(hist.hist_list->hist_buff, ":0:TESTTINGHISTORY0");
-	cr_assert_str_eq(hist.hist_list->next->hist_buff, ":1:TESTTINGHISTORY1");
-	cr_assert_str_eq(hist.hist_list->next->next->hist_buff, ":2:TESTTINGHISTORY2");
+	cr_expect_eq(hist.max_index, 19);
+	cr_expect_eq(hist.real_num_index, 19);
+	cr_expect_str_eq(hist.hist_list->hist_buff, ":0:TESTTINGHISTORY0");
+	cr_expect_str_eq(hist.hist_list->next->hist_buff, ":1:TESTTINGHISTORY1");
+	cr_expect_str_eq(hist.hist_list->next->next->hist_buff, ":2:TESTTINGHISTORY2");
 	cr_expect_eq(0, ret);
 
 	ft_bzero(&buffer, sizeof(t_buff));
@@ -290,28 +457,15 @@ Test(scroll_hist, scroll_hist_null_checks)
 
 	buffer.state = INPUT_STATE;
 	hist.buff_temp = ft_strdup("temp");
-	buffer.buff = NULL;
-	buffer.buff_len = 4;
+	buffer.buff = ft_strdup("buffer");
+	buffer.buff_len = 6;
 	buffer.prompt_len = 10;
 	cr_expect_not_null(hist.buff_temp);
-	ret = scroll_hist(NULL, &buffer, &cursor);
-	cr_assert_eq(ret, 1);
-	ret = scroll_hist(&hist, NULL, &cursor);
-	cr_assert_eq(ret, 1);
-	ret = scroll_hist(&hist, &buffer, NULL);
-	cr_assert_eq(ret, 1);
-	ret = scroll_hist(&hist, &buffer, &cursor);
-	cr_assert_eq(ret, 1);
-	hist.buff_temp = ft_strdup("This is the hist.buff_temp");
-	buffer.buff = ft_strdup("This is the buffer.buff");
+	cr_expect_not_null(buffer.buff);
 	ret = scroll_hist(&hist, &buffer, &cursor);
 	cr_assert_eq(ret, 0);
-	cr_assert_str_eq(hist.buff_temp, buffer.buff);
-	hist.current_index--;
-	hist.hist_list = NULL;
-	ret = scroll_hist(&hist, &buffer, &cursor);
-	cr_assert_eq(ret, 0);
-	}
+
+}
 
 Test(scroll_hist, up_down_test)
 {
@@ -411,6 +565,60 @@ Test(scroll_hist, whole_list)
 
 	}
 	cr_assert_str_eq(buffer.buff, "temp");
+}
+
+Test(add_remove_update_hist, invalid_NULL_hist)
+{
+	int ret;
+
+	ret = add_remove_update_history(NULL, "foo");
+	cr_expect_eq(ret, 0);
+}
+
+Test(add_remove_update_hist, invalid_NULL_buffer)
+{
+	t_history hist;
+	int ret;
+
+	ft_bzero(&hist, sizeof(t_history));
+	ret = add_remove_update_history(&hist, NULL);
+	cr_expect_eq(ret, 0);
+}
+
+Test(add_remove_update_hist, invalid_empty_buffer)
+{
+	t_history hist;
+	int ret;
+
+	ft_bzero(&hist, sizeof(t_history));
+	ret = add_remove_update_history(&hist, "");
+	cr_expect_eq(ret, 0);
+}
+
+Test(add_remove_update_hist, invalid_NULL_hist_list)
+{
+	t_history	hist;
+	t_buff		buffer;
+	t_cursor	cursor;
+	int			ret;
+
+	ft_bzero(&hist, sizeof(t_history));
+	ft_bzero(&buffer, sizeof(t_buff));
+	ft_bzero(&cursor, sizeof(t_cursor));
+	hist.hist_path = ft_strjoin(getenv("HOME"), "/.test_add_remove_update_hist_NULL_hist_list");
+	cr_assert_not_null(hist.hist_path, "MALLOC failed");
+	remove(hist.hist_path);
+	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 10);
+	ret = initialize_history(&hist);
+	remove(hist.hist_path);
+	cr_expect_eq(hist.max_index, 9);
+	cr_expect_eq(hist.real_num_index, 9);
+	cr_expect_eq(0, ret);
+	hist.hist_list = NULL;
+	ret = add_remove_update_history(&hist, "foobar");
+	cr_expect_eq(ret, 0);
+	cr_assert_not_null(hist.hist_list);
+	cr_expect_str_eq(hist.hist_list->hist_buff, ":9:foobar");
 }
 
 Test(add_remove_update_hist, empty_histlist)
@@ -517,6 +725,108 @@ Test(add_remove_update_hist, normal_larger_size)
 	}
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":600:testing add_remove_update_hist");
 	remove(hist->hist_path);
+}
+
+Test(get_histfile_unit, invalid_NULL_hist)
+{
+	int ret;
+
+	ret = get_histfile(NULL);
+	cr_expect_eq(ret, malloc_error);
+}
+
+Test(get_histfile_unit, invalid_no_HOME)
+{
+	t_history	hist;
+	int			ret;
+
+	ft_bzero(&hist, sizeof(t_history));
+	unsetenv("HOME");
+	ret = get_histfile(&hist);
+	cr_expect_eq(ret, error_histpath);
+}
+
+Test(get_histfile_unit, valid_normal)
+{
+	t_history	hist;
+	int			ret;
+
+	ft_bzero(&hist, sizeof(t_history));
+	setenv("HOME", "/tmp", 1);
+	ret = get_histfile(&hist);
+	cr_expect_eq(ret, 0);
+	cr_expect_str_eq(hist.hist_path, "/tmp/.cetsh_history");
+}
+
+Test(free_history_unit, invalid_NULL_hist)
+{
+	t_history	*hist = NULL;
+
+	free_history(hist);
+}
+
+Test(free_history_unit, invalid_NULL_hist_path)
+{
+	t_history	*hist = (t_history *)ft_memalloc(sizeof(t_history) * 1);
+	cr_assert_not_null(hist);
+
+	hist->hist_list = (t_hist_list *)ft_memalloc(sizeof(t_hist_list) * 1);
+	cr_expect_not_null(hist->hist_list);
+	hist->buff_temp = (char *)ft_memalloc(sizeof(char) * 1);
+	cr_expect_not_null(hist->buff_temp);
+	free_history(hist);
+}
+
+Test(free_history_unit, invalid_NULL_hist_list)
+{
+	t_history	*hist = (t_history *)ft_memalloc(sizeof(t_history) * 1);
+	cr_assert_not_null(hist);
+
+	hist->hist_path = (char *)ft_memalloc(sizeof(char) * 1);
+	cr_expect_not_null(hist->hist_path);
+	hist->buff_temp = (char *)ft_memalloc(sizeof(char) * 1);
+	cr_expect_not_null(hist->buff_temp);
+	free_history(hist);
+}
+
+Test(free_history_unit, invalid_NULL_buff_temp)
+{
+	t_history	*hist = (t_history *)ft_memalloc(sizeof(t_history) * 1);
+	cr_assert_not_null(hist);
+
+	hist->hist_list = (t_hist_list *)ft_memalloc(sizeof(t_hist_list) * 1);
+	cr_expect_not_null(hist->hist_list);
+	hist->hist_path = (char *)ft_memalloc(sizeof(char) * 1);
+	cr_expect_not_null(hist->hist_path);
+	free_history(hist);
+}
+
+Test(free_history_unit, valid_free_all)
+{
+	t_history	*hist = (t_history *)ft_memalloc(sizeof(t_history) * 1);
+	cr_assert_not_null(hist);
+
+	hist->hist_list = (t_hist_list *)ft_memalloc(sizeof(t_hist_list) * 1);
+	cr_expect_not_null(hist->hist_list);
+	hist->hist_path = (char *)ft_memalloc(sizeof(char) * 1);
+	cr_expect_not_null(hist->hist_path);
+	hist->buff_temp = (char *)ft_memalloc(sizeof(char) * 1);
+	cr_expect_not_null(hist->buff_temp);
+	free_history(hist);
+}
+
+Test(free_hist_list_unit, invalid_NULL_list)
+{
+	t_hist_list	*list = NULL;
+
+	free_hist_list(&list);
+}
+
+Test(free_hist_list_unit, invalid_NULL_list_pointer)
+{
+	t_hist_list	**list = NULL;
+
+	free_hist_list(list);
 }
 
 Test(free_hist_list_unit, valid_last_of_3_elements)
