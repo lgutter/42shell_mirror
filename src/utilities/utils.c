@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "utils.h"
-#include "input_control.h"
 
 void	ft_swap_rv(t_buff *buffer)
 {
@@ -60,4 +59,26 @@ int		free_shell(t_shell *shell, int ret)
 		free(shell);
 	}
 	return (ret);
+}
+
+int		get_here_doc(t_io_here *io_here, t_shell *shell)
+{
+	char	*temp;
+	char	*here_doc;
+
+	temp = NULL;
+	here_doc = ft_strdup("");
+	if (io_here->here_end == NULL)
+		return (handle_error(parsing_error));
+	while (1)
+	{
+		temp = prompt_shell(shell, PROMPT_HEREDOC);
+		if (temp != NULL && ft_strcmp(temp, io_here->here_end) == 0)
+			break ;
+		str_expand_triple(&here_doc, "\n", temp);
+		if (here_doc == NULL)
+			return (handle_error(malloc_error));
+	}
+	io_here->here_doc = here_doc;
+	return (0);
 }

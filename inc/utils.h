@@ -14,6 +14,8 @@
 # define UTILS_H
 
 # include "cetushell.h"
+# include "parser_structs.h"
+#include "input_control.h"
 
 /*
 ** ft_swap_rv requires as input a pointer to a t_buff struct and a string seq.
@@ -100,5 +102,8 @@ int			count_quote_chars(char *str);
 **	copy of str with quote characters escaped on succes.
 */
 char		*backslash_quotes(char *str);
+
+// add docs
+int		get_here_doc(t_io_here *io_here, t_shell *shell);
 
 #endif
