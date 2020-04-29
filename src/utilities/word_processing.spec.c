@@ -283,6 +283,54 @@ Test(word_processing_unit, valid_argument_redir_remove_quotes)
 	cr_expect_eq(expected_command->pipe_sequence->simple_command->redirects->io_here, NULL);
 }
 
+Test(word_processing_unit, valid_argument_redir_io_number_arg_remove_quotes)
+{
+	t_token 		*token3 = init_token(WORD, "hel\"l\"o", NULL);
+	t_token 		*token2 = init_token(DGREAT, ">>", token3);
+	t_token 		*token1 = init_token(IO_NUMBER, "42", token2);
+	t_token 		*token_start = token1;
+	t_complete_cmd	*command;
+	t_complete_cmd	*expected_command;
+	int				ret;
+	int				expected_ret = 0;
+	int				expected_diff_ret = 1;
+	char			*expected_str = "42";
+
+	token_start = token1;
+	command = parse_complete_command(&token1);
+	token1 = token_start;
+	expected_command = parse_complete_command(&token1);
+	ret = word_processing(NULL, NULL, command);
+	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
+	ret = diff_complete_command(command, expected_command);
+	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
+	cr_assert_neq(command, NULL);
+	cr_assert_neq(expected_command, NULL);
+	cr_expect_eq(NULL, command->next);
+	cr_expect_eq(NULL, expected_command->next);
+	cr_assert_neq(command->pipe_sequence, NULL);
+	cr_assert_neq(expected_command->pipe_sequence, NULL);
+	cr_expect_eq(NULL, command->pipe_sequence->next);
+	cr_expect_eq(NULL, expected_command->pipe_sequence->next);
+	cr_assert_neq(command->pipe_sequence->simple_command, NULL);
+	cr_assert_neq(expected_command->pipe_sequence->simple_command, NULL);
+	cr_expect_eq(command->pipe_sequence->simple_command->arguments, NULL);
+	cr_expect_eq(expected_command->pipe_sequence->simple_command->arguments, NULL);
+	cr_assert_neq(command->pipe_sequence->simple_command->redirects, NULL);
+	cr_assert_neq(expected_command->pipe_sequence->simple_command->redirects, NULL);
+	cr_expect_eq(42, command->pipe_sequence->simple_command->redirects->io_fd);
+	cr_expect_str_eq(expected_str, expected_command->pipe_sequence->simple_command->redirects->io_number);
+	cr_expect_str_eq(expected_str, command->pipe_sequence->simple_command->redirects->io_number);
+	expected_str = "hello";
+	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_file, NULL);
+	cr_assert_neq(expected_command->pipe_sequence->simple_command->redirects->io_file, NULL);
+	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_file->filename, NULL);
+	cr_assert_neq(expected_command->pipe_sequence->simple_command->redirects->io_file->filename, NULL);
+	cr_expect_str_eq(command->pipe_sequence->simple_command->redirects->io_file->filename, expected_str);
+	cr_expect_eq(command->pipe_sequence->simple_command->redirects->io_here, NULL);
+	cr_expect_eq(expected_command->pipe_sequence->simple_command->redirects->io_here, NULL);
+}
+
 Test(word_processing_unit, valid_two_arguments_redir_remove_quotes)
 {
 	t_token 		*token4 = init_token(WORD, "\"bye\"", NULL);
