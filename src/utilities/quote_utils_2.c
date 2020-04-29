@@ -28,11 +28,11 @@ int			count_quote_chars(char *str)
 	while (1)
 	{
 		rules = g_quote_trans[state].rules[(size_t)str[i]];
-		if (rules.next_state == invalid)
+		if (rules.next_state == q_invalid)
 			rules = g_quote_trans[state].catch_state;
-		if (rules.add_char == SKIP_CHAR)
+		if (rules.add_char == Q_SKIP_CHAR)
 			count++;
-		if (rules.next_state == eof)
+		if (rules.next_state == q_eof)
 			return (count);
 		state = rules.next_state;
 		i++;

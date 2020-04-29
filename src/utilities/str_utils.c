@@ -17,7 +17,7 @@ void	ft_strexpand(char **source, const char *addition)
 	void *temp;
 
 	temp = *source;
-	if (*source == NULL)
+	if (*source == NULL && addition != NULL)
 	{
 		*source = ft_strdup(addition);
 	}

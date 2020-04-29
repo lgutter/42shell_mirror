@@ -20,8 +20,8 @@
 */
 typedef enum		e_q_action
 {
-	SKIP_CHAR = 0,
-	ADD_CHAR
+	Q_SKIP_CHAR = 0,
+	Q_ADD_CHAR
 }					t_q_action;
 
 /*
@@ -31,13 +31,13 @@ typedef enum		e_q_action
 */
 typedef enum		e_q_state
 {
-	invalid = 0,
-	eof,
+	q_invalid = 0,
+	q_eof,
 	no_quote,
-	squote,
-	dquote,
-	backslash,
-	dq_backslash
+	q_squote,
+	q_dquote,
+	q_backslash,
+	q_dq_backslash
 }					t_q_state;
 
 /*
@@ -82,43 +82,43 @@ static const t_q_trans g_quote_trans[] = {
 	[no_quote] =
 	{
 		.rules = {
-			['\0']		= {eof, ADD_CHAR},
-			['\'']		= {squote, SKIP_CHAR},
-			['"']		= {dquote, SKIP_CHAR},
-			['\\']		= {backslash, SKIP_CHAR}
+			['\0']		= {q_eof, Q_ADD_CHAR},
+			['\'']		= {q_squote, Q_SKIP_CHAR},
+			['"']		= {q_dquote, Q_SKIP_CHAR},
+			['\\']		= {q_backslash, Q_SKIP_CHAR}
 		},
-		.catch_state	= {no_quote, ADD_CHAR}
+		.catch_state	= {no_quote, Q_ADD_CHAR}
 	},
-	[squote] =
+	[q_squote] =
 	{
 		.rules = {
-			['\0']		= {eof, ADD_CHAR},
-			['\'']		= {no_quote, SKIP_CHAR}
+			['\0']		= {q_eof, Q_ADD_CHAR},
+			['\'']		= {no_quote, Q_SKIP_CHAR}
 		},
-		.catch_state	= {squote, ADD_CHAR}
+		.catch_state	= {q_squote, Q_ADD_CHAR}
 	},
-	[dquote] =
+	[q_dquote] =
 	{
 		.rules = {
-			['\0']		= {eof, ADD_CHAR},
-			['"']		= {no_quote, SKIP_CHAR},
-			['\\']		= {dq_backslash, SKIP_CHAR}
+			['\0']		= {q_eof, Q_ADD_CHAR},
+			['"']		= {no_quote, Q_SKIP_CHAR},
+			['\\']		= {q_dq_backslash, Q_SKIP_CHAR}
 		},
-		.catch_state	= {dquote, ADD_CHAR}
+		.catch_state	= {q_dquote, Q_ADD_CHAR}
 	},
-	[backslash] =
+	[q_backslash] =
 	{
 		.rules = {
-			['\0']		= {eof, ADD_CHAR},
+			['\0']		= {q_eof, Q_ADD_CHAR},
 		},
-		.catch_state	= {no_quote, ADD_CHAR}
+		.catch_state	= {no_quote, Q_ADD_CHAR}
 	},
-	[dq_backslash] =
+	[q_dq_backslash] =
 	{
 		.rules = {
-			['\0']		= {eof, ADD_CHAR},
+			['\0']		= {q_eof, Q_ADD_CHAR},
 		},
-		.catch_state	= {dquote, ADD_CHAR}
+		.catch_state	= {q_dquote, Q_ADD_CHAR}
 	}
 };
 

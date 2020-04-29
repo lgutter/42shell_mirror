@@ -29,27 +29,33 @@ static const char *g_token_types[GREATAMP + 1] =
 	[GREATAMP] = "GREATAMP"
 };
 
-void	print_io_redirect(t_io_redirect *io_redirect)
+static void	print_io_redirect(t_io_redirect *io_redirect)
 {
 	while (io_redirect != NULL)
 	{
 		if (io_redirect->io_number != NULL)
-			ft_printf("\t\t\tio_number: %s\n", io_redirect->io_number);
+			ft_printf("\t\t\tio_number: %s | %i\n", io_redirect->io_number,
+						io_redirect->io_fd);
 		if (io_redirect->io_file != NULL)
 			ft_printf("\t\t\tio_file: op: %s; filename: %s\n",\
 			g_token_types[io_redirect->io_file->redirect_op],\
 			io_redirect->io_file->filename);
 		if (io_redirect->io_here != NULL)
-			ft_printf("\t\t\tio_here: %s\n", io_redirect->io_here->here_end);
+		{
+			ft_printf("\t\t\there_end: %s\n", io_redirect->io_here->here_end);
+			ft_printf("\t\t\there_doc: |%s|\n", io_redirect->io_here->here_doc);
+		}
 		io_redirect = io_redirect->next;
 	}
 	ft_printf("\t\t\t--------\n");
 }
 
-void	print_simple_command(t_simple_cmd *simple_command)
+static void	print_simple_command(t_simple_cmd *simple_command)
 {
-	t_argument *arguments;
+	t_argument	*arguments;
+	size_t		i;
 
+	i = 0;
 	if (simple_command->redirects != NULL)
 	{
 		ft_printf("\t\tREDIRECTIONS:\n");
@@ -57,17 +63,23 @@ void	print_simple_command(t_simple_cmd *simple_command)
 	}
 	if (simple_command->arguments != NULL)
 	{
-		ft_printf("\t\tARGUMENTS:\n");
+		ft_printf("\t\tARGUMENTS :\n");
 		arguments = simple_command->arguments;
 		while (arguments != NULL)
 		{
-			ft_printf("\t\t\t- %s\n", arguments->argument);
+			ft_printf("\t\t\t- %s | %s\n", arguments->argument,
+						simple_command->argv[i]);
 			arguments = arguments->next;
+			i++;
 		}
+		if (simple_command->argv[i] != NULL)
+			ft_printf("ERROR! more arguments in argv than argument list!");
+		if (simple_command->argv[i] != NULL)
+			ft_printf(" next argv: |%s|", simple_command->argv[i]);
 	}
 }
 
-void	print_pipe_sequence(t_pipe_sequence *pipe_sequence)
+static void	print_pipe_sequence(t_pipe_sequence *pipe_sequence)
 {
 	int i;
 
@@ -84,7 +96,7 @@ void	print_pipe_sequence(t_pipe_sequence *pipe_sequence)
 	}
 }
 
-void	print_complete_command(t_complete_cmd *complete_command)
+void		print_complete_command(t_complete_cmd *complete_command)
 {
 	int i;
 
@@ -103,7 +115,7 @@ void	print_complete_command(t_complete_cmd *complete_command)
 	}
 }
 
-void	print_tokens(t_token *tokens)
+void		print_tokens(t_token *tokens)
 {
 	while (tokens != NULL)
 	{

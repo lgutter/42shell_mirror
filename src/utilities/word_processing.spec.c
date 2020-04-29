@@ -38,6 +38,7 @@ static int	diff_complete_command(t_complete_cmd *command1, t_complete_cmd *comma
 	t_pipe_sequence	*pipe_s2;
 	t_io_redirect	*redir1;
 	t_io_redirect	*redir2;
+	size_t			i = 0;
 
 	while (command1 != NULL)
 	{
@@ -75,6 +76,12 @@ static int	diff_complete_command(t_complete_cmd *command1, t_complete_cmd *comma
 				}
 				if (argument2 != NULL)
 					return (1);
+				while (pipe_s1->simple_command->argv != NULL && pipe_s1->simple_command->argv[i] != NULL)
+				{
+					if (pipe_s2->simple_command->argv == NULL || pipe_s2->simple_command->argv[i] == NULL || strcmp(pipe_s1->simple_command->argv[i], pipe_s2->simple_command->argv[i]) != 0)
+						return (1);
+					i++;
+				}
 				redir1 = pipe_s1->simple_command->redirects;
 				redir2 = pipe_s2->simple_command->redirects;
 				while (redir1 != NULL)
@@ -82,6 +89,8 @@ static int	diff_complete_command(t_complete_cmd *command1, t_complete_cmd *comma
 					if (redir2 == NULL)
 						return (1);
 					if (strcmp(redir1->io_number, redir2->io_number) != 0)
+						return (1);
+					if (redir1->io_fd != redir2->io_fd)
 						return (1);
 					if (redir1->io_file != NULL)
 					{
@@ -113,6 +122,15 @@ static int	diff_complete_command(t_complete_cmd *command1, t_complete_cmd *comma
 								return (1);
 						}
 						else if (redir2->io_here->here_end != NULL)
+							return (1);
+						if (redir1->io_here->here_doc != NULL)
+						{
+							if (redir2->io_here->here_doc == NULL)
+								return (1);
+							if (strcmp(redir1->io_here->here_doc, redir2->io_here->here_doc) != 0)
+								return (1);
+						}
+						else if (redir2->io_here->here_doc != NULL)
 							return (1);
 					}
 					else if (redir2->io_here != NULL)
@@ -156,8 +174,23 @@ Test(word_processing_unit, valid_single_token_no_processing)
 	cr_assert_eq(ret, expected_diff_ret, "FATAL in prep: expected return %i, got %i.", expected_diff_ret, ret);
 	ret = word_processing(NULL, NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
+	cr_assert_neq(command, NULL);
+	cr_assert_neq(expected_command, NULL);
+	cr_expect_eq(NULL, command->next);
+	cr_expect_eq(NULL, expected_command->next);
+	cr_assert_neq(command->pipe_sequence, NULL);
+	cr_assert_neq(expected_command->pipe_sequence, NULL);
+	cr_expect_null(command->pipe_sequence->next);
+	cr_expect_null(expected_command->pipe_sequence->next);
+	cr_assert_neq(command->pipe_sequence->simple_command, NULL);
+	cr_assert_neq(expected_command->pipe_sequence->simple_command, NULL);
+	cr_assert_neq(command->pipe_sequence->simple_command->argv, NULL);
+	cr_assert_neq(command->pipe_sequence->simple_command->argv[0], NULL);
+	cr_expect_str_eq(command->pipe_sequence->simple_command->argv[0], "echo");
+	command->pipe_sequence->simple_command->argv = NULL;
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
+
 }
 
 Test(word_processing_unit, valid_single_token_remove_quotes)
@@ -241,6 +274,54 @@ Test(word_processing_unit, valid_argument_redir_remove_quotes)
 	expected_str = "hello";
 	cr_assert_neq(command->pipe_sequence->simple_command->redirects, NULL);
 	cr_assert_neq(expected_command->pipe_sequence->simple_command->redirects, NULL);
+	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_file, NULL);
+	cr_assert_neq(expected_command->pipe_sequence->simple_command->redirects->io_file, NULL);
+	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_file->filename, NULL);
+	cr_assert_neq(expected_command->pipe_sequence->simple_command->redirects->io_file->filename, NULL);
+	cr_expect_str_eq(command->pipe_sequence->simple_command->redirects->io_file->filename, expected_str);
+	cr_expect_eq(command->pipe_sequence->simple_command->redirects->io_here, NULL);
+	cr_expect_eq(expected_command->pipe_sequence->simple_command->redirects->io_here, NULL);
+}
+
+Test(word_processing_unit, valid_argument_redir_io_number_arg_remove_quotes)
+{
+	t_token 		*token3 = init_token(WORD, "hel\"l\"o", NULL);
+	t_token 		*token2 = init_token(DGREAT, ">>", token3);
+	t_token 		*token1 = init_token(IO_NUMBER, "42", token2);
+	t_token 		*token_start = token1;
+	t_complete_cmd	*command;
+	t_complete_cmd	*expected_command;
+	int				ret;
+	int				expected_ret = 0;
+	int				expected_diff_ret = 1;
+	char			*expected_str = "42";
+
+	token_start = token1;
+	command = parse_complete_command(&token1);
+	token1 = token_start;
+	expected_command = parse_complete_command(&token1);
+	ret = word_processing(NULL, NULL, command);
+	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
+	ret = diff_complete_command(command, expected_command);
+	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
+	cr_assert_neq(command, NULL);
+	cr_assert_neq(expected_command, NULL);
+	cr_expect_eq(NULL, command->next);
+	cr_expect_eq(NULL, expected_command->next);
+	cr_assert_neq(command->pipe_sequence, NULL);
+	cr_assert_neq(expected_command->pipe_sequence, NULL);
+	cr_expect_eq(NULL, command->pipe_sequence->next);
+	cr_expect_eq(NULL, expected_command->pipe_sequence->next);
+	cr_assert_neq(command->pipe_sequence->simple_command, NULL);
+	cr_assert_neq(expected_command->pipe_sequence->simple_command, NULL);
+	cr_expect_eq(command->pipe_sequence->simple_command->arguments, NULL);
+	cr_expect_eq(expected_command->pipe_sequence->simple_command->arguments, NULL);
+	cr_assert_neq(command->pipe_sequence->simple_command->redirects, NULL);
+	cr_assert_neq(expected_command->pipe_sequence->simple_command->redirects, NULL);
+	cr_expect_eq(42, command->pipe_sequence->simple_command->redirects->io_fd);
+	cr_expect_str_eq(expected_str, expected_command->pipe_sequence->simple_command->redirects->io_number);
+	cr_expect_str_eq(expected_str, command->pipe_sequence->simple_command->redirects->io_number);
+	expected_str = "hello";
 	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_file, NULL);
 	cr_assert_neq(expected_command->pipe_sequence->simple_command->redirects->io_file, NULL);
 	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_file->filename, NULL);
@@ -358,30 +439,37 @@ Test(word_processing_unit, valid_argument_redir_expansion_with_quotes)
 	cr_expect_eq(expected_command->pipe_sequence->simple_command->redirects->io_here, NULL);
 }
 
-Test(word_processing_unit, valid_redir_here_doc)
-{
-	t_token 		*token2 = init_token(WORD, "\"$foo\"", NULL);
-	t_token 		*token1 = init_token(DLESS, "<<", token2);
-	t_complete_cmd	*command;
-	int				ret;
-	int				expected_ret = 0;
-	char			*expected_str = "$foo";
+// Test(word_processing_unit, valid_redir_here_doc)
+// {
+// 	t_token 		*token2 = init_token(WORD, "\"$foo\"", NULL);
+// 	t_token 		*token1 = init_token(DLESS, "<<", token2);
+// 	t_complete_cmd	*command;
+// 	int				ret;
+// 	int				expected_ret = 0;
+// 	char			*expected_str = "$foo";
+// 	char			*expected_here_doc = "bar";
+// 	int				pipe_fds[2];
 
-	command = parse_complete_command(&token1);
-	ret = word_processing(NULL, NULL, command);
-	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
-	cr_assert_neq(command, NULL);
-	cr_expect_eq(NULL, command->next);
-	cr_assert_neq(command->pipe_sequence, NULL);
-	cr_expect_eq(NULL, command->pipe_sequence->next);
-	cr_assert_neq(command->pipe_sequence->simple_command, NULL);
-	cr_expect_eq(command->pipe_sequence->simple_command->arguments, NULL);
-	cr_assert_neq(command->pipe_sequence->simple_command->redirects, NULL);
-	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_here, NULL);
-	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_here->here_end, NULL);
-	cr_expect_str_eq(command->pipe_sequence->simple_command->redirects->io_here->here_end, expected_str);
-	cr_expect_eq(command->pipe_sequence->simple_command->redirects->io_file, NULL);
-}
+// 	cr_assert_eq(0, pipe(pipe_fds));
+// 	dup2(pipe_fds[0], STDIN_FILENO);
+// 	ft_dprintf(pipe_fds[1], "bar\n$foo\n");
+// 	command = parse_complete_command(&token1);
+// 	ret = word_processing(NULL, NULL, command);
+// 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
+// 	cr_assert_neq(command, NULL);
+// 	cr_expect_eq(NULL, command->next);
+// 	cr_assert_neq(command->pipe_sequence, NULL);
+// 	cr_expect_eq(NULL, command->pipe_sequence->next);
+// 	cr_assert_neq(command->pipe_sequence->simple_command, NULL);
+// 	cr_expect_eq(command->pipe_sequence->simple_command->arguments, NULL);
+// 	cr_assert_neq(command->pipe_sequence->simple_command->redirects, NULL);
+// 	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_here, NULL);
+// 	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_here->here_end, NULL);
+// 	cr_expect_str_eq(command->pipe_sequence->simple_command->redirects->io_here->here_end, expected_str);
+// 	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_here->here_doc, NULL);
+// 	cr_expect_str_eq(command->pipe_sequence->simple_command->redirects->io_here->here_doc, expected_here_doc);
+// 	cr_expect_eq(command->pipe_sequence->simple_command->redirects->io_file, NULL);
+// }
 
 Test(word_processing_unit, invalid_NULL_shell_unterminated_quote)
 {

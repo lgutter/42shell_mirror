@@ -100,6 +100,7 @@ typedef struct					s_simple_command
 {
 	struct s_io_redirect		*redirects;
 	struct s_argument			*arguments;
+	char						**argv;
 }								t_simple_cmd;
 
 /*
@@ -127,6 +128,7 @@ typedef struct					s_argument
 typedef struct					s_io_redirect
 {
 	char						*io_number;
+	int							io_fd;
 	struct s_io_file			*io_file;
 	struct s_io_here			*io_here;
 	struct s_io_redirect		*next;
@@ -154,6 +156,7 @@ typedef struct					s_io_file
 typedef struct					s_io_here
 {
 	char						*here_end;
+	char						*here_doc;
 }								t_io_here;
 
 #endif

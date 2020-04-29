@@ -27,15 +27,16 @@ int			check_quote(char *word)
 	while (1)
 	{
 		rules = g_quote_trans[state].rules[(size_t)*word];
-		if (rules.next_state == invalid)
+		if (rules.next_state == q_invalid)
 			rules = g_quote_trans[state].catch_state;
-		if (state == dquote && rules.next_state == no_quote)
+		if (state == q_dquote && rules.next_state == no_quote)
 			quote = 2;
-		if (state == squote && rules.next_state == no_quote)
+		if (state == q_squote && rules.next_state == no_quote)
 			quote = 1;
-		if (rules.next_state == eof && (state == squote || state == dquote))
-			return (state == squote ? -1 : -2);
-		else if (rules.next_state == eof)
+		if (rules.next_state == q_eof &&
+			(state == q_squote || state == q_dquote))
+			return (state == q_squote ? -1 : -2);
+		else if (rules.next_state == q_eof)
 			return (quote);
 		state = rules.next_state;
 		word++;
@@ -55,14 +56,14 @@ static void	str_cpy_no_quotes(char *dst, const char *src)
 	while (1)
 	{
 		rules = g_quote_trans[state].rules[(size_t)src[i]];
-		if (rules.next_state == invalid)
+		if (rules.next_state == q_invalid)
 			rules = g_quote_trans[state].catch_state;
-		if (rules.add_char == ADD_CHAR)
+		if (rules.add_char == Q_ADD_CHAR)
 		{
 			dst[j] = src[i];
 			j++;
 		}
-		if (rules.next_state == eof)
+		if (rules.next_state == q_eof)
 			return ;
 		state = rules.next_state;
 		i++;
