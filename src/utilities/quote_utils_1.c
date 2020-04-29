@@ -33,7 +33,8 @@ int			check_quote(char *word)
 			quote = 2;
 		if (state == q_squote && rules.next_state == no_quote)
 			quote = 1;
-		if (rules.next_state == q_eof && (state == q_squote || state == q_dquote))
+		if (rules.next_state == q_eof &&
+			(state == q_squote || state == q_dquote))
 			return (state == q_squote ? -1 : -2);
 		else if (rules.next_state == q_eof)
 			return (quote);

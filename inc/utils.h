@@ -15,7 +15,7 @@
 
 # include "cetushell.h"
 # include "parser_structs.h"
-#include "input_control.h"
+# include "input_control.h"
 
 /*
 ** ft_swap_rv requires as input a pointer to a t_buff struct and a string seq.
@@ -103,7 +103,15 @@ int			count_quote_chars(char *str);
 */
 char		*backslash_quotes(char *str);
 
-// add docs
-int		get_here_doc(t_io_here *io_here, t_shell *shell);
+/*
+**	asks the user for more input for the heredoc.
+**	arguments:
+**		io_here: the io_here struct containing the here_end and target here_doc.
+**		shell:	 the shell struct, required for prompt_shell to ask for input.
+**	returns:
+**		0 on succes;
+**		error code in case of error.
+*/
+int			get_here_doc(t_io_here *io_here, t_shell *shell);
 
 #endif

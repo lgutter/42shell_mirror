@@ -34,7 +34,8 @@ static void	print_io_redirect(t_io_redirect *io_redirect)
 	while (io_redirect != NULL)
 	{
 		if (io_redirect->io_number != NULL)
-			ft_printf("\t\t\tio_number: %s | %i\n", io_redirect->io_number, io_redirect->io_fd);
+			ft_printf("\t\t\tio_number: %s | %i\n", io_redirect->io_number,
+						io_redirect->io_fd);
 		if (io_redirect->io_file != NULL)
 			ft_printf("\t\t\tio_file: op: %s; filename: %s\n",\
 			g_token_types[io_redirect->io_file->redirect_op],\
@@ -51,9 +52,10 @@ static void	print_io_redirect(t_io_redirect *io_redirect)
 
 static void	print_simple_command(t_simple_cmd *simple_command)
 {
-	t_argument *arguments;
-	size_t		i = 0;
+	t_argument	*arguments;
+	size_t		i;
 
+	i = 0;
 	if (simple_command->redirects != NULL)
 	{
 		ft_printf("\t\tREDIRECTIONS:\n");
@@ -65,12 +67,15 @@ static void	print_simple_command(t_simple_cmd *simple_command)
 		arguments = simple_command->arguments;
 		while (arguments != NULL)
 		{
-			ft_printf("\t\t\t- %s | %s\n", arguments->argument, simple_command->argv[i]);
+			ft_printf("\t\t\t- %s | %s\n", arguments->argument,
+						simple_command->argv[i]);
 			arguments = arguments->next;
 			i++;
 		}
 		if (simple_command->argv[i] != NULL)
-			ft_printf("ERROR! more arguments in argv than argument list! next argv: |%s|", simple_command->argv[i]);
+			ft_printf("ERROR! more arguments in argv than argument list!");
+		if (simple_command->argv[i] != NULL)
+			ft_printf(" next argv: |%s|", simple_command->argv[i]);
 	}
 }
 
@@ -91,7 +96,7 @@ static void	print_pipe_sequence(t_pipe_sequence *pipe_sequence)
 	}
 }
 
-void	print_complete_command(t_complete_cmd *complete_command)
+void		print_complete_command(t_complete_cmd *complete_command)
 {
 	int i;
 
@@ -110,7 +115,7 @@ void	print_complete_command(t_complete_cmd *complete_command)
 	}
 }
 
-void	print_tokens(t_token *tokens)
+void		print_tokens(t_token *tokens)
 {
 	while (tokens != NULL)
 	{
