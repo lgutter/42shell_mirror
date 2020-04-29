@@ -15,10 +15,10 @@
 # include "tokenizer.h"
 # include "parser.h"
 
-void	print_arguments(t_argument *arguments);
-void	print_io_redirect(t_io_redirect *io_redirect);
-void	print_simple_command(t_simple_cmd *simple_command);
-void	print_pipe_sequence(t_pipe_sequence *pipe_sequence);
+// void	print_arguments(t_argument *arguments);
+// void	print_io_redirect(t_io_redirect *io_redirect);
+// void	print_simple_command(t_simple_cmd *simple_command);
+// void	print_pipe_sequence(t_pipe_sequence *pipe_sequence);
 void	print_complete_command(t_complete_cmd *complete_command);
 void	print_tokens(t_token *tokens);
 
