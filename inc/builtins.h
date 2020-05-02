@@ -15,6 +15,9 @@
 
 # include "environment.h"
 
+#define ENV_VAR 0
+#define SHELL_VAR 1
+
 typedef int		t_builtin_func(t_command *command);
 
 struct			s_builtin
@@ -22,6 +25,11 @@ struct			s_builtin
 	char			*builtin_name;
 	t_builtin_func	*func;
 };
+
+int			builtin_cd(t_command *command, t_env *env);
+int			builtin_env(t_command *command, struct s_env **env);
+int			builtin_set(t_command *comm, t_env **env);
+int			builtin_unset(t_command *command, t_env **env);
 
 
 #endif
