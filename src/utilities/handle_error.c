@@ -27,6 +27,11 @@ int		handle_error_int(int error_code, int number)
 	return (d_handle_error_int(STDERR_FILENO, error_code, number));
 }
 
+void	handle_name_error(int error_code, char *name)
+{
+	return (d_handle_name_error(STDERR_FILENO, error_code, name));
+}
+
 void	*handle_error_str_p(int error_code, const char *str, void *pointer)
 {
 	return (d_handle_error_str_p(STDERR_FILENO, error_code, str, pointer));

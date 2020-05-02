@@ -20,6 +20,13 @@ int		d_handle_error(int fd, int error_code)
 	return (error_code);
 }
 
+int		d_handle_name_error(int fd, int error_code, char *name)
+{
+	g_error_internal = error_code;
+	ft_dprintf(fd, "%s: %s\n", name, g_error_str[error_code]);
+	return (error_code);
+}
+
 int		d_handle_error_str(int fd, int error_code, const char *str)
 {
 	g_error_internal = error_code;

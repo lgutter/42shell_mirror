@@ -171,4 +171,6 @@ void	*d_handle_error_str_p(int fd, int error_code,
 */
 void	*d_handle_error_p(int fd, int error_code, void *pointer);
 
+void	handle_name_error(int error_code, char *name);
+
 #endif
