@@ -120,6 +120,10 @@ if libcriterion_deb.found()
     'src/utilities/process_word.spec.c',
     'src/utilities/word_processing.spec.c',
     'src/history/history_utils.spec.c',
+    'src/executor/add_fd_to_list.spec.c',
+    'src/executor/find_executable.spec.c',
+    'src/executor/set_up_io_file.spec.c',
+    'src/executor/set_up_redirections.spec.c',
   ])
 
   tester = executable('test-cetushell',

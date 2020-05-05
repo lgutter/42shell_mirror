@@ -24,9 +24,9 @@ static int		set_file_out(t_redir_info *redir_info, t_io_file *io_file)
 							access_denied, io_file->filename);
 	}
 	else if (io_file->redirect_op == redirect_append)
-		fd = open(io_file->filename, O_WRONLY | O_APPEND | O_CREAT, 0644);
+		fd = open(io_file->filename, O_WRONLY | O_APPEND | O_CREAT, 0664);
 	else if (io_file->redirect_op == redirect_out)
-		fd = open(io_file->filename, O_WRONLY | O_CREAT, 0644);
+		fd = open(io_file->filename, O_WRONLY | O_CREAT, 0664);
 	if (fd >= 0)
 		add_fd_to_list(fd, -1, redir_info);
 	return (fd);
@@ -65,7 +65,7 @@ int				set_up_io_file(t_redir_info *redir_info, int left_fd,
 {
 	int fd;
 
-	if (redir_info == NULL)
+	if (redir_info == NULL || redir_info->std_fds == NULL)
 		return (-1);
 	fd = set_file_fd(redir_info, io_file);
 	if (fd < 0)

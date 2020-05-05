@@ -70,10 +70,47 @@ typedef struct	s_redir_info
 
 }				t_redir_info;
 
+/*
+**	sets up a file redirection, linking the file specified in io_file
+**	to the fd specified by left_fd. It also places any new or replaced fd's
+**	in the fd_list in redir_info as needed.
+**	args:
+**	redir_info:	the redirection info struct containing the fd list.
+**	left_fd:	the fd to which we need to link.
+**	io_file:	the io_file struct containing the filename to be linked to
+**				left_fd, or an fd if it is an fd instead of file.
+**	returns:
+**	0 on succes.
+**	an error code on failure.
+*/
 int				set_up_io_file(t_redir_info *redir_info, int left_fd,
 								t_io_file *io_file);
+
+/*
+**	sets up all redirections in the redirect list. It also places any new
+**	or replaced fd's in the fd_list in redir_info, and the original stdin,
+**	stdout, and stderr in std_fds in redir_info, which it returns upon succes.
+**	args:
+**	redirrect:	a pointer to the first redirect struct in the list of redirects.
+**	returns:
+**	a pointer to the redir_info struct containing info about fd's on success.
+**	NULL in case of failure.
+*/
 t_redir_info	*set_up_redirections(t_io_redirect *redirect);
 int				reset_redirections(t_redir_info **redir_info);
+
+/*
+**	add fd and og_fd to the list of file descriptors.
+**	-1 is a valid value for og_fd, specifying that there was no original fd.
+**	args:
+**		fd:		the file descriptor.
+**		og_fd:		the original number associated with the descriptor,
+**					or -1 if it was not originally associated with a descriptor.
+**		redir_info:	a pointer to the redir_info struct containing the fd list.
+**	returns:
+**	0 on succes.
+**	an error code on failure.
+*/
 int				add_fd_to_list(int fd, int og_fd, t_redir_info *redir_info);
 int				exec_complete_command(t_complete_cmd *complete_cmd,
 										t_env *env_list);

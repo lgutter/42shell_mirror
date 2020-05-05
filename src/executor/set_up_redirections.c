@@ -42,19 +42,19 @@ static int		set_up_io_here(t_redir_info *redir_info, int left_fd,
 								t_io_redirect *redirect)
 {
 	int		*pipe_fds;
-	int		ret;
 
-	ret = 0;
+	if (redirect->io_here->here_doc == NULL)
+	{
+		return (d_handle_error_str(redir_info->std_fds[2], parsing_error,
+									"NULL heredoc"));
+	}
 	pipe_fds = (int *)ft_memalloc(sizeof(int) * 2);
 	if (pipe(pipe_fds) != 0)
 	{
 		return (d_handle_error_str(redir_info->std_fds[2], pipe_failure,
 									"while setting up heredoc."));
 	}
-	ret = add_fd_to_list(pipe_fds[0], -1, redir_info);
-	// if (ret == 0)
-	// 	ret = add_fd_to_list(pipe_fds[1], -1, redir_info);
-	if (ret != 0)
+	if (add_fd_to_list(pipe_fds[0], -1, redir_info) != 0)
 		return (-1);
 	ft_dprintf(pipe_fds[1], "%s", redirect->io_here->here_doc);
 	dup2(pipe_fds[0], left_fd);
@@ -102,8 +102,10 @@ int				reset_redirections(t_redir_info **redir_info)
 	while (current != NULL)
 	{
 		temp = current;
-		if (current->og_fd >= 0)
+		if (current->og_fd >= 0 && current->fd >= 0)
 			dup2(current->fd, current->og_fd);
+		if (current->fd < 0 && current->og_fd >= 0)
+			close(current->og_fd);
 		close(current->fd);
 		current = current->next;
 		temp->next = NULL;

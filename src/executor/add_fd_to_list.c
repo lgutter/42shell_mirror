@@ -17,8 +17,8 @@ int		add_fd_to_list(int fd, int og_fd, t_redir_info *red_info)
 	t_fd_list *temp;
 	t_fd_list **target;
 
-	if (fd < 0)
-		return (d_handle_error_int(red_info->std_fds[2], bad_fd_error, og_fd));
+	if (red_info == NULL)
+		return (-1);
 	if (red_info->fd_list == NULL)
 		target = &red_info->fd_list;
 	else
