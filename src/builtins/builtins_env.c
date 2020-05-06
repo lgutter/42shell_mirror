@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   env.c                                              :+:    :+:            */
+/*   builtins_env.c                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
@@ -46,48 +46,84 @@ static int		env_is_valid_key(char *key)
 	return (1);
 }
 
-static int		set_env_or_shell_var(t_env *env, char **key_value, char argzero)
+static int		set_env_or_shell_var(t_env *env, char **key_value, char argzero,
+				int read)
 {
+	int i;
+
+	i = 0;
 	if (ft_strcmp(argzero, "set") == 0)
 	{
-		if (key_value[1] == NULL)
-			return (ft_setenv(env, key_value[0], "", 'y', ENV_VAR));
+		if (read == 1)
+			read == RONLY_ENV;
 		else
-			return (ft_setenv(env, key_value[0], key_value[1], 'y', ENV_VAR));
+			read = RW_ENV;
+		if (key_value[1] == NULL)
+			return (ft_setenv(env, key_value[0], "", RW_ENV));
+		else
+			return (ft_setenv(env, key_value[0], key_value[1], RW_ENV));
 	}
 	else
 	{
-		if (key_value[1] == NULL)
-			return (ft_setenv(env, key_value[0], "", 'y', SHELL_VAR));
+		if (read == 1)
+			read == RONLY_SHELL;
 		else
-			return (ft_setenv(env, key_value[0], key_value[1], 'y', SHELL_VAR));
+			read = RW_SHELL;
+		if (key_value[1] == NULL)
+			return (ft_setenv(env, key_value[0], "", read));
+		else
+			return (ft_setenv(env, key_value[0], key_value[1], read));
 	}
+}
+
+int				resolve_set_values(t_env **env, char *arg, char *argz, int read)
+{
+	char	**key_value;
+	int		ret;
+
+	ret = 0;
+	if (ft_strchr(arg, '='))
+	{
+		key_value = ft_strsplit(arg, '=');
+		if (key_value == NULL)
+			return (malloc_error);
+		if (key_value != NULL && key_value[0] == NULL)
+		{
+			free_dchar_arr(key_value);
+			return (malloc_error);
+		}
+		if (!env_is_valid_key(key_value[0]))
+			return (handle_error_str(set_invalid_key_format, arg));
+		else
+		{
+			ret = set_env_or_shell_var(env, key_value, argz, read);
+			free_dchar_arr(key_value);
+			return (ret);
+		}
+	}
+	else
+		return (handle_error_str(set_invalid_format, arg));
 }
 
 int				builtin_set(t_command *comm, t_env **env)
 {
 	int		i;
-	char	**key_value;
+	int		ret;
+	int		final_ret;
 
 	i = 1;
+	final_ret = 0;
 	while (i < comm->argc)
 	{
-		if (ft_strchr(comm->argv[i], '='))
-		{
-			key_value = ft_strsplit(comm->argv[i], '=');
-			if (key_value == NULL || !env_is_valid_key(key_value[0]))
-				handle_error_str(set_invalid_name, comm->argv[i]);
-			else
-			{
-				set_env_or_shell_var(env, key_value, comm->argv[0]);
-				free_dchar_arr(key_value);
-			}
-		}
-		else
-			handle_error_str(set_invalid_name, comm->argv[i]);
+		ret = 0;
+		if (ft_strcmp(comm->argv[i], "--ronly"))
+			ret = 1;
+		ret = resolve_set_values(env, comm->argv[1], comm->argv[0], ret);
+		if (ret != 0)
+			final_ret = ret;
 		i++;
 	}
-	return (0);
+	return (final_ret);
 }
 
 int		builtin_unset(t_command *command, t_env **env)
@@ -105,5 +141,5 @@ int		builtin_unset(t_command *command, t_env **env)
 			ret = ft_unsetenv(env, command->argv[i], SHELL_VAR);
 		i++;
 	}
-	return (0);
+	return (ret);
 }

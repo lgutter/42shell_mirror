@@ -15,9 +15,6 @@
 
 # include "environment.h"
 
-#define ENV_VAR 0
-#define SHELL_VAR 1
-
 typedef int		t_builtin_func(t_command *command);
 
 struct			s_builtin

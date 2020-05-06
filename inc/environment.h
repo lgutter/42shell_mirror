@@ -13,6 +13,11 @@
 #ifndef ENVIRONMENT_H
 # define ENVIRONMENT_H
 
+# define RONLY_ENV 0
+# define RONLY_SHELL 1
+# define RW_ENV 2
+# define RW_SHELL 3
+
 # include "handle_error.h"
 # include "utils.h"
 
@@ -27,6 +32,7 @@ typedef struct		s_env
 {
 	char			*key;
 	char			*value;
+	int				type;
 	struct s_env	*next;
 }					t_env;
 
@@ -65,7 +71,7 @@ char				*ft_getenv_quote(t_env *env, const char *key);
 **	(on failure, error will be printed)
 */
 int					ft_setenv(t_env *env, const char *key,
-									const char *value, char overwrite);
+									const char *value, int type);
 
 /*
 **	takes env and a key as argument and removes it from our environment.
@@ -73,7 +79,7 @@ int					ft_setenv(t_env *env, const char *key,
 **	0 on succes, an errid error code on failure.
 **	(on failure, error will be printed)
 */
-int					ft_unsetenv(t_env *env, const char *key);
+int					ft_unsetenv(t_env *env, const char *key, int type);
 
 /*
 **	converts our linked list of type t_env to the the system style char **envp.

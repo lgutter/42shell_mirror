@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   builtins.c                                         :+:    :+:            */
+/*   builtins_1.c                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
@@ -21,11 +21,10 @@ struct s_builtin	g_builtins[] = {
 	{"setshell", builtin_set},
 	{"unsetshell", builtin_unset},
 	{"echo", builtin_echo},
-	{"exit", builtin_exit},
 	{NULL, NULL},
 };
 
-static int	execute_builtin(t_command *command, t_env *env);
+static int	execute_builtin(t_command *command, t_env *env)
 {
 	int	ret;
 	int i;
@@ -59,13 +58,13 @@ int		is_builtin(char *exec_name)
 	return (0);
 }
 
-int		builtin_echo(int argc, char **argv, t_env **env)
+int		builtin_echo(t_command *command, t_env **env)
 {
 	int i;
 	int no_newline;
 
 	(void)env;
-	if (argc >= 2 && ft_strcmp(argv[1], "-n") == 0)
+	if (command->argc >= 2 && ft_strcmp(command->argv[1], "-n") == 0)
 	{
 		no_newline = 1;
 		i = 2;
@@ -75,10 +74,10 @@ int		builtin_echo(int argc, char **argv, t_env **env)
 		no_newline = 0;
 		i = 1;
 	}
-	while (i < argc)
+	while (i < command->argc)
 	{
-		ft_printf("%s", argv[i]);
-		if (i < argc - 1)
+		ft_printf("%s", command->argv[i]);
+		if (i < command->argc - 1)
 			ft_printf(" ");
 		i++;
 	}

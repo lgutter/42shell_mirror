@@ -27,9 +27,9 @@ static int	cd(t_env **env, char *new_path)
 		return (1);
 	if (chdir(new_path) == -1)
 		return (1);
-	if (ft_setenv(env, "OLDPWD", old_path, 'y') != 0)
+	if (ft_setenv(env, "OLDPWD", old_path, RW_ENV) != 0)
 		return (1);
-	if (ft_setenv(env, "PWD", new_path, 'y') != 0)
+	if (ft_setenv(env, "PWD", new_path, RW_ENV) != 0)
 		return (1);
 	return (0);
 }
