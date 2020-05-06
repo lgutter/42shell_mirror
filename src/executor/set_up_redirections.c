@@ -22,7 +22,7 @@ static int		set_left_fd(t_redir_info *redir_info, int *left_fd,
 		if (redirect->io_file->redirect_op == redirect_in ||
 			redirect->io_file->redirect_op == redirect_fd_in)
 			*left_fd = STDIN_FILENO;
-		if (redirect->io_file->redirect_op == redirect_out ||
+		else if (redirect->io_file->redirect_op == redirect_out ||
 			redirect->io_file->redirect_op == redirect_append ||
 			redirect->io_file->redirect_op == redirect_fd_out)
 			*left_fd = STDOUT_FILENO;
