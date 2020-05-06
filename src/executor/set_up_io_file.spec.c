@@ -15,6 +15,7 @@
 #include <criterion/redirect.h>
 #include "executor.h"
 #include <string.h>
+#include "error_str.h"
 
 static void redirect_std_err()
 {
@@ -290,6 +291,7 @@ Test(set_up_io_file_unit, invalid_NULL_io_file, .init = redirect_std_err)
 	int				ret;
 	int				exp_ret = -1;
 	int				left_fd = 429;
+	char			buff[1024];
 
 	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
@@ -299,5 +301,115 @@ Test(set_up_io_file_unit, invalid_NULL_io_file, .init = redirect_std_err)
 	ret = set_up_io_file(&info, left_fd, NULL);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	cr_expect_stderr_eq_str("Parsing error detected\n");
+	sprintf(buff, "%s\n", g_error_str[parsing_error]);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(set_up_io_file_unit, invalid_no_read_perm, .init = redirect_std_err)
+{
+	if (getuid() == 0)
+		cr_skip_test("Cannot be tested as root!\n");
+
+	t_redir_info	info = {NULL, NULL};
+	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_no_read_perm");
+	t_io_file		io_file;
+	int				ret;
+	int				exp_ret = -1;
+	int				left_fd = 430;
+	char			buff[1024];
+	info.std_fds = (int *)malloc(sizeof(int) * 3);
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+	io_file.redirect_op = redirect_in;
+	io_file.filename = filename;
+	open(filename, O_RDWR | O_CREAT, 0222);
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	fflush(stderr);
+	sprintf(buff, "%s: %s\n", g_error_str[access_denied], filename);
+	cr_expect_stderr_eq_str(buff);
+	remove(filename);
+}
+
+Test(set_up_io_file_unit, invalid_no_file, .init = redirect_std_err)
+{
+	t_redir_info	info = {NULL, NULL};
+	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_no_file");
+	t_io_file		io_file;
+	int				ret;
+	int				exp_ret = -1;
+	int				left_fd = 430;
+	char			buff[1024];
+	info.std_fds = (int *)malloc(sizeof(int) * 3);
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+	io_file.redirect_op = redirect_in;
+	io_file.filename = filename;
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	fflush(stderr);
+	sprintf(buff, "%s: %s\n", g_error_str[no_such_file_or_dir], filename);
+	cr_expect_stderr_eq_str(buff);
+	remove(filename);
+}
+
+Test(set_up_io_file_unit, invalid_no_write_perm, .init = redirect_std_err)
+{
+	if (getuid() == 0)
+		cr_skip_test("Cannot be tested as root!\n");
+
+	t_redir_info	info = {NULL, NULL};
+	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_no_write_perm");
+	t_io_file		io_file;
+	int				ret;
+	int				exp_ret = -1;
+	int				left_fd = 432;
+	char			buff[1024];
+	info.std_fds = (int *)malloc(sizeof(int) * 3);
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+	io_file.redirect_op = redirect_out;
+	io_file.filename = filename;
+	open(filename, O_RDWR | O_CREAT, 0444);
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	fflush(stderr);
+	sprintf(buff, "%s: %s\n", g_error_str[access_denied], filename);
+	cr_expect_stderr_eq_str(buff);
+	remove(filename);
+}
+
+Test(set_up_io_file_unit, valid_read_from_file)
+{
+	t_redir_info	info = {NULL, NULL};
+	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_read_from_file");;
+	t_io_file		io_file;
+	int				ret;
+	int				exp_ret = 0;
+	int				left_fd = 433;
+	int				real_fd;
+	char			buff[1024];
+
+	info.std_fds = (int *)malloc(sizeof(int) * 3);
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+
+	real_fd = open(filename, O_WRONLY | O_CREAT, 0664);
+	cr_assert_geq(real_fd, 0, "failed to create file!");
+	cr_expect_eq(4, write(real_fd, "test", 4), "write went wrong!");
+	close(real_fd);
+	io_file.redirect_op = redirect_in;
+	io_file.filename = filename;
+
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	cr_expect_not_null(info.fd_list);
+	cr_expect_not_null(info.std_fds);
+	memset(buff, 0, 1024);
+	cr_expect_eq(4, read(left_fd, buff, 1024), "incorrect number of bytes read");
+	cr_expect_str_eq(buff, "test", "unexpected file content!");
 }
