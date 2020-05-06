@@ -29,8 +29,7 @@ int		handle_input(t_shell *shell, char **buffer)
 		complete_command = parse_complete_command(&tokens);
 		if (complete_command != NULL)
 		{
-			word_processing(shell, env_list, complete_command);
-			exec_complete_command(complete_command, env_list);
+			exec_complete_command(shell, complete_command, env_list);
 			free_complete_command(complete_command);
 			configure_terminal(shell, 2);
 		}

@@ -285,7 +285,8 @@ Test(word_processing_unit, valid_argument_redir_remove_quotes)
 
 Test(word_processing_unit, valid_argument_redir_io_number_arg_remove_quotes)
 {
-	t_token 		*token3 = init_token(WORD, "hel\"l\"o", NULL);
+	t_token 		*token4 = init_token(WORD, "cat", NULL);
+	t_token 		*token3 = init_token(WORD, "hel\"l\"o", token4);
 	t_token 		*token2 = init_token(DGREAT, ">>", token3);
 	t_token 		*token1 = init_token(IO_NUMBER, "42", token2);
 	t_token 		*token_start = token1;
@@ -314,8 +315,8 @@ Test(word_processing_unit, valid_argument_redir_io_number_arg_remove_quotes)
 	cr_expect_eq(NULL, expected_command->pipe_sequence->next);
 	cr_assert_neq(command->pipe_sequence->simple_command, NULL);
 	cr_assert_neq(expected_command->pipe_sequence->simple_command, NULL);
-	cr_expect_eq(command->pipe_sequence->simple_command->arguments, NULL);
-	cr_expect_eq(expected_command->pipe_sequence->simple_command->arguments, NULL);
+	cr_expect_neq(command->pipe_sequence->simple_command->arguments, NULL);
+	cr_expect_neq(expected_command->pipe_sequence->simple_command->arguments, NULL);
 	cr_assert_neq(command->pipe_sequence->simple_command->redirects, NULL);
 	cr_assert_neq(expected_command->pipe_sequence->simple_command->redirects, NULL);
 	cr_expect_eq(42, command->pipe_sequence->simple_command->redirects->io_fd);
