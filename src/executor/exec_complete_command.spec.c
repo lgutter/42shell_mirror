@@ -74,9 +74,9 @@ Test(exec_complete_command_unit, invalid_empty_simple_cmd, .init = redirect_std_
 	cr_expect_stderr_eq_str(buff);
 }
 
-Test(exec_complete_command_unit, invalid_NULL_simple_cmd_pipe, .init = redirect_std_err)
+Test(exec_complete_command_unit, invalid_NULL_simple_cmd_no_pipe, .init = redirect_std_err)
 {
-	t_pipe_sequence	pipe_seq = {NULL, pipe_op, NULL};
+	t_pipe_sequence	pipe_seq = {NULL, no_pipe, NULL};
 	t_complete_cmd	command = {&pipe_seq, semicolon_op, NULL};
 	int				ret;
 	int				exp_ret = parsing_error;

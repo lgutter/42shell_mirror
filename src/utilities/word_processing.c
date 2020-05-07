@@ -90,6 +90,10 @@ int				word_processing(t_shell *shell, t_env *env_list,
 		return (handle_error_str(parsing_error, "NULL pipe sequence"));
 	while (pipe_seq != NULL)
 	{
+		if (pipe_seq->pipe == pipe_op &&
+			(pipe_seq->next == NULL || pipe_seq->next->simple_command == NULL ||
+			pipe_seq->next->simple_command->arguments == NULL))
+			return (handle_error_str(parsing_error, "incomplete pipe"));
 		ret = process_simple_cmd(shell, env_list, pipe_seq->simple_command);
 		if (ret != 0)
 			return (ret);
