@@ -38,6 +38,7 @@ static const char	*g_error_str[error_count] = {
 	[fork_failure] = "Call to fork failed",
 	[execve_failure] = "Call to execve failed",
 	[access_denied] = "Access denied",
-	[bad_fd_error] = "Bad file descriptor"
+	[bad_fd_error] = "Bad file descriptor",
+	[is_dir_error] = "Is a directory"
 };
 #endif

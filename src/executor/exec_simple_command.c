@@ -14,6 +14,8 @@
 
 static int	check_access(t_env *env_list, char *path)
 {
+	struct stat statbuf;
+
 	if (access(path, F_OK) != 0)
 	{
 		//ft_setstatus(env_list, no_such_file_or_dir);
@@ -23,6 +25,16 @@ static int	check_access(t_env *env_list, char *path)
 	{
 		//ft_setstatus(env_list, access_denied);
 		return (handle_error_str(access_denied, path));
+	}
+	if (stat(path, &statbuf) != 0)
+	{
+		//ft_setstatus(env_list, access_denied);
+		return (handle_error_str(access_denied, path));
+	}
+	if (S_ISDIR(statbuf.st_mode) != 0)
+	{
+		//ft_setstatus(env_list, access_denied);
+		return (handle_error_str(is_dir_error, path));
 	}
 	return (0);
 }
@@ -80,6 +92,16 @@ static int	execute_builtin(t_env *env_list, t_command *command)
 	return (ret);
 }
 
+static void	free_command(t_command *command)
+{
+	free_dchar_arr(command->envp);
+	command->envp = NULL;
+	command->argc = 0;
+	command->argv = NULL;
+	free(command->path);
+	command->path = NULL;
+}
+
 int			exec_simple_command(t_simple_cmd *simple_cmd, t_env *env_list)
 {
 	t_command		command;
@@ -87,20 +109,21 @@ int			exec_simple_command(t_simple_cmd *simple_cmd, t_env *env_list)
 	t_redir_info	*redir_info;
 
 	if (simple_cmd == NULL || simple_cmd->argv == NULL || env_list == NULL)
-		return (handle_error(parsing_error));
+		return (parsing_error);
 	command.argc = str_arr_len(simple_cmd->argv);
 	command.argv = simple_cmd->argv;
-	if (find_executable(env_list, &command, command.argv[0]) == cmd_not_found)
-		return (handle_error_str(cmd_not_found, command.argv[0]));
+	ret = find_executable(env_list, &command, command.argv[0]);
+	if (ret != 0)
+		return (ret);
 	command.envp = convert_env_to_envp(env_list);
 	if (command.envp == NULL || command.path == NULL)
-		return (malloc_error);
+		return (handle_error(malloc_error));
 	redir_info = set_up_redirections(simple_cmd->redirects);
 	if (command.path[0] != '\0')
 		ret = execute_command(env_list, &command);
 	else
 		ret = execute_builtin(env_list, &command);
-	free_dchar_arr(command.envp);
 	reset_redirections(&redir_info);
+	free_command(&command);
 	return (ret);
 }

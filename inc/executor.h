@@ -132,7 +132,8 @@ int				find_executable(t_env *env_list, t_command *command,
 **	0 on succes.
 **	-1 on failure.
 */
-int		process_word(t_shell *shell, t_env *env_list, char **word, char expand);
+int				process_word(t_shell *shell, t_env *env_list, char **word,
+								char expand);
 
 /*
 **	performs environment expansions and quote completion + removal on all
@@ -145,7 +146,7 @@ int		process_word(t_shell *shell, t_env *env_list, char **word, char expand);
 **	0 on succes.
 **	-1 on failure.
 */
-int		word_processing(t_shell *shell, t_env *env_list,
-						t_complete_cmd *complete_command);
+int				word_processing(t_shell *shell, t_env *env_list,
+								t_complete_cmd *complete_command);
 
 #endif

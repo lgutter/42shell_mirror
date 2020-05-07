@@ -45,9 +45,9 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_env *env_list)
 	int		*old_fds;
 	int		ret;
 
-	std_fd_backup(&old_fds);
 	if (pipe_seq == NULL || pipe_seq->simple_command == NULL)
-		return (-1);
+		return (parsing_error);
+	std_fd_backup(&old_fds);
 	if (pipe_seq->pipe == pipe_op)
 	{
 		ret = execute_pipe(pipe_seq, env_list);
@@ -57,7 +57,8 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_env *env_list)
 		ret = exec_simple_command(pipe_seq->simple_command, env_list);
 		std_fd_restore(&old_fds);
 		if (pipe_seq->next != NULL)
-			ret = exec_pipe_sequence(pipe_seq->next, env_list);
+			ret = handle_error_str(parsing_error,
+								"no pipe operator, but more pipe sequences");
 	}
 	std_fd_restore(&old_fds);
 	return (ret);

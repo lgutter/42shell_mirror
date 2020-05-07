@@ -47,6 +47,7 @@ typedef enum		e_error
 	execve_failure,
 	access_denied,
 	bad_fd_error,
+	is_dir_error,
 	error_count,
 }					t_error;
 

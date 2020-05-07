@@ -15,12 +15,15 @@
 int		exec_complete_command(t_shell *shell, t_complete_cmd *complete_cmd,
 								t_env *env_list)
 {
+	int	ret;
+
+	ret = 0;
 	while (complete_cmd != NULL)
 	{
-		if (word_processing(shell, env_list, complete_cmd) != 0)
-			return (-1);
-		exec_pipe_sequence(complete_cmd->pipe_sequence, env_list);
+		ret = word_processing(shell, env_list, complete_cmd);
+		if (ret == 0)
+			ret = exec_pipe_sequence(complete_cmd->pipe_sequence, env_list);
 		complete_cmd = complete_cmd->next;
 	}
-	return (0);
+	return (ret);
 }

@@ -124,6 +124,9 @@ if libcriterion_deb.found()
     'src/executor/find_executable.spec.c',
     'src/executor/set_up_io_file.spec.c',
     'src/executor/set_up_redirections.spec.c',
+    'src/executor/exec_complete_command.spec.c',
+    'src/executor/exec_pipe_sequence.spec.c',
+    'src/executor/exec_simple_command.spec.c',
   ])
 
   tester = executable('test-cetushell',

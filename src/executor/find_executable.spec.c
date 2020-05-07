@@ -12,8 +12,14 @@
 
 #include <criterion/criterion.h>
 #include <criterion/assert.h>
+#include <criterion/redirect.h>
 #include "executor.h"
+#include "error_str.h"
 
+static void redirect_std_err()
+{
+	cr_redirect_stderr();
+}
 Test(find_executable_unit, valid_find_printf)
 {
 	t_command	command;
@@ -114,11 +120,12 @@ Test(find_executable_unit, valid_already_absolute_path)
 	cr_expect_str_eq(command.path, "/usr/bin/printf");
 }
 
-Test(find_executable_unit, invalid_error_nonexistent)
+Test(find_executable_unit, invalid_error_nonexistent, .init = redirect_std_err)
 {
 	t_command	command;
 	int			ret;
 	t_env		*env = (t_env *)malloc(sizeof(t_env) * 1);
+	char		buff[1024];
 
 	env->key = strdup("PATH");
 	env->value = strdup("foo:/bin/:/usr/bin");
@@ -129,6 +136,8 @@ Test(find_executable_unit, invalid_error_nonexistent)
 	command.envp = NULL;
 	command.path = NULL;
 	ret = find_executable(env, &command, command.argv[0]);
-	cr_expect_neq(ret, 0);
+	cr_expect_eq(ret, cmd_not_found);
 	cr_expect_null(command.path);
+	fflush(stderr);
+	sprintf(buff, "%s: %s\n", g_error_str[parsing_error], command.argv[0]);
 }

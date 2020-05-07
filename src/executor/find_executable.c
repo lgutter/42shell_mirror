@@ -57,7 +57,7 @@ static int	traverse_paths(char **paths, t_command *command, char *arg_zero)
 		index++;
 	}
 	command->path = NULL;
-	return (cmd_not_found);
+	return (handle_error_str(cmd_not_found, arg_zero));
 }
 
 int			find_executable(t_env *env_list, t_command *command, char *arg_zero)
@@ -68,7 +68,7 @@ int			find_executable(t_env *env_list, t_command *command, char *arg_zero)
 
 	ret = 0;
 	if (command == NULL || arg_zero == NULL)
-		return (-1);
+		return (parsing_error);
 	command->path = NULL;
 	if (is_builtin(arg_zero) == 1)
 		command->path = ft_strdup("");
@@ -80,6 +80,7 @@ int			find_executable(t_env *env_list, t_command *command, char *arg_zero)
 		if (env_path == NULL)
 			return (handle_error_str(env_not_found, "PATH"));
 		paths = ft_strsplit(env_path, ':');
+		free(env_path);
 		if (paths == NULL)
 			return (handle_error(malloc_error));
 		ret = traverse_paths(paths, command, arg_zero);
