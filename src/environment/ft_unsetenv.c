@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/13 20:08:17 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/02/07 13:15:06 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/07 23:02:32 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	remove_first(t_env *first)
 	return (0);
 }
 
-int			ft_unsetenv(t_env *env, const char *key)
+int			ft_unsetenv(t_env *env, const char *key, int type)
 {
 	t_env	*current;
 	t_env	*previous;
@@ -52,7 +52,7 @@ int			ft_unsetenv(t_env *env, const char *key)
 		return (remove_first(previous));
 	while (previous != NULL)
 	{
-		if (previous->next != NULL &&
+		if (previous->next != NULL && previous->type != RONLY_ENV &&
 			ft_strcmp((previous->next)->key, key) == 0)
 			break ;
 		previous = previous->next;

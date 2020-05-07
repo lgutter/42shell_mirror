@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/13 17:15:37 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/01/13 21:10:52 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/08 00:04:40 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ Test(unit_ft_setenv, mandatory_basic_overwrite_in_full_list, .init = redirect_st
 		if (strcmp(current->key, "MINISHELL_TEST_KEY") == 0)
 		{
 			cr_assert_str_eq(current->value, "TEST_VALUE_NEW");
-			cr_assert_eq(current->type, RW_ENV);
 			break;
 		}
 		current = current->next;
@@ -127,7 +126,7 @@ Test(unit_ft_setenv, mandatory_error_deny_overwrite_in_full_list, .init = redire
 	env = dup_sys_env();
 	current = env;
 	ret = ft_setenv(env, "MINISHELL_TEST_KEY", "TEST_VALUE_NEW", RONLY_ENV);
-	cr_assert_eq(ret, env_write_error);
+	cr_assert_eq(ret, error_ronly, "ret == %d, should be %d\n", ret, error_ronly);
 	while (current != NULL)
 	{
 		if (strcmp(current->key, "MINISHELL_TEST_KEY") == 0)
@@ -140,7 +139,7 @@ Test(unit_ft_setenv, mandatory_error_deny_overwrite_in_full_list, .init = redire
 	}
 	cr_assert_neq(current, NULL);
 	fflush(stderr);
-	cr_assert_stderr_eq_str("Environment key exists and overwrite is off\n");
+	cr_assert_stderr_eq_str("setshell: MINISHELL_TEST_KEY: Variable is read-only\n");
 }
 
 Test(unit_ft_setenv, mandatory_error_NULL_key, .init = redirect_std_err)

@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/05/02 19:55:06 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/02 19:55:06 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/07 22:56:27 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <limits.h>
 #endif
 
-static int	cd(t_env **env, char *new_path)
+static int	cd(t_env *env, char *new_path)
 {
 	char	old_path[PATH_MAX];
 
@@ -34,29 +34,29 @@ static int	cd(t_env **env, char *new_path)
 	return (0);
 }
 
-int			builtin_cd(t_command *command, t_env *env)
+int			builtin_cd(t_command *command, t_env **env)
 {
 	char	new_path[PATH_MAX];
 	char	*temp;
 
 	if (command->argc > 2)
-		return (ft_printf("to_many_arguments"));
+		return (handle_prefix_error(to_many_arguments, "cd", "argc"));
 	if (command->argc == 1)
 	{
-		temp = t_getenv(command->envp, "HOME");
+		temp = ft_getenv(*env, "HOME");
 		if (temp == NULL)
-			return (ft_printf("error_shell_variable_home"));
+			return (1);
 		ft_strlcpy(new_path, temp, PATH_MAX);
 	}
 	else if (ft_strcmp(command->argv[1], "-") == 0)
 	{
-		temp = ft_getenv(env, "OLDPWD");
+		temp = ft_getenv(*env, "OLDPWD");
 		if (temp == NULL)
-			return (ft_printf("error_shell_variable_home"));
+			return (1);
 		ft_strlcpy(new_path, temp, PATH_MAX);
 		ft_printf("%s\n", new_path);
 	}
 	else
 		ft_strlcpy(new_path, command->argv[1], PATH_MAX);
-	return (cd(env, new_path));
+	return (cd(*env, new_path));
 }

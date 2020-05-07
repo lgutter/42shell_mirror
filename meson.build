@@ -81,6 +81,11 @@ src_files = files([
   'src/executor/set_up_io_file.c',
   'src/executor/add_fd_to_list.c',
   'temp/temp_print_token_parse.c',
+  'src/builtins/builtin_cd.c',
+  'src/builtins/builtins_1.c',
+  'src/builtins/builtins_2.c',
+  'src/builtins/builtin_env_1.c',
+  'src/builtins/builtin_env_2.c',
 ])
 
 main_file = files('src/main.c')

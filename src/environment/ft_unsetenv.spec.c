@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/13 20:25:34 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/02/07 13:16:03 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/08 00:09:32 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ Test(unit_ft_unsetenv, mandatory_basic_unset_first_and_only_element, .init = red
 	env->key = strdup("FOO");
 	env->value = strdup("BAR");
 	env->next = NULL;
-	ret = ft_unsetenv(env, "FOO");
+	ret = ft_unsetenv(env, "FOO", RW_ENV);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(env->key, "");
 	cr_assert_str_eq(env->value, "");
@@ -56,7 +56,7 @@ Test(unit_ft_unsetenv, mandatory_basic_unset_first_element_in_list, .init = redi
 	third->value = strdup("ZAB");
 	env->next = second;
 	second->next = third;
-	ret = ft_unsetenv(env, "FOO");
+	ret = ft_unsetenv(env, "FOO", RW_ENV);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(env->key, "BAZ");
 	cr_assert_str_eq(env->value, "OOF");
@@ -78,15 +78,18 @@ Test(unit_ft_unsetenv, mandatory_basic_unset_last_element_in_list, .init = redir
 	third = (t_env *)malloc(sizeof(t_env) * 1);
 	env->key = strdup("FOO");
 	env->value = strdup("BAR");
+	env->type = RW_ENV;
 	second->key = strdup("BAZ");
+	second->type = RW_ENV;
 	second->value = strdup("OOF");
 	third->key = strdup("RAB");
+	third->type = RW_ENV;
 	third->value = strdup("ZAB");
 	env->next = second;
 	second->next = third;
 	third->next = NULL;
-	ret = ft_unsetenv(env, "RAB");
-	cr_assert_eq(ret, 0);
+	ret = ft_unsetenv(env, "RAB", RW_ENV);
+	cr_assert_eq(ret, 0, "ret == %d, should be %d\n", ret, 0);
 	cr_assert_str_eq(second->key, "BAZ");
 	cr_assert_str_eq(second->value, "OOF");
 	cr_assert_eq(second->next, NULL);
@@ -114,7 +117,7 @@ Test(unit_ft_unsetenv, mandatory_error_unset_non_existent_element, .init = redir
 	env->next = second;
 	second->next = third;
 	third->next = NULL;
-	ret = ft_unsetenv(env, "BAR");
+	ret = ft_unsetenv(env, "BAR", RW_ENV);
 	cr_assert_eq(ret, env_not_found);
 	dprintf(2, "-");
 	fflush(stderr);
@@ -126,7 +129,7 @@ Test(unit_ft_unsetenv, mandatory_error_unset_NULL_list, .init = redirect_std_err
 	int ret;
 	t_env *env = NULL;
 
-	ret = ft_unsetenv(env, "FOO");
+	ret = ft_unsetenv(env, "FOO", RW_ENV);
 	cr_assert_eq(ret, env_empty_error);
 	fflush(stderr);
 	cr_assert_stderr_eq_str("Environment is empty\n");
@@ -137,7 +140,7 @@ Test(unit_ft_unsetenv, mandatory_error_unset_NULL_key, .init = redirect_std_err)
 	int ret;
 	t_env *env = dup_sys_env();
 
-	ret = ft_unsetenv(env, NULL);
+	ret = ft_unsetenv(env, NULL, RW_ENV);
 	cr_assert_eq(ret, -1);
 	dprintf(2, "-");
 	fflush(stderr);

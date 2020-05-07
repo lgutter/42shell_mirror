@@ -1,28 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   builtins_env.c                                     :+:    :+:            */
+/*   builtin_env_1.c                                    :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: Invalid date        by               #+#    #+#                 */
-/*   Updated: Invalid date        by               ########   odam.nl         */
+/*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
+/*   Updated: 2020/05/07 23:09:50 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ft_printf.h>
-#include <libft.h>
 #include "environment.h"
 #include "builtins.h"
 #include "executor.h"
-
-int				builtin_env(t_command *command, struct s_env **env)
-{
-	if (*env == NULL)
-		return (0);
-	ft_printf("%s=%s%c", (*env)->key, (*env)->value, '\n');
-	return (builtin_env(command, &(*env)->next));
-}
 
 static int		env_is_valid_key(char *key)
 {
@@ -46,27 +36,24 @@ static int		env_is_valid_key(char *key)
 	return (1);
 }
 
-static int		set_env_or_shell_var(t_env *env, char **key_value, char argzero,
-				int read)
+static int		set_env_or_shell_var(t_env *env, char **key_value, char *argzero
+				, int read)
 {
-	int i;
-
-	i = 0;
 	if (ft_strcmp(argzero, "set") == 0)
 	{
 		if (read == 1)
-			read == RONLY_ENV;
+			read = RONLY_ENV;
 		else
 			read = RW_ENV;
 		if (key_value[1] == NULL)
-			return (ft_setenv(env, key_value[0], "", RW_ENV));
+			return (ft_setenv(env, key_value[0], "", read));
 		else
-			return (ft_setenv(env, key_value[0], key_value[1], RW_ENV));
+			return (ft_setenv(env, key_value[0], key_value[1], read));
 	}
 	else
 	{
 		if (read == 1)
-			read == RONLY_SHELL;
+			read = RONLY_SHELL;
 		else
 			read = RW_SHELL;
 		if (key_value[1] == NULL)
@@ -76,7 +63,7 @@ static int		set_env_or_shell_var(t_env *env, char **key_value, char argzero,
 	}
 }
 
-int				resolve_set_values(t_env **env, char *arg, char *argz, int read)
+static int		resolve_set_values(t_env *env, char *arg, char *argz, int read)
 {
 	char	**key_value;
 	int		ret;
@@ -93,7 +80,7 @@ int				resolve_set_values(t_env **env, char *arg, char *argz, int read)
 			return (malloc_error);
 		}
 		if (!env_is_valid_key(key_value[0]))
-			return (handle_error_str(set_invalid_key_format, arg));
+			return (handle_prefix_error(error_inv_format, "set", key_value[0]));
 		else
 		{
 			ret = set_env_or_shell_var(env, key_value, argz, read);
@@ -102,7 +89,7 @@ int				resolve_set_values(t_env **env, char *arg, char *argz, int read)
 		}
 	}
 	else
-		return (handle_error_str(set_invalid_format, arg));
+		return (handle_prefix_error(error_inv_format, "set", arg));
 }
 
 int				builtin_set(t_command *comm, t_env **env)
@@ -118,7 +105,7 @@ int				builtin_set(t_command *comm, t_env **env)
 		ret = 0;
 		if (ft_strcmp(comm->argv[i], "--ronly"))
 			ret = 1;
-		ret = resolve_set_values(env, comm->argv[1], comm->argv[0], ret);
+		ret = resolve_set_values(*env, comm->argv[1], comm->argv[0], ret);
 		if (ret != 0)
 			final_ret = ret;
 		i++;
@@ -126,20 +113,24 @@ int				builtin_set(t_command *comm, t_env **env)
 	return (final_ret);
 }
 
-int		builtin_unset(t_command *command, t_env **env)
+int				builtin_unset(t_command *command, t_env **env)
 {
 	int		i;
 	int		ret;
+	int		finalret;
 
 	i = 1;
 	ret = 0;
+	finalret = 0;
 	while (i < command->argc)
 	{
 		if (ft_strcmp(command->argv[1], "unset") == 0)
-			ret = ft_unsetenv(env, command->argv[i], ENV_VAR);
+			ret = ft_unsetenv(*env, command->argv[i], RW_ENV);
 		else
-			ret = ft_unsetenv(env, command->argv[i], SHELL_VAR);
+			ret = ft_unsetenv(*env, command->argv[i], RW_SHELL);
+		if (ret != 0)
+			finalret = ret;
 		i++;
 	}
-	return (ret);
+	return (finalret);
 }

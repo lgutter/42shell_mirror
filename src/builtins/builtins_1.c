@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   builtins_1.c                                       :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: devan <devan@student.codam.nl>               +#+                     */
+/*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/05/02 11:28:01 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/02 11:28:01 by devan         ########   odam.nl         */
+/*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
+/*   Updated: 2020/05/07 23:10:37 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 struct s_builtin	g_builtins[] = {
 	{"cd", builtin_cd},
 	{"env", builtin_env},
+	{"shellenv", builtin_shellenv},
 	{"set", builtin_set},
 	{"unset", builtin_unset},
 	{"setshell", builtin_set},
@@ -24,7 +25,7 @@ struct s_builtin	g_builtins[] = {
 	{NULL, NULL},
 };
 
-static int	execute_builtin(t_command *command, t_env *env)
+int					execute_builtin(t_command *command, t_env *env)
 {
 	int	ret;
 	int i;
@@ -34,17 +35,13 @@ static int	execute_builtin(t_command *command, t_env *env)
 	while (g_builtins[i].builtin_name != NULL)
 	{
 		if (ft_strcmp(command->argv[0], g_builtins[i].builtin_name) == 0)
-		{
-			ret = g_builtins[i].func(command, env);
-			if (ret != 0)
-				handle_name_error(ret,  g_builtins[i].builtin_name);
-		}
+			ret = g_builtins[i].f(command, &env);
 		i++;
 	}
 	return (ret);
 }
 
-int		is_builtin(char *exec_name)
+int					is_builtin(char *exec_name)
 {
 	size_t				i;
 
@@ -58,7 +55,7 @@ int		is_builtin(char *exec_name)
 	return (0);
 }
 
-int		builtin_echo(t_command *command, t_env **env)
+int					builtin_echo(t_command *command, t_env **env)
 {
 	int i;
 	int no_newline;
@@ -85,6 +82,3 @@ int		builtin_echo(t_command *command, t_env **env)
 		ft_printf("\n");
 	return (0);
 }
-
-
-

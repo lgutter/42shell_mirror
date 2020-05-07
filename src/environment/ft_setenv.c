@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/13 16:03:54 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/01/13 20:52:34 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/07 22:27:56 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ int			ft_setenv(t_env *env, const char *key,
 				return (0);
 			}
 			else
-				return (handle_error(shell_var_read_only));
-			return (handle_error(env_write_error));
+				return (handle_prefix_error(error_ronly,
+				(type == RONLY_ENV ? "setshell" : "setenv"), current->key));
 		}
 		current = current->next;
 	}
