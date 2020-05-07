@@ -38,6 +38,7 @@ Test(set_up_io_file_unit, valid_append_file_once)
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
 	memset(buff, 0, 1024);
+	remove(filename);
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, 0, "expected ret %i, got %i!", exp_ret, ret);
 	cr_expect_not_null(info.fd_list);
@@ -71,6 +72,7 @@ Test(set_up_io_file_unit, valid_append_file_twice)
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
 	memset(buff, 0, 1024);
+	remove(filename);
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, 0, "expected ret %i, got %i!", exp_ret, ret);
 	cr_expect_not_null(info.fd_list);
@@ -110,6 +112,7 @@ Test(set_up_io_file_unit, valid_overwrite_file_once)
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
 	memset(buff, 0, 1024);
+	remove(filename);
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, 0, "expected ret %i, got %i!", exp_ret, ret);
 	cr_expect_not_null(info.fd_list);
@@ -143,6 +146,7 @@ Test(set_up_io_file_unit, valid_overwrite_file_twice)
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
 	memset(buff, 0, 1024);
+	remove(filename);
 	real_fd = open(filename, O_WRONLY | O_CREAT, 0664);
 	cr_assert_geq(real_fd, 0, "could not open file!");
 	ret = write(real_fd, "test", 4);
@@ -323,6 +327,7 @@ Test(set_up_io_file_unit, invalid_no_read_perm, .init = redirect_std_err)
 	info.std_fds[2] = 2;
 	io_file.redirect_op = redirect_in;
 	io_file.filename = filename;
+	remove(filename);
 	open(filename, O_RDWR | O_CREAT, 0222);
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
@@ -347,6 +352,7 @@ Test(set_up_io_file_unit, invalid_no_file, .init = redirect_std_err)
 	info.std_fds[2] = 2;
 	io_file.redirect_op = redirect_in;
 	io_file.filename = filename;
+	remove(filename);
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
@@ -373,6 +379,7 @@ Test(set_up_io_file_unit, invalid_no_write_perm, .init = redirect_std_err)
 	info.std_fds[2] = 2;
 	io_file.redirect_op = redirect_out;
 	io_file.filename = filename;
+	remove(filename);
 	open(filename, O_RDWR | O_CREAT, 0444);
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
@@ -398,6 +405,7 @@ Test(set_up_io_file_unit, valid_read_from_file)
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
 
+	remove(filename);
 	real_fd = open(filename, O_WRONLY | O_CREAT, 0664);
 	cr_assert_geq(real_fd, 0, "failed to create file!");
 	cr_expect_eq(4, write(real_fd, "test", 4), "write went wrong!");
@@ -412,4 +420,5 @@ Test(set_up_io_file_unit, valid_read_from_file)
 	memset(buff, 0, 1024);
 	cr_expect_eq(4, read(left_fd, buff, 1024), "incorrect number of bytes read");
 	cr_expect_str_eq(buff, "test", "unexpected file content!");
+	remove(filename);
 }
