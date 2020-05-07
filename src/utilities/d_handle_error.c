@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/15 10:43:04 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/15 10:43:04 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/07 22:07:57 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,6 @@ int		d_handle_error(int fd, int error_code)
 {
 	g_error_internal = error_code;
 	ft_dprintf(fd, "%s\n", g_error_str[error_code]);
-	return (error_code);
-}
-
-int		d_handle_name_error(int fd, int error_code, char *name)
-{
-	g_error_internal = error_code;
-	ft_dprintf(fd, "%s: %s\n", name, g_error_str[error_code]);
 	return (error_code);
 }
 

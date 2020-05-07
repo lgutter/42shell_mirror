@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/15 10:43:04 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/15 10:43:04 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/07 22:22:43 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,12 @@ int		handle_error_int(int error_code, int number)
 	return (d_handle_error_int(STDERR_FILENO, error_code, number));
 }
 
-void	handle_name_error(int error_code, char *name)
+int		handle_prefix_error(int error_code, char *prefix, char *str)
 {
-	return (d_handle_name_error(STDERR_FILENO, error_code, name));
+	g_error_internal = error_code;
+	ft_dprintf(STDERR_FILENO, "%s: %s: %s\n", prefix, str,
+		g_error_str[error_code]);
+	return (error_code);
 }
 
 void	*handle_error_str_p(int error_code, const char *str, void *pointer)

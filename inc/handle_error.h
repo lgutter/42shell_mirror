@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/10 17:35:25 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/02/10 16:45:21 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/07 22:51:21 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,9 @@ typedef enum		e_error
 	bad_fd_error,
 	is_dir_error,
 	ambig_redirect,
+	error_ronly,
+	error_inv_format,
+	to_many_arguments,
 	error_count,
 }					t_error;
 
@@ -171,6 +174,7 @@ void	*d_handle_error_str_p(int fd, int error_code,
 */
 void	*d_handle_error_p(int fd, int error_code, void *pointer);
 
-void	handle_name_error(int error_code, char *name);
+int		handle_prefix_error(int error_code, char *prefix,
+								char *str);
 
 #endif
