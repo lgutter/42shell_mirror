@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/10 17:35:25 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/05/07 22:51:33 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/08 00:47:14 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,6 @@ static const char	*g_error_str[error_count] = {
 	[ambig_redirect] = "Ambiguous redirect",
 	[error_ronly] = "Variable is read-only",
 	[error_inv_format] = "Invalid format",
-	[to_many_arguments] = "To many argument given",
+	[to_many_arguments] = "To many arguments given",
 };
 #endif
