@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/10 17:35:25 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/02/10 16:45:21 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/08 01:25:32 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ static t_env	*new_env_list_item(char *env_variable)
 	}
 	else
 	{
+		new->type = RW_SHELL;
 		new->key = ft_strcdup(env_variable, '=');
 		new->value = ft_strdup(&(
 	env_variable[ft_strlenc(env_variable, '=', ft_strlen(env_variable)) + 1]));
@@ -51,6 +52,7 @@ static t_env	*empty_env_init(void)
 	}
 	else
 	{
+		new->type = RW_SHELL;
 		new->key = ft_strdup("PWD");
 		new->value = getcwd(NULL, 0);
 		if (new->key == NULL || new->value == NULL)
