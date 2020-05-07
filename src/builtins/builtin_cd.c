@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/05/02 19:55:06 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/07 22:56:27 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/08 00:28:02 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ static int	cd(t_env *env, char *new_path)
 {
 	char	old_path[PATH_MAX];
 
-	getcwd(old_path, PATH_MAX);
-	if (old_path == NULL)
+	if (getcwd(old_path, PATH_MAX) == NULL)
 		return (1);
 	if (chdir(new_path) == -1)
 		return (1);
