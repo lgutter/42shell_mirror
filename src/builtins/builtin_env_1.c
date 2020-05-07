@@ -6,7 +6,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/05/07 23:09:50 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/08 01:22:28 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,11 +100,16 @@ int				builtin_set(t_command *comm, t_env **env)
 
 	i = 1;
 	final_ret = 0;
+	ret = 0;
 	while (i < comm->argc)
 	{
-		ret = 0;
 		if (ft_strcmp(comm->argv[i], "--ronly"))
 			ret = 1;
+		i++;
+	}
+	i = 1;
+	while (i < comm->argc)
+	{
 		ret = resolve_set_values(*env, comm->argv[1], comm->argv[0], ret);
 		if (ret != 0)
 			final_ret = ret;
