@@ -84,6 +84,8 @@ static int		process_simple_cmd(t_shell *shell, t_env *env_list,
 {
 	t_argument		*cur_arg;
 
+	if (simple_command == NULL)
+		return (handle_error_str(parsing_error, "NULL simple command"));
 	if (process_redirects(shell, env_list, simple_command) != 0)
 		return (-1);
 	if (simple_command->arguments == NULL)
@@ -106,14 +108,18 @@ int				word_processing(t_shell *shell, t_env *env_list,
 								t_complete_cmd *complete_command)
 {
 	t_pipe_sequence	*pipe_seq;
+	int				ret;
 
 	if (complete_command == NULL)
-		return (-1);
+		return (handle_error_str(parsing_error, "NULL complete command"));
 	pipe_seq = complete_command->pipe_sequence;
+	if (pipe_seq == NULL)
+		return (handle_error_str(parsing_error, "NULL pipe sequence"));
 	while (pipe_seq != NULL)
 	{
-		if (process_simple_cmd(shell, env_list, pipe_seq->simple_command))
-			return (-1);
+		ret = process_simple_cmd(shell, env_list, pipe_seq->simple_command);
+		if (ret != 0)
+			return (ret);
 		pipe_seq = pipe_seq->next;
 	}
 	return (0);

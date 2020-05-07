@@ -12,7 +12,14 @@
 
 #include <criterion/criterion.h>
 #include <criterion/assert.h>
+#include <criterion/redirect.h>
 #include "handle_input.h"
+#include "error_str.h"
+
+static void redirect_std_err()
+{
+	cr_redirect_stderr();
+}
 
 static t_token	*init_token(t_type type, const char *value, t_token *next)
 {
@@ -440,6 +447,7 @@ Test(word_processing_unit, valid_argument_redir_expansion_with_quotes)
 	cr_expect_eq(expected_command->pipe_sequence->simple_command->redirects->io_here, NULL);
 }
 
+// HANGS WHILE GETTING INPUT
 // Test(word_processing_unit, valid_redir_here_doc)
 // {
 // 	t_token 		*token2 = init_token(WORD, "\"$foo\"", NULL);
@@ -454,7 +462,9 @@ Test(word_processing_unit, valid_argument_redir_expansion_with_quotes)
 // 	cr_assert_eq(0, pipe(pipe_fds));
 // 	dup2(pipe_fds[0], STDIN_FILENO);
 // 	ft_dprintf(pipe_fds[1], "bar\n$foo\n");
+// 	close(pipe_fds[1]);
 // 	command = parse_complete_command(&token1);
+// 	printf("HERE!\n");
 // 	ret = word_processing(NULL, NULL, command);
 // 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 // 	cr_assert_neq(command, NULL);
@@ -541,15 +551,56 @@ Test(word_processing_unit, valid_NULL_env_expansions)
 	cr_expect_eq(command->pipe_sequence->simple_command->redirects->io_here, NULL);
 }
 
-Test(word_processing_unit, invalid_NULL_command)
+Test(word_processing_unit, invalid_NULL_command, .init = redirect_std_err)
 {
 	t_env			*env_list = ft_memalloc(sizeof(t_env) * 1);
 	int				ret;
-	int				expected_ret = -1;
+	int				expected_ret = parsing_error;
+	char			buff[1024];
 
 	env_list->key = "foo";
 	env_list->value = "bar";
 	env_list->next = NULL;
 	ret = word_processing(NULL, env_list, NULL);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
+	fflush(stdout);
+	sprintf(buff, "%.999s: NULL complete command\n", g_error_str[parsing_error]);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(word_processing_unit, invalid_NULL_simple_command, .init = redirect_std_err)
+{
+	t_env			*env_list = ft_memalloc(sizeof(t_env) * 1);
+	int				ret;
+	int				expected_ret = parsing_error;
+	t_pipe_sequence	pipe_seq = {NULL, no_pipe, NULL};
+	t_complete_cmd	compl_cmd = {&pipe_seq, no_seperator_op, NULL};
+	char			buff[1024];
+
+	env_list->key = "foo";
+	env_list->value = "bar";
+	env_list->next = NULL;
+	ret = word_processing(NULL, env_list, &compl_cmd);
+	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
+	fflush(stdout);
+	sprintf(buff, "%.1001s: NULL simple command\n", g_error_str[parsing_error]);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(word_processing_unit, invalid_NULL_pipe_seq, .init = redirect_std_err)
+{
+	t_env			*env_list = ft_memalloc(sizeof(t_env) * 1);
+	int				ret;
+	int				expected_ret = parsing_error;
+	t_complete_cmd	compl_cmd = {NULL, no_seperator_op, NULL};
+	char			buff[1024];
+
+	env_list->key = "foo";
+	env_list->value = "bar";
+	env_list->next = NULL;
+	ret = word_processing(NULL, env_list, &compl_cmd);
+	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
+	fflush(stdout);
+	sprintf(buff, "%.1000s: NULL pipe sequence\n", g_error_str[parsing_error]);
+	cr_expect_stderr_eq_str(buff);
 }
