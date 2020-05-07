@@ -39,6 +39,7 @@ static const char	*g_error_str[error_count] = {
 	[execve_failure] = "Call to execve failed",
 	[access_denied] = "Access denied",
 	[bad_fd_error] = "Bad file descriptor",
-	[is_dir_error] = "Is a directory"
+	[is_dir_error] = "Is a directory",
+	[ambig_redirect] = "Ambiguous redirect",
 };
 #endif

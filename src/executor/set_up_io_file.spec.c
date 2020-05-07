@@ -267,7 +267,7 @@ Test(set_up_io_file_unit, invalid_NULL_std_fds)
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 }
 
-Test(set_up_io_file_unit, invalid_NULL_filename, .init = redirect_std_err)
+Test(set_up_io_file_unit, invalid_NULL_filename)
 {
 	t_redir_info	info = {NULL, NULL};
 	char			*filename = NULL;
@@ -285,17 +285,14 @@ Test(set_up_io_file_unit, invalid_NULL_filename, .init = redirect_std_err)
 
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
-	fflush(stderr);
-	cr_expect_stderr_eq_str("Parsing error detected\n");
 }
 
-Test(set_up_io_file_unit, invalid_NULL_io_file, .init = redirect_std_err)
+Test(set_up_io_file_unit, invalid_NULL_io_file)
 {
 	t_redir_info	info = {NULL, NULL};
 	int				ret;
 	int				exp_ret = -1;
 	int				left_fd = 429;
-	char			buff[1024];
 
 	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
@@ -304,9 +301,6 @@ Test(set_up_io_file_unit, invalid_NULL_io_file, .init = redirect_std_err)
 
 	ret = set_up_io_file(&info, left_fd, NULL);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
-	fflush(stderr);
-	sprintf(buff, "%s\n", g_error_str[parsing_error]);
-	cr_expect_stderr_eq_str(buff);
 }
 
 Test(set_up_io_file_unit, invalid_no_read_perm, .init = redirect_std_err)
@@ -421,4 +415,78 @@ Test(set_up_io_file_unit, valid_read_from_file)
 	cr_expect_eq(4, read(left_fd, buff, 1024), "incorrect number of bytes read");
 	cr_expect_str_eq(buff, "test", "unexpected file content!");
 	remove(filename);
+}
+
+Test(set_up_io_file_unit, valid_close_stdout)
+{
+	t_redir_info	info = {NULL, NULL};
+	char			*filename = strdup("-");;
+	t_io_file		io_file;
+	int				ret;
+	int				left_fd = STDOUT_FILENO;
+	int				exp_ret = 0;
+
+	info.std_fds = (int *)malloc(sizeof(int) * 3);
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+
+	io_file.redirect_op = redirect_fd_out;
+	io_file.filename = filename;
+
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	cr_expect_null(info.fd_list);
+	cr_expect_not_null(info.std_fds);
+	cr_expect_eq(-1, write(left_fd, "foo", 3), "fd was not closed!");
+}
+
+Test(set_up_io_file_unit, valid_close_stderr)
+{
+	t_redir_info	info = {NULL, NULL};
+	char			*filename = strdup("-");;
+	t_io_file		io_file;
+	int				ret;
+	int				left_fd = STDERR_FILENO;
+	int				exp_ret = 0;
+
+	info.std_fds = (int *)malloc(sizeof(int) * 3);
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+
+	io_file.redirect_op = redirect_fd_out;
+	io_file.filename = filename;
+
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	cr_expect_null(info.fd_list);
+	cr_expect_not_null(info.std_fds);
+	cr_expect_eq(-1, write(left_fd, "foo", 3), "fd was not closed!");
+}
+
+Test(set_up_io_file_unit, valid_close_stdin)
+{
+	t_redir_info	info = {NULL, NULL};
+	char			*filename = strdup("-");;
+	t_io_file		io_file;
+	int				ret;
+	int				left_fd = STDIN_FILENO;
+	int				exp_ret = 0;
+	char			buff[1024];
+
+	info.std_fds = (int *)malloc(sizeof(int) * 3);
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+
+	io_file.redirect_op = redirect_fd_in;
+	io_file.filename = filename;
+
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	cr_expect_null(info.fd_list);
+	cr_expect_not_null(info.std_fds);
+	memset(buff, 0, 1024);
+	cr_expect_eq(-1, read(left_fd, buff, 1024), "fd was not closed!");
 }

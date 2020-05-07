@@ -604,3 +604,22 @@ Test(word_processing_unit, invalid_NULL_pipe_seq, .init = redirect_std_err)
 	sprintf(buff, "%.1000s: NULL pipe sequence\n", g_error_str[parsing_error]);
 	cr_expect_stderr_eq_str(buff);
 }
+
+
+Test(word_processing_unit, invalid_empty_redirect, .init = redirect_std_err)
+{
+	int				exp_ret = -1;
+	t_io_redirect	redirect = {NULL, -1, NULL, NULL, NULL};
+	t_argument 		argument = {"cat", NULL};
+	t_simple_cmd	simple_cmd = {&redirect, &argument, NULL};
+	t_pipe_sequence	pipe_seq = {&simple_cmd, no_pipe, NULL};
+	t_complete_cmd  compl_cmd = {&pipe_seq, no_seperator_op, NULL};
+	t_env			env = {strdup("foo"), strdup("bar"), NULL};
+
+	int ret = word_processing(NULL, &env, &compl_cmd);
+	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
+	char buff[1024];
+	fflush(stderr);
+	sprintf(buff, "%s: %s\n", g_error_str[parsing_error], "empty redirect");
+	cr_expect_stderr_eq_str(buff);
+}

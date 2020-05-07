@@ -48,6 +48,7 @@ typedef enum		e_error
 	access_denied,
 	bad_fd_error,
 	is_dir_error,
+	ambig_redirect,
 	error_count,
 }					t_error;
 

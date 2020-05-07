@@ -137,6 +137,20 @@ int				process_word(t_shell *shell, t_env *env_list, char **word,
 
 /*
 **	performs environment expansions and quote completion + removal on all
+**	relevant elements in the redirections.
+**	arguments:
+**	shell:		a pointer to the shell struct. (for quote completion)
+**	env_list:	a pointer to the first element in the environment list.
+**	redirects:	a pointer to the first io_redirect struct.
+**	returns:
+**	0 on succes.
+**	-1 on failure.
+*/
+int				process_redirects(t_shell *shell, t_env *env,
+								t_io_redirect *redirects);
+
+/*
+**	performs environment expansions and quote completion + removal on all
 **	relevant elements in a complete_command. (arguments and redirections)
 **	arguments:
 **	shell:				a pointer to the shell struct. (for quote completion)

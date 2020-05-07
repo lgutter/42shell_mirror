@@ -37,9 +37,7 @@ static int		set_file_fd(t_redir_info *redir_info, t_io_file *io_file)
 	int fd;
 
 	fd = -1;
-	if (io_file == NULL || io_file->filename == NULL)
-		d_handle_error(redir_info->std_fds[2], parsing_error);
-	else if (io_file->redirect_op == redirect_append ||
+	if (io_file->redirect_op == redirect_append ||
 			io_file->redirect_op == redirect_out)
 		fd = set_file_out(redir_info, io_file);
 	else if (io_file->redirect_op == redirect_in)
@@ -65,8 +63,11 @@ int				set_up_io_file(t_redir_info *redir_info, int left_fd,
 {
 	int fd;
 
-	if (redir_info == NULL || redir_info->std_fds == NULL)
+	if (redir_info == NULL || redir_info->std_fds == NULL ||
+		io_file == NULL || io_file->filename == NULL)
 		return (-1);
+	if (io_file->filename[0] == '-' && io_file->filename[1] == '\0')
+		return (close(left_fd));
 	fd = set_file_fd(redir_info, io_file);
 	if (fd < 0)
 		return (-1);

@@ -117,12 +117,15 @@ int			exec_simple_command(t_simple_cmd *simple_cmd, t_env *env_list)
 		return (ret);
 	command.envp = convert_env_to_envp(env_list);
 	if (command.envp == NULL || command.path == NULL)
-		return (handle_error(malloc_error));
-	redir_info = set_up_redirections(simple_cmd->redirects);
-	if (command.path[0] != '\0')
-		ret = execute_command(env_list, &command);
+		ret = handle_error(malloc_error);
 	else
-		ret = execute_builtin(env_list, &command);
+	{
+		redir_info = set_up_redirections(simple_cmd->redirects);
+		if (command.path[0] != '\0')
+			ret = execute_command(env_list, &command);
+		else
+			ret = execute_builtin(env_list, &command);
+	}
 	reset_redirections(&redir_info);
 	free_command(&command);
 	return (ret);

@@ -12,33 +12,6 @@
 
 #include "handle_input.h"
 
-static int		process_redirects(t_shell *shell, t_env *env_list,
-								t_simple_cmd *simple_command)
-{
-	t_io_redirect	*redir;
-
-	redir = simple_command->redirects;
-	while (redir != NULL)
-	{
-		if (redir->io_number != NULL)
-			redir->io_fd = ft_atoi(redir->io_number);
-		if (redir->io_file != NULL && redir->io_file->filename != NULL)
-		{
-			if (process_word(shell, env_list, &(redir->io_file->filename), 'y'))
-				return (-1);
-		}
-		if (redir->io_here != NULL && redir->io_here->here_end != NULL)
-		{
-			if (process_word(shell, env_list, &(redir->io_here->here_end), 'n'))
-				return (-1);
-			if (get_here_doc(redir->io_here, shell) != 0)
-				return (malloc_error);
-		}
-		redir = redir->next;
-	}
-	return (0);
-}
-
 static size_t	arg_list_len(t_argument *list)
 {
 	size_t len;
@@ -86,7 +59,7 @@ static int		process_simple_cmd(t_shell *shell, t_env *env_list,
 
 	if (simple_command == NULL)
 		return (handle_error_str(parsing_error, "NULL simple command"));
-	if (process_redirects(shell, env_list, simple_command) != 0)
+	if (process_redirects(shell, env_list, simple_command->redirects) != 0)
 		return (-1);
 	if (simple_command->arguments == NULL)
 		return (handle_error_str(parsing_error, "no arguments"));
