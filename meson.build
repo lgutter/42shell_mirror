@@ -66,6 +66,7 @@ src_files = files([
   'src/environment/expand_variable.c',
   'src/environment/ft_getenv.c',
   'src/environment/ft_setenv.c',
+  'src/environment/ft_setstatus.c',
   'src/environment/ft_unsetenv.c',
   'src/environment/free_env_list.c',
   'src/handle_input.c',

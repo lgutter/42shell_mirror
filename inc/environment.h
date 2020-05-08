@@ -76,6 +76,16 @@ int					ft_setenv(t_env *env, const char *key, const char *value,
 																	int opts);
 
 /*
+**	Takes env and an error code as arguments.
+**	the error code will be converted to a string, after which
+**	the shell variable STATUS will be set to the value of the error code.
+**	Returns the following:
+**	0 on succes, an errid error code on failure.
+**	(on failure, error will be printed)
+*/
+int		ft_setstatus(t_env *env, t_error error_code);
+
+/*
 **	takes env and a key as argument and removes it from our environment.
 **	returns the following:
 **	0 on succes, an errid error code on failure.
