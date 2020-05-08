@@ -20,17 +20,19 @@
 
 static int	cd(t_env *env, char *new_path, char *key)
 {
-	char	old_path[PATH_MAX];
+	char	path[PATH_MAX];
 
-	ft_bzero(old_path, PATH_MAX);
-	getcwd(old_path, PATH_MAX);
+	ft_bzero(path, PATH_MAX);
+	getcwd(path, PATH_MAX);
 	if (chdir(new_path) == -1)
 		return (1);
 	if (key != NULL && ft_strcmp(key, "OLDPWD") == 0)
 		ft_printf("%s\n", new_path);
-	if (ft_setenv(env, "OLDPWD", old_path, ENV_VAR) != 0)
+	if (ft_setenv(env, "OLDPWD", path, ENV_VAR) != 0)
 		return (1);
-	if (ft_setenv(env, "PWD", new_path, ENV_VAR) != 0)
+	ft_bzero(path, PATH_MAX);
+	getcwd(path, PATH_MAX);
+	if (ft_setenv(env, "PWD", path, ENV_VAR) != 0)
 		return (1);
 	return (0);
 }
