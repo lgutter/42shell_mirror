@@ -125,7 +125,7 @@ Test(unit_ft_setenv, mandatory_error_deny_overwrite_in_full_list)
 	env = dup_sys_env();
 	current = env;
 	ft_setenv(env, "CETUSHELL_TEST_KEY", "FIRST_TEST_VALUE", (RO_VAR | ENV_VAR));
-	ret = ft_setenv(env, "CETUSHELL_TEST_KEY", "TEST_VALUE_NEW", (RO_VAR | ENV_VAR));
+	ret = ft_setenv(env, "CETUSHELL_TEST_KEY", "TEST_VALUE_NEW", (ENV_VAR));
 	cr_expect_eq(ret, error_ronly, "ret == %d, should be %d\n", ret, error_ronly);
 	while (current != NULL)
 	{

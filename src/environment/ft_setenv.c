@@ -65,7 +65,7 @@ int			ft_setenv(t_env *env, const char *key, const char *value, int opts)
 		if (ft_strcmp(key, current->key) == 0 &&
 			(opts & (current->type & VAR_TYPE)) != 0)
 		{
-			if ((opts & RO_VAR) == 0 || (opts & FORCE_VAR) != 0)
+			if ((current->type & RO_VAR) == 0 || (opts & FORCE_VAR) != 0)
 			{
 				free(current->value);
 				current->value = ft_strdup(value);
