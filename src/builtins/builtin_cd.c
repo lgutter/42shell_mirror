@@ -26,11 +26,11 @@ static int	cd(t_env *env, char *new_path, char *key)
 	getcwd(old_path, PATH_MAX);
 	if (chdir(new_path) == -1)
 		return (1);
-	if (ft_strcmp(key, "OLDPWD") == 0)
+	if (key != NULL && ft_strcmp(key, "OLDPWD") == 0)
 		ft_printf("%s\n", new_path);
 	if (ft_setenv(env, "OLDPWD", old_path, ENV_VAR) != 0)
 		return (1);
-	if (ft_setenv(env, "PWD", new_path,  ENV_VAR) != 0)
+	if (ft_setenv(env, "PWD", new_path, ENV_VAR) != 0)
 		return (1);
 	return (0);
 }

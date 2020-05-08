@@ -31,6 +31,7 @@ Test(unit_builtin_exit, basic_mandatory_exit_status_code_42, .init = redirect_st
 
 	env->key = strdup("STATUS");
 	env->value = strdup("42");
+	env->type = SHELL_VAR;
 	env->next = NULL;
 	command.argv = ft_strsplit("exit", ' ');
 	command.argc = 1;
@@ -46,7 +47,7 @@ Test(unit_builtin_exit, basic_mandatory_exit_status_code_42, .init = redirect_st
 	{
 		waitpid(pid, &stat_loc, 0);
 		ret = WEXITSTATUS(stat_loc);
-		cr_assert_eq(ret, 42);
+		cr_expect_eq(ret, 42, "expected ret %i, got %i!", 42, ret);
 		fflush(stdout);
 		cr_assert_stdout_eq_str("exit\n");
 	}
@@ -66,6 +67,7 @@ Test(unit_builtin_exit, basic_mandatory_error_no_exit_code, .init = redirect_std
 
 	env->key = strdup("FOO");
 	env->value = strdup("BAR");
+	env->type = SHELL_VAR;
 	env->next = NULL;
 	command.argv = ft_strsplit("exit", ' ');
 	command.argc = 1;
@@ -133,6 +135,7 @@ Test(unit_builtin_exit, basic_bonus_error_valid_argument_exit_code, .init = redi
 
 	env->key = strdup("FOO");
 	env->value = strdup("BAR");
+	env->type = SHELL_VAR;
 	env->next = NULL;
 	command.argv = ft_strsplit("exit 45", ' ');
 	command.argc = 2;
