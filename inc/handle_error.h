@@ -55,7 +55,6 @@ typedef enum		e_error
 	too_few_arguments,
 	invalid_option,
 	var_not_set,
-	no_such_file_or_dir,
 	error_count,
 }					t_error;
 

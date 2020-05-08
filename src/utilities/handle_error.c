@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "handle_error.h"
+#include "error_str.h"
 
 int		handle_error(int error_code)
 {

@@ -47,6 +47,5 @@ static const char	*g_error_str[error_count] = {
 	[too_few_arguments] = "Too few arguments given",
 	[invalid_option] = "invalid option",
 	[var_not_set] = "Variable not set",
-	[no_such_file_or_dir] = "No such file or directory",
 };
 #endif

@@ -28,6 +28,7 @@ Test(find_executable_unit, valid_find_printf)
 
 	env->key = strdup("PATH");
 	env->value = strdup("foo:/tmp/:/usr/bin");
+	env->type = ENV_VAR;
 	env->next = NULL;
 
 	command.argc = 2;
@@ -48,6 +49,7 @@ Test(find_executable_unit, valid_find_cp)
 
 	env->key = strdup("PATH");
 	env->value = strdup("foo:/bin/:/usr/bin");
+	env->type = ENV_VAR;
 	env->next = NULL;
 
 	command.argc = 2;
@@ -68,6 +70,7 @@ Test(find_executable_unit, valid_find_builtin)
 
 	env->key = strdup("PATH");
 	env->value = strdup("foo:/bin/:/usr/bin");
+	env->type = ENV_VAR;
 	env->next = NULL;
 
 	command.argc = 2;
@@ -88,6 +91,7 @@ Test(find_executable_unit, valid_already_relative_path)
 
 	env->key = strdup("PATH");
 	env->value = strdup("foo:/bin/:/usr/bin");
+	env->type = ENV_VAR;
 	env->next = NULL;
 
 	command.argc = 2;
@@ -108,6 +112,7 @@ Test(find_executable_unit, valid_already_absolute_path)
 
 	env->key = strdup("PATH");
 	env->value = strdup("foo:/bin/:/usr/bin");
+	env->type = ENV_VAR;
 	env->next = NULL;
 
 	command.argc = 2;
@@ -129,6 +134,7 @@ Test(find_executable_unit, invalid_error_nonexistent, .init = redirect_std_err)
 
 	env->key = strdup("PATH");
 	env->value = strdup("foo:/bin/:/usr/bin");
+	env->type = ENV_VAR;
 	env->next = NULL;
 
 	command.argc = 2;
