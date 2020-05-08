@@ -41,6 +41,7 @@ int			builtin_cd(t_command *command, t_env **env)
 	char	*temp;
 	int		ret;
 
+	key = NULL;
 	if (command->argc > 2)
 		return (handle_prefix_error(too_many_arguments, "cd"));
 	if (command->argc == 1 || ft_strcmp(command->argv[1], "-") == 0)
