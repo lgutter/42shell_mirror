@@ -13,10 +13,12 @@
 #ifndef ENVIRONMENT_H
 # define ENVIRONMENT_H
 
-# define RONLY_ENV 0
-# define RONLY_SHELL 1
-# define RW_ENV 2
-# define RW_SHELL 3
+# define ENV_VAR	1
+# define SHELL_VAR	2
+# define RO_VAR		4
+# define FORCE_VAR	8
+# define MASK_VAR	7
+# define VAR_TYPE	3
 
 # include "handle_error.h"
 # include "utils.h"
@@ -50,7 +52,7 @@ t_env				*dup_sys_env(void);
 **	when an error occurs, returns NULL.
 **	(on failure, error will be printed)
 */
-char				*ft_getenv(t_env *env, const char *key);
+char				*ft_getenv(t_env *env, const char *key, int opts);
 
 /*
 **	takes the env and a key as argument and returns a freshy allocated copy
@@ -60,7 +62,7 @@ char				*ft_getenv(t_env *env, const char *key);
 **	when an error occurs, returns NULL.
 **	(on failure, error will be printed)
 */
-char				*ft_getenv_quote(t_env *env, const char *key);
+char				*ft_getenv_quote(t_env *env, const char *key, int opts);
 
 /*
 **	Takes env, a key, value, and either 'y' or 'n' as arguments.
@@ -70,8 +72,8 @@ char				*ft_getenv_quote(t_env *env, const char *key);
 **	0 on succes, an errid error code on failure.
 **	(on failure, error will be printed)
 */
-int					ft_setenv(t_env *env, const char *key,
-									const char *value, int type);
+int					ft_setenv(t_env *env, const char *key, const char *value,
+																	int opts);
 
 /*
 **	takes env and a key as argument and removes it from our environment.

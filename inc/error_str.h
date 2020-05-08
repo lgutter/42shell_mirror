@@ -43,6 +43,10 @@ static const char	*g_error_str[error_count] = {
 	[ambig_redirect] = "Ambiguous redirect",
 	[error_ronly] = "Variable is read-only",
 	[error_inv_format] = "Invalid format",
-	[to_many_arguments] = "To many arguments given",
+	[too_many_arguments] = "Too many arguments given",
+	[too_few_arguments] = "Too few arguments given",
+	[invalid_option] = "invalid option",
+	[var_not_set] = "Variable not set",
+	[no_such_file_or_dir] = "No such file or directory",
 };
 #endif

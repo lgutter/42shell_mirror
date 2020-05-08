@@ -12,7 +12,7 @@
 
 #include "environment.h"
 
-char	*ft_getenv(t_env *env, const char *key)
+char	*ft_getenv(t_env *env, const char *key, int opts)
 {
 	t_env *current;
 
@@ -21,7 +21,8 @@ char	*ft_getenv(t_env *env, const char *key)
 	current = env;
 	while (current != NULL)
 	{
-		if (ft_strcmp(key, current->key) == 0)
+		if (ft_strcmp(key, current->key) == 0 &&
+			(opts & (current->type & VAR_TYPE)) != 0)
 		{
 			return (ft_strdup(current->value));
 		}
@@ -30,22 +31,13 @@ char	*ft_getenv(t_env *env, const char *key)
 	return (NULL);
 }
 
-char	*ft_getenv_quote(t_env *env, const char *key)
+char	*ft_getenv_quote(t_env *env, const char *key, int opts)
 {
-	t_env	*current;
 	char	*temp;
+	char	*unquote;
 
-	if (key == NULL)
-		return (NULL);
-	current = env;
-	while (current != NULL)
-	{
-		if (ft_strcmp(key, current->key) == 0)
-		{
-			temp = backslash_quotes(current->value);
-			return (temp);
-		}
-		current = current->next;
-	}
-	return (NULL);
+	temp = ft_getenv(env, key, opts);
+	unquote = backslash_quotes(temp);
+	free(temp);
+	return (unquote);
 }

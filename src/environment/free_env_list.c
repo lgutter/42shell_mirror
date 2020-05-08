@@ -26,6 +26,7 @@ int		free_env_list(t_env *env_list)
 		previous->key = NULL;
 		free(previous->value);
 		previous->value = NULL;
+		previous->type= 0;
 		free(previous);
 		previous = NULL;
 	}

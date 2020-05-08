@@ -83,9 +83,10 @@ src_files = files([
   'temp/temp_print_token_parse.c',
   'src/builtins/builtin_cd.c',
   'src/builtins/builtins_1.c',
-  'src/builtins/builtins_2.c',
-  'src/builtins/builtin_env_1.c',
-  'src/builtins/builtin_env_2.c',
+  'src/builtins/builtin_exit.c',
+  'src/builtins/builtin_env.c',
+  'src/builtins/builtin_set.c',
+  'src/builtins/builtin_unset.c',
 ])
 
 main_file = files('src/main.c')
@@ -135,6 +136,12 @@ if libcriterion_deb.found()
     'src/executor/exec_pipe_sequence.spec.c',
     'src/executor/exec_simple_command.spec.c',
     'src/builtins/builtins.spec.c',
+    'src/builtins/builtin_cd.spec.c',
+    'src/builtins/builtins_1.spec.c',
+    'src/builtins/builtin_env.spec.c',
+    'src/builtins/builtin_exit.spec.c',
+    'src/builtins/builtin_set.spec.c',
+    'src/builtins/builtin_unset.spec.c',
   ])
 
   tester = executable('test-cetushell',

@@ -24,6 +24,7 @@ Test(unit_ft_expand_variable, basic_mandatory_expand_tilde)
 
 	env->key = strdup("HOME");
 	env->value = strdup("/home/criteriontest");
+	env->type = ENV_VAR;
 	env->next = NULL;
 	ret = expand_variable(env, &test_string);
 	cr_assert_eq(ret, 0);
@@ -38,6 +39,7 @@ Test(unit_ft_expand_variable, basic_mandatory_expand_HOME)
 
 	env->key = strdup("FOO");
 	env->value = strdup("Barcriteriontest");
+	env->type = ENV_VAR;
 	env->next = NULL;
 	ret = expand_variable(env, &test_string);
 	cr_assert_eq(ret, 0);
@@ -52,6 +54,7 @@ Test(unit_ft_expand_variable, basic_mandatory_no_key)
 
 	env->key = strdup("FOO");
 	env->value = strdup("Barcriteriontest");
+	env->type = ENV_VAR;
 	env->next = NULL;
 	ret = expand_variable(env, &test_string);
 	cr_assert_eq(ret, 0);
@@ -66,6 +69,7 @@ Test(unit_ft_expand_variable, basic_mandatory_loop_key, .timeout = 2)
 
 	env->key = strdup("FOO");
 	env->value = strdup("$FOO");
+	env->type = ENV_VAR;
 	env->next = NULL;
 	ret = expand_variable(env, &test_string);
 	cr_assert_eq(ret, 0);
@@ -91,6 +95,7 @@ Test(unit_ft_expand_variable, basic_mandatory_error_NULL_string)
 
 	env->key = strdup("FOO");
 	env->value = strdup("$FOO");
+	env->type = ENV_VAR;
 	env->next = NULL;
 	ret = expand_variable(env, &test_string);
 	cr_expect_eq(ret, -1);

@@ -28,7 +28,8 @@ Test(unit_ft_getenv, mandatory_basic_get_valid_value_in_single_element_list)
 	list = (t_env *)malloc(sizeof(t_env) * 1);
 	list->key = strdup("MINISHELL_TEST_GET_ENV");
 	list->value = strdup("VALUE_FOR_TEST_1");
-	value = ft_getenv(list, "MINISHELL_TEST_GET_ENV");
+	list->type = ENV_VAR;
+	value = ft_getenv(list, "MINISHELL_TEST_GET_ENV", ENV_VAR);
 	cr_assert_str_eq(value, "VALUE_FOR_TEST_1");
 }
 
@@ -37,7 +38,7 @@ Test(unit_ft_getenv, mandatory_basic_get_from_NULL_list, .init = redirect_std_er
 	char *value;
 	t_env *list = NULL;
 
-	value = ft_getenv(list, "MINISHELL_TEST_GET_ENV");
+	value = ft_getenv(list, "MINISHELL_TEST_GET_ENV", ENV_VAR);
 	cr_assert_eq(NULL, value);
 	ft_dprintf(2, "-");
 	fflush(stderr);
@@ -51,7 +52,7 @@ Test(unit_ft_getenv, mandatory_basic_get_valid_value_from_system_list, .init = r
 
 	setenv("MINISHELL_TEST_GET_ENV", "VALUE_FOR_TEST_3", 1);
 	list = dup_sys_env();
-	value = ft_getenv(list, "MINISHELL_TEST_GET_ENV");
+	value = ft_getenv(list, "MINISHELL_TEST_GET_ENV", ENV_VAR);
 	cr_assert_str_eq(value, "VALUE_FOR_TEST_3");
 	ft_dprintf(2, "-");
 	fflush(stderr);
@@ -66,7 +67,9 @@ Test(unit_ft_getenv_quote, mandatory_basic_get_valid_value_in_single_element_lis
 	list = (t_env *)malloc(sizeof(t_env) * 1);
 	list->key = strdup("MINISHELL_TEST_GET_ENV");
 	list->value = strdup("VALUE_\\FOR\"_TE\'ST_1");
-	value = ft_getenv_quote(list, "MINISHELL_TEST_GET_ENV");
+	list->type = ENV_VAR;
+	list->next = NULL;
+	value = ft_getenv_quote(list, "MINISHELL_TEST_GET_ENV", ENV_VAR);
 	cr_assert_str_eq(value, "VALUE_\\\\FOR\\\"_TE\\\'ST_1");
 }
 
@@ -75,7 +78,7 @@ Test(unit_ft_getenv_quote, mandatory_basic_get_from_empty_list, .init = redirect
 	char *value;
 	t_env *list = NULL;
 
-	value = ft_getenv_quote(list, "MINISHELL_TEST_GET_ENV");
+	value = ft_getenv_quote(list, "MINISHELL_TEST_GET_ENV", ENV_VAR);
 	cr_assert_eq(NULL, value);
 	ft_dprintf(2, "-");
 	fflush(stderr);
@@ -89,7 +92,7 @@ Test(unit_ft_getenv_quote, mandatory_basic_get_valid_value_from_system_list, .in
 
 	setenv("MINISHELL_TEST_GET_ENV", "VA\'LU\"E_FOR_TES\\T_3", 1);
 	list = dup_sys_env();
-	value = ft_getenv_quote(list, "MINISHELL_TEST_GET_ENV");
+	value = ft_getenv_quote(list, "MINISHELL_TEST_GET_ENV", ENV_VAR);
 	cr_assert_str_eq(value, "VA\\\'LU\\\"E_FOR_TES\\\\T_3");
 	ft_dprintf(2, "-");
 	fflush(stderr);
@@ -102,7 +105,7 @@ Test(unit_ft_getenv, mandatory_basic_error_NULL_string, .init = redirect_std_err
 	t_env *list = NULL;
 
 	list = dup_sys_env();
-	value = ft_getenv(list, NULL);
+	value = ft_getenv(list, NULL, ENV_VAR);
 	cr_assert_eq(NULL, value);
 	ft_dprintf(2, "-");
 	fflush(stderr);
@@ -115,7 +118,7 @@ Test(unit_ft_getenv_quote, mandatory_basic_error_NULL_string, .init = redirect_s
 	t_env *list = NULL;
 
 	list = dup_sys_env();
-	value = ft_getenv_quote(list, NULL);
+	value = ft_getenv_quote(list, NULL, ENV_VAR);
 	cr_assert_eq(NULL, value);
 	ft_dprintf(2, "-");
 	fflush(stderr);

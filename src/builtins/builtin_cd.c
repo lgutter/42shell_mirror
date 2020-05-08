@@ -18,44 +18,46 @@
 # include <limits.h>
 #endif
 
-static int	cd(t_env *env, char *new_path)
+static int	cd(t_env *env, char *new_path, char *key)
 {
 	char	old_path[PATH_MAX];
 
-	if (getcwd(old_path, PATH_MAX) == NULL)
-		return (1);
+	ft_bzero(old_path, PATH_MAX);
+	getcwd(old_path, PATH_MAX);
 	if (chdir(new_path) == -1)
 		return (1);
-	if (ft_setenv(env, "OLDPWD", old_path, RW_ENV) != 0)
+	if (ft_strcmp(key, "OLDPWD") == 0)
+		ft_printf("%s\n", new_path);
+	if (ft_setenv(env, "OLDPWD", old_path, ENV_VAR) != 0)
 		return (1);
-	if (ft_setenv(env, "PWD", new_path, RW_ENV) != 0)
+	if (ft_setenv(env, "PWD", new_path,  ENV_VAR) != 0)
 		return (1);
 	return (0);
 }
 
 int			builtin_cd(t_command *command, t_env **env)
 {
-	char	new_path[PATH_MAX];
+	char	*key;
 	char	*temp;
+	int		ret;
 
 	if (command->argc > 2)
-		return (handle_prefix_error(to_many_arguments, "cd", "argc"));
-	if (command->argc == 1)
+		return (handle_prefix_error(too_many_arguments, "cd"));
+	if (command->argc == 1 || ft_strcmp(command->argv[1], "-") == 0)
 	{
-		temp = ft_getenv(*env, "HOME");
+		key = (command->argc == 1) ? "HOME" : "OLDPWD";
+		temp = ft_getenv(*env, key, VAR_TYPE);
 		if (temp == NULL)
+		{
+			handle_prefix_error_str(var_not_set, "cd", key);
 			return (1);
-		ft_strlcpy(new_path, temp, PATH_MAX);
-	}
-	else if (ft_strcmp(command->argv[1], "-") == 0)
-	{
-		temp = ft_getenv(*env, "OLDPWD");
-		if (temp == NULL)
-			return (1);
-		ft_strlcpy(new_path, temp, PATH_MAX);
-		ft_printf("%s\n", new_path);
+		}
 	}
 	else
-		ft_strlcpy(new_path, command->argv[1], PATH_MAX);
-	return (cd(*env, new_path));
+		temp = ft_strdup(command->argv[1]);
+	ret = cd(*env, temp, key);
+	if (ret != 0)
+		handle_prefix_error_str(no_such_file_or_dir, "cd", temp);
+	free(temp);
+	return (ret);
 }

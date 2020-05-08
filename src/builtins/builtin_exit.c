@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   builtins_2.c                                       :+:    :+:            */
+/*   builtin_exit.c                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
@@ -17,9 +17,8 @@ int		builtin_exit(t_command *command, t_env **env)
 {
 	char *prev_status;
 
-	prev_status = ft_getenv(*env, "STATUS");
-	if (prev_status == NULL)
-		exit(malloc_error);
+	prev_status = ft_getenv(*env, "STATUS", SHELL_VAR);
+	ft_printf("exit\n");
 	if (command->argc == 1)
 		exit(prev_status ? ft_atoi(prev_status) : 0);
 	else

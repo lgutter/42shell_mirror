@@ -24,7 +24,7 @@ static t_env	*new_env_list_item(char *env_variable)
 	}
 	else
 	{
-		new->type = RW_SHELL;
+		new->type = ENV_VAR;
 		new->key = ft_strcdup(env_variable, '=');
 		new->value = ft_strdup(&(
 	env_variable[ft_strlenc(env_variable, '=', ft_strlen(env_variable)) + 1]));
@@ -52,7 +52,7 @@ static t_env	*empty_env_init(void)
 	}
 	else
 	{
-		new->type = RW_SHELL;
+		new->type = ENV_VAR;
 		new->key = ft_strdup("PWD");
 		new->value = getcwd(NULL, 0);
 		if (new->key == NULL || new->value == NULL)

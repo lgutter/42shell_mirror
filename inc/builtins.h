@@ -24,11 +24,14 @@ struct			s_builtin
 	t_builtin_func	*f;
 };
 
+int			is_builtin(char *exec_name);
+int			execute_builtin(t_command *command, t_env *env);
 int			builtin_cd(t_command *command, t_env **env);
-int			builtin_env(t_command *command, struct s_env **env);
+int			builtin_env(t_command *command, t_env **env);
 int			builtin_set(t_command *comm, t_env **env);
 int			builtin_unset(t_command *command, t_env **env);
+int			builtin_exit(t_command *command, t_env **env);
 int			builtin_echo(t_command *command, t_env **env);
-int			builtin_shellenv(t_command *command, struct s_env **env);
+int			builtin_shellenv(t_command *command, t_env **env);
 
 #endif

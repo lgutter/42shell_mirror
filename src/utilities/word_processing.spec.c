@@ -410,6 +410,7 @@ Test(word_processing_unit, valid_argument_redir_expansion_with_quotes)
 
 	env_list->key = "foo";
 	env_list->value = "bar";
+	env_list->type = ENV_VAR;
 	env_list->next = NULL;
 	token_start = token1;
 	command = parse_complete_command(&token1);
@@ -497,6 +498,7 @@ Test(word_processing_unit, invalid_NULL_shell_unterminated_quote)
 
 	env_list->key = "foo";
 	env_list->value = "bar";
+	env_list->type = ENV_VAR;
 	env_list->next = NULL;
 	token_start = token1;
 	command = parse_complete_command(&token1);
@@ -560,6 +562,7 @@ Test(word_processing_unit, invalid_NULL_command, .init = redirect_std_err)
 
 	env_list->key = "foo";
 	env_list->value = "bar";
+	env_list->type = ENV_VAR;
 	env_list->next = NULL;
 	ret = word_processing(NULL, env_list, NULL);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);

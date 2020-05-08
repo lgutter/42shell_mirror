@@ -53,8 +53,7 @@ static int	addenv(t_env *env, const char *key, const char *value, int type)
 	return (0);
 }
 
-int			ft_setenv(t_env *env, const char *key,
-									const char *value, int type)
+int			ft_setenv(t_env *env, const char *key, const char *value, int opts)
 {
 	t_env *current;
 
@@ -63,9 +62,10 @@ int			ft_setenv(t_env *env, const char *key,
 	current = env;
 	while (current != NULL)
 	{
-		if (ft_strcmp(key, current->key) == 0)
+		if (ft_strcmp(key, current->key) == 0 &&
+			(opts & (current->type & VAR_TYPE)) != 0)
 		{
-			if (type == RW_SHELL || type == RW_ENV)
+			if ((opts & RO_VAR) == 0 || (opts & FORCE_VAR) != 0)
 			{
 				free(current->value);
 				current->value = ft_strdup(value);
@@ -74,10 +74,9 @@ int			ft_setenv(t_env *env, const char *key,
 				return (0);
 			}
 			else
-				return (handle_prefix_error(error_ronly,
-				(type == RONLY_ENV ? "setshell" : "setenv"), current->key));
+				return (error_ronly);
 		}
 		current = current->next;
 	}
-	return (addenv(env, key, value, type));
+	return (addenv(env, key, value, (opts & MASK_VAR)));
 }

@@ -51,7 +51,11 @@ typedef enum		e_error
 	ambig_redirect,
 	error_ronly,
 	error_inv_format,
-	to_many_arguments,
+	too_many_arguments,
+	too_few_arguments,
+	invalid_option,
+	var_not_set,
+	no_such_file_or_dir,
 	error_count,
 }					t_error;
 
@@ -174,7 +178,8 @@ void	*d_handle_error_str_p(int fd, int error_code,
 */
 void	*d_handle_error_p(int fd, int error_code, void *pointer);
 
-int		handle_prefix_error(int error_code, char *prefix,
+int		handle_prefix_error(int error_code, char *prefix);
+int		handle_prefix_error_str(int error_code, char *prefix,
 								char *str);
 
 #endif
