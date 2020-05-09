@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/31 14:01:30 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/02/10 16:45:56 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/10 00:35:56 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int		free_env_list(t_env *env_list)
 		previous->key = NULL;
 		free(previous->value);
 		previous->value = NULL;
-		previous->type= 0;
+		previous->type = 0;
 		free(previous);
 		previous = NULL;
 	}

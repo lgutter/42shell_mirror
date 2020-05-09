@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/14 16:29:21 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/14 16:29:21 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/10 00:46:25 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int					ft_setenv(t_env *env, const char *key, const char *value,
 **	0 on succes, an errid error code on failure.
 **	(on failure, error will be printed)
 */
-int		ft_setstatus(t_env *env, t_error error_code);
+int					ft_setstatus(t_env *env, t_error error_code);
 
 /*
 **	takes env and a key as argument and removes it from our environment.

@@ -6,7 +6,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/05/08 01:22:28 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/10 00:36:28 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static int		resolve_set_values(t_env *env, char *arg, char *argz, int opts)
 	return (ret);
 }
 
-static int	get_set_opts(char **argv, int *i)
+static int		get_set_opts(char **argv, int *i)
 {
 	int		opts;
 
