@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/05/02 19:55:06 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/08 00:28:02 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/09 23:57:36 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,11 @@ int			builtin_cd(t_command *command, t_env **env)
 	char	*temp;
 	int		ret;
 
-	key = NULL;
+	key = (command->argc == 1) ? "HOME" : "OLDPWD";
 	if (command->argc > 2)
 		return (handle_prefix_error(too_many_arguments, "cd"));
 	if (command->argc == 1 || ft_strcmp(command->argv[1], "-") == 0)
 	{
-		key = (command->argc == 1) ? "HOME" : "OLDPWD";
 		temp = ft_getenv(*env, key, VAR_TYPE);
 		if (temp == NULL)
 		{
@@ -58,6 +57,8 @@ int			builtin_cd(t_command *command, t_env **env)
 	}
 	else
 		temp = ft_strdup(command->argv[1]);
+	if (temp == NULL)
+		return (handle_error(malloc_error));
 	ret = cd(*env, temp, key);
 	if (ret != 0)
 		handle_prefix_error_str(no_such_file_or_dir, "cd", temp);
