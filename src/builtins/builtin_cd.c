@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/05/02 19:55:06 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/09 23:57:36 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/10 00:10:06 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	cd(t_env *env, char *new_path, char *key)
 	getcwd(path, PATH_MAX);
 	if (chdir(new_path) == -1)
 		return (1);
-	if (key != NULL && ft_strcmp(key, "OLDPWD") == 0)
+	if (key != NULL && ft_strcmp(key, "-") == 0)
 		ft_printf("%s\n", new_path);
 	if (ft_setenv(env, "OLDPWD", path, ENV_VAR) != 0)
 		return (1);
@@ -59,7 +59,7 @@ int			builtin_cd(t_command *command, t_env **env)
 		temp = ft_strdup(command->argv[1]);
 	if (temp == NULL)
 		return (handle_error(malloc_error));
-	ret = cd(*env, temp, key);
+	ret = cd(*env, temp, command->argv[1]);
 	if (ret != 0)
 		handle_prefix_error_str(no_such_file_or_dir, "cd", temp);
 	free(temp);
