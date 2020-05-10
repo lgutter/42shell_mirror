@@ -449,7 +449,6 @@ Test(reset_redirections_unit, valid_close_single_fd)
 {
 	int ret;
 	t_redir_info	*info = malloc(sizeof(t_redir_info) * 1);
-	info->std_fds = malloc(sizeof(int) * 3);
 	info->fd_list = malloc(sizeof(t_fd_list) * 1);
 	info->std_fds[0] = 0;
 	info->std_fds[1] = 1;
@@ -473,7 +472,6 @@ Test(reset_redirections_unit, valid_close_fd_restore_fd)
 	int ret;
 	t_redir_info	*info = malloc(sizeof(t_redir_info) * 1);
 	t_fd_list	*list2 = malloc(sizeof(t_fd_list) * 1);
-	info->std_fds = malloc(sizeof(int) * 3);
 	info->fd_list = malloc(sizeof(t_fd_list) * 1);
 	info->std_fds[0] = 0;
 	info->std_fds[1] = 1;
@@ -509,7 +507,6 @@ Test(reset_redirections_unit, invalid_NULL_fd_list)
 {
 	int ret;
 	t_redir_info	*info = malloc(sizeof(t_redir_info) * 1);
-	info->std_fds = malloc(sizeof(int) * 3);
 	info->fd_list = NULL;
 	info->std_fds[0] = 0;
 	info->std_fds[1] = 1;
@@ -523,7 +520,6 @@ Test(reset_redirections_unit, invalid_NULL_std_fds)
 {
 	int ret;
 	t_redir_info	*info = malloc(sizeof(t_redir_info) * 1);
-	info->std_fds = NULL;
 	info->fd_list = malloc(sizeof(t_fd_list) * 1);
 	int	newfd = dup(1);
 	info->fd_list->fd = newfd;

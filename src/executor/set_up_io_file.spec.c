@@ -24,7 +24,7 @@ static void redirect_std_err()
 
 Test(set_up_io_file_unit, valid_append_file_once)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_append_file_once");
 	t_io_file		io_file = {redirect_append, filename};
 	int				ret;
@@ -33,7 +33,6 @@ Test(set_up_io_file_unit, valid_append_file_once)
 	int				real_fd;
 	char			buff[1024];
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -58,7 +57,7 @@ Test(set_up_io_file_unit, valid_append_file_once)
 
 Test(set_up_io_file_unit, valid_append_file_twice)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_append_file_twice");
 	t_io_file		io_file = {redirect_append, filename};
 	int				ret;
@@ -67,7 +66,6 @@ Test(set_up_io_file_unit, valid_append_file_twice)
 	int				real_fd;
 	char			buff[1024];
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -98,7 +96,7 @@ Test(set_up_io_file_unit, valid_append_file_twice)
 
 Test(set_up_io_file_unit, valid_overwrite_file_once)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_overwrite_file_once");
 	t_io_file		io_file = {redirect_out, filename};
 	int				ret;
@@ -107,7 +105,6 @@ Test(set_up_io_file_unit, valid_overwrite_file_once)
 	int				real_fd;
 	char			buff[1024];
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -132,7 +129,7 @@ Test(set_up_io_file_unit, valid_overwrite_file_once)
 
 Test(set_up_io_file_unit, valid_overwrite_file_twice)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_overwrite_file_twice");
 	t_io_file		io_file = {redirect_out, filename};
 	int				ret;
@@ -141,7 +138,6 @@ Test(set_up_io_file_unit, valid_overwrite_file_twice)
 	int				real_fd;
 	char			buff[1024];
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -176,7 +172,7 @@ Test(set_up_io_file_unit, valid_overwrite_file_twice)
 
 Test(set_up_io_file_unit, valid_write_to_fd)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
@@ -185,7 +181,6 @@ Test(set_up_io_file_unit, valid_write_to_fd)
 	int				left_fd = 424;
 	char			buff[1024];
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -207,7 +202,7 @@ Test(set_up_io_file_unit, valid_write_to_fd)
 
 Test(set_up_io_file_unit, valid_read_from_fd)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
@@ -216,7 +211,6 @@ Test(set_up_io_file_unit, valid_read_from_fd)
 	int				left_fd = 425;
 	char			buff[1024];
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -251,32 +245,15 @@ Test(set_up_io_file_unit, invalid_NULL_info)
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 }
 
-Test(set_up_io_file_unit, invalid_NULL_std_fds)
-{
-	t_redir_info	info = {NULL, NULL};
-	char			*filename = strdup("foo");
-	t_io_file		io_file;
-	int				ret;
-	int				exp_ret = -1;
-	int				left_fd = 427;
-
-	io_file.redirect_op = redirect_fd_in;
-	io_file.filename = filename;
-
-	ret = set_up_io_file(&info, left_fd, &io_file);
-	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
-}
-
 Test(set_up_io_file_unit, invalid_NULL_filename)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = NULL;
 	t_io_file		io_file;
 	int				ret;
 	int				exp_ret = -1;
 	int				left_fd = 428;
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -289,12 +266,11 @@ Test(set_up_io_file_unit, invalid_NULL_filename)
 
 Test(set_up_io_file_unit, invalid_NULL_io_file)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	int				ret;
 	int				exp_ret = -1;
 	int				left_fd = 429;
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -308,14 +284,13 @@ Test(set_up_io_file_unit, invalid_no_read_perm, .init = redirect_std_err)
 	if (getuid() == 0)
 		cr_skip_test("Cannot be tested as root!\n");
 
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_no_read_perm");
 	t_io_file		io_file;
 	int				ret;
 	int				exp_ret = -1;
 	int				left_fd = 430;
 	char			buff[1024];
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -333,14 +308,13 @@ Test(set_up_io_file_unit, invalid_no_read_perm, .init = redirect_std_err)
 
 Test(set_up_io_file_unit, invalid_no_file, .init = redirect_std_err)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_no_file");
 	t_io_file		io_file;
 	int				ret;
 	int				exp_ret = -1;
 	int				left_fd = 430;
 	char			buff[1024];
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -360,14 +334,13 @@ Test(set_up_io_file_unit, invalid_no_write_perm, .init = redirect_std_err)
 	if (getuid() == 0)
 		cr_skip_test("Cannot be tested as root!\n");
 
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_no_write_perm");
 	t_io_file		io_file;
 	int				ret;
 	int				exp_ret = -1;
 	int				left_fd = 432;
 	char			buff[1024];
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -385,7 +358,7 @@ Test(set_up_io_file_unit, invalid_no_write_perm, .init = redirect_std_err)
 
 Test(set_up_io_file_unit, valid_read_from_file)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_read_from_file");;
 	t_io_file		io_file;
 	int				ret;
@@ -394,7 +367,6 @@ Test(set_up_io_file_unit, valid_read_from_file)
 	int				real_fd;
 	char			buff[1024];
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -419,14 +391,13 @@ Test(set_up_io_file_unit, valid_read_from_file)
 
 Test(set_up_io_file_unit, valid_close_stdout)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("-");;
 	t_io_file		io_file;
 	int				ret;
 	int				left_fd = STDOUT_FILENO;
 	int				exp_ret = 0;
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -443,14 +414,13 @@ Test(set_up_io_file_unit, valid_close_stdout)
 
 Test(set_up_io_file_unit, valid_close_stderr)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("-");;
 	t_io_file		io_file;
 	int				ret;
 	int				left_fd = STDERR_FILENO;
 	int				exp_ret = 0;
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;
@@ -467,7 +437,7 @@ Test(set_up_io_file_unit, valid_close_stderr)
 
 Test(set_up_io_file_unit, valid_close_stdin)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 1, 2, NULL};
 	char			*filename = strdup("-");;
 	t_io_file		io_file;
 	int				ret;
@@ -475,7 +445,6 @@ Test(set_up_io_file_unit, valid_close_stdin)
 	int				exp_ret = 0;
 	char			buff[1024];
 
-	info.std_fds = (int *)malloc(sizeof(int) * 3);
 	info.std_fds[0] = 0;
 	info.std_fds[1] = 1;
 	info.std_fds[2] = 2;

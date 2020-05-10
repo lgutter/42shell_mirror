@@ -47,5 +47,7 @@ static const char	*g_error_str[error_count] = {
 	[too_few_arguments] = "Too few arguments given",
 	[invalid_option] = "invalid option",
 	[var_not_set] = "Variable not set",
+	[restore_fd_fail] = "Failed to restore fd",
+	[dup2_fd_fail] = "Failed to redirect fd",
 };
 #endif

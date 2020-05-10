@@ -12,42 +12,59 @@
 
 #include "executor.h"
 
+static int	parent_wait(int pipe_fds[2], t_pipe_sequence *pipe_seq,
+						pid_t child_pid, t_env *env)
+{
+	int		stat_loc;
+	int		ret;
+
+	ret = 0;
+	close(pipe_fds[1]);
+	if (dup2(pipe_fds[0], STDIN_FILENO) < 0)
+	{
+		handle_error_int(dup2_fd_fail, STDIN_FILENO);
+	}
+	else
+	{
+		exec_pipe_sequence(pipe_seq->next, env);
+		waitpid(child_pid, &stat_loc, 0);
+		if (ft_setstatus(env, WEXITSTATUS(stat_loc)) != 0)
+			ret = WEXITSTATUS(stat_loc);
+	}
+	close(pipe_fds[0]);
+	return (ret);
+}
+
 static int	execute_pipe(t_pipe_sequence *pipe_seq, t_env *env_list)
 {
 	int		pipe_fds[2];
 	pid_t	child_pid;
-	int		*stat_loc;
 
-	stat_loc = NULL;
 	if (pipe(pipe_fds) != 0)
 		return (handle_error(pipe_failure));
 	child_pid = fork();
 	if (child_pid == 0)
 	{
 		close(pipe_fds[0]);
-		dup2(pipe_fds[1], STDOUT_FILENO);
+		if (dup2(pipe_fds[1], STDOUT_FILENO) < 0)
+			exit(handle_error_int(dup2_fd_fail, STDOUT_FILENO));
 		exit(exec_simple_command(pipe_seq->simple_command, env_list));
 	}
 	else if (child_pid > 0)
 	{
-		close(pipe_fds[1]);
-		dup2(pipe_fds[0], STDIN_FILENO);
-		exec_pipe_sequence(pipe_seq->next, env_list);
-		waitpid(child_pid, stat_loc, 0);
-		close(pipe_fds[0]);
-		return (0);
+		return (parent_wait(pipe_fds, pipe_seq, child_pid, env_list));
 	}
 	return (handle_error_str(fork_failure, "while setting up pipe"));
 }
 
 int			exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_env *env_list)
 {
-	int		*old_fds;
+	int		old_fds[3];
 	int		ret;
 
 	if (pipe_seq == NULL || pipe_seq->simple_command == NULL)
 		return (parsing_error);
-	std_fd_backup(&old_fds);
+	std_fd_backup(old_fds);
 	if (pipe_seq->pipe == pipe_op)
 	{
 		ret = execute_pipe(pipe_seq, env_list);
@@ -55,11 +72,11 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_env *env_list)
 	else
 	{
 		ret = exec_simple_command(pipe_seq->simple_command, env_list);
-		std_fd_restore(&old_fds);
+		std_fd_restore(old_fds);
 		if (pipe_seq->next != NULL)
 			ret = handle_error_str(parsing_error,
 								"no pipe operator, but more pipe sequences");
 	}
-	std_fd_restore(&old_fds);
+	std_fd_restore(old_fds);
 	return (ret);
 }

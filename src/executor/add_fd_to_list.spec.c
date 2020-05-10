@@ -17,7 +17,7 @@
 
 Test(add_fd_to_list_unit, valid_add_first_element)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 0, 0, NULL};
 	int				fd = 42;
 	int				og_fd = -1;
 	int				ret;
@@ -25,7 +25,6 @@ Test(add_fd_to_list_unit, valid_add_first_element)
 
 	ret = add_fd_to_list(fd, og_fd, &info);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
-	cr_expect_null(info.std_fds);
 	cr_assert_not_null(info.fd_list);
 	cr_expect_eq(info.fd_list->fd, fd, "expect fd %i in list item, but got %i!", fd, info.fd_list->fd);
 	cr_expect_eq(info.fd_list->og_fd, og_fd, "expect og_fd %i in list item, but got %i!", og_fd, info.fd_list->og_fd);
@@ -34,7 +33,7 @@ Test(add_fd_to_list_unit, valid_add_first_element)
 
 Test(add_fd_to_list_unit, valid_add_first_two_elements)
 {
-	t_redir_info	info = {NULL, NULL};
+	t_redir_info	info = {0, 0, 0, NULL};
 	int				fd = 42;
 	int				og_fd = -1;
 	int				ret;
@@ -42,7 +41,6 @@ Test(add_fd_to_list_unit, valid_add_first_two_elements)
 
 	ret = add_fd_to_list(fd, og_fd, &info);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
-	cr_expect_null(info.std_fds);
 	cr_expect_not_null(info.fd_list);
 	cr_assert_not_null(info.fd_list);
 	cr_expect_eq(info.fd_list->fd, fd, "expect fd %i in list item, but got %i!", fd, info.fd_list->fd);
@@ -50,7 +48,6 @@ Test(add_fd_to_list_unit, valid_add_first_two_elements)
 	cr_expect_null(info.fd_list->next, "was only expecting 1 list element, but next is not null!");
 	ret = add_fd_to_list(fd, og_fd, &info);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
-	cr_expect_null(info.std_fds);
 	cr_assert_not_null(info.fd_list);
 	cr_assert_not_null(info.fd_list->next, "was expecting another list element, but next is null!");
 	info.fd_list = info.fd_list->next;

@@ -55,6 +55,8 @@ typedef enum		e_error
 	too_few_arguments,
 	invalid_option,
 	var_not_set,
+	restore_fd_fail,
+	dup2_fd_fail,
 	error_count,
 }					t_error;
 

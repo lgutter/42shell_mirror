@@ -65,7 +65,7 @@ typedef	struct	s_fd_list
 */
 typedef struct	s_redir_info
 {
-	int					*std_fds;
+	int					std_fds[3];
 	struct s_fd_list	*fd_list;
 
 }				t_redir_info;

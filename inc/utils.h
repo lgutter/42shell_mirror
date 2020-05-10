@@ -121,7 +121,7 @@ int			get_here_doc(t_io_here *io_here, t_shell *shell);
 **		index 1: stdout
 **		index 2: stderr
 */
-void		std_fd_backup(int **old_fds);
+void		std_fd_backup(int old[3]);
 
 /*
 **	restores the standard file descriptors for stdin, stdout and stderr,
@@ -130,7 +130,7 @@ void		std_fd_backup(int **old_fds);
 **		index 1: stdout
 **		index 2: stderr
 */
-void		std_fd_restore(int **old_fds);
+void		std_fd_restore(int old[3]);
 
 /*
 **	determines if the given command name is a builtin or not.

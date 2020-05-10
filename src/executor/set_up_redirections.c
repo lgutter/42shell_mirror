@@ -41,14 +41,13 @@ static int		set_left_fd(t_redir_info *redir_info, int *left_fd,
 static int		set_up_io_here(t_redir_info *redir_info, int left_fd,
 								t_io_redirect *redirect)
 {
-	int		*pipe_fds;
+	int		pipe_fds[2];
 
 	if (redirect->io_here->here_doc == NULL)
 	{
 		return (d_handle_error_str(redir_info->std_fds[2], parsing_error,
 									"NULL heredoc"));
 	}
-	pipe_fds = (int *)ft_memalloc(sizeof(int) * 2);
 	if (pipe(pipe_fds) != 0)
 	{
 		return (d_handle_error_str(redir_info->std_fds[2], pipe_failure,
@@ -57,7 +56,11 @@ static int		set_up_io_here(t_redir_info *redir_info, int left_fd,
 	if (add_fd_to_list(pipe_fds[0], -1, redir_info) != 0)
 		return (-1);
 	ft_dprintf(pipe_fds[1], "%s", redirect->io_here->here_doc);
-	dup2(pipe_fds[0], left_fd);
+	if (dup2(pipe_fds[0], left_fd) < 0)
+	{
+		d_handle_error_int(redir_info->std_fds[2], bad_fd_error, left_fd);
+		return (-1);
+	}
 	close(pipe_fds[1]);
 	return (0);
 }
@@ -72,7 +75,7 @@ t_redir_info	*set_up_redirections(t_io_redirect *redirect)
 	redir_info = (t_redir_info *)ft_memalloc(sizeof(t_redir_info) * 1);
 	if (redir_info == NULL)
 		return (handle_error_p(malloc_error, NULL));
-	std_fd_backup(&(redir_info->std_fds));
+	std_fd_backup(redir_info->std_fds);
 	while (ret == 0 && redirect != NULL)
 	{
 		if (set_left_fd(redir_info, &left_fd, redirect) != 0)
@@ -97,13 +100,15 @@ int				reset_redirections(t_redir_info **redir_info)
 
 	if (redir_info == NULL || (*redir_info) == NULL)
 		return (-1);
-	std_fd_restore(&((*redir_info)->std_fds));
+	std_fd_restore((*redir_info)->std_fds);
 	current = (*redir_info)->fd_list;
 	while (current != NULL)
 	{
 		temp = current;
 		if (current->og_fd >= 0 && current->fd >= 0)
-			dup2(current->fd, current->og_fd);
+			if (dup2(current->fd, current->og_fd) < 0)
+				d_handle_error_int((*redir_info)->std_fds[2],
+									restore_fd_fail, current->og_fd);
 		if (current->fd < 0 && current->og_fd >= 0)
 			close(current->og_fd);
 		close(current->fd);

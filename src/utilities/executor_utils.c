@@ -13,40 +13,41 @@
 #include "utils.h"
 #include "builtins.h"
 
-void	std_fd_backup(int **old_fds)
+void	std_fd_backup(int old[3])
 {
-	if (old_fds != NULL)
+	if (old != NULL)
 	{
-		*old_fds = (int *)ft_memalloc(sizeof(int) * 3);
-		if (*old_fds != NULL)
+		if (old != NULL)
 		{
-			(*old_fds)[0] = dup(STDIN_FILENO);
-			(*old_fds)[1] = dup(STDOUT_FILENO);
-			(*old_fds)[2] = dup(STDERR_FILENO);
+			(old)[0] = dup(STDIN_FILENO);
+			(old)[1] = dup(STDOUT_FILENO);
+			(old)[2] = dup(STDERR_FILENO);
 		}
 	}
 }
 
-void	std_fd_restore(int **old_fds)
+void	std_fd_restore(int old[3])
 {
-	if (old_fds != NULL && *old_fds != NULL)
+	if (old != NULL && old != NULL)
 	{
-		if ((*old_fds)[0] != -1)
+		if ((old)[0] != -1)
 		{
-			dup2((*old_fds)[0], STDIN_FILENO);
-			close((*old_fds)[0]);
+			if (dup2((old)[0], STDIN_FILENO) < 0)
+				d_handle_error_int((old)[2], restore_fd_fail, STDIN_FILENO);
+			close((old)[0]);
 		}
-		if ((*old_fds)[1] != -1)
+		if ((old)[1] != -1)
 		{
-			dup2((*old_fds)[1], STDOUT_FILENO);
-			close((*old_fds)[1]);
+			if (dup2((old)[1], STDOUT_FILENO) < 0)
+				d_handle_error_int((old)[2], restore_fd_fail, STDOUT_FILENO);
+			close((old)[1]);
 		}
-		if ((*old_fds)[2] != -1)
+		if ((old)[2] != -1)
 		{
-			dup2((*old_fds)[2], STDERR_FILENO);
-			close((*old_fds)[2]);
+			if (dup2((old)[2], STDERR_FILENO) < 0)
+				d_handle_error_int((old)[2], restore_fd_fail, STDERR_FILENO);
+			close((old)[2]);
 		}
-		free(*old_fds);
-		*old_fds = 0;
+		old = 0;
 	}
 }
