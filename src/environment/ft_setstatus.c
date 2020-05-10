@@ -14,10 +14,14 @@
 
 int		ft_setstatus(t_env *env, t_error error_code)
 {
-	char *new;
+	char	*new;
+	int		ret;
 
+	ret = 0;
 	new = ft_itoa(error_code);
 	if (new == NULL)
 		return (malloc_error);
-	return (ft_setenv(env, "STATUS", new, (SHELL_VAR | FORCE_VAR | RO_VAR)));
+	ret = ft_setenv(env, "STATUS", new, (SHELL_VAR | FORCE_VAR | RO_VAR));
+	free(new);
+	return (ret);
 }
