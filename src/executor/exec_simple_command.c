@@ -78,29 +78,38 @@ static void	free_command(t_command *command)
 	command->path = NULL;
 }
 
-int			exec_simple_command(t_simple_cmd *simple_cmd, t_env *env_list)
+static int	init_cmd(t_command *command, t_simple_cmd *simple_cmd, t_env *env)
+{
+	ft_bzero(command, sizeof(command));
+	command->argc = str_arr_len(simple_cmd->argv);
+	command->argv = simple_cmd->argv;
+	command->envp = convert_env_to_envp(env);
+	if (command->envp == NULL)
+		return (malloc_error);
+	return (find_executable(env, command, command->argv[0]));
+}
+
+int			exec_simple_command(t_simple_cmd *simple_cmd, t_env *env)
 {
 	t_command		command;
 	int				ret;
 	t_redir_info	*redir_info;
 
-	if (simple_cmd == NULL || simple_cmd->argv == NULL || env_list == NULL)
+	if (simple_cmd == NULL || simple_cmd->argv == NULL || env == NULL)
 		return (parsing_error);
-	command.argc = str_arr_len(simple_cmd->argv);
-	command.argv = simple_cmd->argv;
-	ret = find_executable(env_list, &command, command.argv[0]);
+	ret = init_cmd(&command, simple_cmd, env);
 	if (ret != 0)
 		return (ret);
-	command.envp = convert_env_to_envp(env_list);
-	if (command.envp == NULL || command.path == NULL)
-		ret = handle_error(malloc_error);
 	else
 	{
 		redir_info = set_up_redirections(simple_cmd->redirects);
-		if (command.path[0] != '\0')
-			ret = execute_command(env_list, &command);
-		else
-			ret = execute_builtin(&command, env_list);
+		if (redir_info != NULL)
+		{
+			if (command.path[0] != '\0')
+				ret = execute_command(env, &command);
+			else
+				ret = execute_builtin(&command, env);
+		}
 	}
 	reset_redirections(&redir_info);
 	free_command(&command);
