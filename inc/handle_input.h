@@ -18,7 +18,7 @@
 # include "utils.h"
 # include "input_control.h"
 # include "cetushell.h"
-#include "executor.h"
+# include "executor.h"
 
 /*
 **	takes the shell struct and a pointer to the input buffer, and runs it
@@ -26,10 +26,11 @@
 **	arguments:
 **	shell:	a pointer to the shell struct. (needed for quote completion)
 **	buffer: a pointer to the input string.
+**	env:	the first element in the environment list.
 **	returns:
 **	o on succes.
 **	-1 on failure.
 */
-int		handle_input(t_shell *shell, char **buffer);
+int		handle_input(t_shell *shell, char **buffer, t_env *env);
 
 #endif

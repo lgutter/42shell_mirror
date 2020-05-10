@@ -410,6 +410,7 @@ Test(word_processing_unit, valid_argument_redir_expansion_with_quotes)
 
 	env_list->key = "foo";
 	env_list->value = "bar";
+	env_list->type = ENV_VAR;
 	env_list->next = NULL;
 	token_start = token1;
 	command = parse_complete_command(&token1);
@@ -497,6 +498,7 @@ Test(word_processing_unit, invalid_NULL_shell_unterminated_quote)
 
 	env_list->key = "foo";
 	env_list->value = "bar";
+	env_list->type = ENV_VAR;
 	env_list->next = NULL;
 	token_start = token1;
 	command = parse_complete_command(&token1);
@@ -560,6 +562,7 @@ Test(word_processing_unit, invalid_NULL_command, .init = redirect_std_err)
 
 	env_list->key = "foo";
 	env_list->value = "bar";
+	env_list->type = ENV_VAR;
 	env_list->next = NULL;
 	ret = word_processing(NULL, env_list, NULL);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
@@ -614,7 +617,7 @@ Test(word_processing_unit, invalid_empty_redirect, .init = redirect_std_err)
 	t_simple_cmd	simple_cmd = {&redirect, &argument, NULL};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, no_pipe, NULL};
 	t_complete_cmd  compl_cmd = {&pipe_seq, no_seperator_op, NULL};
-	t_env			env = {strdup("foo"), strdup("bar"), NULL};
+	t_env			env = {strdup("foo"), strdup("bar"), ENV_VAR, NULL};
 
 	int ret = word_processing(NULL, &env, &compl_cmd);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
@@ -630,7 +633,7 @@ Test(word_processing_unit, invalid_incomplete_pipe, .init = redirect_std_err)
 	t_simple_cmd	simple_cmd = {NULL, NULL, NULL};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, pipe_op, NULL};
 	t_complete_cmd  compl_cmd = {&pipe_seq, no_seperator_op, NULL};
-	t_env			env = {strdup("foo"), strdup("bar"), NULL};
+	t_env			env = {strdup("foo"), strdup("bar"), ENV_VAR, NULL};
 
 	int ret = word_processing(NULL, &env, &compl_cmd);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);

@@ -28,7 +28,7 @@ Test(process_redirects_unit, valid_std_out_to_file_expand)
 	char			*exp_str = "bar";
 	t_io_file		io_file = {redirect_out, strdup("$foo")};
 	t_io_redirect	redirect = {"1", -1, &io_file, NULL, NULL};
-	t_env			env = {strdup("foo"), strdup(exp_str), NULL};
+	t_env			env = {strdup("foo"), strdup(exp_str), ENV_VAR, NULL};
 
 	int ret = process_redirects(NULL, &env, &redirect);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
@@ -44,7 +44,7 @@ Test(process_redirects_unit, valid_std_err_to_file_quotes)
 	char			*exp_str = "$foo";
 	t_io_file		io_file = {redirect_out, strdup("\'$foo\'")};
 	t_io_redirect	redirect = {"2", -1, &io_file, NULL, NULL};
-	t_env			env = {strdup("foo"), strdup("bar"), NULL};
+	t_env			env = {strdup("foo"), strdup("bar"), ENV_VAR, NULL};
 
 	int ret = process_redirects(NULL, &env, &redirect);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
@@ -60,7 +60,7 @@ Test(process_redirects_unit, valid_std_err_to_fd_number)
 	char			*exp_str = "42";
 	t_io_file		io_file = {redirect_out, strdup("42")};
 	t_io_redirect	redirect = {"2", -1, &io_file, NULL, NULL};
-	t_env			env = {strdup("foo"), strdup("bar"), NULL};
+	t_env			env = {strdup("foo"), strdup("bar"), ENV_VAR, NULL};
 
 	int ret = process_redirects(NULL, &env, &redirect);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
@@ -76,7 +76,7 @@ Test(process_redirects_unit, valid_std_in_to_fd_number_expand)
 	char			*exp_str = "42";
 	t_io_file		io_file = {redirect_fd_in, strdup("$foo")};
 	t_io_redirect	redirect = {"0", -1, &io_file, NULL, NULL};
-	t_env			env = {strdup("foo"), strdup("42"), NULL};
+	t_env			env = {strdup("foo"), strdup("42"), ENV_VAR, NULL};
 
 	int ret = process_redirects(NULL, &env, &redirect);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
@@ -91,7 +91,7 @@ Test(process_redirects_unit, invalid_std_err_to_fd_string, .init = redirect_std_
 	int				exp_fd = 2;
 	t_io_file		io_file = {redirect_fd_out, strdup("foo")};
 	t_io_redirect	redirect = {"2", -1, &io_file, NULL, NULL};
-	t_env			env = {strdup("foo"), strdup("bar"), NULL};
+	t_env			env = {strdup("foo"), strdup("bar"), ENV_VAR, NULL};
 
 	int ret = process_redirects(NULL, &env, &redirect);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
@@ -107,7 +107,7 @@ Test(process_redirects_unit, invalid_empty_redirect, .init = redirect_std_err)
 {
 	int				exp_ret = parsing_error;
 	t_io_redirect	redirect = {NULL, -1, NULL, NULL, NULL};
-	t_env			env = {strdup("foo"), strdup("bar"), NULL};
+	t_env			env = {strdup("foo"), strdup("bar"), ENV_VAR, NULL};
 
 	int ret = process_redirects(NULL, &env, &redirect);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);

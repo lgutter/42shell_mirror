@@ -66,6 +66,7 @@ src_files = files([
   'src/environment/expand_variable.c',
   'src/environment/ft_getenv.c',
   'src/environment/ft_setenv.c',
+  'src/environment/ft_setstatus.c',
   'src/environment/ft_unsetenv.c',
   'src/environment/free_env_list.c',
   'src/handle_input.c',
@@ -81,6 +82,12 @@ src_files = files([
   'src/executor/set_up_io_file.c',
   'src/executor/add_fd_to_list.c',
   'temp/temp_print_token_parse.c',
+  'src/builtins/builtin_cd.c',
+  'src/builtins/builtins_1.c',
+  'src/builtins/builtin_exit.c',
+  'src/builtins/builtin_env.c',
+  'src/builtins/builtin_set.c',
+  'src/builtins/builtin_unset.c',
 ])
 
 main_file = files('src/main.c')
@@ -129,6 +136,12 @@ if libcriterion_deb.found()
     'src/executor/exec_complete_command.spec.c',
     'src/executor/exec_pipe_sequence.spec.c',
     'src/executor/exec_simple_command.spec.c',
+    'src/builtins/builtin_cd.spec.c',
+    'src/builtins/builtins_1.spec.c',
+    'src/builtins/builtin_env.spec.c',
+    'src/builtins/builtin_exit.spec.c',
+    'src/builtins/builtin_set.spec.c',
+    'src/builtins/builtin_unset.spec.c',
   ])
 
   tester = executable('test-cetushell',

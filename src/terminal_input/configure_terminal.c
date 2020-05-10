@@ -6,7 +6,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/04/06 17:03:13 by dkroeke       ########   odam.nl         */
+/*   Updated: 2020/05/09 23:42:02 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void		send_terminal(char *command)
 void		configure_terminal(t_shell *shell, int activator)
 {
 	static struct termios	orig;
+	struct termios			shell_temp;
 	char					*temp;
 
 	if (activator > 0)
@@ -36,12 +37,14 @@ void		configure_terminal(t_shell *shell, int activator)
 		tgetent(NULL, temp);
 		if (activator == 1)
 			tcgetattr(STDIN_FILENO, &orig);
-		shell->term = orig;
-		shell->term.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);
-		shell->term.c_iflag &= ~(IXON);
-		shell->term.c_cc[VMIN] = 0;
-		shell->term.c_cc[VTIME] = 1;
-		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell->term);
+		shell_temp = orig;
+		shell_temp.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);
+		shell_temp.c_iflag &= ~(IXON);
+		shell_temp.c_cc[VMIN] = 0;
+		shell_temp.c_cc[VTIME] = 1;
+		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell_temp);
+		if (shell != NULL)
+			shell->term = shell_temp;
 	}
 	if (activator == 0)
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig);

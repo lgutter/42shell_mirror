@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/10 17:35:25 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/02/10 16:45:21 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/08 00:47:14 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,11 @@ static const char	*g_error_str[error_count] = {
 	[bad_fd_error] = "Bad file descriptor",
 	[is_dir_error] = "Is a directory",
 	[ambig_redirect] = "Ambiguous redirect",
+	[error_ronly] = "Variable is read-only",
+	[error_inv_format] = "Invalid format",
+	[too_many_arguments] = "Too many arguments given",
+	[too_few_arguments] = "Too few arguments given",
+	[invalid_option] = "invalid option",
+	[var_not_set] = "Variable not set",
 };
 #endif

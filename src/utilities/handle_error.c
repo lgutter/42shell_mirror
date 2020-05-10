@@ -6,11 +6,12 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/15 10:43:04 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/15 10:43:04 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/07 22:22:43 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "handle_error.h"
+#include "error_str.h"
 
 int		handle_error(int error_code)
 {
@@ -25,6 +26,21 @@ int		handle_error_str(int error_code, const char *str)
 int		handle_error_int(int error_code, int number)
 {
 	return (d_handle_error_int(STDERR_FILENO, error_code, number));
+}
+
+int		handle_prefix_error(int error_code, char *prefix)
+{
+	g_error_internal = error_code;
+	ft_dprintf(STDERR_FILENO, "%s: %s\n", prefix, g_error_str[error_code]);
+	return (error_code);
+}
+
+int		handle_prefix_error_str(int error_code, char *prefix, char *str)
+{
+	g_error_internal = error_code;
+	ft_dprintf(STDERR_FILENO, "%s: %s: %s\n", prefix, str,
+		g_error_str[error_code]);
+	return (error_code);
 }
 
 void	*handle_error_str_p(int error_code, const char *str, void *pointer)

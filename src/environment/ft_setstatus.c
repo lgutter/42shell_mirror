@@ -1,29 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   builtins_list.h                                    :+:    :+:            */
+/*   ft_setstatus.c                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/04/29 16:23:25 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/29 16:23:25 by lgutter       ########   odam.nl         */
+/*   Created: 2020/05/08 19:14:17 by lgutter       #+#    #+#                 */
+/*   Updated: 2020/05/08 19:14:17 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_LIST_H
-# define BUILTINS_LIST_H
+#include "environment.h"
 
-static const char	*g_builtins[] =
+int		ft_setstatus(t_env *env, t_error error_code)
 {
-	"echo",
-	"cd",
-	"setenv",
-	"unsetenv",
-	"env",
-	"exit",
-	"setshell",
-	"unsetshell",
-	NULL
-};
+	char *new;
 
-#endif
+	new = ft_itoa(error_code);
+	if (new == NULL)
+		return (malloc_error);
+	return (ft_setenv(env, "STATUS", new, (SHELL_VAR | FORCE_VAR | RO_VAR)));
+}

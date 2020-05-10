@@ -18,11 +18,13 @@ int			cetushell(void)
 {
 	t_shell		*shell;
 	char		*input;
+	t_env		*env;
 
+	env = dup_sys_env();
 	shell = ft_memalloc(sizeof(t_shell));
 	shell->buffer = ft_memalloc(sizeof(t_buff));
 	shell->hist = (t_history *)ft_memalloc(sizeof(t_history));
-	if (shell == NULL || shell->buffer == NULL)
+	if (shell == NULL || shell->buffer == NULL || env == NULL)
 		return (handle_error(malloc_error));
 	configure_terminal(shell, 1);
 	initialize_history(shell->hist);
@@ -30,12 +32,14 @@ int			cetushell(void)
 	{
 		input = prompt_shell(shell, PROMPT_NORMAL);
 		if (input == NULL)
-			return (free_shell(shell, 1));
-		handle_input(shell, &input);
+			break ;
+		handle_input(shell, &input, env);
 		add_remove_update_history(shell->hist, input);
 		free(input);
 		input = NULL;
 	}
+	free_shell(shell, 1);
+	free_env_list(env);
 	return (0);
 }
 

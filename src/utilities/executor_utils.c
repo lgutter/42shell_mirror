@@ -11,21 +11,7 @@
 /* ************************************************************************** */
 
 #include "utils.h"
-#include "builtins_list.h"
-
-int		is_builtin(char *exec_name)
-{
-	size_t				i;
-
-	i = 0;
-	while (g_builtins[i] != NULL)
-	{
-		if (ft_strcmp(g_builtins[i], exec_name) == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
+#include "builtins.h"
 
 void	std_fd_backup(int **old_fds)
 {
