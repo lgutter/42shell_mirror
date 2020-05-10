@@ -63,8 +63,7 @@ int				set_up_io_file(t_redir_info *redir_info, int left_fd,
 {
 	int fd;
 
-	if (redir_info == NULL || redir_info->std_fds == NULL ||
-		io_file == NULL || io_file->filename == NULL)
+	if (redir_info == NULL || io_file == NULL || io_file->filename == NULL)
 		return (-1);
 	if (io_file->filename[0] == '-' && io_file->filename[1] == '\0')
 		return (close(left_fd));
