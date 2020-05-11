@@ -56,3 +56,15 @@ ubuntu-build:
     when: always
     paths:
       - build/cetushell
+
+debian-build:
+  stage: build
+  image: lgutter/codam_debian_build
+  before_script:
+    - meson build
+  script:
+    - ninja -C build
+  artifacts:
+    when: always
+    paths:
+      - build/cetushell
