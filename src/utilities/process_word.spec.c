@@ -52,6 +52,7 @@ Test(process_word_unit, valid_environment_expansion_quotes)
 
 	env_list->key = strdup("FOO");
 	env_list->value = strdup("hel\\lo");
+	env_list->type = ENV_VAR;
 	env_list->next = NULL;
 	ret = process_word(NULL, env_list, &input, 'y');
 	cr_expect_eq(ret, expected_ret, "expected return %i but got %i!\n", ret, expected_ret);
@@ -69,6 +70,7 @@ Test(process_word_unit, valid_environment_expansion)
 
 	env_list->key = strdup("FOO");
 	env_list->value = strdup("hel\\lo");
+	env_list->type = ENV_VAR;
 	env_list->next = NULL;
 	ret = process_word(NULL, env_list, &input, 'y');
 	cr_expect_eq(ret, expected_ret, "expected return %i but got %i!\n", ret, expected_ret);
@@ -86,6 +88,7 @@ Test(process_word_unit, valid_environment_expansion_not_allowed)
 
 	env_list->key = strdup("FOO");
 	env_list->value = strdup("hel\\lo");
+	env_list->type = ENV_VAR;
 	env_list->next = NULL;
 	ret = process_word(NULL, env_list, &input, 'n');
 	cr_expect_eq(ret, expected_ret, "expected return %i but got %i!\n", ret, expected_ret);

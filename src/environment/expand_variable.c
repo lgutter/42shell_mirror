@@ -50,7 +50,7 @@ static int		expand_dollar(t_env *env_list, char **string, char **start)
 	key = ft_strndup((*start) + 1, len);
 	if (ret == NULL || key == NULL || len == 0)
 		return (abort_dollar(key, ret, start, len));
-	value = ft_getenv_quote(env_list, key);
+	value = ft_getenv_quote(env_list, key, VAR_TYPE);
 	free(key);
 	str_expand_triple(&ret, value, (*start) + len + 1);
 	if (ret == NULL)
@@ -76,7 +76,7 @@ static int		expand_home(t_env *env_list, char **string)
 	temp = *string;
 	if (temp[0] == '~' && (temp[1] == '\0' || temp[1] == '/'))
 	{
-		value = ft_getenv_quote(env_list, "HOME");
+		value = ft_getenv_quote(env_list, "HOME", VAR_TYPE);
 		if (value != NULL)
 		{
 			temp = ft_strjoin(value, (temp + 1));

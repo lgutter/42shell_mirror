@@ -6,7 +6,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/10 17:35:25 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/02/10 16:45:21 by dkroeke       ########   odam.nl         */
+/*   Updated: 2020/05/10 00:40:34 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void		configure_terminal(t_shell *shell, int activator);
 */
 int			read_input(t_shell *shell);
 
-void	free_buffer_buffs(t_shell *shell, size_t with_copy);
+void		free_buffer_buffs(t_shell *shell, size_t with_copy);
 
 /*
 ** insert_char requires a pointer to the struct t_buff defined in cetushell.h
@@ -160,7 +160,7 @@ void		remove_char(t_buff *buffer);
 
 size_t		scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor);
 
-void	remove_buff(t_buff *buffer, t_cursor *cursor);
+void		remove_buff(t_buff *buffer, t_cursor *cursor);
 
 /*
 ** the tab_key requires as input a pointer to a t_buff and t_cursor struct and

@@ -6,12 +6,19 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/14 16:29:21 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/14 16:29:21 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/10 00:46:25 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ENVIRONMENT_H
 # define ENVIRONMENT_H
+
+# define ENV_VAR	1
+# define SHELL_VAR	2
+# define RO_VAR		4
+# define FORCE_VAR	8
+# define MASK_VAR	7
+# define VAR_TYPE	3
 
 # include "handle_error.h"
 # include "utils.h"
@@ -27,6 +34,7 @@ typedef struct		s_env
 {
 	char			*key;
 	char			*value;
+	int				type;
 	struct s_env	*next;
 }					t_env;
 
@@ -44,7 +52,7 @@ t_env				*dup_sys_env(void);
 **	when an error occurs, returns NULL.
 **	(on failure, error will be printed)
 */
-char				*ft_getenv(t_env *env, const char *key);
+char				*ft_getenv(t_env *env, const char *key, int opts);
 
 /*
 **	takes the env and a key as argument and returns a freshy allocated copy
@@ -54,7 +62,7 @@ char				*ft_getenv(t_env *env, const char *key);
 **	when an error occurs, returns NULL.
 **	(on failure, error will be printed)
 */
-char				*ft_getenv_quote(t_env *env, const char *key);
+char				*ft_getenv_quote(t_env *env, const char *key, int opts);
 
 /*
 **	Takes env, a key, value, and either 'y' or 'n' as arguments.
@@ -64,8 +72,18 @@ char				*ft_getenv_quote(t_env *env, const char *key);
 **	0 on succes, an errid error code on failure.
 **	(on failure, error will be printed)
 */
-int					ft_setenv(t_env *env, const char *key,
-									const char *value, char overwrite);
+int					ft_setenv(t_env *env, const char *key, const char *value,
+																	int opts);
+
+/*
+**	Takes env and an error code as arguments.
+**	the error code will be converted to a string, after which
+**	the shell variable STATUS will be set to the value of the error code.
+**	Returns the following:
+**	0 on succes, an errid error code on failure.
+**	(on failure, error will be printed)
+*/
+int					ft_setstatus(t_env *env, t_error error_code);
 
 /*
 **	takes env and a key as argument and removes it from our environment.
@@ -73,7 +91,7 @@ int					ft_setenv(t_env *env, const char *key,
 **	0 on succes, an errid error code on failure.
 **	(on failure, error will be printed)
 */
-int					ft_unsetenv(t_env *env, const char *key);
+int					ft_unsetenv(t_env *env, const char *key, int type);
 
 /*
 **	converts our linked list of type t_env to the the system style char **envp.

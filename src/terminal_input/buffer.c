@@ -6,14 +6,14 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/04/06 17:03:13 by dkroeke       ########   odam.nl         */
+/*   Updated: 2020/05/07 23:07:49 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cetushell.h"
 #include "input_control.h"
 
-static size_t		buff_realloc(t_buff *buffer)
+static size_t	buff_realloc(t_buff *buffer)
 {
 	char	*temp;
 
@@ -28,38 +28,37 @@ static size_t		buff_realloc(t_buff *buffer)
 	temp = NULL;
 	return (0);
 }
-int			insert_char(t_buff *buffer, char c)
+
+int				insert_char(t_buff *buffer, char c)
 {
 	size_t			temp;
 
 	temp = 0;
-	if (buffer != NULL && buffer->buff != NULL && c != '\0')
+	if (buffer == NULL || buffer->buff == NULL || c == '\0')
+		return (1);
+	if (buffer->buff_len != 0)
+		temp = buffer->buff_len - 1;
+	if (buffer->buff_len == buffer->buff_size)
+		if (buff_realloc(buffer) == 1)
+			return (1);
+	if (ft_isprint(buffer->buff[buffer->index]))
 	{
-		if (buffer->buff_len != 0)
-			temp = buffer->buff_len - 1;
-		if (buffer->buff_len == buffer->buff_size)
-			if (buff_realloc(buffer) == 1)
-				return (1);
-		if (ft_isprint(buffer->buff[buffer->index]))
+		while (temp > buffer->index)
 		{
-			while (temp > buffer->index)
-			{
-				buffer->buff[temp + 1] = buffer->buff[temp];
-				temp--;
-			}
 			buffer->buff[temp + 1] = buffer->buff[temp];
-			buffer->buff[temp] = c;
+			temp--;
 		}
-		else
-			buffer->buff[buffer->buff_len] = c;
-		buffer->index++;
-		buffer->buff_len++;
-		return (0);
+		buffer->buff[temp + 1] = buffer->buff[temp];
+		buffer->buff[temp] = c;
 	}
-	return (1);
+	else
+		buffer->buff[buffer->buff_len] = c;
+	buffer->index++;
+	buffer->buff_len++;
+	return (0);
 }
 
-void		remove_char(t_buff *buffer)
+void			remove_char(t_buff *buffer)
 {
 	size_t		curs;
 
@@ -84,7 +83,7 @@ void		remove_char(t_buff *buffer)
 	}
 }
 
-void		remove_word(t_buff *buffer, t_cursor *cursor)
+void			remove_word(t_buff *buffer, t_cursor *cursor)
 {
 	size_t	i;
 

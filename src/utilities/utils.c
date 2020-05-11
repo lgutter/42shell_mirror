@@ -75,10 +75,24 @@ int		get_here_doc(t_io_here *io_here, t_shell *shell)
 		temp = prompt_shell(shell, PROMPT_HEREDOC);
 		if (temp != NULL && ft_strcmp(temp, io_here->here_end) == 0)
 			break ;
-		str_expand_triple(&here_doc, "\n", temp);
+		str_expand_triple(&here_doc, temp, "\n");
 		if (here_doc == NULL)
 			return (handle_error(malloc_error));
 	}
 	io_here->here_doc = here_doc;
 	return (0);
+}
+
+size_t	str_arr_len(char **str_array)
+{
+	size_t index;
+
+	index = 0;
+	if (str_array == NULL)
+		return (0);
+	while (str_array[index] != NULL)
+	{
+		index++;
+	}
+	return (index);
 }

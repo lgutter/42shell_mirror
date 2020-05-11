@@ -19,6 +19,8 @@ t_simple_cmd	*free_simple_command(t_simple_cmd *simple_command)
 	{
 		simple_command->redirects = free_io_redirect(simple_command->redirects);
 		simple_command->arguments = free_arguments(simple_command->arguments);
+		free_dchar_arr(simple_command->argv);
+		simple_command->argv = NULL;
 		free(simple_command);
 	}
 	return (NULL);

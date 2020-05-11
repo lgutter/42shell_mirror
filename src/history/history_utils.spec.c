@@ -19,6 +19,7 @@
 #include "history.h"
 #include "input_control.h"
 #include "handle_error.h"
+#include "error_str.h"
 
 static t_hist_list	*init_list_item(char *buff, size_t index, t_hist_list *next)
 {
@@ -300,53 +301,49 @@ Test(initialize_hist, single_element)
 
 Test(initialize_hist, no_read_acc)
 {
+	if (getuid() == 0)
+		cr_skip_test("Cannot be tested as root!\n");
+
 	t_history	*hist;
 	int			ret;
+	char		buff[1024];
 
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	if (getenv("HIST_PERM_TEST") == NULL)
-	{
-		hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_read_acc");
-		cr_expect_not_null(hist->hist_path, "MALLOC failed");
-		remove(hist->hist_path);
-		print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
-		chmod(hist->hist_path, 0222);
-		cr_redirect_stderr();
-		ret = initialize_history(hist);
-		fflush(stderr);
-		cr_expect_stderr_eq_str("No read access for histfile\n");
-		cr_expect_eq(ret, no_read_permission_hist, "expected ret %i, got %i!", no_read_permission_hist, ret);
-		remove(hist->hist_path);
-	}
-	else
-	{
-		cr_assert_eq(1, 1);
-	}
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_read_acc");
+	cr_expect_not_null(hist->hist_path, "MALLOC failed");
+	remove(hist->hist_path);
+	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
+	chmod(hist->hist_path, 0222);
+	cr_redirect_stderr();
+	ret = initialize_history(hist);
+	fflush(stderr);
+	sprintf(buff, "%s\n", g_error_str[no_read_permission_hist]);
+	cr_expect_stderr_eq_str(buff);
+	cr_expect_eq(ret, no_read_permission_hist, "expected ret %i, got %i!", no_read_permission_hist, ret);
+	remove(hist->hist_path);
 }
 
 Test(initialize_hist, no_write_acc)
 {
+	if (getuid() == 0)
+		cr_skip_test("Cannot be tested as root!\n");
+
 	t_history	*hist;
 	int			ret;
+	char		buff[1024];
 
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	if (getenv("HIST_PERM_TEST") == NULL)
-	{
-		cr_redirect_stderr();
-		hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_write_acc");
-		cr_expect_not_null(hist->hist_path, "MALLOC failed");
-		remove(hist->hist_path);
-		print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
-		chmod(hist->hist_path, 0444);
-		ret = initialize_history(hist);
-		fflush(stderr);
-		cr_expect_stderr_eq_str("No write access for histfile\n");
-		cr_expect_eq(ret, no_write_permission_hist, "expected ret %i, got %i!", no_write_permission_hist, ret);
-	}
-	else
-	{
-		cr_expect_eq(1, 1);
-	}
+	cr_redirect_stderr();
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_write_acc");
+	cr_expect_not_null(hist->hist_path, "MALLOC failed");
+	remove(hist->hist_path);
+	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
+	chmod(hist->hist_path, 0444);
+	ret = initialize_history(hist);
+	fflush(stderr);
+	sprintf(buff, "%s\n", g_error_str[no_write_permission_hist]);
+	cr_expect_stderr_eq_str(buff);
+	cr_expect_eq(ret, no_write_permission_hist, "expected ret %i, got %i!", no_write_permission_hist, ret);
 }
 
 Test(scroll_hist, invalid_NULL_hist)

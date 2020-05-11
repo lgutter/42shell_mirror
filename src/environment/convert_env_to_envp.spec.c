@@ -99,7 +99,7 @@ Test(unit_ft_convert_env_to_envp, mandatory_error_convert_NULL_list, .init = red
 	t_env *env = NULL;
 
 	envp = convert_env_to_envp(env);
-	cr_assert_eq(*envp, NULL);
+	cr_assert_eq(envp, NULL);
 	dprintf(2, "-");
 	fflush(stderr);
 	cr_assert_stderr_eq_str("-");

@@ -38,6 +38,13 @@ typedef enum					e_pipe_op
 /*
 **	Enumeration to limit the possible values of the redirection operator
 **	in the io_redirect struct.
+**	valid values:
+**		- no_redirect_op
+**		- redirect_in
+**		- redirect_out
+**		- redirect_append
+**		- redirect_fd_in
+**		- redirect_fd_out
 */
 typedef enum					e_redirect_op
 {
