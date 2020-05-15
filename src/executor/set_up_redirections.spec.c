@@ -156,7 +156,7 @@ Test(set_up_redirections_unit, valid_overwrite_file_twice)
 	real_fd = open(filename, O_RDONLY);
 	cr_assert_geq(real_fd, 0, "could not open file!");
 	ret = read(real_fd, buff, 1024);
-	cr_assert_eq(4, ret, "file content not as expected! expected to read 4 bytes, read %i!", ret);
+	cr_assert_eq(0, ret, "file content not as expected! expected to read 0 bytes, read %i!", ret);
 	close(real_fd);
 	real_fd = open(filename, O_RDONLY);
 	ret = write(left_fd, " again", 6);

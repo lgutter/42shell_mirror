@@ -158,7 +158,7 @@ Test(set_up_io_file_unit, valid_overwrite_file_twice)
 	real_fd = open(filename, O_RDONLY);
 	cr_assert_geq(real_fd, 0, "could not open file!");
 	ret = read(real_fd, buff, 1024);
-	cr_assert_eq(4, ret, "file content not as expected! expected to read 4 bytes, read %i!", ret);
+	cr_assert_eq(0, ret, "file content not as expected! expected to read 0 bytes, read %i!", ret);
 	close(real_fd);
 	real_fd = open(filename, O_RDONLY);
 	ret = write(left_fd, " again", 6);
@@ -458,4 +458,43 @@ Test(set_up_io_file_unit, valid_close_stdin)
 	cr_expect_not_null(info.std_fds);
 	memset(buff, 0, 1024);
 	cr_expect_eq(-1, read(left_fd, buff, 1024), "fd was not closed!");
+}
+
+Test(set_up_io_file_unit, valid_empty_file_before_redir_to_fd)
+{
+	t_redir_info	info = {0, 1, 2, NULL};
+	char			*filename = "/tmp/set_up_io_file_unit_valid_empty_file_before_redir_to_fd";
+	t_io_file		io_file;
+	int				ret;
+	int				exp_ret = 0;
+	int				left_fd = 434;
+	int				real_fd;
+	char			buff[1024];
+
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+	io_file.redirect_op = redirect_out;
+	io_file.filename = filename;
+
+	remove(filename);
+	real_fd = open(filename, O_WRONLY | O_TRUNC | O_CREAT, 0664);
+	cr_expect_eq(4, write(real_fd, "test", 4), "write went wrong!");
+	close(real_fd);
+	real_fd = open(filename, O_RDONLY);
+	memset(buff, 0, 1024);
+	cr_expect_eq(4, read(real_fd, buff, 1024), "incorrect number of bytes read");
+	cr_expect_str_eq(buff, "test", "unexpected file content!");
+	close(real_fd);
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	cr_expect_not_null(info.fd_list);
+	cr_expect_not_null(info.std_fds);
+	real_fd = open(filename, O_RDONLY);
+	memset(buff, 0, 1024);
+	ret = read(real_fd, buff, 1024);
+	cr_expect_eq(0, ret, "incorrect number of bytes read: %i", ret);
+	cr_expect_str_empty(buff, "file was not emptied!");
+	close(real_fd);
+	remove(filename);
 }
