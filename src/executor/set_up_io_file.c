@@ -26,7 +26,7 @@ static int		set_file_out(t_redir_info *redir_info, t_io_file *io_file)
 	else if (io_file->redirect_op == redirect_append)
 		fd = open(io_file->filename, O_WRONLY | O_APPEND | O_CREAT, 0664);
 	else if (io_file->redirect_op == redirect_out)
-		fd = open(io_file->filename, O_WRONLY | O_CREAT, 0664);
+		fd = open(io_file->filename, O_WRONLY | O_TRUNC | O_CREAT, 0664);
 	if (fd >= 0)
 		add_fd_to_list(fd, -1, redir_info);
 	return (fd);
