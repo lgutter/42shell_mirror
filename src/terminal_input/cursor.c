@@ -6,7 +6,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/10 17:35:25 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/02/10 16:45:21 by dkroeke       ########   odam.nl         */
+/*   Updated: 2020/05/18 12:43:00 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ void		get_cursor_pos(t_cursor *cursor, size_t prompt_len)
 	char	pos[16];
 	int		ret;
 	int		temp;
-
-	send_terminal(CURSOR_POSITION);
+	
+	ft_printf("%c[6n", ESCAPE);
 	ft_memset(&pos, '\0', sizeof(pos));
 	ret = read(STDIN_FILENO, &pos, sizeof(pos));
 	if (ret == -1)
