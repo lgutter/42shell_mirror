@@ -118,7 +118,7 @@ Test(add_history_element_unit, valid_2_elements)
 	cr_expect_str_eq(list->hist_buff, "foo");
 }
 
-Test(cut_split, null_hist_check)
+Test(cut_split, null_shell_check)
 {
 	char		**split;
 
@@ -136,7 +136,10 @@ Test(cut_split, empty_history_str_check)
 	hist->hist_path = NULL;
 	hist->max_index = 0;
 	hist->current_index = 0;
-	split = cut_split_history(hist, "", 0);
+	t_shell shell;
+	memset(&shell, 0, sizeof(t_shell));
+	shell.hist = hist;
+	split = cut_split_history(&shell, "", 0);
 	cr_expect_null(split);
 }
 
@@ -150,7 +153,10 @@ Test(cut_split, only_newline_check)
 	hist->hist_path = NULL;
 	hist->max_index = 0;
 	hist->current_index = 0;
-	split = cut_split_history(hist, "\n", 1);
+	t_shell shell;
+	memset(&shell, 0, sizeof(t_shell));
+	shell.hist = hist;
+	split = cut_split_history(&shell, "\n", 1);
 	cr_assert_not_null(split);
 	cr_expect_str_eq(split[0], "");
 }
@@ -165,7 +171,10 @@ Test(cut_split, null_history_str_check)
 	hist->hist_path = NULL;
 	hist->max_index = 0;
 	hist->current_index = 0;
-	split = cut_split_history(hist, NULL, 0);
+	t_shell shell;
+	memset(&shell, 0, sizeof(t_shell));
+	shell.hist = hist;
+	split = cut_split_history(&shell, NULL, 0);
 	cr_expect_null(split);
 }
 
@@ -183,6 +192,7 @@ Test(initialize_hist, empty_histfile)
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	remove(hist->hist_path);
 	cr_expect_eq(0, ret);
@@ -199,6 +209,7 @@ Test(initialize_hist, bad_hist_path)
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	cr_expect_null(hist->hist_list);
 	cr_expect_eq(0, ret);
@@ -230,6 +241,7 @@ Test(initialize_hist, no_home_env)
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	fflush(stderr);
 	cr_expect_stderr_eq_str("Error in resolving the history path\n");
@@ -258,6 +270,7 @@ Test(initialize_hist, check_format)
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	cr_assert_eq(ret, histfile_format_error);
 	cr_assert_stderr_eq_str("Histfile formatted incorrectly\n");
@@ -282,6 +295,7 @@ Test(initialize_hist, check_elements)
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	cr_assert_eq(ret, 0, "expected ret of %d, got %d!", 0, ret);
 	cr_assert_eq(hist->max_index, 199, "expected max index of %d, got %zu!", 199, hist->max_index);
@@ -311,6 +325,7 @@ Test(initialize_hist, single_element)
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	remove(hist->hist_path);
 	cr_expect_eq(0, ret);
@@ -336,6 +351,7 @@ Test(initialize_hist, two_elements_multiline)
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	remove(hist->hist_path);
 	cr_expect_eq(0, ret);
@@ -367,6 +383,7 @@ Test(initialize_hist, two_elements_tricky_format)
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	remove(hist->hist_path);
 	cr_expect_eq(0, ret);
@@ -399,6 +416,7 @@ Test(initialize_hist, no_read_acc)
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	fflush(stderr);
 	sprintf(buff, "%s\n", g_error_str[no_read_permission_hist]);
@@ -426,6 +444,7 @@ Test(initialize_hist, no_write_acc)
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	fflush(stderr);
 	sprintf(buff, "%s\n", g_error_str[no_write_permission_hist]);
@@ -480,6 +499,7 @@ Test(scroll_hist, invalid_blank_buffer_cursor_structs)
 	t_shell		shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = &hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_assert_eq(hist.max_index, 9);
@@ -510,6 +530,7 @@ Test(scroll_hist, invalid_NULL_hist_list)
 	t_shell		shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = &hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_expect_eq(hist.max_index, 9);
@@ -536,6 +557,7 @@ Test(scroll_hist, valid_buffer_state_input)
 	t_shell		shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = &hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_expect_eq(hist.max_index, 19);
@@ -575,6 +597,7 @@ Test(scroll_hist, up_down_test)
 	t_shell		shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = &hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_assert_eq(hist.max_index, 199);
@@ -627,6 +650,7 @@ Test(scroll_hist, whole_list)
 	t_shell		shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = &hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_assert_eq(hist.max_index, 199);
@@ -670,7 +694,7 @@ Test(add_remove_update_hist, invalid_NULL_hist)
 {
 	int ret;
 
-	ret = add_remove_update_history(NULL, "foo");
+	ret = update_history(NULL, NULL, "foo");
 	cr_expect_eq(ret, 0);
 }
 
@@ -680,7 +704,7 @@ Test(add_remove_update_hist, invalid_NULL_buffer)
 	int ret;
 
 	ft_bzero(&hist, sizeof(t_history));
-	ret = add_remove_update_history(&hist, NULL);
+	ret = update_history(&hist, NULL, NULL);
 	cr_expect_eq(ret, 0);
 }
 
@@ -690,7 +714,7 @@ Test(add_remove_update_hist, invalid_empty_buffer)
 	int ret;
 
 	ft_bzero(&hist, sizeof(t_history));
-	ret = add_remove_update_history(&hist, "");
+	ret = update_history(&hist, NULL, "");
 	cr_expect_eq(ret, 0);
 }
 
@@ -711,13 +735,14 @@ Test(add_remove_update_hist, invalid_NULL_hist_list)
 	t_shell		shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = &hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_expect_eq(hist.max_index, 9);
 	cr_expect_eq(hist.real_num_index, 9);
 	cr_expect_eq(0, ret);
 	hist.hist_list = NULL;
-	ret = add_remove_update_history(&hist, "foobar");
+	ret = update_history(&hist, NULL, "foobar");
 	cr_expect_eq(ret, 0);
 	cr_assert_not_null(hist.hist_list);
 	cr_expect_str_eq(hist.hist_list->hist_buff, ":9:foobar");
@@ -740,9 +765,10 @@ Test(add_remove_update_hist, empty_histlist)
 	t_shell		shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	cr_expect_eq(0, ret);
-	ret = add_remove_update_history(hist, "testing add_remove_update_hist");
+	ret = update_history(hist, NULL, "testing add_remove_update_hist");
 	cr_expect_eq(0, ret);
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":0:testing add_remove_update_hist");
 	int fd = open(hist->hist_path, O_RDONLY, 0644);
@@ -756,12 +782,12 @@ Test(add_remove_update_hist, empty_histlist)
 	}
 	cr_expect_neq(ret, -1);
 	cr_assert_str_eq(temp, ":0:testing add_remove_update_hist\n");
-	ret = add_remove_update_history(hist, NULL);
+	ret = update_history(hist, NULL, NULL);
 	cr_expect_eq(0, ret);
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":0:testing add_remove_update_hist");
 
 	hist->hist_list = NULL;
-	ret = add_remove_update_history(hist, "Hist list Null test");
+	ret = update_history(hist, NULL, "Hist list Null test");
 	cr_expect_eq(0, ret);
 	remove(hist->hist_path);
 }
@@ -784,9 +810,10 @@ Test(add_remove_update_hist, normal_small_size)
 	t_shell		shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	cr_expect_eq(0, ret);
-	ret = add_remove_update_history(hist, "testing add_remove_update_hist");
+	ret = update_history(hist, NULL, "testing add_remove_update_hist");
 	cr_expect_eq(0, ret);
 	ft_bzero(temp, 64);
 	while(hist->hist_list->next != NULL)
@@ -818,10 +845,11 @@ Test(add_remove_update_hist, normal_larger_size)
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 600);
 	shell.hist = hist;
+	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	cr_expect_eq(0, ret);
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":100:TESTTINGHISTORY100");
-	ret = add_remove_update_history(hist, "testing add_remove_update_hist");
+	ret = update_history(hist, NULL, "testing add_remove_update_hist");
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":101:TESTTINGHISTORY101");
 	cr_expect_eq(0, ret);
 	ft_bzero(temp, 64);
@@ -855,6 +883,7 @@ Test(get_histfile_unit, invalid_no_HOME)
 	ft_bzero(&shell, sizeof(t_shell));
 	ft_bzero(&hist, sizeof(t_history));
 	shell.hist = &hist;
+	shell.env = dup_sys_env();
 	ret = get_histfile(&shell);
 	cr_expect_eq(ret, error_histpath);
 }
@@ -869,6 +898,7 @@ Test(get_histfile_unit, valid_normal)
 	ft_bzero(&shell, sizeof(t_shell));
 	ft_bzero(&hist, sizeof(t_history));
 	shell.hist = &hist;
+	shell.env = dup_sys_env();
 	shell.env = &env;
 	ret = get_histfile(&shell);
 	cr_expect_eq(ret, 0);

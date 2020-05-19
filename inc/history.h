@@ -45,10 +45,11 @@ typedef	struct				s_history
 }							t_history;
 
 int							get_histfile(t_shell *shell);
-char						**cut_split_history(t_history *hist, char *history,
+int							get_histsize(struct s_env *env);
+char						**cut_split_history(t_shell *shell, char *history,
 												size_t i);
 int							initialize_history(t_shell *shell);
-int							add_remove_update_history(t_history *hist,
+int							update_history(t_history *hist, struct s_env *env,
 												char *buff);
 void						free_history(t_history *hist);
 void						free_hist_list(t_hist_list **start);

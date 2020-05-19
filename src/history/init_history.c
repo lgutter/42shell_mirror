@@ -115,7 +115,7 @@ int				initialize_history(t_shell *shell)
 	if (ret == 0)
 	{
 		cut = read_history(shell->hist);
-		split = cut_split_history(shell->hist, cut, shell->hist->file_size);
+		split = cut_split_history(shell, cut, shell->hist->file_size);
 		free(cut);
 		if (split == NULL)
 			return (0);

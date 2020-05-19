@@ -14,6 +14,7 @@
 #include "history.h"
 #include "handle_error.h"
 #include "utils.h"
+#include "environment.h"
 
 static size_t	next_hist_line(char *hist, size_t i)
 {
@@ -89,12 +90,14 @@ static char		**history_split(t_history *hist, char *hist_str, size_t i)
 	return (split);
 }
 
-static size_t	offset_i(t_history *hist, char *history, size_t i)
+static size_t	offset_i(t_history *hist, t_env *env, char *history, size_t i)
 {
-	size_t		count;
+	size_t	count;
+	size_t	histsize;
 
+	histsize = get_histsize(env);
 	count = 0;
-	while (HISTSIZE > count && i > 0)
+	while (histsize > count && i > 0)
 	{
 		i = prev_hist_line(history, i);
 		hist->max_index = count;
@@ -104,16 +107,16 @@ static size_t	offset_i(t_history *hist, char *history, size_t i)
 	return (i);
 }
 
-char			**cut_split_history(t_history *hist, char *history, size_t i)
+char			**cut_split_history(t_shell *shell, char *history, size_t i)
 {
 	char		**split;
 
-	if (history == NULL || hist == NULL)
+	if (history == NULL || shell == NULL || shell->hist == NULL)
 		return (NULL);
-	i = offset_i(hist, history, i);
+	i = offset_i(shell->hist, shell->env, history, i);
 	if (ft_strlen(&(history[i])) == 0)
 		return (NULL);
-	split = history_split(hist, history, i);
+	split = history_split(shell->hist, history, i);
 	if (split == NULL)
 		return (NULL);
 	else if (split != NULL && split[0] == NULL)
