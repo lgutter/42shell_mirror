@@ -20,6 +20,7 @@
 # include <stdlib.h>
 # include "cetushell.h"
 # include "utils.h"
+# include "history.h"
 
 /*
 **--------------------------Defines-------------------------------------------

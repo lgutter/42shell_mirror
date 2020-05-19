@@ -12,27 +12,27 @@
 
 #include "executor.h"
 
-static int	process_here_doc(t_shell *shell, t_env *env, t_io_here *io_here)
+static int	process_here_doc(t_shell *shell, t_io_here *io_here)
 {
 	int	quotes;
 
 	quotes = check_quote(io_here->here_end);
-	if (process_word(shell, env, &(io_here->here_end), 'n'))
+	if (process_word(shell, &(io_here->here_end), 'n'))
 		return (-1);
 	if (get_here_doc(io_here, shell) != 0)
 		return (handle_error(malloc_error));
 	if (quotes == 0)
-		return (process_word(shell, env, &(io_here->here_doc), 'y'));
+		return (process_word(shell, &(io_here->here_doc), 'y'));
 	return (0);
 }
 
-static int	process_io_file(t_shell *shell, t_env *env, t_io_file *io_file)
+static int	process_io_file(t_shell *shell, t_io_file *io_file)
 {
 	const char	*filename;
 	size_t		i;
 
 	i = 0;
-	if (process_word(shell, env, &(io_file->filename), 'y'))
+	if (process_word(shell, &(io_file->filename), 'y'))
 		return (-1);
 	filename = io_file->filename;
 	if (io_file->redirect_op == redirect_fd_in ||
@@ -50,8 +50,7 @@ static int	process_io_file(t_shell *shell, t_env *env, t_io_file *io_file)
 	return (0);
 }
 
-int			process_redirects(t_shell *shell, t_env *env,
-								t_io_redirect *redirects)
+int			process_redirects(t_shell *shell, t_io_redirect *redirects)
 {
 	while (redirects != NULL)
 	{
@@ -59,12 +58,12 @@ int			process_redirects(t_shell *shell, t_env *env,
 			redirects->io_fd = ft_atoi(redirects->io_number);
 		if (redirects->io_file != NULL && redirects->io_file->filename != NULL)
 		{
-			if (process_io_file(shell, env, redirects->io_file) != 0)
+			if (process_io_file(shell, redirects->io_file) != 0)
 				return (-1);
 		}
 		else if (redirects->io_here != NULL)
 		{
-			if (process_here_doc(shell, env, redirects->io_here) != 0)
+			if (process_here_doc(shell, redirects->io_here) != 0)
 				return (-1);
 		}
 		else

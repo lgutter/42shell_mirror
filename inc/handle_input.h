@@ -14,7 +14,6 @@
 # define HANDLE_INPUT_H
 # include "tokenizer.h"
 # include "parser.h"
-# include "environment.h"
 # include "utils.h"
 # include "input_control.h"
 # include "cetushell.h"
@@ -31,6 +30,6 @@
 **	o on succes.
 **	-1 on failure.
 */
-int		handle_input(t_shell *shell, char **buffer, t_env *env);
+int		handle_input(t_shell *shell, char **buffer);
 
 #endif

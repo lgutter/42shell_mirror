@@ -93,13 +93,14 @@ Test(unit_ft_convert_env_to_envp, mandatory_basic_convert_full_list, .init = red
 	cr_assert_stderr_eq_str("-");
 }
 
-Test(unit_ft_convert_env_to_envp, mandatory_error_convert_NULL_list, .init = redirect_std_err)
+Test(unit_ft_convert_env_to_envp, mandatory_convert_NULL_list, .init = redirect_std_err)
 {
 	char **envp;
 	t_env *env = NULL;
 
 	envp = convert_env_to_envp(env);
-	cr_assert_eq(envp, NULL);
+	cr_assert_not_null(envp);
+	cr_assert_null(envp[0]);
 	dprintf(2, "-");
 	fflush(stderr);
 	cr_assert_stderr_eq_str("-");

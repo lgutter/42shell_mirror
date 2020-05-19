@@ -12,18 +12,21 @@
 
 #include "executor.h"
 
-int		exec_complete_command(t_shell *shell, t_complete_cmd *complete_cmd,
-								t_env *env_list)
+int		exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd)
 {
-	int	ret;
+	int		ret;
+	t_env	*env;
 
+	env = NULL;
+	if (shell != NULL)
+		env = shell->env;
 	ret = 0;
-	while (complete_cmd != NULL)
+	while (comp_cmd != NULL)
 	{
-		ret = word_processing(shell, env_list, complete_cmd);
+		ret = word_processing(shell, comp_cmd);
 		if (ret == 0)
-			ret = exec_pipe_sequence(complete_cmd->pipe_sequence, env_list);
-		complete_cmd = complete_cmd->next;
+			ret = exec_pipe_sequence(comp_cmd->pipe_sequence, env);
+		comp_cmd = comp_cmd->next;
 	}
 	return (ret);
 }

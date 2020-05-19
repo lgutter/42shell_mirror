@@ -20,6 +20,7 @@
 #include "input_control.h"
 #include "handle_error.h"
 #include "error_str.h"
+#include "environment.h"
 
 static t_hist_list	*init_list_item(char *buff, size_t index, t_hist_list *next)
 {
@@ -179,7 +180,10 @@ Test(initialize_hist, empty_histfile)
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 0);
-	ret = initialize_history(hist);
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	remove(hist->hist_path);
 	cr_expect_eq(0, ret);
 }
@@ -192,7 +196,10 @@ Test(initialize_hist, bad_hist_path)
 	ret = 0;
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
 	hist->hist_path = ft_strdup("testingthis");
-	ret = initialize_history(hist);
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	cr_expect_null(hist->hist_list);
 	cr_expect_eq(0, ret);
 }
@@ -202,10 +209,10 @@ Test(initialize_hist, invalid_NULL_hist)
 	int			ret;
 
 	ret = 0;
-	cr_redirect_stderr();
-	ret = initialize_history(NULL);
-	fflush(stderr);
-	cr_expect_stderr_eq_str("Malloc failed to allocate memory\n");
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = NULL;
+	ret = initialize_history(&shell);
 	cr_expect_eq(malloc_error, ret);
 }
 
@@ -220,7 +227,10 @@ Test(initialize_hist, no_home_env)
 	cr_assert_not_null(hist);
 	hist->hist_path = NULL;
 	cr_redirect_stderr();
-	ret = initialize_history(hist);
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	fflush(stderr);
 	cr_expect_stderr_eq_str("Error in resolving the history path\n");
 	cr_expect_null(hist->hist_list);
@@ -245,7 +255,10 @@ Test(initialize_hist, check_format)
 	ft_dprintf(fd, ":meh:The wheels of the bus go round and round");
 	cr_redirect_stderr();
 	fflush(stderr);
-	ret = initialize_history(hist);
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	cr_assert_eq(ret, histfile_format_error);
 	cr_assert_stderr_eq_str("Histfile formatted incorrectly\n");
 	close(fd);
@@ -266,7 +279,10 @@ Test(initialize_hist, check_elements)
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
-	ret = initialize_history(hist);
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	cr_assert_eq(ret, 0, "expected ret of %d, got %d!", 0, ret);
 	cr_assert_eq(hist->max_index, 199, "expected max index of %du, got %zu!", 199, hist->max_index);
 	cr_assert_eq(hist->real_num_index, 199, "expected real num index of %d, got %zu!", 199, hist->real_num_index);
@@ -292,7 +308,10 @@ Test(initialize_hist, single_element)
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
-	ret = initialize_history(hist);
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	remove(hist->hist_path);
 	cr_expect_eq(0, ret);
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":0:TESTTINGHISTORY0");
@@ -315,7 +334,10 @@ Test(initialize_hist, no_read_acc)
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
 	chmod(hist->hist_path, 0222);
 	cr_redirect_stderr();
-	ret = initialize_history(hist);
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	fflush(stderr);
 	sprintf(buff, "%s\n", g_error_str[no_read_permission_hist]);
 	cr_expect_stderr_eq_str(buff);
@@ -339,7 +361,10 @@ Test(initialize_hist, no_write_acc)
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
 	chmod(hist->hist_path, 0444);
-	ret = initialize_history(hist);
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	fflush(stderr);
 	sprintf(buff, "%s\n", g_error_str[no_write_permission_hist]);
 	cr_expect_stderr_eq_str(buff);
@@ -390,7 +415,10 @@ Test(scroll_hist, invalid_blank_buffer_cursor_structs)
 	cr_assert_not_null(hist.hist_path, "MALLOC failed");
 	remove(hist.hist_path);
 	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 10);
-	ret = initialize_history(&hist);
+	t_shell		shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = &hist;
+	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_assert_eq(hist.max_index, 9);
 	cr_assert_eq(hist.real_num_index, 9);
@@ -417,7 +445,10 @@ Test(scroll_hist, invalid_NULL_hist_list)
 	cr_assert_not_null(hist.hist_path, "MALLOC failed");
 	remove(hist.hist_path);
 	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 10);
-	ret = initialize_history(&hist);
+	t_shell		shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = &hist;
+	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_expect_eq(hist.max_index, 9);
 	cr_expect_eq(hist.real_num_index, 9);
@@ -440,7 +471,10 @@ Test(scroll_hist, valid_buffer_state_input)
 	cr_expect_not_null(hist.hist_path, "MALLOC failed");
 	remove(hist.hist_path);
 	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 20);
-	ret = initialize_history(&hist);
+	t_shell		shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = &hist;
+	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_expect_eq(hist.max_index, 19);
 	cr_expect_eq(hist.real_num_index, 19);
@@ -476,7 +510,10 @@ Test(scroll_hist, up_down_test)
 	cr_expect_not_null(hist.hist_path, "MALLOC failed");
 	remove(hist.hist_path);
 	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
-	ret = initialize_history(&hist);
+	t_shell		shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = &hist;
+	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_assert_eq(hist.max_index, 199);
 	cr_assert_eq(hist.real_num_index, 199);
@@ -525,7 +562,10 @@ Test(scroll_hist, whole_list)
 	cr_expect_not_null(hist.hist_path, "MALLOC failed");
 	remove(hist.hist_path);
 	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
-	ret = initialize_history(&hist);
+	t_shell		shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = &hist;
+	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_assert_eq(hist.max_index, 199);
 	cr_assert_eq(hist.real_num_index, 199);
@@ -606,7 +646,10 @@ Test(add_remove_update_hist, invalid_NULL_hist_list)
 	cr_assert_not_null(hist.hist_path, "MALLOC failed");
 	remove(hist.hist_path);
 	print_history_file(hist.hist_path, O_CREAT | O_WRONLY | O_TRUNC, 10);
-	ret = initialize_history(&hist);
+	t_shell		shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = &hist;
+	ret = initialize_history(&shell);
 	remove(hist.hist_path);
 	cr_expect_eq(hist.max_index, 9);
 	cr_expect_eq(hist.real_num_index, 9);
@@ -632,7 +675,10 @@ Test(add_remove_update_hist, empty_histlist)
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 0);
-	ret = initialize_history(hist);
+	t_shell		shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	cr_expect_eq(0, ret);
 	ret = add_remove_update_history(hist, "testing add_remove_update_hist");
 	cr_expect_eq(0, ret);
@@ -673,7 +719,10 @@ Test(add_remove_update_hist, normal_small_size)
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 200);
-	ret = initialize_history(hist);
+	t_shell		shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	cr_expect_eq(0, ret);
 	ret = add_remove_update_history(hist, "testing add_remove_update_hist");
 	cr_expect_eq(0, ret);
@@ -692,19 +741,22 @@ Test(add_remove_update_hist, normal_small_size)
 
 Test(add_remove_update_hist, normal_larger_size)
 {
+	t_shell		shell;
 	t_history	*hist;
 	int			ret;
 	char		temp[64];
 	int			i;
 
 	ret = 0;
+	ft_bzero(&shell, sizeof(t_shell));
 	ft_bzero(temp, 64);
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
 	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_larger_size");
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 600);
-	ret = initialize_history(hist);
+	shell.hist = hist;
+	ret = initialize_history(&shell);
 	cr_expect_eq(0, ret);
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":100:TESTTINGHISTORY100");
 	ret = add_remove_update_history(hist, "testing add_remove_update_hist");
@@ -724,7 +776,7 @@ Test(add_remove_update_hist, normal_larger_size)
 	remove(hist->hist_path);
 }
 
-Test(get_histfile_unit, invalid_NULL_hist)
+Test(get_histfile_unit, invalid_NULL_shell)
 {
 	int ret;
 
@@ -734,23 +786,29 @@ Test(get_histfile_unit, invalid_NULL_hist)
 
 Test(get_histfile_unit, invalid_no_HOME)
 {
+	t_shell		shell;
 	t_history	hist;
 	int			ret;
 
+	ft_bzero(&shell, sizeof(t_shell));
 	ft_bzero(&hist, sizeof(t_history));
-	unsetenv("HOME");
-	ret = get_histfile(&hist);
+	shell.hist = &hist;
+	ret = get_histfile(&shell);
 	cr_expect_eq(ret, error_histpath);
 }
 
 Test(get_histfile_unit, valid_normal)
 {
+	t_shell		shell;
 	t_history	hist;
+	t_env		env = {"HOME", "/tmp", SHELL_VAR, NULL};
 	int			ret;
 
+	ft_bzero(&shell, sizeof(t_shell));
 	ft_bzero(&hist, sizeof(t_history));
-	setenv("HOME", "/tmp", 1);
-	ret = get_histfile(&hist);
+	shell.hist = &hist;
+	shell.env = &env;
+	ret = get_histfile(&shell);
 	cr_expect_eq(ret, 0);
 	cr_expect_str_eq(hist.hist_path, "/tmp/.cetsh_history");
 }

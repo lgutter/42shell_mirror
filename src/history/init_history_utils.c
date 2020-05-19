@@ -13,6 +13,7 @@
 #include "cetushell.h"
 #include "history.h"
 #include "handle_error.h"
+#include "environment.h"
 
 static size_t	get_history_size(t_history *hist)
 {
@@ -24,34 +25,40 @@ static size_t	get_history_size(t_history *hist)
 	return (0);
 }
 
-static int		get_hist_path(t_history *hist)
+static int		get_hist_path(t_shell *shell)
 {
-	char	*temp;
+	char	*dir;
 
-	temp = getenv("HOME");
-	if (hist->hist_path != NULL)
+	if (shell->hist->hist_path != NULL)
 		return (0);
-	if (temp == NULL)
-		return (1);
-	hist->hist_path = ft_strjoin(temp, HISTFILE);
-	if (hist->hist_path == NULL)
-		return (1);
+	shell->hist->hist_path = ft_getenv(shell->env, "HISTFILE", SHELL_VAR);
+	if (shell->hist->hist_path == NULL)
+	{
+		dir = ft_getenv(shell->env, "HOME", SHELL_VAR);
+		if (dir == NULL)
+			return (1);
+		shell->hist->hist_path = ft_strjoin(dir, HISTFILE);
+		free(dir);
+		if (shell->hist->hist_path == NULL)
+			return (1);
+		ft_setenv(shell->env, "HISTFILE", shell->hist->hist_path, SHELL_VAR);
+	}
 	return (0);
 }
 
-int				get_histfile(t_history *hist)
+int				get_histfile(t_shell *shell)
 {
-	if (hist == NULL)
+	if (shell == NULL || shell->hist == NULL)
 		return (malloc_error);
-	if (get_hist_path(hist) == 1)
+	if (get_hist_path(shell) == 1)
 		return (error_histpath);
-	if (access(hist->hist_path, F_OK) != 0)
+	if (access(shell->hist->hist_path, F_OK) != 0)
 		return (0);
-	if (access(hist->hist_path, R_OK) != 0)
+	if (access(shell->hist->hist_path, R_OK) != 0)
 		return (no_read_permission_hist);
-	if (access(hist->hist_path, W_OK) != 0)
+	if (access(shell->hist->hist_path, W_OK) != 0)
 		return (no_write_permission_hist);
-	if (get_history_size(hist) == 1)
+	if (get_history_size(shell->hist) == 1)
 		return (history_filesize_error);
 	return (0);
 }

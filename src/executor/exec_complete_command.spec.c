@@ -16,17 +16,18 @@
 #include "executor.h"
 #include "error_str.h"
 
-static void redirect_std_out()
-{
-	cr_redirect_stdout();
-}
-
 static void redirect_std_err()
 {
 	cr_redirect_stderr();
 }
 
-Test(exec_complete_command_unit, valid_basic_command, .init = redirect_std_out)
+static void redirect_std_err_out()
+{
+	cr_redirect_stdout();
+	cr_redirect_stderr();
+}
+
+Test(exec_complete_command_unit, valid_basic_command, .init = redirect_std_err_out)
 {
 	char			**argv = ft_strsplit("/bin/echo foo", ' ');
 	t_argument		argument2 = {strdup("foo"), NULL};
@@ -36,26 +37,15 @@ Test(exec_complete_command_unit, valid_basic_command, .init = redirect_std_out)
 	t_complete_cmd	command = {&pipe_seq, semicolon_op, NULL};
 	int				ret;
 	int				exp_ret = 0;
+	char			buff[1024];
 
-	ret = exec_complete_command(NULL, &command, dup_sys_env());
+	ret = exec_complete_command(NULL, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	fflush(stdout);
 	cr_expect_stdout_eq_str("foo\n");
-}
-
-Test(exec_complete_command_unit, invalid_NULL_env)
-{
-	char			**argv = ft_strsplit("/bin/echo foo", ' ');
-	t_argument		argument2 = {strdup("foo"), NULL};
-	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
-	t_pipe_sequence	pipe_seq = {&simple_cmd, no_pipe, NULL};
-	t_complete_cmd	command = {&pipe_seq, semicolon_op, NULL};
-	int				ret;
-	int				exp_ret = 3;
-
-	ret = exec_complete_command(NULL, &command, NULL);
-	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
+	fflush(stderr);
+	sprintf(buff, "%.1022s\n", g_error_str[env_empty_error]);
+	cr_expect_stderr_eq_str(buff);
 }
 
 Test(exec_complete_command_unit, invalid_empty_simple_cmd, .init = redirect_std_err)
@@ -67,7 +57,7 @@ Test(exec_complete_command_unit, invalid_empty_simple_cmd, .init = redirect_std_
 	int				exp_ret = parsing_error;
 	char			buff[1024];
 
-	ret = exec_complete_command(NULL, &command, dup_sys_env());
+	ret = exec_complete_command(NULL, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	fflush(stderr);
 	sprintf(buff, "%.1008s: no arguments\n", g_error_str[parsing_error]);
@@ -82,7 +72,7 @@ Test(exec_complete_command_unit, invalid_NULL_simple_cmd_no_pipe, .init = redire
 	int				exp_ret = parsing_error;
 	char			buff[1024];
 
-	ret = exec_complete_command(NULL, &command, dup_sys_env());
+	ret = exec_complete_command(NULL, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	fflush(stdout);
 	sprintf(buff, "%.1001s: NULL simple command\n", g_error_str[parsing_error]);
@@ -96,7 +86,7 @@ Test(exec_complete_command_unit, invalid_NULL_pipe_seq, .init = redirect_std_err
 	int				exp_ret = parsing_error;
 	char			buff[1024];
 
-	ret = exec_complete_command(NULL, &command, dup_sys_env());
+	ret = exec_complete_command(NULL, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	fflush(stdout);
 	sprintf(buff, "%.1000s: NULL pipe sequence\n", g_error_str[parsing_error]);
@@ -109,6 +99,6 @@ Test(exec_complete_command_unit, invalid_NULL_complete_command)
 	int				ret;
 	int				exp_ret = 0;
 
-	ret = exec_complete_command(NULL, NULL, dup_sys_env());
+	ret = exec_complete_command(NULL, NULL);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 }

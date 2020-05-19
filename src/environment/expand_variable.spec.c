@@ -21,12 +21,15 @@ Test(unit_ft_expand_variable, basic_mandatory_expand_tilde)
 	t_env *env = (t_env *)malloc(sizeof(t_env) * 1);
 	char *test_string = strdup("~");
 	int ret;
+	t_shell	shell;
 
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.env = env;
 	env->key = strdup("HOME");
 	env->value = strdup("/home/criteriontest");
 	env->type = ENV_VAR;
 	env->next = NULL;
-	ret = expand_variable(env, &test_string);
+	ret = expand_variable(&shell, &test_string);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "/home/criteriontest");
 }
@@ -36,12 +39,15 @@ Test(unit_ft_expand_variable, basic_mandatory_expand_HOME)
 	t_env *env = (t_env *)malloc(sizeof(t_env) * 1);
 	char *test_string = strdup("$FOO");
 	int ret;
+	t_shell	shell;
 
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.env = env;
 	env->key = strdup("FOO");
 	env->value = strdup("Barcriteriontest");
 	env->type = ENV_VAR;
 	env->next = NULL;
-	ret = expand_variable(env, &test_string);
+	ret = expand_variable(&shell, &test_string);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "Barcriteriontest");
 }
@@ -51,12 +57,15 @@ Test(unit_ft_expand_variable, basic_mandatory_no_key)
 	t_env *env = (t_env *)malloc(sizeof(t_env) * 1);
 	char *test_string = strdup("$.FOO");
 	int ret;
+	t_shell	shell;
 
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.env = env;
 	env->key = strdup("FOO");
 	env->value = strdup("Barcriteriontest");
 	env->type = ENV_VAR;
 	env->next = NULL;
-	ret = expand_variable(env, &test_string);
+	ret = expand_variable(&shell, &test_string);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "$.FOO");
 }
@@ -66,12 +75,15 @@ Test(unit_ft_expand_variable, basic_mandatory_loop_key, .timeout = 2)
 	t_env *env = (t_env *)malloc(sizeof(t_env) * 1);
 	char *test_string = strdup("$FOO");
 	int ret;
+	t_shell	shell;
 
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.env = env;
 	env->key = strdup("FOO");
 	env->value = strdup("$FOO");
 	env->type = ENV_VAR;
 	env->next = NULL;
-	ret = expand_variable(env, &test_string);
+	ret = expand_variable(&shell, &test_string);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "$FOO");
 }
@@ -81,8 +93,20 @@ Test(unit_ft_expand_variable, basic_mandatory_error_NULL_env_list)
 	t_env *env = NULL;
 	char *test_string = strdup("$FOO");
 	int ret;
+	t_shell	shell;
 
-	ret = expand_variable(env, &test_string);
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.env = env;
+	ret = expand_variable(&shell, &test_string);
+	cr_assert_eq(ret, 0);
+	cr_assert_str_eq(test_string, "");
+}
+
+Test(unit_ft_expand_variable, basic_mandatory_error_NULL_shell)
+{
+	char *test_string = strdup("$FOO");
+	int ret;
+	ret = expand_variable(NULL, &test_string);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "");
 }
@@ -92,12 +116,15 @@ Test(unit_ft_expand_variable, basic_mandatory_error_NULL_string)
 	t_env *env = (t_env *)malloc(sizeof(t_env) * 1);
 	char *test_string = NULL;
 	int ret;
+	t_shell	shell;
 
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.env = env;
 	env->key = strdup("FOO");
 	env->value = strdup("$FOO");
 	env->type = ENV_VAR;
 	env->next = NULL;
-	ret = expand_variable(env, &test_string);
+	ret = expand_variable(&shell, &test_string);
 	cr_expect_eq(ret, -1);
 	cr_assert_eq(test_string, NULL);
 }

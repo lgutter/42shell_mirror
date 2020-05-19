@@ -22,7 +22,6 @@
 
 # include "handle_error.h"
 # include "utils.h"
-
 /*
 **	Struct to store the environment variables in a linked list.
 **	fields:
@@ -109,7 +108,7 @@ char				**convert_env_to_envp(t_env *list_start);
 **	- 0 on succes.
 **	- errid error code on failure.
 */
-int					expand_variable(t_env *env_list, char **string);
+int					expand_variable(t_shell *shell, char **string);
 
 /*
 **	Takes a pointer to an environment list, and frees everything in it.

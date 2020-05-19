@@ -80,13 +80,19 @@ static void	free_command(t_command *command)
 
 static int	init_cmd(t_command *command, t_simple_cmd *simple_cmd, t_env *env)
 {
+	int ret;
+
+	ret = 0;
 	ft_bzero(command, sizeof(command));
 	command->argc = str_arr_len(simple_cmd->argv);
 	command->argv = simple_cmd->argv;
 	command->envp = convert_env_to_envp(env);
 	if (command->envp == NULL)
 		return (malloc_error);
-	return (find_executable(env, command, command->argv[0]));
+	ret = find_executable(env, command, command->argv[0]);
+	if (ret != 0)
+		free_command(command);
+	return (ret);
 }
 
 int			exec_simple_command(t_simple_cmd *simple_cmd, t_env *env)
@@ -95,7 +101,7 @@ int			exec_simple_command(t_simple_cmd *simple_cmd, t_env *env)
 	int				ret;
 	t_redir_info	*redir_info;
 
-	if (simple_cmd == NULL || simple_cmd->argv == NULL || env == NULL)
+	if (simple_cmd == NULL || simple_cmd->argv == NULL)
 		return (parsing_error);
 	ret = init_cmd(&command, simple_cmd, env);
 	if (ret != 0)

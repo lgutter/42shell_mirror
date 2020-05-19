@@ -12,7 +12,7 @@
 
 #include "handle_input.h"
 
-int		handle_input(t_shell *shell, char **buffer, t_env *env)
+int		handle_input(t_shell *shell, char **buffer)
 {
 	t_token			*tokens;
 	t_token			*tokens_start;
@@ -27,7 +27,7 @@ int		handle_input(t_shell *shell, char **buffer, t_env *env)
 		complete_command = parse_complete_command(&tokens);
 		if (complete_command != NULL)
 		{
-			exec_complete_command(shell, complete_command, env);
+			exec_complete_command(shell, complete_command);
 			free_complete_command(complete_command);
 			configure_terminal(shell, 2);
 		}

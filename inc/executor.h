@@ -112,8 +112,7 @@ int				reset_redirections(t_redir_info **redir_info);
 **	an error code on failure.
 */
 int				add_fd_to_list(int fd, int og_fd, t_redir_info *redir_info);
-int				exec_complete_command(t_shell *shell,
-								t_complete_cmd *complete_cmd, t_env *env_list);
+int				exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd);
 int				exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_env *env_list);
 int				exec_simple_command(t_simple_cmd *simple_cmd, t_env *env_list);
 int				find_executable(t_env *env_list, t_command *command,
@@ -132,8 +131,7 @@ int				find_executable(t_env *env_list, t_command *command,
 **	0 on succes.
 **	-1 on failure.
 */
-int				process_word(t_shell *shell, t_env *env_list, char **word,
-								char expand);
+int				process_word(t_shell *shell, char **word, char expand);
 
 /*
 **	performs environment expansions and quote completion + removal on all
@@ -146,8 +144,7 @@ int				process_word(t_shell *shell, t_env *env_list, char **word,
 **	0 on succes.
 **	-1 on failure.
 */
-int				process_redirects(t_shell *shell, t_env *env,
-								t_io_redirect *redirects);
+int				process_redirects(t_shell *shell, t_io_redirect *redirects);
 
 /*
 **	performs environment expansions and quote completion + removal on all
@@ -160,7 +157,6 @@ int				process_redirects(t_shell *shell, t_env *env,
 **	0 on succes.
 **	-1 on failure.
 */
-int				word_processing(t_shell *shell, t_env *env_list,
-								t_complete_cmd *complete_command);
+int				word_processing(t_shell *shell, t_complete_cmd *complete_cmd);
 
 #endif

@@ -71,8 +71,6 @@ char			**convert_env_to_envp(t_env *list_start)
 	char	**envp;
 	size_t	count;
 
-	if (list_start == NULL)
-		return (NULL);
 	count = get_env_size(list_start);
 	envp = (char **)malloc(sizeof(char *) * (count + 1));
 	if (envp == NULL)

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "environment.h"
 #include "utils.h"
 
 void	ft_swap_rv(t_buff *buffer)
@@ -57,6 +58,7 @@ int		free_shell(t_shell *shell, int ret)
 		shell->buffer = NULL;
 		configure_terminal(shell, 0);
 		free(shell);
+		free_env_list(shell->env);
 	}
 	return (ret);
 }

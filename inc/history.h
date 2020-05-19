@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/stat.h>
+# include "cetushell.h"
 
 typedef struct s_hist_list	t_hist_list;
 
@@ -43,10 +44,10 @@ typedef	struct				s_history
 	char					*buff_temp;
 }							t_history;
 
-int							get_histfile(t_history *hist);
+int							get_histfile(t_shell *shell);
 char						**cut_split_history(t_history *hist, char *history,
 												size_t i);
-int							initialize_history(t_history *hist);
+int							initialize_history(t_shell *shell);
 int							add_remove_update_history(t_history *hist,
 												char *buff);
 void						free_history(t_history *hist);
