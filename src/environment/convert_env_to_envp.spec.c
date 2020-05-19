@@ -29,6 +29,7 @@ Test(unit_ft_convert_env_to_envp, mandatory_basic_convert_single_element, .init 
 	env = (t_env *)malloc(sizeof(t_env) * 1);
 	env->key = strdup("FOO");
 	env->value = strdup("BAR");
+	env->type = ENV_VAR;
 	env->next = NULL;
 	envp = convert_env_to_envp(env);
 	cr_assert_neq(envp, NULL);
@@ -51,10 +52,13 @@ Test(unit_ft_convert_env_to_envp, mandatory_basic_convert_small_list, .init = re
 	third = (t_env *)malloc(sizeof(t_env) * 1);
 	env->key = strdup("FOO");
 	env->value = strdup("BAR");
+	env->type = ENV_VAR;
 	second->key = strdup("BAZ");
 	second->value = strdup("OOF");
+	second->type = ENV_VAR;
 	third->key = strdup("RAB");
 	third->value = strdup("ZAB");
+	third->type = ENV_VAR;
 	env->next = second;
 	second->next = third;
 	third->next = NULL;
