@@ -28,15 +28,21 @@ struct s_builtin	g_builtins[] = {
 
 int					execute_builtin(t_command *command, t_env *env)
 {
-	int i;
+	int	i;
+	int	ret;
 
 	i = 0;
+	ret = 0;
 	if (command == NULL || command->argv == NULL || command->argv[0] == NULL)
 		return (-1);
 	while (g_builtins[i].builtin_name != NULL)
 	{
 		if (ft_strcmp(command->argv[0], g_builtins[i].builtin_name) == 0)
-			return (g_builtins[i].f(command, &env));
+		{
+			ret = g_builtins[i].f(command, env);
+			ft_setstatus(env, ret);
+			return (ret);
+		}
 		i++;
 	}
 	return (-1);
@@ -56,7 +62,7 @@ int					is_builtin(char *exec_name)
 	return (0);
 }
 
-int					builtin_echo(t_command *command, t_env **env)
+int					builtin_echo(t_command *command, t_env *env)
 {
 	int i;
 	int no_newline;

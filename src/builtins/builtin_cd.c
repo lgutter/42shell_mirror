@@ -37,7 +37,7 @@ static int	cd(t_env *env, char *new_path, char *key)
 	return (0);
 }
 
-int			builtin_cd(t_command *command, t_env **env)
+int			builtin_cd(t_command *command, t_env *env)
 {
 	char	*key;
 	char	*temp;
@@ -48,7 +48,7 @@ int			builtin_cd(t_command *command, t_env **env)
 		return (handle_prefix_error(too_many_arguments, "cd"));
 	if (command->argc == 1 || ft_strcmp(command->argv[1], "-") == 0)
 	{
-		temp = ft_getenv(*env, key, VAR_TYPE);
+		temp = ft_getenv(env, key, VAR_TYPE);
 		if (temp == NULL)
 		{
 			handle_prefix_error_str(var_not_set, "cd", key);
@@ -59,7 +59,7 @@ int			builtin_cd(t_command *command, t_env **env)
 		temp = ft_strdup(command->argv[1]);
 	if (temp == NULL)
 		return (handle_error(malloc_error));
-	ret = cd(*env, temp, command->argv[1]);
+	ret = cd(env, temp, command->argv[1]);
 	if (ret != 0)
 		handle_prefix_error_str(no_such_file_or_dir, "cd", temp);
 	free(temp);

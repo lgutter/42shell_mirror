@@ -16,10 +16,17 @@
 
 #include "builtins.h"
 #include "environment.h"
+#include "error_str.h"
 
 static void redirect_std_out()
 {
 	cr_redirect_stdout();
+}
+
+static void redirect_std_err_out()
+{
+	cr_redirect_stdout();
+	cr_redirect_stderr();
 }
 
 Test(execute_builtin_unit, invalid_comm_null)
@@ -64,7 +71,7 @@ Test(execute_builtin_unit, invalid_not_builtin)
 	cr_expect_eq(ret, -1, "ret is %d but must be %d", ret, -1);
 }
 
-Test(execute_builtin_echo_unit, valid_echo_no_arguments, .init = redirect_std_out)
+Test(execute_builtin_echo_unit, valid_echo_no_arguments, .init = redirect_std_err_out)
 {
 	t_command	comm;
 	int			ret = 0;
@@ -80,6 +87,10 @@ Test(execute_builtin_echo_unit, valid_echo_no_arguments, .init = redirect_std_ou
 	fflush(stdout);
 	sprintf(buff, "\n");
 	cr_expect_stdout_eq_str(buff);
+	memset(buff, '\0', 1024);
+	fflush(stderr);
+	sprintf(buff, "%.1022s\n", g_error_str[env_empty_error]);
+	cr_expect_stderr_eq_str(buff);
 }
 
 Test(builtin_echo_unit, invalid_comm_null)

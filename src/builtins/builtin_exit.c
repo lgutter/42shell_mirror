@@ -13,11 +13,11 @@
 #include "builtins.h"
 #include "executor.h"
 
-int		builtin_exit(t_command *command, t_env **env)
+int		builtin_exit(t_command *command, t_env *env)
 {
 	char *prev_status;
 
-	prev_status = ft_getenv(*env, "STATUS", SHELL_VAR);
+	prev_status = ft_getenv(env, "STATUS", SHELL_VAR);
 	ft_printf("exit\n");
 	configure_terminal(NULL, 0);
 	if (command->argc == 1)

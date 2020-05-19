@@ -40,7 +40,7 @@ Test(unit_builtin_exit, basic_mandatory_exit_status_code_42, .init = redirect_st
 	pid = fork();
 	if (pid == 0)
 	{
-		builtin_exit(&command, &env);
+		builtin_exit(&command, env);
 		exit(-42);
 	}
 	else if (pid > 0)
@@ -76,7 +76,7 @@ Test(unit_builtin_exit, basic_mandatory_error_no_exit_code, .init = redirect_std
 	pid = fork();
 	if (pid == 0)
 	{
-		builtin_exit(&command, &env);
+		builtin_exit(&command, env);
 		exit(-42);
 	}
 	else if (pid > 0)
@@ -108,7 +108,7 @@ Test(unit_builtin_exit, undefined_error_nothing_defined, .init = redirect_std_ou
 	pid = fork();
 	if (pid == 0)
 	{
-		builtin_exit(&command, &env);
+		builtin_exit(&command, env);
 		exit(-42);
 	}
 	else if (pid > 0)
@@ -144,7 +144,7 @@ Test(unit_builtin_exit, basic_bonus_error_valid_argument_exit_code, .init = redi
 	pid = fork();
 	if (pid == 0)
 	{
-		builtin_exit(&command, &env);
+		builtin_exit(&command, env);
 		exit(-42);
 	}
 	else if (pid > 0)
