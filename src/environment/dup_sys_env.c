@@ -12,6 +12,24 @@
 
 #include "environment.h"
 
+static	void	init_defaults(t_env *env)
+{
+	char	*temp;
+	int		number;
+
+	number = 0;
+	temp = ft_getenv(env, "SHLVL", ENV_VAR);
+	if (temp != NULL)
+		number = ft_atoi(temp);
+	free(temp);
+	temp = ft_itoa(number + 1);
+	ft_setenv(env, "SHLVL", temp, ENV_VAR);
+	temp = ft_getenv(env, "PATH", ENV_VAR);
+	if (temp == NULL)
+		ft_setenv(env, "PATH", "/bin:/usr/bin:/usr/local/bin:", ENV_VAR);
+	free(temp);
+}
+
 static t_env	*new_env_list_item(char *env_variable)
 {
 	t_env		*new;
@@ -79,10 +97,7 @@ t_env			*dup_sys_env(void)
 		return (empty_env_init());
 	current = new_env_list_item(environ[index]);
 	if (current == NULL)
-	{
-		handle_error(malloc_error);
-		return (NULL);
-	}
+		return (handle_error_p(malloc_error, NULL));
 	start = current;
 	index++;
 	while (environ[index] != NULL)
@@ -93,5 +108,6 @@ t_env			*dup_sys_env(void)
 			return (NULL);
 		index++;
 	}
+	init_defaults(start);
 	return (start);
 }
