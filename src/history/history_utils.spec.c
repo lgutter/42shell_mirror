@@ -284,7 +284,7 @@ Test(initialize_hist, check_elements)
 	shell.hist = hist;
 	ret = initialize_history(&shell);
 	cr_assert_eq(ret, 0, "expected ret of %d, got %d!", 0, ret);
-	cr_assert_eq(hist->max_index, 199, "expected max index of %du, got %zu!", 199, hist->max_index);
+	cr_assert_eq(hist->max_index, 199, "expected max index of %d, got %zu!", 199, hist->max_index);
 	cr_assert_eq(hist->real_num_index, 199, "expected real num index of %d, got %zu!", 199, hist->real_num_index);
 	while(hist->hist_list->next != NULL)
 	{
@@ -315,6 +315,68 @@ Test(initialize_hist, single_element)
 	remove(hist->hist_path);
 	cr_expect_eq(0, ret);
 	cr_assert_str_eq(hist->hist_list->hist_buff, ":0:TESTTINGHISTORY0");
+	cr_expect_null(hist->hist_list->next);
+}
+
+Test(initialize_hist, two_elements_multiline)
+{
+	t_history	*hist;
+	int			ret;
+	int			fd_open;
+
+
+	ret = 0;
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_two_elements_multiline");
+	cr_expect_not_null(hist->hist_path, "MALLOC failed");
+	remove(hist->hist_path);
+	fd_open = open(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	ft_dprintf(fd_open, ":0:TESTING\nHISTORY0\n:1:TESTING\nHISTORY1\n");
+	close(fd_open);
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
+	remove(hist->hist_path);
+	cr_expect_eq(0, ret);
+	cr_assert_not_null(hist->hist_list);
+	cr_assert_not_null(hist->hist_list->hist_buff);
+	cr_expect_str_eq(hist->hist_list->hist_buff, ":0:TESTING\nHISTORY0");
+	cr_assert_not_null(hist->hist_list->next);
+	hist->hist_list = hist->hist_list->next;
+	cr_assert_not_null(hist->hist_list->hist_buff);
+	cr_expect_str_eq(hist->hist_list->hist_buff, ":1:TESTING\nHISTORY1");
+	cr_expect_null(hist->hist_list->next);
+}
+
+Test(initialize_hist, two_elements_tricky_format)
+{
+	t_history	*hist;
+	int			ret;
+	int			fd_open;
+
+
+	ret = 0;
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_two_elements_tricky_format");
+	cr_expect_not_null(hist->hist_path, "MALLOC failed");
+	remove(hist->hist_path);
+	fd_open = open(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	ft_dprintf(fd_open, ":0:TESTING:42:HISTORY0\n:1:TESTING:21:HISTORY1\n");
+	close(fd_open);
+	t_shell	shell;
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.hist = hist;
+	ret = initialize_history(&shell);
+	remove(hist->hist_path);
+	cr_expect_eq(0, ret);
+	cr_assert_not_null(hist->hist_list);
+	cr_assert_not_null(hist->hist_list->hist_buff);
+	cr_expect_str_eq(hist->hist_list->hist_buff, ":0:TESTING:42:HISTORY0");
+	cr_assert_not_null(hist->hist_list->next);
+	hist->hist_list = hist->hist_list->next;
+	cr_assert_not_null(hist->hist_list->hist_buff);
+	cr_expect_str_eq(hist->hist_list->hist_buff, ":1:TESTING:21:HISTORY1");
 	cr_expect_null(hist->hist_list->next);
 }
 
@@ -690,9 +752,9 @@ Test(add_remove_update_hist, empty_histlist)
 	while (ret > 0)
 	{
 		ret = read(fd, &temp[i], 1);
-		cr_expect_neq(ret, -1);
 		i++;
 	}
+	cr_expect_neq(ret, -1);
 	cr_assert_str_eq(temp, ":0:testing add_remove_update_hist\n");
 	ret = add_remove_update_history(hist, NULL);
 	cr_expect_eq(0, ret);
