@@ -55,7 +55,7 @@ int				cetushell(void)
 		if (input == NULL)
 			break ;
 		handle_input(shell, &input);
-		add_remove_update_history(shell->hist, input);
+		update_history(shell->hist, shell->env, input);
 		free(input);
 		input = NULL;
 	}
@@ -70,8 +70,11 @@ int				main(int ac, char **av)
 	else
 	{
 		while (21)
+		{
 			if (cetushell() == 1)
 				return (0);
+			printf("ERROR! GOT BACK IN MAIN BUT DID NOT EXIT!\n");
+		}
 	}
 	return (1);
 }
