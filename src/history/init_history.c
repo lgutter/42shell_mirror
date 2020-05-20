@@ -128,5 +128,5 @@ int				initialize_history(t_shell *shell)
 		ret = create_history_list(&(shell->hist->hist_list), split);
 		return (ret);
 	}
-	return (handle_error(ret));
+	return (ret);
 }

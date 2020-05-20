@@ -34,13 +34,17 @@ static int		get_hist_path(t_shell *shell)
 	shell->hist->hist_path = ft_getenv(shell->env, "HISTFILE", SHELL_VAR);
 	if (shell->hist->hist_path == NULL)
 	{
-		home = ft_getenv(shell->env, "HOME", SHELL_VAR);
+		home = ft_getenv(shell->env, "HOME", VAR_TYPE);
 		if (home == NULL)
-			return (1);
+			return (handle_error_str(env_not_found, "HOME"));
+		else if (access(home, F_OK) != 0)
+			return (handle_error_str(no_such_file_or_dir, home));
+		else if (access(home, W_OK) != 0)
+			return (handle_error_str(access_denied, home));
 		shell->hist->hist_path = ft_strjoin(home, HISTFILE);
 		free(home);
 		if (shell->hist->hist_path == NULL)
-			return (1);
+			return (handle_error_str(malloc_error, "for histfile path"));
 		ft_setenv(shell->env, "HISTFILE", shell->hist->hist_path,
 														SHELL_VAR | RO_VAR);
 	}
@@ -49,18 +53,21 @@ static int		get_hist_path(t_shell *shell)
 
 int				get_histfile(t_shell *shell)
 {
+	int ret;
+
 	if (shell == NULL || shell->hist == NULL)
 		return (malloc_error);
-	if (get_hist_path(shell) == 1)
-		return (error_histpath);
+	ret = get_hist_path(shell);
+	if (ret != 0)
+		return (ret);
 	if (access(shell->hist->hist_path, F_OK) != 0)
 		return (0);
 	if (access(shell->hist->hist_path, R_OK) != 0)
-		return (no_read_permission_hist);
+		return (handle_error(no_read_permission_hist));
 	if (access(shell->hist->hist_path, W_OK) != 0)
-		return (no_write_permission_hist);
+		return (handle_error(no_write_permission_hist));
 	if (get_histfile_size(shell) == 1)
-		return (history_filesize_error);
+		return (handle_error(history_filesize_error));
 	return (0);
 }
 

@@ -246,26 +246,26 @@ Test(initialize_hist, invalid_NULL_hist)
 	cr_expect_eq(malloc_error, ret);
 }
 
-Test(initialize_hist, no_home_env)
+Test(initialize_hist, no_home_env, .init = cr_redirect_stderr)
 {
 	t_history	*hist;
 	int			ret;
-
+	char		buff[1024];
 	ret = 0;
 	unsetenv("HOME");
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
 	cr_assert_not_null(hist);
 	hist->hist_path = NULL;
-	cr_redirect_stderr();
 	t_shell	shell;
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.hist = hist;
 	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	fflush(stderr);
-	cr_expect_stderr_eq_str("Error in resolving the history path\n");
+	sprintf(buff, "%.1015s: HOME\n", g_error_str[env_not_found]);
+	cr_expect_stderr_eq_str(buff);
 	cr_expect_null(hist->hist_list);
-	cr_expect_eq(error_histpath, ret);
+	cr_expect_eq(env_not_found, ret);
 }
 
 Test(initialize_hist, check_format)
@@ -426,7 +426,7 @@ Test(initialize_hist, no_read_acc)
 	char		buff[1024];
 
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
-	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_read_acc");
+	hist->hist_path = ft_strjoin(strdup("/tmp"), "/.test_read_acc");
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
@@ -455,7 +455,7 @@ Test(initialize_hist, no_write_acc)
 
 	hist = (t_history *)ft_memalloc(sizeof(t_history));
 	cr_redirect_stderr();
-	hist->hist_path = ft_strjoin(getenv("HOME"), "/.test_write_acc");
+	hist->hist_path = ft_strjoin(strdup("/tmp"), "/.test_write_acc");
 	cr_expect_not_null(hist->hist_path, "MALLOC failed");
 	remove(hist->hist_path);
 	print_history_file(hist->hist_path, O_CREAT | O_WRONLY | O_TRUNC, 1);
@@ -893,25 +893,30 @@ Test(get_histfile_unit, invalid_NULL_shell)
 	cr_expect_eq(ret, malloc_error);
 }
 
-Test(get_histfile_unit, invalid_no_HOME)
+Test(get_histfile_unit, invalid_no_HOME, .init = cr_redirect_stderr)
 {
 	t_shell		shell;
 	t_history	hist;
 	int			ret;
+	char		buff[1024];
 
 	ft_bzero(&shell, sizeof(t_shell));
 	ft_bzero(&hist, sizeof(t_history));
 	shell.hist = &hist;
 	shell.env = dup_sys_env();
+	ft_unsetenv(shell.env, "HOME", VAR_TYPE);
 	ret = get_histfile(&shell);
-	cr_expect_eq(ret, error_histpath);
+	cr_expect_eq(ret, env_not_found);
+	fflush(stderr);
+	sprintf(buff, "%.1015s: HOME\n", g_error_str[env_not_found]);
+	cr_expect_stderr_eq_str(buff);
 }
 
 Test(get_histfile_unit, valid_from_HOME_normal)
 {
 	t_shell		shell;
 	t_history	hist;
-	t_env		env = {"HOME", "/tmp", SHELL_VAR, NULL};
+	t_env		env = {"HOME", "/tmp", ENV_VAR, NULL};
 	t_env		*temp_env;
 	int			ret;
 
