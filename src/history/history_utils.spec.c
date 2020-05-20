@@ -893,7 +893,7 @@ Test(get_histfile_unit, invalid_NULL_shell)
 	cr_expect_eq(ret, malloc_error);
 }
 
-Test(get_histfile_unit, invalid_no_HOME, .init = cr_redirect_stderr)
+Test(get_histfile_unit, invalid_no_HOME_var, .init = cr_redirect_stderr)
 {
 	t_shell		shell;
 	t_history	hist;
@@ -909,6 +909,47 @@ Test(get_histfile_unit, invalid_no_HOME, .init = cr_redirect_stderr)
 	cr_expect_eq(ret, env_not_found);
 	fflush(stderr);
 	sprintf(buff, "%.1015s: HOME\n", g_error_str[env_not_found]);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(get_histfile_unit, invalid_nonexistent_HOME, .init = cr_redirect_stderr)
+{
+	t_shell		shell;
+	t_history	hist;
+	int			ret;
+	char		buff[1024];
+
+	ft_bzero(&shell, sizeof(t_shell));
+	ft_bzero(&hist, sizeof(t_history));
+	shell.hist = &hist;
+	shell.env = dup_sys_env();
+	ft_setenv(shell.env, "HOME", "FOOBAR", VAR_TYPE);
+	ret = get_histfile(&shell);
+	cr_expect_eq(ret, no_such_file_or_dir);
+	fflush(stderr);
+	sprintf(buff, "%.515s: FOOBAR\n", g_error_str[no_such_file_or_dir]);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(get_histfile_unit, invalid_no_permission_HOME, .init = cr_redirect_stderr)
+{
+	if (getuid() == 0)
+		cr_skip_test("Cannot be tested as root!\n");
+
+	t_shell		shell;
+	t_history	hist;
+	int			ret;
+	char		buff[1024];
+
+	ft_bzero(&shell, sizeof(t_shell));
+	ft_bzero(&hist, sizeof(t_history));
+	shell.hist = &hist;
+	shell.env = dup_sys_env();
+	ft_setenv(shell.env, "HOME", "/root", VAR_TYPE);
+	ret = get_histfile(&shell);
+	cr_expect_eq(ret, access_denied);
+	fflush(stderr);
+	sprintf(buff, "%.515s: /root\n", g_error_str[access_denied]);
 	cr_expect_stderr_eq_str(buff);
 }
 
