@@ -12,7 +12,29 @@
 
 #include "environment.h"
 
-static	void	init_defaults(t_env *env)
+static void		init_histsize(t_env *env)
+{
+	char		*temp;
+	int			histsize;
+
+	histsize = HISTSIZE;
+	temp = ft_getenv(env, "HISTSIZE", ENV_VAR);
+	if (temp != NULL)
+		histsize = ft_atoi(temp);
+	if (histsize < 0)
+		histsize = 1;
+	free(temp);
+	temp = ft_itoa(histsize);
+	if (temp == NULL)
+		ft_setenv(env, "HISTSIZE", "1", SHELL_VAR | RO_VAR);
+	else
+	{
+		ft_setenv(env, "HISTSIZE", temp, SHELL_VAR | RO_VAR);
+		free(temp);
+	}
+}
+
+static void		init_defaults(t_env *env)
 {
 	char	*temp;
 	int		number;
@@ -23,11 +45,21 @@ static	void	init_defaults(t_env *env)
 		number = ft_atoi(temp);
 	free(temp);
 	temp = ft_itoa(number + 1);
-	ft_setenv(env, "SHLVL", temp, ENV_VAR);
+	if (temp == NULL)
+		ft_setenv(env, "SHLVL", "1", ENV_VAR);
+	else
+		ft_setenv(env, "SHLVL", temp, ENV_VAR);
+	free(temp);
 	temp = ft_getenv(env, "PATH", ENV_VAR);
 	if (temp == NULL)
 		ft_setenv(env, "PATH", "/bin:/usr/bin:/usr/local/bin:", ENV_VAR);
 	free(temp);
+	temp = ft_getenv(env, "PWD", ENV_VAR);
+	if (temp == NULL)
+		temp = getcwd(NULL, 0);
+	ft_setenv(env, "PWD", temp, ENV_VAR);
+	free(temp);
+	init_histsize(env);
 }
 
 static t_env	*new_env_list_item(char *env_variable)
@@ -77,11 +109,13 @@ static t_env	*empty_env_init(void)
 		{
 			free(new->key);
 			free(new->value);
+			free(new);
 			handle_error(malloc_error);
 			return (NULL);
 		}
 	}
 	new->next = NULL;
+	init_defaults(new);
 	return (new);
 }
 

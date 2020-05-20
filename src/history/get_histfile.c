@@ -15,21 +15,10 @@
 #include "handle_error.h"
 #include "environment.h"
 
-static size_t	get_history_size(t_shell *shell)
+static size_t	get_histfile_size(t_shell *shell)
 {
 	struct stat	stats;
-	char		*temp;
-	int			histsize;
 
-	histsize = HISTSIZE;
-	temp = ft_getenv(shell->env, "HISTSIZE", ENV_VAR);
-	if (temp != NULL)
-		histsize = ft_atoi(temp);
-	if (histsize < 0)
-		histsize = 1;
-	free(temp);
-	temp = ft_itoa(histsize);
-	ft_setenv(shell->env, "HISTSIZE", temp, SHELL_VAR | RO_VAR);
 	if (stat(shell->hist->hist_path, &stats) == -1)
 		return (1);
 	shell->hist->file_size = (size_t)(stats.st_size);
@@ -70,7 +59,7 @@ int				get_histfile(t_shell *shell)
 		return (no_read_permission_hist);
 	if (access(shell->hist->hist_path, W_OK) != 0)
 		return (no_write_permission_hist);
-	if (get_history_size(shell) == 1)
+	if (get_histfile_size(shell) == 1)
 		return (history_filesize_error);
 	return (0);
 }
