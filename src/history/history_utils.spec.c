@@ -143,6 +143,25 @@ Test(cut_split, empty_history_str_check)
 	cr_expect_null(split);
 }
 
+Test(cut_split, weird_format_check)
+{
+	t_history	*hist;
+	char		**split;
+
+	hist = (t_history *)ft_memalloc(sizeof(t_history));
+	cr_assert_not_null(hist, "MALLOC failed");
+	hist->hist_path = NULL;
+	hist->max_index = 0;
+	hist->current_index = 0;
+	t_shell shell;
+	memset(&shell, 0, sizeof(t_shell));
+	shell.hist = hist;
+	split = cut_split_history(&shell, ":0:foo\n:1bar\n", 0);
+	cr_assert_not_null(split);
+	cr_assert_not_null(split[0]);
+	cr_expect_str_eq(":0:foo\n:1bar", split[0]);
+}
+
 Test(cut_split, only_newline_check)
 {
 	t_history	*hist;
@@ -888,21 +907,27 @@ Test(get_histfile_unit, invalid_no_HOME)
 	cr_expect_eq(ret, error_histpath);
 }
 
-Test(get_histfile_unit, valid_normal)
+Test(get_histfile_unit, valid_from_HOME_normal)
 {
 	t_shell		shell;
 	t_history	hist;
 	t_env		env = {"HOME", "/tmp", SHELL_VAR, NULL};
+	t_env		*temp_env;
 	int			ret;
 
 	ft_bzero(&shell, sizeof(t_shell));
 	ft_bzero(&hist, sizeof(t_history));
 	shell.hist = &hist;
-	shell.env = dup_sys_env();
 	shell.env = &env;
 	ret = get_histfile(&shell);
 	cr_expect_eq(ret, 0);
 	cr_expect_str_eq(hist.hist_path, "/tmp/.cetsh_history");
+	cr_assert_not_null(env.next);
+	temp_env = env.next;
+	cr_expect_str_eq(temp_env->key, "HISTFILE");
+	cr_expect_str_eq(temp_env->value, "/tmp/.cetsh_history");
+	cr_expect_eq(temp_env->type, SHELL_VAR | RO_VAR);
+	cr_expect_null(temp_env->next);
 }
 
 Test(free_history_unit, invalid_NULL_hist)

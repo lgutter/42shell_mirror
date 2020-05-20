@@ -117,13 +117,5 @@ char			**cut_split_history(t_shell *shell, char *history, size_t i)
 	if (ft_strlen(&(history[i])) == 0)
 		return (NULL);
 	split = history_split(shell->hist, history, i);
-	if (split == NULL)
-		return (NULL);
-	else if (split != NULL && split[0] == NULL)
-	{
-		split[0] = ft_strdup("");
-		if (split[0] == NULL)
-			return (NULL);
-	}
 	return (split);
 }
