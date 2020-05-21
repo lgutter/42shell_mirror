@@ -70,6 +70,13 @@ Test(unit_ft_dup_sys_env, mandatory_basic_init_empty_environ)
 	cr_expect_str_eq(current->key, "HISTSIZE");
 	cr_expect_str_eq(current->value, ft_itoa(HISTSIZE));
 	cr_expect_eq(current->type, SHELL_VAR | RO_VAR);
+	cr_assert_not_null(current->next);
+	current = current->next;
+	cr_assert_not_null(current->key);
+	cr_assert_not_null(current->value);
+	cr_expect_str_eq(current->key, "TERM");
+	cr_expect_str_eq(current->value, "vt100");
+	cr_expect_eq(current->type, ENV_VAR);
 	cr_expect_null(current->next);
 }
 
@@ -118,6 +125,13 @@ Test(unit_ft_dup_sys_env, mandatory_basic_init_empty_environ_but_with_histsize)
 	cr_expect_str_eq(current->key, "HISTSIZE");
 	cr_expect_str_eq(current->value, "1");
 	cr_expect_eq(current->type, SHELL_VAR | RO_VAR);
+	cr_assert_not_null(current->next);
+	current = current->next;
+	cr_assert_not_null(current->key);
+	cr_assert_not_null(current->value);
+	cr_expect_str_eq(current->key, "TERM");
+	cr_expect_str_eq(current->value, "vt100");
+	cr_expect_eq(current->type, ENV_VAR);
 	cr_expect_null(current->next);
 }
 

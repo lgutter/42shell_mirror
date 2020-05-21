@@ -12,7 +12,7 @@
 
 #include "environment.h"
 
-static void		init_histsize(t_env *env)
+static void		init_histsize_term(t_env *env)
 {
 	char		*temp;
 	int			histsize;
@@ -32,6 +32,10 @@ static void		init_histsize(t_env *env)
 		ft_setenv(env, "HISTSIZE", temp, SHELL_VAR | RO_VAR);
 		free(temp);
 	}
+	temp = ft_getenv(env, "TERM", ENV_VAR);
+	if (temp == NULL)
+		ft_setenv(env, "TERM", "vt100", ENV_VAR);
+	free(temp);
 }
 
 static void		init_defaults(t_env *env)
@@ -59,7 +63,7 @@ static void		init_defaults(t_env *env)
 		temp = getcwd(NULL, 0);
 	ft_setenv(env, "PWD", temp, ENV_VAR);
 	free(temp);
-	init_histsize(env);
+	init_histsize_term(env);
 }
 
 static t_env	*new_env_list_item(char *env_variable)
