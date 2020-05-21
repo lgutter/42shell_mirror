@@ -15,9 +15,16 @@
 #include <criterion/assert.h>
 #include <stdio.h>
 #include "builtins.h"
+#include "error_str.h"
 
 static void redirect_std_out(void)
 {
+	cr_redirect_stdout();
+}
+
+static void redirect_std_err_out(void)
+{
+	cr_redirect_stderr();
 	cr_redirect_stdout();
 }
 
@@ -25,9 +32,8 @@ Test(unit_builtin_exit, basic_mandatory_exit_status_code_42, .init = redirect_st
 {
 	t_command	command;
 	int			ret;
-	int			stat_loc = -1;
-	pid_t	pid;
 	t_env		*env = (t_env *)malloc(sizeof(t_env) * 1);
+	char		*temp;
 
 	env->key = strdup("STATUS");
 	env->value = strdup("42");
@@ -37,33 +43,20 @@ Test(unit_builtin_exit, basic_mandatory_exit_status_code_42, .init = redirect_st
 	command.argc = 1;
 	command.envp = NULL;
 	command.path = NULL;
-	pid = fork();
-	if (pid == 0)
-	{
-		builtin_exit(&command, env);
-		exit(-42);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &stat_loc, 0);
-		ret = WEXITSTATUS(stat_loc);
-		cr_expect_eq(ret, 42, "expected ret %i, got %i!", 42, ret);
-		fflush(stdout);
-		cr_assert_stdout_eq_str("exit\n");
-	}
-	else
-	{
-		cr_assert_fail("fork failed\n");
-	}
+	ret = builtin_exit(&command, env);
+	cr_expect_eq(ret, exit_shell_code, "expected ret %i, got %i!", exit_shell_code, ret);
+	temp = ft_getenv(env, "EXIT_CODE", SHELL_VAR);
+	cr_expect_str_eq(temp, "42", "expected exit code var %s, got %s!", "42", temp);
+	fflush(stdout);
+	cr_assert_stdout_eq_str("exit\n");
 }
 
 Test(unit_builtin_exit, basic_mandatory_error_no_exit_code, .init = redirect_std_out)
 {
 	t_command	command;
 	int			ret;
-	int			stat_loc = -1;
-	pid_t	pid;
 	t_env		*env = (t_env *)malloc(sizeof(t_env) * 1);
+	char		*temp;
 
 	env->key = strdup("FOO");
 	env->value = strdup("BAR");
@@ -73,65 +66,43 @@ Test(unit_builtin_exit, basic_mandatory_error_no_exit_code, .init = redirect_std
 	command.argc = 1;
 	command.envp = NULL;
 	command.path = NULL;
-	pid = fork();
-	if (pid == 0)
-	{
-		builtin_exit(&command, env);
-		exit(-42);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &stat_loc, 0);
-		ret = WEXITSTATUS(stat_loc);
-		cr_assert_eq(ret, 0);
-		fflush(stdout);
-		cr_assert_stdout_eq_str("exit\n");
-	}
-	else
-	{
-		cr_assert_fail("fork failed\n");
-	}
+	ret = builtin_exit(&command, env);
+	cr_expect_eq(ret, exit_shell_code, "expected ret %i, got %i!", exit_shell_code, ret);
+	temp = ft_getenv(env, "EXIT_CODE", SHELL_VAR);
+	cr_expect_str_eq(temp, "0", "expected exit code var %s, got %s!", "0", temp);
+	fflush(stdout);
+	cr_assert_stdout_eq_str("exit\n");
 }
 
-Test(unit_builtin_exit, undefined_error_nothing_defined, .init = redirect_std_out)
+Test(unit_builtin_exit, undefined_error_nothing_defined, .init = redirect_std_err_out)
 {
 	t_command	command;
 	int			ret;
-	int			stat_loc = -1;
-	pid_t	pid;
 	t_env		*env = NULL;
+	char		*temp;
+	char		buff[1024];
 
 	command.argv = NULL;
 	command.argc = 0;
 	command.envp = NULL;
 	command.path = NULL;
-	pid = fork();
-	if (pid == 0)
-	{
-		builtin_exit(&command, env);
-		exit(-42);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &stat_loc, 0);
-		ret = WEXITSTATUS(stat_loc);
-		cr_assert_eq(ret, 0);
-		fflush(stdout);
-		cr_assert_stdout_eq_str("exit\n");
-	}
-	else
-	{
-		cr_assert_fail("fork failed\n");
-	}
+	ret = builtin_exit(&command, env);
+	cr_expect_eq(ret, exit_shell_code, "expected ret %i, got %i!", exit_shell_code, ret);
+	temp = ft_getenv(env, "EXIT_CODE", SHELL_VAR);
+	cr_expect_null(temp);
+	fflush(stdout);
+	cr_assert_stdout_eq_str("exit\n");
+	fflush(stderr);
+	sprintf(buff, "%.1022s\n", g_error_str[env_empty_error]);
+	cr_expect_stderr_eq_str(buff);
 }
 
 Test(unit_builtin_exit, basic_bonus_error_valid_argument_exit_code, .init = redirect_std_out)
 {
 	t_command	command;
 	int			ret;
-	int			stat_loc = -1;
-	pid_t	pid;
 	t_env		*env = (t_env *)malloc(sizeof(t_env) * 1);
+	char		*temp;
 
 	env->key = strdup("FOO");
 	env->value = strdup("BAR");
@@ -141,23 +112,11 @@ Test(unit_builtin_exit, basic_bonus_error_valid_argument_exit_code, .init = redi
 	command.argc = 2;
 	command.envp = NULL;
 	command.path = NULL;
-	pid = fork();
-	if (pid == 0)
-	{
-		builtin_exit(&command, env);
-		exit(-42);
-	}
-	else if (pid > 0)
-	{
-		waitpid(pid, &stat_loc, 0);
-		ret = WEXITSTATUS(stat_loc);
-		cr_assert_eq(ret, 45);
-		fflush(stdout);
-		cr_assert_stdout_eq_str("exit\n");
-	}
-	else
-	{
-		cr_assert_fail("fork failed\n");
-	}
+	ret = builtin_exit(&command, env);
+	cr_expect_eq(ret, exit_shell_code, "expected ret %i, got %i!", exit_shell_code, ret);
+	temp = ft_getenv(env, "EXIT_CODE", SHELL_VAR);
+	cr_expect_str_eq(temp, "45", "expected exit code var %s, got %s!", "45", temp);
+	fflush(stdout);
+	cr_assert_stdout_eq_str("exit\n");
 }
 

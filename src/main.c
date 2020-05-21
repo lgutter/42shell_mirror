@@ -45,22 +45,28 @@ int				cetushell(void)
 {
 	t_shell		*shell;
 	char		*input;
+	int			ret;
 
+	ret = 0;
 	shell = init_shell();
 	if (shell == NULL)
 		return (1);
-	while (1)
+	while (ret != exit_shell_code)
 	{
 		input = prompt_shell(shell, PROMPT_NORMAL);
 		if (input == NULL)
 			break ;
-		handle_input(shell, &input);
+		ret = handle_input(shell, &input);
 		update_history(shell->hist, shell->env, input);
 		free(input);
 		input = NULL;
 	}
+	input = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
+	if (input != NULL)
+		ret = ft_atoi(input);
+	free(input);
 	free_shell(shell, 1);
-	return (0);
+	return (ret);
 }
 
 int				main(int ac, char **av)
@@ -69,12 +75,7 @@ int				main(int ac, char **av)
 		ft_dprintf(2, "Huh? why %s? No arguments needed!\n", av[1]);
 	else
 	{
-		while (21)
-		{
-			if (cetushell() == 1)
-				return (0);
-			printf("ERROR! GOT BACK IN MAIN BUT DID NOT EXIT!\n");
-		}
+		return (cetushell());
 	}
 	return (1);
 }

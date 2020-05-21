@@ -22,14 +22,14 @@ static int	parent_wait(int pipe_fds[2], t_pipe_sequence *pipe_seq,
 	close(pipe_fds[1]);
 	if (dup2(pipe_fds[0], STDIN_FILENO) < 0)
 	{
-		handle_error_int(dup2_fd_fail, STDIN_FILENO);
+		ret = handle_error_int(dup2_fd_fail, STDIN_FILENO);
 	}
 	else
 	{
 		exec_pipe_sequence(pipe_seq->next, env);
 		waitpid(child_pid, &stat_loc, 0);
-		if (ft_setstatus(env, WEXITSTATUS(stat_loc)) != 0)
-			ret = WEXITSTATUS(stat_loc);
+		ft_setstatus(env, WEXITSTATUS(stat_loc));
+		ret = WEXITSTATUS(stat_loc);
 	}
 	close(pipe_fds[0]);
 	return (ret);
@@ -72,7 +72,6 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_env *env_list)
 	else
 	{
 		ret = exec_simple_command(pipe_seq->simple_command, env_list);
-		std_fd_restore(old_fds);
 		if (pipe_seq->next != NULL)
 			ret = handle_error_str(parsing_error,
 								"no pipe operator, but more pipe sequences");

@@ -44,7 +44,7 @@ Test(exec_complete_command_unit, valid_basic_command, .init = redirect_std_err_o
 	fflush(stdout);
 	cr_expect_stdout_eq_str("foo\n");
 	fflush(stderr);
-	sprintf(buff, "%.1022s\n", g_error_str[env_empty_error]);
+	sprintf(buff, "%.510s\n%.510s\n", g_error_str[env_empty_error], g_error_str[env_empty_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -60,7 +60,7 @@ Test(exec_complete_command_unit, invalid_empty_simple_cmd, .init = redirect_std_
 	ret = exec_complete_command(NULL, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%.1008s: no arguments\n", g_error_str[parsing_error]);
+	sprintf(buff, "%.488s: no arguments\n%.510s\n", g_error_str[parsing_error], g_error_str[env_empty_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -75,7 +75,7 @@ Test(exec_complete_command_unit, invalid_NULL_simple_cmd_no_pipe, .init = redire
 	ret = exec_complete_command(NULL, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	fflush(stdout);
-	sprintf(buff, "%.1001s: NULL simple command\n", g_error_str[parsing_error]);
+	sprintf(buff, "%.485s: NULL simple command\n%.510s\n", g_error_str[parsing_error], g_error_str[env_empty_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -89,7 +89,7 @@ Test(exec_complete_command_unit, invalid_NULL_pipe_seq, .init = redirect_std_err
 	ret = exec_complete_command(NULL, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	fflush(stdout);
-	sprintf(buff, "%.1000s: NULL pipe sequence\n", g_error_str[parsing_error]);
+	sprintf(buff, "%.480s: NULL pipe sequence\n%.510s\n", g_error_str[parsing_error], g_error_str[env_empty_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 

@@ -57,6 +57,7 @@ typedef enum		e_error
 	var_not_set,
 	restore_fd_fail,
 	dup2_fd_fail,
+	exit_shell_code,
 	error_count,
 }					t_error;
 

@@ -21,12 +21,15 @@ int		exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd)
 	if (shell != NULL)
 		env = shell->env;
 	ret = 0;
-	while (comp_cmd != NULL)
+	while (comp_cmd != NULL && ret != exit_shell_code)
 	{
 		ret = word_processing(shell, comp_cmd);
 		if (ret == 0)
 			ret = exec_pipe_sequence(comp_cmd->pipe_sequence, env);
 		comp_cmd = comp_cmd->next;
+		if (g_error_internal != 0)
+			ft_setstatus(env, g_error_internal);
+		g_error_internal = 0;
 	}
 	return (ret);
 }

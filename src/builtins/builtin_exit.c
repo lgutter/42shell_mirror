@@ -15,13 +15,24 @@
 
 int		builtin_exit(t_command *command, t_env *env)
 {
-	char *prev_status;
+	char	*temp;
+	int		final_code;
 
-	prev_status = ft_getenv(env, "STATUS", SHELL_VAR);
+	temp = ft_getenv(env, "STATUS", SHELL_VAR);
 	ft_printf("exit\n");
 	configure_terminal(NULL, 0);
-	if (command->argc == 1)
-		exit(prev_status ? ft_atoi(prev_status) : 0);
+	if (command->argc > 1)
+		final_code = ft_atoi(command->argv[1]);
+	else if (temp == NULL)
+		final_code = 0;
 	else
-		exit(ft_atoi(command->argv[1]));
+		final_code = ft_atoi(temp);
+	free(temp);
+	temp = ft_itoa(final_code);
+	if (temp == NULL)
+		ft_setenv(env, "EXIT_CODE", "1", SHELL_VAR | RO_VAR);
+	else
+		ft_setenv(env, "EXIT_CODE", temp, SHELL_VAR | RO_VAR);
+	free(temp);
+	return (exit_shell_code);
 }
