@@ -126,7 +126,7 @@ int				initialize_history(t_shell *shell)
 		}
 		shell->hist->real_num_index = get_last_index(split);
 		ret = create_history_list(&(shell->hist->hist_list), split);
-		return (ret);
+		free_dchar_arr(split);
 	}
 	return (ret);
 }

@@ -59,7 +59,6 @@ typedef struct			s_cursor
 typedef struct			s_shell
 {
 	struct termios		term;
-	char				**envi;
 	t_cursor			cursor;
 	struct winsize		winsize;
 	t_buff				*buffer;

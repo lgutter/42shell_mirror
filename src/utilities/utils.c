@@ -57,8 +57,8 @@ int		free_shell(t_shell *shell, int ret)
 			free(shell->buffer);
 		shell->buffer = NULL;
 		configure_terminal(shell, 0);
-		free(shell);
 		free_env_list(shell->env);
+		free(shell);
 	}
 	return (ret);
 }
