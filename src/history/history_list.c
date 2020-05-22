@@ -13,8 +13,9 @@
 #include "cetushell.h"
 #include "history.h"
 #include "handle_error.h"
+# include "environment.h"
 
-static void		remove_first_element(t_hist_list **start)
+static void	remove_first_element(t_hist_list **start)
 {
 	t_hist_list		*temp;
 	size_t			i;
@@ -38,25 +39,32 @@ static void		remove_first_element(t_hist_list **start)
 	}
 }
 
-static void		print_new_history_line(char *path, int oflag, char *buff)
+static void	print_new_history_line(t_history *hist, char *buff)
 {
 	int			fd_open;
 
-	if (path == NULL || buff == NULL)
-		return ;
-	fd_open = open(path, oflag, 0644);
-	if (fd_open == -1)
-		return ;
-	ft_dprintf(fd_open, "%s\n", buff);
-	close(fd_open);
+	if (hist->hist_path != NULL && buff != NULL)
+	{
+		fd_open = open(hist->hist_path, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (fd_open != -1)
+		{
+			ft_dprintf(fd_open, "%s\n", buff);
+			close(fd_open);
+		}
+	}
+	hist->current_index = hist->max_index + 1;
+	free(hist->buff_temp);
+	hist->buff_temp = NULL;
+	free(buff);
 }
 
-int				add_remove_update_history(t_history *hist, char *buff)
+int			update_history(t_history *hist, t_env *env, char *buff)
 {
 	char	*tmp;
 	size_t	len;
+	size_t	histsize;
 
-	tmp = NULL;
+	histsize = get_histsize(env);
 	if (buff == NULL || ft_strlen(buff) == 0 || hist == NULL)
 		return (0);
 	if (hist->hist_list != NULL)
@@ -66,21 +74,17 @@ int				add_remove_update_history(t_history *hist, char *buff)
 	if (tmp == NULL)
 		return (1);
 	ft_snprintf(tmp, len, ":%d:%s", hist->real_num_index, buff);
-	if (hist->max_index < HISTSIZE && hist->hist_list != NULL)
+	if (hist->max_index < (histsize - 1) && hist->hist_list != NULL)
 		hist->max_index++;
 	add_history_element(&hist->hist_list, tmp, hist->max_index);
-	if (hist->max_index >= HISTSIZE)
+	if (hist->max_index >= (histsize - 1))
 		remove_first_element(&hist->hist_list);
-	print_new_history_line(hist->hist_path, O_WRONLY | O_CREAT | O_APPEND, tmp);
-	hist->current_index = hist->max_index + 1;
-	free(hist->buff_temp);
-	hist->buff_temp = NULL;
-	free(tmp);
+	print_new_history_line(hist, tmp);
 	return (0);
 }
 
-static int		change_values(t_hist_list *current, t_hist_list *prev,
-size_t i, char *buff)
+static int	change_values(t_hist_list *current, t_hist_list *prev,
+							size_t i, char *buff)
 {
 	current->prev = prev;
 	current->next = NULL;
@@ -91,8 +95,7 @@ size_t i, char *buff)
 	return (0);
 }
 
-t_hist_list		*add_history_element(t_hist_list **start, char *buff
-, size_t i)
+t_hist_list	*add_history_element(t_hist_list **start, char *buff, size_t i)
 {
 	t_hist_list *current;
 	t_hist_list *prev;

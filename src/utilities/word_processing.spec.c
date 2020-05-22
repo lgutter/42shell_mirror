@@ -179,7 +179,7 @@ Test(word_processing_unit, valid_single_token_no_processing)
 	expected_command = parse_complete_command(&token1);
 	ret = diff_complete_command(command, expected_command);
 	cr_assert_eq(ret, expected_diff_ret, "FATAL in prep: expected return %i, got %i.", expected_diff_ret, ret);
-	ret = word_processing(NULL, NULL, command);
+	ret = word_processing(NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	cr_assert_neq(command, NULL);
 	cr_assert_neq(expected_command, NULL);
@@ -217,7 +217,7 @@ Test(word_processing_unit, valid_single_token_remove_quotes)
 	expected_command = parse_complete_command(&token1);
 	ret = diff_complete_command(command, expected_command);
 	cr_assert_eq(ret, 0, "FATAL in prep: expected return %i, got %i.", 0, ret);
-	ret = word_processing(NULL, NULL, command);
+	ret = word_processing(NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
@@ -257,7 +257,7 @@ Test(word_processing_unit, valid_argument_redir_remove_quotes)
 	command = parse_complete_command(&token1);
 	token1 = token_start;
 	expected_command = parse_complete_command(&token1);
-	ret = word_processing(NULL, NULL, command);
+	ret = word_processing(NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
@@ -308,7 +308,7 @@ Test(word_processing_unit, valid_argument_redir_io_number_arg_remove_quotes)
 	command = parse_complete_command(&token1);
 	token1 = token_start;
 	expected_command = parse_complete_command(&token1);
-	ret = word_processing(NULL, NULL, command);
+	ret = word_processing(NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
@@ -357,7 +357,7 @@ Test(word_processing_unit, valid_two_arguments_redir_remove_quotes)
 	command = parse_complete_command(&token1);
 	token1 = token_start;
 	expected_command = parse_complete_command(&token1);
-	ret = word_processing(NULL, NULL, command);
+	ret = word_processing(NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
@@ -407,16 +407,19 @@ Test(word_processing_unit, valid_argument_redir_expansion_with_quotes)
 	int				expected_ret = 0;
 	int				expected_diff_ret = 1;
 	char			*expected_str = "bar";
+	t_shell			shell;
 
+	ft_bzero(&shell, sizeof(t_shell));
 	env_list->key = "foo";
 	env_list->value = "bar";
 	env_list->type = ENV_VAR;
 	env_list->next = NULL;
+	shell.env = env_list;
 	token_start = token1;
 	command = parse_complete_command(&token1);
 	token1 = token_start;
 	expected_command = parse_complete_command(&token1);
-	ret = word_processing(NULL, env_list, command);
+	ret = word_processing(&shell, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	ret = diff_complete_command(command, expected_command);
 	cr_expect_eq(ret, expected_diff_ret, "expected return %i, got %i.", expected_diff_ret, ret);
@@ -490,20 +493,15 @@ Test(word_processing_unit, invalid_NULL_shell_unterminated_quote)
 	t_token 		*token1 = init_token(WORD, "\"$foo", token2);
 	t_token 		*token_start = token1;
 	t_complete_cmd	*command;
-	t_env			*env_list = ft_memalloc(sizeof(t_env) * 1);
 	int				ret;
 	int				expected_ret = -1;
-	char			*expected_str = "bar";
+	char			*expected_str = "";
 	char			*expected_str2 = "\"$foo";
 
-	env_list->key = "foo";
-	env_list->value = "bar";
-	env_list->type = ENV_VAR;
-	env_list->next = NULL;
 	token_start = token1;
 	command = parse_complete_command(&token1);
 	token1 = token_start;
-	ret = word_processing(NULL, env_list, command);
+	ret = word_processing(NULL, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	cr_assert_neq(command, NULL);
 	cr_expect_eq(NULL, command->next);
@@ -531,11 +529,13 @@ Test(word_processing_unit, valid_NULL_env_expansions)
 	int				ret;
 	int				expected_ret = 0;
 	char			*expected_str = "";
+	t_shell			shell;
 
+	ft_bzero(&shell, sizeof(t_shell));
 	token_start = token1;
 	command = parse_complete_command(&token1);
 	token1 = token_start;
-	ret = word_processing(NULL, NULL, command);
+	ret = word_processing(&shell, command);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	cr_assert_neq(command, NULL);
 	cr_expect_eq(NULL, command->next);
@@ -555,16 +555,11 @@ Test(word_processing_unit, valid_NULL_env_expansions)
 
 Test(word_processing_unit, invalid_NULL_command, .init = redirect_std_err)
 {
-	t_env			*env_list = ft_memalloc(sizeof(t_env) * 1);
 	int				ret;
 	int				expected_ret = parsing_error;
 	char			buff[1024];
 
-	env_list->key = "foo";
-	env_list->value = "bar";
-	env_list->type = ENV_VAR;
-	env_list->next = NULL;
-	ret = word_processing(NULL, env_list, NULL);
+	ret = word_processing(NULL, NULL);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	fflush(stdout);
 	sprintf(buff, "%.999s: NULL complete command\n", g_error_str[parsing_error]);
@@ -573,17 +568,13 @@ Test(word_processing_unit, invalid_NULL_command, .init = redirect_std_err)
 
 Test(word_processing_unit, invalid_NULL_simple_command, .init = redirect_std_err)
 {
-	t_env			*env_list = ft_memalloc(sizeof(t_env) * 1);
 	int				ret;
 	int				expected_ret = parsing_error;
 	t_pipe_sequence	pipe_seq = {NULL, no_pipe, NULL};
 	t_complete_cmd	compl_cmd = {&pipe_seq, no_seperator_op, NULL};
 	char			buff[1024];
 
-	env_list->key = "foo";
-	env_list->value = "bar";
-	env_list->next = NULL;
-	ret = word_processing(NULL, env_list, &compl_cmd);
+	ret = word_processing(NULL, &compl_cmd);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	fflush(stdout);
 	sprintf(buff, "%.1001s: NULL simple command\n", g_error_str[parsing_error]);
@@ -592,16 +583,12 @@ Test(word_processing_unit, invalid_NULL_simple_command, .init = redirect_std_err
 
 Test(word_processing_unit, invalid_NULL_pipe_seq, .init = redirect_std_err)
 {
-	t_env			*env_list = ft_memalloc(sizeof(t_env) * 1);
 	int				ret;
 	int				expected_ret = parsing_error;
 	t_complete_cmd	compl_cmd = {NULL, no_seperator_op, NULL};
 	char			buff[1024];
 
-	env_list->key = "foo";
-	env_list->value = "bar";
-	env_list->next = NULL;
-	ret = word_processing(NULL, env_list, &compl_cmd);
+	ret = word_processing(NULL, &compl_cmd);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	fflush(stdout);
 	sprintf(buff, "%.1000s: NULL pipe sequence\n", g_error_str[parsing_error]);
@@ -617,9 +604,8 @@ Test(word_processing_unit, invalid_empty_redirect, .init = redirect_std_err)
 	t_simple_cmd	simple_cmd = {&redirect, &argument, NULL};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, no_pipe, NULL};
 	t_complete_cmd  compl_cmd = {&pipe_seq, no_seperator_op, NULL};
-	t_env			env = {strdup("foo"), strdup("bar"), ENV_VAR, NULL};
 
-	int ret = word_processing(NULL, &env, &compl_cmd);
+	int ret = word_processing(NULL, &compl_cmd);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
 	char buff[1024];
 	fflush(stderr);
@@ -633,9 +619,8 @@ Test(word_processing_unit, invalid_incomplete_pipe, .init = redirect_std_err)
 	t_simple_cmd	simple_cmd = {NULL, NULL, NULL};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, pipe_op, NULL};
 	t_complete_cmd  compl_cmd = {&pipe_seq, no_seperator_op, NULL};
-	t_env			env = {strdup("foo"), strdup("bar"), ENV_VAR, NULL};
 
-	int ret = word_processing(NULL, &env, &compl_cmd);
+	int ret = word_processing(NULL, &compl_cmd);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
 	char buff[1024];
 	fflush(stderr);

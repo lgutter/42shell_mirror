@@ -13,45 +13,69 @@
 #include "cetushell.h"
 #include "input_control.h"
 #include "handle_input.h"
+#include "history.h"
 
-int			cetushell(void)
+static t_shell	*init_shell(void)
+{
+	t_shell		*shell;
+
+	shell = (t_shell *)ft_memalloc(sizeof(t_shell));
+	if (shell == NULL)
+		return (handle_error_p(malloc_error, NULL));
+	shell->buffer = (t_buff *)ft_memalloc(sizeof(t_buff));
+	shell->hist = (t_history *)ft_memalloc(sizeof(t_history));
+	shell->env = dup_sys_env();
+	ft_setenv(shell->env, "HOME", getenv("HOME"), SHELL_VAR);
+	configure_terminal(shell, 1);
+	if (shell->hist == NULL)
+		handle_error(malloc_error);
+	else
+		initialize_history(shell);
+	if (shell->buffer == NULL || shell->env == NULL)
+	{
+		free_shell(shell, 0);
+		if (shell->buffer == NULL)
+			handle_error(malloc_error);
+		shell = NULL;
+	}
+	return (shell);
+}
+
+int				cetushell(void)
 {
 	t_shell		*shell;
 	char		*input;
-	t_env		*env;
+	int			ret;
 
-	env = dup_sys_env();
-	shell = ft_memalloc(sizeof(t_shell));
-	shell->buffer = ft_memalloc(sizeof(t_buff));
-	shell->hist = (t_history *)ft_memalloc(sizeof(t_history));
-	if (shell == NULL || shell->buffer == NULL || env == NULL)
-		return (handle_error(malloc_error));
-	configure_terminal(shell, 1);
-	initialize_history(shell->hist);
-	while (1)
+	ret = 0;
+	shell = init_shell();
+	if (shell == NULL)
+		return (1);
+	while (ret != exit_shell_code)
 	{
 		input = prompt_shell(shell, PROMPT_NORMAL);
 		if (input == NULL)
 			break ;
-		handle_input(shell, &input, env);
-		add_remove_update_history(shell->hist, input);
+		ret = handle_input(shell, &input);
+		update_history(shell->hist, shell->env, input);
 		free(input);
 		input = NULL;
 	}
+	input = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
+	if (input != NULL)
+		ret = ft_atoi(input);
+	free(input);
 	free_shell(shell, 1);
-	free_env_list(env);
-	return (0);
+	return (ret);
 }
 
-int			main(int ac, char **av)
+int				main(int ac, char **av)
 {
 	if (ac != 1)
 		ft_dprintf(2, "Huh? why %s? No arguments needed!\n", av[1]);
 	else
 	{
-		while (21)
-			if (cetushell() == 1)
-				return (0);
+		return (cetushell());
 	}
 	return (1);
 }

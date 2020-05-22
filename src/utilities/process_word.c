@@ -12,7 +12,7 @@
 
 #include "handle_input.h"
 
-int	process_word(t_shell *shell, t_env *env_list, char **word, char expand)
+int	process_word(t_shell *shell, char **word, char expand)
 {
 	int	quote_type;
 
@@ -27,7 +27,7 @@ int	process_word(t_shell *shell, t_env *env_list, char **word, char expand)
 	}
 	if (expand == 'y' && (quote_type == 0 || quote_type == 2))
 	{
-		if (expand_variable(env_list, word) != 0)
+		if (expand_variable(shell, word) != 0)
 			return (-1);
 	}
 	if (count_quote_chars(*word) > 0)

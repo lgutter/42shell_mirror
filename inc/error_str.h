@@ -49,5 +49,6 @@ static const char	*g_error_str[error_count] = {
 	[var_not_set] = "Variable not set",
 	[restore_fd_fail] = "Failed to restore fd",
 	[dup2_fd_fail] = "Failed to redirect fd",
+	[exit_shell_code] = "exit code, this should not have been printed",
 };
 #endif

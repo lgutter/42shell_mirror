@@ -90,30 +90,30 @@ static int		expand_home(t_env *env_list, char **string)
 	return (ret);
 }
 
-int				expand_variable(t_env *env_list, char **string)
+int				expand_variable(t_shell *shell, char **string)
 {
 	int		ret;
 	char	*offset;
+	t_env	*env;
 
+	env = NULL;
+	if (shell != NULL)
+		env = shell->env;
 	if (string == NULL || *string == NULL)
 		return (-1);
 	ret = 0;
 	if ((*string)[0] == '~' && ((*string)[1] == '\0' || (*string)[1] == '/'))
 	{
-		ret = expand_home(env_list, string);
+		ret = expand_home(env, string);
 		if (ret == -1)
-		{
 			return (handle_error(malloc_error));
-		}
 	}
 	offset = ft_strchr(*string, '$');
 	while (offset != NULL && offset != &(*string)[ft_strlen(*string) - 1])
 	{
-		ret = expand_dollar(env_list, string, &offset);
+		ret = expand_dollar(env, string, &offset);
 		if (ret == -1)
-		{
 			return (handle_error(malloc_error));
-		}
 		offset = ft_strchr(offset, '$');
 	}
 	return (0);

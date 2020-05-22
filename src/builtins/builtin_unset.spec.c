@@ -35,7 +35,7 @@ Test(builtin_unset_env_unit, invalid_deny_read_only_unset, .init = redirect_std_
 	comm.argv[0] = ft_strdup("unsetenv");
 	comm.argv[1] = ft_strdup("READONLY");
 	comm.argv[2] = NULL;
-	ret = builtin_unset(&comm, &env);
+	ret = builtin_unset(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
 	char		buff[1024];
@@ -58,7 +58,7 @@ Test(builtin_unset_env_unit, valid_force_read_only_unset)
 	comm.argv[1] = ft_strdup("--force");
 	comm.argv[2] = ft_strdup("READONLY");
 	comm.argv[3] = NULL;
-	ret = builtin_unset(&comm, &env);
+	ret = builtin_unset(&comm, env);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	cr_expect_null(ft_getenv(env, "READONLY", ENV_VAR));
 }
@@ -76,7 +76,7 @@ Test(builtin_unset_env_unit, valid_normal_unset)
 	comm.argv[0] = ft_strdup("unsetenv");
 	comm.argv[1] = ft_strdup("NORMALVAR");
 	comm.argv[2] = NULL;
-	ret = builtin_unset(&comm, &env);
+	ret = builtin_unset(&comm, env);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	cr_expect_null(ft_getenv(env, "NORMALVAR", ENV_VAR));
 }
@@ -93,7 +93,7 @@ Test(builtin_unset_env_unit, valid_print_usage, .init = redirect_std_err)
 	comm.argv[0] = ft_strdup("unsetenv");
 	comm.argv[1] = ft_strdup("--help");
 	comm.argv[2] = NULL;
-	ret = builtin_unset(&comm, &env);
+	ret = builtin_unset(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	memset(buff, '\0', 1024);
 	fflush(stderr);
@@ -114,7 +114,7 @@ Test(builtin_unset_env_unit, invalid_invalid_option, .init = redirect_std_err)
 	comm.argv[1] = ft_strdup("--foo");
 	comm.argv[2] = ft_strdup("testinvalidoption=foo");
 	comm.argv[3] = NULL;
-	ret = builtin_unset(&comm, &env);
+	ret = builtin_unset(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	cr_expect_null(ft_getenv(env, "testinvalidoption", VAR_TYPE));
 	memset(buff, '\0', 1024);
@@ -135,7 +135,7 @@ Test(builtin_unset_env_unit, invalid_shell_no_arguments, .init = redirect_std_er
 	comm.argv = (char **)malloc(sizeof(char *) * 3);
 	comm.argv[0] = ft_strdup("unsetshell");
 	comm.argv[1] = NULL;
-	ret = builtin_unset(&comm, &start);
+	ret = builtin_unset(&comm, start);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	char		buff[1024];
 	memset(buff, '\0', 1024);
@@ -154,7 +154,7 @@ Test(builtin_unset_env_unit, invalid_NULL_env)
 	comm.argv = (char **)malloc(sizeof(char *) * 3);
 	comm.argv[0] = ft_strdup("unsetshell");
 	comm.argv[1] = NULL;
-	ret = builtin_unset(&comm, &start);
+	ret = builtin_unset(&comm, start);
 	cr_expect_eq(ret, -1, "ret is %d but must be %d", ret, -1);
 }
 
@@ -168,7 +168,7 @@ Test(builtin_unset_env_unit, invalid_NULL_argv)
 
 	comm.argc = 1;
 	comm.argv = NULL;
-	ret = builtin_unset(&comm, &start);
+	ret = builtin_unset(&comm, start);
 	cr_expect_eq(ret, -1, "ret is %d but must be %d", ret, -1);
 }
 
@@ -179,6 +179,6 @@ Test(builtin_unset_env_unit, invalid_NULL_command)
 	t_env		*start = &env;
 	int			ret = 0;
 
-	ret = builtin_unset(NULL, &start);
+	ret = builtin_unset(NULL, start);
 	cr_expect_eq(ret, -1, "ret is %d but must be %d", ret, -1);
 }

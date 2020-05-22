@@ -43,7 +43,7 @@ Test(builtin_cd_unit, valid_cd_oldpwd, .init = redirect_std_out)
 	comm.argv = (char **)malloc(sizeof(char *) * 2);
 	comm.argv[0] = "cd";
 	comm.argv[1] = "-";
-	ret = builtin_cd(&comm, &env);
+	ret = builtin_cd(&comm, env);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	getcwd(buff, 1024);
 	cr_expect_str_eq(buff, "/tmp", "did not change to correct dir! expected %s, got %s!", dir, buff);
@@ -69,7 +69,7 @@ Test(builtin_cd_unit, valid_cd_normal)
 	comm.argv[0] = "cd";
 	comm.argv[1] = dir;
 	comm.argv[2] = NULL;
-	ret = builtin_cd(&comm, &env);
+	ret = builtin_cd(&comm, env);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	cr_expect_str_eq(ft_getenv(env, "OLDPWD", VAR_TYPE), olddir);
 	getcwd(buff, 1024);
@@ -88,7 +88,7 @@ Test(builtin_cd_unit, invalid_cd_no_home, .init = redirect_std_err)
 	ret = ft_unsetenv(env, "HOME", VAR_TYPE);
 	cr_assert_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	comm.argc = 1;
-	ret = builtin_cd(&comm, &env);
+	ret = builtin_cd(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
 	sprintf(buff, "cd: HOME: %s\n", g_error_str[var_not_set]);
@@ -108,7 +108,7 @@ Test(builtin_cd_unit, invalid_cd_no_such_file, .init = redirect_std_err)
 	comm.argv[0] = "cd";
 	comm.argv[1] = "foobar";
 	comm.argv[2] = NULL;
-	ret = builtin_cd(&comm, &env);
+	ret = builtin_cd(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
 	sprintf(buff, "cd: foobar: %s\n", g_error_str[no_such_file_or_dir]);
@@ -129,7 +129,7 @@ Test(builtin_cd_unit, invalid_cd_no_oldpwd, .init = redirect_std_err)
 	comm.argv = (char **)malloc(sizeof(char *) * 2);
 	comm.argv[0] = "cd";
 	comm.argv[1] = "-";
-	ret = builtin_cd(&comm, &env);
+	ret = builtin_cd(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
 	sprintf(buff, "cd: OLDPWD: %s\n", g_error_str[var_not_set]);
@@ -145,7 +145,7 @@ Test(builtin_cd_unit, invalid_cd_many_args)
 
 	int ret = 0;
 	cr_redirect_stderr();
-	ret = builtin_cd(&comm, &env);
+	ret = builtin_cd(&comm, env);
 	fflush(stderr);
 	cr_expect_stderr_eq_str("cd: Too many arguments given\n");
 	cr_expect_eq(too_many_arguments, ret);

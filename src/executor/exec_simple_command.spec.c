@@ -26,6 +26,12 @@ static void redirect_std_err()
 	cr_redirect_stderr();
 }
 
+static void redirect_std_err_out()
+{
+	cr_redirect_stderr();
+	cr_redirect_stdout();
+}
+
 Test(exec_simple_command_unit, valid_basic_command, .init = redirect_std_out)
 {
 	char			**argv = ft_strsplit("/bin/echo foo", ' ');
@@ -112,17 +118,23 @@ Test(exec_simple_command_unit, invalid_no_exec_perm, .init = redirect_std_err)
 	remove(argv[0]);
 }
 
-Test(exec_simple_command_unit, invalid_NULL_env)
+Test(exec_simple_command_unit, valid_NULL_env, .init = redirect_std_err_out)
 {
 	char			**argv = ft_strsplit("/bin/echo foo", ' ');
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
 	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
 	int				ret;
-	int				exp_ret = parsing_error;
+	int				exp_ret = 0;
+	char			buff[1024];
 
 	ret = exec_simple_command(&simple_cmd, NULL);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	fflush(stdout);
+	cr_expect_stdout_eq_str("foo\n");
+	fflush(stderr);
+	sprintf(buff, "%s\n", g_error_str[env_empty_error]);
+	cr_expect_stderr_eq_str(buff);
 }
 
 Test(exec_simple_command_unit, invalid_NULL_argv)

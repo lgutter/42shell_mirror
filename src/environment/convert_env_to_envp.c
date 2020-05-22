@@ -39,13 +39,17 @@ static char		**fill_new_envp(char **envp, t_env *list_start, size_t count)
 	current = list_start;
 	while (index < count && current != NULL)
 	{
-		envp[index] = copy_key_value(current);
-		if (envp[index] == NULL)
+		if ((current->type & ENV_VAR) != 0)
 		{
-			handle_error(malloc_error);
-			return (NULL);
+			envp[index] = copy_key_value(current);
+			if (envp[index] == NULL)
+			{
+				free_dchar_arr(envp);
+				handle_error(malloc_error);
+				return (NULL);
+			}
+			index++;
 		}
-		index++;
 		current = current->next;
 	}
 	return (envp);
@@ -60,7 +64,8 @@ static size_t	get_env_size(t_env *list_start)
 	current = list_start;
 	while (current != NULL)
 	{
-		count++;
+		if ((current->type & ENV_VAR) != 0)
+			count++;
 		current = current->next;
 	}
 	return (count);
@@ -71,10 +76,8 @@ char			**convert_env_to_envp(t_env *list_start)
 	char	**envp;
 	size_t	count;
 
-	if (list_start == NULL)
-		return (NULL);
 	count = get_env_size(list_start);
-	envp = (char **)malloc(sizeof(char *) * (count + 1));
+	envp = (char **)ft_memalloc(sizeof(char *) * (count + 1));
 	if (envp == NULL)
 	{
 		handle_error(malloc_error);

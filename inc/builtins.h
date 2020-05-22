@@ -16,7 +16,7 @@
 # include "environment.h"
 # include "executor.h"
 
-typedef int			t_builtin_func(t_command *command, t_env **env);
+typedef int			t_builtin_func(t_command *command, t_env *env);
 
 struct				s_builtin
 {
@@ -26,12 +26,12 @@ struct				s_builtin
 
 int					is_builtin(char *exec_name);
 int					execute_builtin(t_command *command, t_env *env);
-int					builtin_cd(t_command *command, t_env **env);
-int					builtin_env(t_command *command, t_env **env);
-int					builtin_set(t_command *comm, t_env **env);
-int					builtin_unset(t_command *command, t_env **env);
-int					builtin_exit(t_command *command, t_env **env);
-int					builtin_echo(t_command *command, t_env **env);
-int					builtin_shellenv(t_command *command, t_env **env);
+int					builtin_cd(t_command *command, t_env *env);
+int					builtin_env(t_command *command, t_env *env);
+int					builtin_set(t_command *comm, t_env *env);
+int					builtin_unset(t_command *command, t_env *env);
+int					builtin_exit(t_command *command, t_env *env);
+int					builtin_echo(t_command *command, t_env *env);
+int					builtin_shellenv(t_command *command, t_env *env);
 
 #endif

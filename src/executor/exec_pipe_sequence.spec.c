@@ -89,7 +89,7 @@ Test(exec_pipe_sequence_unit, invalid_pipe_sequence_2_commands_no_pipe_op, .init
 	cr_expect_stderr_eq_str(buff);
 }
 
-Test(exec_pipe_sequence_unit, invalid_NULL_env)
+Test(exec_pipe_sequence_unit, foo_valid_NULL_env, .init = redirect_std_err_out)
 {
 	char			**argv = ft_strsplit("/bin/echo foo", ' ');
 	t_argument		argument2 = {strdup("foo"), NULL};
@@ -97,10 +97,16 @@ Test(exec_pipe_sequence_unit, invalid_NULL_env)
 	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, no_pipe, NULL};
 	int				ret;
-	int				exp_ret = parsing_error;
+	int				exp_ret = 0;
+	char			buff[1024];
 
 	ret = exec_pipe_sequence(&pipe_seq, NULL);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	fflush(stdout);
+	cr_expect_stdout_eq_str("foo\n");
+	fflush(stderr);
+	sprintf(buff, "%.1022s\n", g_error_str[env_empty_error]);
+	cr_expect_stderr_eq_str(buff);
 }
 
 Test(exec_pipe_sequence_unit, invalid_empty_simple_cmd)

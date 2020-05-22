@@ -91,7 +91,7 @@ static int		get_set_opts(char **argv, int *i)
 	return (opts);
 }
 
-int				builtin_set(t_command *comm, t_env **env)
+int				builtin_set(t_command *comm, t_env *env)
 {
 	int		i;
 	int		ret;
@@ -99,7 +99,7 @@ int				builtin_set(t_command *comm, t_env **env)
 
 	i = 1;
 	ret = 0;
-	if (comm == NULL || env == NULL || *env == NULL || comm->argv == NULL)
+	if (comm == NULL || env == NULL || comm->argv == NULL)
 		return (-1);
 	if (comm->argc == 1)
 	{
@@ -112,7 +112,7 @@ int				builtin_set(t_command *comm, t_env **env)
 		return (1);
 	while (i < comm->argc && comm->argv[i] != NULL)
 	{
-		if (resolve_set_values(*env, comm->argv[i], comm->argv[0], opts) != 0)
+		if (resolve_set_values(env, comm->argv[i], comm->argv[0], opts) != 0)
 			ret = 1;
 		i++;
 	}

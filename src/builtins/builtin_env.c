@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   builtin_env_2.c                                    :+:    :+:            */
+/*   builtin_env.c                                      :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
@@ -14,20 +14,20 @@
 #include "builtins.h"
 #include "executor.h"
 
-int				builtin_env(t_command *command, t_env **env)
+int				builtin_env(t_command *command, t_env *env)
 {
-	if (env == NULL || *env == NULL)
+	if (env == NULL)
 		return (0);
-	if (((*env)->type & ENV_VAR) != 0)
-		ft_printf("%s=%s%c", (*env)->key, (*env)->value, '\n');
-	return (builtin_env(command, &(*env)->next));
+	if ((env->type & ENV_VAR) != 0)
+		ft_printf("%s=%s%c", env->key, env->value, '\n');
+	return (builtin_env(command, env->next));
 }
 
-int				builtin_shellenv(t_command *command, t_env **env)
+int				builtin_shellenv(t_command *command, t_env *env)
 {
-	if (env == NULL || *env == NULL)
+	if (env == NULL)
 		return (0);
-	if (((*env)->type & SHELL_VAR) != 0)
-		ft_printf("%s=%s%c", (*env)->key, (*env)->value, '\n');
-	return (builtin_shellenv(command, &(*env)->next));
+	if ((env->type & SHELL_VAR) != 0)
+		ft_printf("%s=%s%c", env->key, env->value, '\n');
+	return (builtin_shellenv(command, env->next));
 }

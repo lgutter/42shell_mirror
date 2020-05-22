@@ -102,20 +102,20 @@ static int		create_history_list(t_hist_list **start, char **buff)
 	return (0);
 }
 
-int				initialize_history(t_history *hist)
+int				initialize_history(t_shell *shell)
 {
 	char	*cut;
 	char	**split;
 	int		ret;
 
-	if (hist == NULL)
-		return (handle_error(malloc_error));
-	hist->hist_list = NULL;
-	ret = get_histfile(hist);
+	if (shell == NULL || shell->hist == NULL)
+		return (malloc_error);
+	shell->hist->hist_list = NULL;
+	ret = get_histfile(shell);
 	if (ret == 0)
 	{
-		cut = read_history(hist);
-		split = cut_split_history(hist, cut, hist->file_size);
+		cut = read_history(shell->hist);
+		split = cut_split_history(shell, cut, shell->hist->file_size);
 		free(cut);
 		if (split == NULL)
 			return (0);
@@ -124,9 +124,9 @@ int				initialize_history(t_history *hist)
 			free_dchar_arr(split);
 			return (handle_error(histfile_format_error));
 		}
-		hist->real_num_index = get_last_index(split);
-		ret = create_history_list(&hist->hist_list, split);
-		return (ret);
+		shell->hist->real_num_index = get_last_index(split);
+		ret = create_history_list(&(shell->hist->hist_list), split);
+		free_dchar_arr(split);
 	}
-	return (handle_error(ret));
+	return (ret);
 }
