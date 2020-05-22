@@ -22,6 +22,7 @@
 
 # include "handle_error.h"
 # include "utils.h"
+
 /*
 **	Struct to store the environment variables in a linked list.
 **	fields:

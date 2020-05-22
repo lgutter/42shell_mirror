@@ -13,7 +13,7 @@
 #include "cetushell.h"
 #include "history.h"
 #include "handle_error.h"
-# include "environment.h"
+#include "environment.h"
 
 static void	remove_first_element(t_hist_list **start)
 {
