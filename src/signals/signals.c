@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/05/18 12:49:02 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/23 14:57:34 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/23 16:21:37 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,9 @@ void	signal_handler_exec(int sig)
 		g_signal_handler |= SIGINT_EXEC;
 }
 
-void	sigint_buffer(t_buff *buffer, t_cursor *cursor)
+char *sigint_buffer(char *input)
 {
-	if (g_signal_handler & SIGINT_BUFF)
-	{
-		remove_buff(buffer, cursor);
-		g_signal_handler &= ~SIGINT_BUFF;
-		buffer->state = RETURN_STATE;
-		send_terminal(CURSOR_DOWN);
-	}
+	free(input);
+	input = ft_strdup("");
+	return (input);
 }

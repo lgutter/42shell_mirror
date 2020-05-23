@@ -6,7 +6,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/14 11:52:43 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/23 16:21:37 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "input_control.h"
 #include "handle_input.h"
 #include "history.h"
+#include "signal_handler.h"
 
 static t_shell	*init_shell(void)
 {
@@ -41,6 +42,18 @@ static t_shell	*init_shell(void)
 	return (shell);
 }
 
+int			exit_shell(t_shell *shell, int ret)
+{
+	char	*exit_code;
+
+	exit_code = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
+	if (exit_code != NULL)
+		ret = ft_atoi(exit_code);
+	free(exit_code);
+	free_shell(shell, 1);
+	return (ret);
+}
+
 int				cetushell(void)
 {
 	t_shell		*shell;
@@ -54,19 +67,17 @@ int				cetushell(void)
 	while (ret != exit_shell_code)
 	{
 		input = prompt_shell(shell, PROMPT_NORMAL);
+		if (g_signal_handler & SIGINT_BUFF)
+			sigint_buffer(input);
 		if (input == NULL)
 			break ;
 		ret = handle_input(shell, &input);
 		update_history(shell->hist, shell->env, input);
 		free(input);
 		input = NULL;
+		g_signal_handler &= ~SIGINT_BUFF;
 	}
-	input = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
-	if (input != NULL)
-		ret = ft_atoi(input);
-	free(input);
-	free_shell(shell, 1);
-	return (ret);
+	return (exit_shell(shell, ret));
 }
 
 int				main(int ac, char **av)

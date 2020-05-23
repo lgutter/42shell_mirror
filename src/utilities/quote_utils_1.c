@@ -6,13 +6,14 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/15 12:48:27 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/15 12:48:27 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/23 16:31:14 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 #include "input_control.h"
 #include "quote_trans_table.h"
+#include "signal_handler.h"
 
 int			check_quote(char *word)
 {
@@ -117,6 +118,11 @@ int			complete_quote(t_shell *shell, char **word)
 		if (temp == NULL)
 			return (-1);
 		quotes = check_quote(temp);
+		if (g_signal_handler & SIGINT_BUFF)
+		{
+			sigint_buffer(temp);
+			break ;
+		}
 	}
 	free(*word);
 	*word = temp;

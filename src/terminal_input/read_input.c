@@ -6,7 +6,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/14 11:52:43 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/05/23 14:58:09 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/23 15:41:50 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,13 @@ int				read_input(t_shell *shell)
 
 	c = '\0';
 	signal(SIGINT, signal_handler_buff);
-	sigint_buffer(shell->buffer, &shell->cursor);
 	shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
 	ret = read(STDIN_FILENO, &c, 1);
+	if (g_signal_handler & SIGINT_BUFF)
+	{
+		shell->buffer->state = RETURN_STATE;
+		send_terminal(CURSOR_DOWN);
+	}
 	if (ret == -1)
 		return (2);
 	if (ret == 1)

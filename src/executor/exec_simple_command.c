@@ -6,12 +6,15 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/28 16:44:21 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/28 16:44:21 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/23 14:09:04 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "builtins.h"
+#include "signal_handler.h"
+#include <sys/types.h>
+#include <unistd.h>
 
 static int	check_access(t_env *env_list, char *path)
 {
@@ -47,6 +50,7 @@ static int	execute_command(t_env *env_list, t_command *command)
 	pid_t	pid;
 
 	ret = check_access(env_list, command->path);
+	signal(SIGINT, signal_handler_exec);
 	if (ret == 0)
 	{
 		configure_terminal(NULL, 0);
@@ -58,6 +62,8 @@ static int	execute_command(t_env *env_list, t_command *command)
 		}
 		else if (pid > 0)
 		{
+			if (g_signal_handler & SIGINT_EXEC)
+				kill(-pid, SIGINT);
 			waitpid(pid, &stat_loc, 0);
 			if (ft_setstatus(env_list, WEXITSTATUS(stat_loc)) != 0)
 				ret = WEXITSTATUS(stat_loc);

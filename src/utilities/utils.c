@@ -6,12 +6,13 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/04/06 17:03:13 by dkroeke       ########   odam.nl         */
+/*   Updated: 2020/05/23 15:50:03 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "environment.h"
 #include "utils.h"
+#include "signal_handler.h"
 
 void	ft_swap_rv(t_buff *buffer)
 {
@@ -75,12 +76,18 @@ int		get_here_doc(t_io_here *io_here, t_shell *shell)
 	while (1)
 	{
 		temp = prompt_shell(shell, PROMPT_HEREDOC);
+		if (g_signal_handler & SIGINT_BUFF)
+		{
+			sigint_buffer(here_doc);
+			break ;
+		}
 		if (temp != NULL && ft_strcmp(temp, io_here->here_end) == 0)
 			break ;
 		str_expand_triple(&here_doc, temp, "\n");
 		if (here_doc == NULL)
 			return (handle_error(malloc_error));
 	}
+	free(temp);
 	io_here->here_doc = here_doc;
 	return (0);
 }
