@@ -92,7 +92,7 @@ void		send_terminal(char *command);
 **
 ** arg: *shell: poiter to struct t_shell defined in cethushell.h
 */
-void		get_winsize(t_shell *shell);
+void		get_winsize(t_cursor *cursor, size_t len);
 
 /*
 ** Configure_terminal will take in a pointer to a t_shell struct defined in

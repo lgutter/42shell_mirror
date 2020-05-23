@@ -12,6 +12,7 @@
 
 #include "cetushell.h"
 #include "input_control.h"
+#include "signal_handler.h"
 
 static void	cursor_next_line(t_cursor *cursor, size_t len, size_t prompt_len)
 {
@@ -34,12 +35,19 @@ static void	cursor_next_line(t_cursor *cursor, size_t len, size_t prompt_len)
 	{
 		cursor->current.x = cursor->max.x;
 		if (cursor->current.y != cursor->start.y)
-			cursor->current.y++;
+			cursor->current.y--;
 	}
 }
 
 void		set_cursor_pos(t_cursor *cursor, size_t buff_len, size_t prompt_len)
 {
+	if (g_signal_handler & SIG_WINDOW)
+	{
+		send_terminal("rc");
+		send_terminal("cd");
+		get_winsize(cursor, prompt_len);
+		ft_printf("%c[%d;%dH", ESCAPE, cursor->start.y, 0);
+	}
 	cursor_next_line(cursor, buff_len, prompt_len);
 	ft_memset(&cursor->cur_buff, '\0', CUR_BUFF_SIZE);
 	if (cursor->current.x < prompt_len && cursor->current.y == cursor->start.y)
@@ -57,6 +65,7 @@ void		get_cursor_pos(t_cursor *cursor, size_t prompt_len)
 	int		ret;
 	int		temp;
 
+	send_terminal("sc");
 	ft_printf("%c[6n", ESCAPE);
 	ft_memset(&pos, '\0', sizeof(pos));
 	ret = read(STDIN_FILENO, &pos, sizeof(pos));

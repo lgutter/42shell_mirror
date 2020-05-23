@@ -29,7 +29,7 @@ void	signal_handler_exec(int sig)
 		g_signal_handler |= SIGINT_EXEC;
 }
 
-char *sigint_buffer(char *input)
+char	*sigint_buffer(char *input)
 {
 	free(input);
 	input = ft_strdup("");
