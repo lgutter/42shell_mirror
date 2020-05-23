@@ -90,6 +90,7 @@ src_files = files([
   'src/builtins/builtin_env.c',
   'src/builtins/builtin_set.c',
   'src/builtins/builtin_unset.c',
+  'src/signals/signals.c',
 ])
 
 main_file = files('src/main.c')

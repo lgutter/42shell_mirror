@@ -6,7 +6,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/05/09 23:42:02 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/23 14:16:02 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void		configure_terminal(t_shell *shell, int activator)
 		if (activator == 1)
 			tcgetattr(STDIN_FILENO, &orig);
 		shell_temp = orig;
-		shell_temp.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);
+		shell_temp.c_lflag &= ~(ECHO | ICANON | IEXTEN);
 		shell_temp.c_iflag &= ~(IXON);
 		shell_temp.c_cc[VMIN] = 0;
 		shell_temp.c_cc[VTIME] = 1;
