@@ -59,3 +59,9 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
 		}
 	}
 }
+
+int		ctrl_d_key(char c, t_buff *buffer)
+{
+	if (c == 4 && buffer->buff_len == 0)
+		return (1);
+}

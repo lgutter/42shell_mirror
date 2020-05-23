@@ -62,6 +62,7 @@ static int		handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 	tab_key(buffer, cursor, c);
 	backspace_key(buffer, cursor, c);
 	return_key(buffer, cursor, c);
+	ctrl_d_key(c, buffer);
 	return (0);
 }
 
