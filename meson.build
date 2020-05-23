@@ -52,6 +52,7 @@ src_files = files([
   'src/lexer_parser/parse_io_here.c',
   'src/lexer_parser/parser_utils.c',
   'src/utilities/handle_error.c',
+  'src/utilities/handle_error_prefix.c',
   'src/utilities/d_handle_error.c',
   'src/utilities/utils.c',
   'src/utilities/str_utils.c',

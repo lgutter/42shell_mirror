@@ -56,7 +56,7 @@ void		get_cursor_pos(t_cursor *cursor, size_t prompt_len)
 	char	pos[16];
 	int		ret;
 	int		temp;
-	
+
 	ft_printf("%c[6n", ESCAPE);
 	ft_memset(&pos, '\0', sizeof(pos));
 	ret = read(STDIN_FILENO, &pos, sizeof(pos));
