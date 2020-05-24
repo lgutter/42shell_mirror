@@ -50,7 +50,6 @@ static int	execute_command(t_env *env_list, t_command *command)
 	pid_t	pid;
 
 	ret = check_access(env_list, command->path);
-	signal(SIGINT, signal_handler_exec);
 	if (ret == 0)
 	{
 		configure_terminal(NULL, 0);
@@ -62,8 +61,6 @@ static int	execute_command(t_env *env_list, t_command *command)
 		}
 		else if (pid > 0)
 		{
-			if (g_signal_handler & SIGINT_EXEC)
-				kill(-pid, SIGINT);
 			waitpid(pid, &stat_loc, 0);
 			if (ft_setstatus(env_list, WEXITSTATUS(stat_loc)) != 0)
 				ret = WEXITSTATUS(stat_loc);
