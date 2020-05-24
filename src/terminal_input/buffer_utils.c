@@ -29,8 +29,6 @@ size_t	insert_word(t_buff *buffer, t_cursor *cursor, char *word, size_t len)
 		set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
 		i++;
 	}
-	cursor->current.x++;
-	set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
 	return (0);
 }
 
