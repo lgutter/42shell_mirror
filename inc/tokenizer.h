@@ -67,4 +67,6 @@ int						add_token(t_token **start, t_type type, char **buff);
 */
 t_token					*free_token_list(t_token **start);
 
+t_token			*free_token_list_empty_buff(t_token **start, char *buff);
+
 #endif

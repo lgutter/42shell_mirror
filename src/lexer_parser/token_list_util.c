@@ -33,6 +33,13 @@ t_token			*free_token_list(t_token **start)
 	return (NULL);
 }
 
+t_token			*free_token_list_empty_buff(t_token **start, char *buff)
+{
+	free_token_list(start);
+	ft_bzero(buff, ft_strlen(buff));
+	return (NULL);
+}
+
 static t_token	*init_token(t_token **start)
 {
 	t_token *temp;

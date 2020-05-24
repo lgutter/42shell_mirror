@@ -68,7 +68,10 @@ int				cetushell(void)
 	{
 		input = prompt_shell(shell, PROMPT_NORMAL);
 		if (g_signal_handler & SIGINT_BUFF)
-			sigint_buffer(input);
+		{
+			free(input);
+			input = strdup("");
+		}
 		if (input == NULL)
 			break ;
 		ret = handle_input(shell, &input);

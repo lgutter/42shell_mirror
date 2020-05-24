@@ -96,35 +96,44 @@ int			remove_quotes(char **word)
 	return (0);
 }
 
-int			complete_quote(t_shell *shell, char **word)
+static int	get_quote_input(t_shell *shell, char **word, char **temp)
 {
 	char	*buff;
-	char	*temp;
 	int		quotes;
 
-	if (shell == NULL || word == NULL || *word == NULL)
-		return (-1);
-	temp = ft_strdup(*word);
-	if (temp == NULL)
-		return (-1);
 	buff = NULL;
-	quotes = check_quote(temp);
+	quotes = check_quote(*temp);
 	while (quotes < 0)
 	{
-		ft_strexpand(&temp, "\n");
+		ft_strexpand(temp, "\n");
 		buff = prompt_shell(shell, quotes == -2 ? PROMPT_DQUOTE : PROMPT_QUOTE);
-		ft_strexpand(&temp, buff);
+		ft_strexpand(temp, buff);
 		free(buff);
-		if (temp == NULL)
+		if (*temp == NULL)
 			return (-1);
-		quotes = check_quote(temp);
+		quotes = check_quote(*temp);
 		if (g_signal_handler & SIGINT_BUFF)
 		{
-			sigint_buffer(temp);
-			break ;
+			*temp = sigint_buffer(*temp);
+			return (-1);
 		}
 	}
+	return (0);
+}
+
+int			complete_quote(t_shell *shell, char **word)
+{
+	char	*temp;
+	int		ret;
+
+	ret = 0;
+	if (shell == NULL || word == NULL || *word == NULL)
+		return (malloc_error);
+	temp = ft_strdup(*word);
+	if (temp == NULL)
+		return (malloc_error);
+	ret = get_quote_input(shell, word, &temp);
 	free(*word);
 	*word = temp;
-	return (0);
+	return (ret);
 }

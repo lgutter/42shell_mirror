@@ -57,12 +57,12 @@ static int		handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 		cursor->start.y = 1;
 		send_terminal("cl");
 	}
-	if (cut_copy_paste(buffer, cursor, NULL, c) != 0)
+	if (cut_copy_paste(buffer, cursor, NULL, c) != 0 ||
+		ctrl_d_key(c, buffer) == 1)
 		return (1);
 	tab_key(buffer, cursor, c);
 	backspace_key(buffer, cursor, c);
 	return_key(buffer, cursor, c);
-	ctrl_d_key(c, buffer);
 	return (0);
 }
 
