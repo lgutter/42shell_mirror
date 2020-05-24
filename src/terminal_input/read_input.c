@@ -27,6 +27,8 @@ static int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
 		ret = read(STDIN_FILENO, seq, ESC_SEQ_SIZE);
 		if (ret == -1)
 			return (2);
+		cntrl_left(buffer, cursor, seq);
+		cntrl_right(buffer, cursor, seq);
 		if (cut_copy_paste(buffer, cursor, seq, 0) != 0)
 			return (1);
 		shift_right_key(buffer, cursor, seq);

@@ -307,5 +307,7 @@ void		get_cursor_pos(t_cursor *cursor, size_t prompt_len);
 char		*prompt_shell(t_shell *shell, const char *prompt);
 
 int			ctrl_d_key(char c, t_buff *buffer);
+void		cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq);
+void		cntrl_right(t_buff *buffer, t_cursor *cursor, char *seq);
 
 #endif
