@@ -42,7 +42,7 @@ static t_shell	*init_shell(void)
 	return (shell);
 }
 
-int			exit_shell(t_shell *shell, int ret)
+int				exit_shell(t_shell *shell, int ret)
 {
 	char	*exit_code;
 
