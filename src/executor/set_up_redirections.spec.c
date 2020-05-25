@@ -31,6 +31,7 @@ Test(set_up_redirections_unit, valid_append_file_once)
 	int				real_fd;
 	char			buff[1024];
 
+	remove(filename);
 	redirect.io_fd = left_fd;
 	redirect.io_number = ft_itoa(left_fd);
 	redirect.io_file = &io_file;
