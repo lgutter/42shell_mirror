@@ -41,7 +41,7 @@ static void	cursor_next_line(t_cursor *cursor, size_t len, size_t prompt_len)
 
 void		set_cursor_pos(t_cursor *cursor, size_t buff_len, size_t prompt_len)
 {
-	if (g_signal_handler & SIG_WINDOW)
+	if (g_signal_handler == SIG_WINDOW)
 	{
 		send_terminal("rc");
 		send_terminal("cd");

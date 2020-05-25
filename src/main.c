@@ -67,7 +67,7 @@ int				cetushell(void)
 	while (ret != exit_shell_code)
 	{
 		input = prompt_shell(shell, PROMPT_NORMAL);
-		if (g_signal_handler & SIGINT_BUFF)
+		if (g_signal_handler == SIGINT_BUFF)
 		{
 			free(input);
 			input = strdup("");
@@ -78,7 +78,7 @@ int				cetushell(void)
 		update_history(shell->hist, shell->env, input);
 		free(input);
 		input = NULL;
-		g_signal_handler &= ~SIGINT_BUFF;
+		g_signal_handler = 0;
 	}
 	return (exit_shell(shell, ret));
 }

@@ -53,11 +53,11 @@ void		configure_terminal(t_shell *shell, int activator)
 
 void		get_winsize(t_cursor *cursor, size_t len)
 {
-		struct winsize winsize;
+	struct winsize winsize;
 
-		get_cursor_pos(cursor, len);
-		ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize);
-		cursor->max.x = (size_t)winsize.ws_col;
-		cursor->max.y = (size_t)winsize.ws_row;
-		g_signal_handler &= ~SIG_WINDOW;
+	get_cursor_pos(cursor, len);
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize);
+	cursor->max.x = (size_t)winsize.ws_col;
+	cursor->max.y = (size_t)winsize.ws_row;
+	g_signal_handler = 0;
 }

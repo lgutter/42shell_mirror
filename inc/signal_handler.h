@@ -15,13 +15,12 @@
 
 # include <signal.h>
 
-# define SIGINT_BUFF (1 << 1)
-# define SIGINT_EXEC (1 << 2)
-# define SIG_WINDOW (1 << 3)
+# define SIGINT_BUFF 1
+# define SIGINT_EXEC 2
+# define SIG_WINDOW 3
 
 unsigned long g_signal_handler;
 void	signal_handler_buff(int sig);
 void	signal_handler_exec(int sig);
-char	*sigint_buffer(char *input);
 
 #endif

@@ -111,7 +111,7 @@ static int	get_quote_input(t_shell *shell, char **word, char **temp)
 		free(buff);
 		if (*temp == NULL)
 			return (-1);
-		if (g_signal_handler & SIGINT_BUFF)
+		if (g_signal_handler == SIGINT_BUFF)
 		{
 			*temp[0] = '\0';
 			return (-1);

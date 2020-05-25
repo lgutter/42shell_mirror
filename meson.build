@@ -62,6 +62,7 @@ src_files = files([
   'src/utilities/process_word.c',
   'src/utilities/process_redirects.c',
   'src/utilities/word_processing.c',
+  'src/utilities/signals.c',
   'src/environment/convert_env_to_envp.c',
   'src/environment/dup_sys_env.c',
   'src/environment/expand_variable.c',
@@ -90,7 +91,6 @@ src_files = files([
   'src/builtins/builtin_env.c',
   'src/builtins/builtin_set.c',
   'src/builtins/builtin_unset.c',
-  'src/signals/signals.c',
 ])
 
 main_file = files('src/main.c')

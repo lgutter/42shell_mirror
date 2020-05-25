@@ -75,7 +75,7 @@ int				read_input(t_shell *shell)
 	signal(SIGINT, signal_handler_buff);
 	shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
 	ret = read(STDIN_FILENO, &c, 1);
-	if (g_signal_handler & SIGINT_BUFF)
+	if (g_signal_handler == SIGINT_BUFF)
 	{
 		shell->buffer->state = RETURN_STATE;
 		send_terminal(CURSOR_DOWN);
