@@ -498,3 +498,135 @@ Test(set_up_io_file_unit, valid_empty_file_before_redir_to_fd)
 	close(real_fd);
 	remove(filename);
 }
+
+Test(set_up_io_file_unit, invalid_dir_no_write_perm, .init = redirect_std_err)
+{
+	if (getuid() == 0)
+		cr_skip_test("Cannot be tested as root!\n");
+
+	t_redir_info	info = {0, 1, 2, NULL};
+	char			*dirname = strdup("/tmp/nopermdir");
+	char			*filename = strdup("/tmp/nopermdir/set_up_io_file_unit_invalid_dir_no_write_perm");
+	t_io_file		io_file;
+	int				ret;
+	int				exp_ret = -1;
+	int				left_fd = 435;
+	char			buff[1024];
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+	io_file.redirect_op = redirect_out;
+	io_file.filename = filename;
+	remove(filename);
+	remove(dirname);
+	mkdir(dirname, 0555);
+	open(filename, O_RDWR | O_CREAT, 0664);
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	fflush(stderr);
+	sprintf(buff, "%s: %s\n", g_error_str[access_denied], dirname);
+	cr_expect_stderr_eq_str(buff);
+	remove(filename);
+	remove(dirname);
+}
+
+Test(set_up_io_file_unit, invalid_dir_does_not_exist, .init = redirect_std_err)
+{
+	t_redir_info	info = {0, 1, 2, NULL};
+	char			*dirname = strdup("/tmp/dirnothere");
+	char			*filename = strdup("/tmp/dirnothere/set_up_io_file_unit_invalid_dir_does_not_exist");
+	t_io_file		io_file;
+	int				ret;
+	int				exp_ret = -1;
+	int				left_fd = 436;
+	char			buff[1024];
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+	io_file.redirect_op = redirect_out;
+	io_file.filename = filename;
+	remove(filename);
+	remove(dirname);
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	fflush(stderr);
+	sprintf(buff, "%s: %s\n", g_error_str[no_such_file_or_dir], dirname);
+	cr_expect_stderr_eq_str(buff);
+	remove(filename);
+	remove(dirname);
+}
+
+Test(set_up_io_file_unit, invalid_target_is_dir_in_dir, .init = redirect_std_err)
+{
+	t_redir_info	info = {0, 1, 2, NULL};
+	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_target_is_dir");
+	t_io_file		io_file;
+	int				ret;
+	int				exp_ret = -1;
+	int				left_fd = 437;
+	char			buff[1024];
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+	io_file.redirect_op = redirect_out;
+	io_file.filename = filename;
+	remove(filename);
+	mkdir(filename, 0664);
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	fflush(stderr);
+	sprintf(buff, "%s: %s\n", g_error_str[is_dir_error], filename);
+	cr_expect_stderr_eq_str(buff);
+	remove(filename);
+}
+
+Test(set_up_io_file_unit, invalid_target_is_dir, .init = redirect_std_err)
+{
+	t_redir_info	info = {0, 1, 2, NULL};
+	char			*filename = strdup("/tmp");
+	t_io_file		io_file;
+	int				ret;
+	int				exp_ret = -1;
+	int				left_fd = 438;
+	char			buff[1024];
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+	io_file.redirect_op = redirect_out;
+	io_file.filename = filename;
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	fflush(stderr);
+	sprintf(buff, "%s: %s\n", g_error_str[is_dir_error], filename);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(set_up_io_file_unit, invalid_dir_not_a_dir, .init = redirect_std_err)
+{
+	if (getuid() == 0)
+		cr_skip_test("Cannot be tested as root!\n");
+
+	t_redir_info	info = {0, 1, 2, NULL};
+	char			*dirname = strdup("/tmp/notadir");
+	char			*filename = strdup("/tmp/notadir/set_up_io_file_unit_invalid_dir_not_a_dir");
+	t_io_file		io_file;
+	int				ret;
+	int				exp_ret = -1;
+	int				left_fd = 439;
+	char			buff[1024];
+	info.std_fds[0] = 0;
+	info.std_fds[1] = 1;
+	info.std_fds[2] = 2;
+	io_file.redirect_op = redirect_out;
+	io_file.filename = filename;
+	remove(filename);
+	remove(dirname);
+	open(dirname, O_RDWR | O_CREAT, 0664);
+	ret = set_up_io_file(&info, left_fd, &io_file);
+	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
+	fflush(stderr);
+	sprintf(buff, "%s: %s\n", g_error_str[not_a_dir_error], dirname);
+	cr_expect_stderr_eq_str(buff);
+	remove(filename);
+	remove(dirname);
+}

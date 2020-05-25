@@ -12,18 +12,54 @@
 
 #include "executor.h"
 
+static int		check_dir_perm(int stderrfd, t_io_file *io_file)
+{
+	size_t		i;
+	char		*temp;
+	struct stat	statbuff;
+	int			ret;
+
+	ret = 0;
+	i = ft_strlen(io_file->filename);
+	while (io_file->filename[i] != '/' && i > 0)
+		i--;
+	if (i == 0)
+		return (0);
+	temp = ft_strndup(io_file->filename, i);
+	if (temp == NULL)
+		return (malloc_error);
+	stat(temp, &statbuff);
+	if (access(temp, F_OK) != 0)
+		ret = d_handle_error_str(stderrfd, no_such_file_or_dir, temp);
+	else if (S_ISDIR(statbuff.st_mode) == 0)
+		ret = d_handle_error_str(stderrfd, not_a_dir_error, temp);
+	else if (access(temp, W_OK) != 0)
+		ret = d_handle_error_str(stderrfd, access_denied, temp);
+	free(temp);
+	return (ret);
+}
+
 static int		set_file_out(t_redir_info *redir_info, t_io_file *io_file)
 {
-	int fd;
+	int			fd;
+	struct stat	statbuff;
 
 	fd = -1;
-	if (access(io_file->filename, F_OK) == 0 &&
-		access(io_file->filename, W_OK) != 0)
+	if (check_dir_perm(redir_info->std_fds[2], io_file) != 0)
+		return (-1);
+	if (access(io_file->filename, F_OK) == 0)
 	{
-		d_handle_error_str(redir_info->std_fds[2],
-							access_denied, io_file->filename);
+		stat(io_file->filename, &statbuff);
+		if (S_ISDIR(statbuff.st_mode) != 0)
+			fd = d_handle_error_str(redir_info->std_fds[2],
+								is_dir_error, io_file->filename);
+		else if (access(io_file->filename, W_OK) != 0)
+			fd = d_handle_error_str(redir_info->std_fds[2],
+								access_denied, io_file->filename);
 	}
-	else if (io_file->redirect_op == redirect_append)
+	if (fd > 0)
+		return (-1);
+	if (io_file->redirect_op == redirect_append)
 		fd = open(io_file->filename, O_WRONLY | O_APPEND | O_CREAT, 0664);
 	else if (io_file->redirect_op == redirect_out)
 		fd = open(io_file->filename, O_WRONLY | O_TRUNC | O_CREAT, 0664);

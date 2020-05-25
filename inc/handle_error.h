@@ -58,6 +58,7 @@ typedef enum		e_error
 	restore_fd_fail,
 	dup2_fd_fail,
 	exit_shell_code,
+	not_a_dir_error,
 	error_count,
 }					t_error;
 
