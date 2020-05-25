@@ -31,7 +31,7 @@ static int		get_hist_path(t_shell *shell)
 
 	if (shell->hist->hist_path != NULL)
 		return (0);
-	shell->hist->hist_path = ft_getenv(shell->env, "HISTFILE", SHELL_VAR);
+	shell->hist->hist_path = ft_getenv(shell->env, "HISTFILE", VAR_TYPE);
 	if (shell->hist->hist_path == NULL)
 	{
 		home = ft_getenv(shell->env, "HOME", VAR_TYPE);
