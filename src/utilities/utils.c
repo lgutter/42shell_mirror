@@ -73,20 +73,17 @@ int		get_here_doc(t_io_here *io_here, t_shell *shell)
 	here_doc = ft_strdup("");
 	if (io_here->here_end == NULL)
 		return (handle_error(parsing_error));
-	while (1)
+	while (!(g_signal_handler & SIGINT_BUFF))
 	{
 		temp = prompt_shell(shell, PROMPT_HEREDOC);
-		if (g_signal_handler & SIGINT_BUFF)
-		{
-			sigint_buffer(here_doc);
-			break ;
-		}
 		if (temp != NULL && ft_strcmp(temp, io_here->here_end) == 0)
 			break ;
 		str_expand_triple(&here_doc, temp, "\n");
 		if (here_doc == NULL)
 			return (handle_error(malloc_error));
 	}
+	if (g_signal_handler & SIGINT_BUFF)
+		here_doc[0] = '\0';
 	free(temp);
 	io_here->here_doc = here_doc;
 	return (0);
