@@ -1,12 +1,12 @@
-image: lgutter/codam_ci:latest
-
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
   - test
+  - build
 
 gcc-test:
+  image: lgutter/codam_ci:latest
   stage: test
   before_script:
     - meson --version
@@ -25,9 +25,55 @@ gcc-test:
 
 clang-test:
   stage: test
+  image: lgutter/codam_ci:latest
   before_script:
     - meson --version
     - ninja --version
     - CC=clang meson build
   script:
     - ninja test -C build --verbose
+
+arch-build:
+  stage: build
+  image: nloomans/codam:latest
+  only:
+    refs:
+      - master
+  before_script:
+    - meson build
+  script:
+    - ninja -C build
+  artifacts:
+    when: always
+    paths:
+      - build/cetushell
+
+ubuntu-build:
+  stage: build
+  image: lgutter/codam_ci
+  only:
+    refs:
+      - master
+  before_script:
+    - meson build
+  script:
+    - ninja -C build
+  artifacts:
+    when: always
+    paths:
+      - build/cetushell
+
+debian-build:
+  stage: build
+  image: lgutter/codam_debian_build
+  only:
+    refs:
+      - master
+  before_script:
+    - meson build
+  script:
+    - ninja -C build
+  artifacts:
+    when: always
+    paths:
+      - build/cetushell
