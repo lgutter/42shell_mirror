@@ -79,6 +79,7 @@ int				read_input(t_shell *shell)
 	{
 		shell->buffer->state = RETURN_STATE;
 		send_terminal(CURSOR_DOWN);
+		return (0);
 	}
 	if (ret == -1)
 		return (2);

@@ -79,6 +79,8 @@ int		get_here_doc(t_io_here *io_here, t_shell *shell)
 		if (temp != NULL && ft_strcmp(temp, io_here->here_end) == 0)
 			break ;
 		str_expand_triple(&here_doc, temp, "\n");
+		free(temp);
+		temp = NULL;
 		if (here_doc == NULL)
 			return (handle_error(malloc_error));
 	}
