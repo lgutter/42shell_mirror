@@ -21,9 +21,18 @@
 static int	cd(t_env *env, char *new_path, char *key)
 {
 	char	path[PATH_MAX];
+	char	*temp;
 
 	ft_bzero(path, PATH_MAX);
-	getcwd(path, PATH_MAX);
+	if (getcwd(path, PATH_MAX) == NULL)
+	{
+		temp = ft_getenv(env, "PWD", ENV_VAR);
+		if (temp != NULL)
+		{
+			ft_strncpy(path, temp, PATH_MAX);
+			free(temp);
+		}
+	}
 	if (chdir(new_path) == -1)
 		return (1);
 	if (key != NULL && ft_strcmp(key, "-") == 0)
