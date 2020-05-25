@@ -6,12 +6,15 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/28 16:44:21 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/28 16:44:21 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/23 14:09:04 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "builtins.h"
+#include "signal_handler.h"
+#include <sys/types.h>
+#include <unistd.h>
 
 static int	check_access(t_env *env_list, char *path)
 {

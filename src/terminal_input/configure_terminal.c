@@ -6,12 +6,13 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/06 17:03:13 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/05/09 23:42:02 by devan         ########   odam.nl         */
+/*   Updated: 2020/05/23 14:16:02 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cetushell.h"
 #include "input_control.h"
+#include "signal_handler.h"
 
 static int	ft_putchar(int c)
 {
@@ -38,7 +39,7 @@ void		configure_terminal(t_shell *shell, int activator)
 		if (activator == 1)
 			tcgetattr(STDIN_FILENO, &orig);
 		shell_temp = orig;
-		shell_temp.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);
+		shell_temp.c_lflag &= ~(ECHO | ICANON | IEXTEN);
 		shell_temp.c_iflag &= ~(IXON);
 		shell_temp.c_cc[VMIN] = 0;
 		shell_temp.c_cc[VTIME] = 1;
@@ -50,12 +51,13 @@ void		configure_terminal(t_shell *shell, int activator)
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig);
 }
 
-void		get_winsize(t_shell *shell)
+void		get_winsize(t_cursor *cursor, size_t len)
 {
-	t_cursor *curs;
+	struct winsize winsize;
 
-	curs = &shell->cursor;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &shell->winsize);
-	curs->max.x = (size_t)shell->winsize.ws_col;
-	curs->max.y = (size_t)shell->winsize.ws_row;
+	get_cursor_pos(cursor, len);
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize);
+	cursor->max.x = (size_t)winsize.ws_col;
+	cursor->max.y = (size_t)winsize.ws_row;
+	g_signal_handler = 0;
 }

@@ -92,7 +92,7 @@ void		send_terminal(char *command);
 **
 ** arg: *shell: poiter to struct t_shell defined in cethushell.h
 */
-void		get_winsize(t_shell *shell);
+void		get_winsize(t_cursor *cursor, size_t len);
 
 /*
 ** Configure_terminal will take in a pointer to a t_shell struct defined in
@@ -305,5 +305,7 @@ void		get_cursor_pos(t_cursor *cursor, size_t prompt_len);
 ** arg: *shell: pointer to t_shell struct defined in cetushell.h
 */
 char		*prompt_shell(t_shell *shell, const char *prompt);
+
+int			ctrl_d_key(char c, t_buff *buffer);
 
 #endif

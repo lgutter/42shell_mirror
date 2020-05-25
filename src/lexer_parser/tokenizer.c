@@ -116,9 +116,9 @@ t_token			*tokenizer(t_shell *shell, char **input)
 	{
 		state_rules = init_state(cur_state, (*input)[i]);
 		if (check_unquoted(shell, &state_rules, input, &i) != 0)
-			return (free_token_list(&start));
+			return (free_token_list_empty_buff(&start, buff));
 		if (handle_token(state_rules, &start, &buff, (*input)[i]) != 0)
-			return (free_token_list(&start));
+			return (free_token_list_empty_buff(&start, buff));
 		if (state_rules.next_state == eof)
 			return (start);
 		cur_state = state_rules.next_state;

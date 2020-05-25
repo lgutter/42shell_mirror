@@ -6,12 +6,14 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/14 11:52:43 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/05/23 15:41:50 by devan         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cetushell.h"
 #include "input_control.h"
+#include "signal_handler.h"
+#include <signal.h>
 
 static int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
 							t_history *hist)
@@ -45,10 +47,6 @@ static int		handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 	if (ft_isprint(c) != 0)
 	{
 		buffer->state = INPUT_STATE;
-		if (c == 'q')
-			return (1);
-		if (c == '=')
-			ft_printf("\n");
 		if (insert_char(buffer, c) > 0)
 			return (1);
 		cursor->current.x++;
@@ -59,7 +57,8 @@ static int		handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 		cursor->start.y = 1;
 		send_terminal("cl");
 	}
-	if (cut_copy_paste(buffer, cursor, NULL, c) != 0)
+	if (cut_copy_paste(buffer, cursor, NULL, c) != 0 ||
+		ctrl_d_key(c, buffer) == 1)
 		return (1);
 	tab_key(buffer, cursor, c);
 	backspace_key(buffer, cursor, c);
@@ -73,8 +72,15 @@ int				read_input(t_shell *shell)
 	int			ret;
 
 	c = '\0';
+	signal(SIGINT, signal_handler_buff);
 	shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
 	ret = read(STDIN_FILENO, &c, 1);
+	if (g_signal_handler == SIGINT_BUFF)
+	{
+		shell->buffer->state = RETURN_STATE;
+		send_terminal(CURSOR_DOWN);
+		return (0);
+	}
 	if (ret == -1)
 		return (2);
 	if (ret == 1)

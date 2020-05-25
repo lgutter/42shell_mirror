@@ -80,13 +80,13 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 	char	*temp;
 
 	temp = NULL;
+	get_winsize(&shell->cursor, shell->buffer->prompt_len);
 	if (shell != NULL && prompt != NULL && shell->buffer != NULL)
 	{
 		if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
 			return (NULL);
 		while (shell->buffer->state != RETURN_STATE)
 		{
-			get_winsize(shell);
 			set_cursor_pos(&shell->cursor, shell->buffer->buff_len,
 			shell->buffer->prompt_len);
 			refresh_prompt(shell->buffer, &shell->cursor);
