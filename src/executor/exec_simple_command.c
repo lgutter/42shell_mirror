@@ -37,7 +37,7 @@ static int	check_access(t_env *env_list, char *path)
 	}
 	if (S_ISDIR(statbuf.st_mode) != 0)
 	{
-		ft_setstatus(env_list, access_denied);
+		ft_setstatus(env_list, is_dir_error);
 		return (handle_error_str(is_dir_error, path));
 	}
 	return (0);
