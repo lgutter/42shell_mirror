@@ -36,6 +36,9 @@ clang-test:
 arch-build:
   stage: build
   image: nloomans/codam:latest
+  only:
+    refs:
+      - master
   before_script:
     - meson build
   script:
@@ -48,6 +51,9 @@ arch-build:
 ubuntu-build:
   stage: build
   image: lgutter/codam_ci
+  only:
+    refs:
+      - master
   before_script:
     - meson build
   script:
@@ -60,6 +66,9 @@ ubuntu-build:
 debian-build:
   stage: build
   image: lgutter/codam_debian_build
+  only:
+    refs:
+      - master
   before_script:
     - meson build
   script:
