@@ -292,8 +292,8 @@ Test(tokenizer_tests, edge_case_mandatory_buffer_expansion)
 	t_token	*result = NULL;
 	char	*longstr;
 
-	longstr = ft_memalloc(BUFFER_SIZE + 43);
-	ft_memset(longstr, 'a', BUFFER_SIZE + 42);
+	longstr = ft_memalloc(TOKEN_BUFF_SIZE + 43);
+	ft_memset(longstr, 'a', TOKEN_BUFF_SIZE + 42);
 	result = tokenizer(NULL, &longstr);
 	cr_assert_neq(result, NULL);
 	cr_expect_eq(result->type, WORD);

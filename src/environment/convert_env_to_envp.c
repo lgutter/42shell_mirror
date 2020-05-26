@@ -19,7 +19,7 @@ static char		*copy_key_value(t_env *env_var)
 	size_t	index;
 
 	len = ft_strlen(env_var->key) + ft_strlen(env_var->value) + 1;
-	str = (char *)ft_memalloc(len + 1);
+	str = (char *)ft_memalloc(sizeof(char) * (len + 1));
 	if (str == NULL)
 		return (NULL);
 	index = ft_strlen(env_var->key);

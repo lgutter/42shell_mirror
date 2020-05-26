@@ -87,7 +87,7 @@ int			remove_quotes(char **word)
 	quotes = count_quote_chars(*word);
 	len = ft_strlen(*word);
 	len -= (quotes);
-	temp = (char *)ft_memalloc(len + 1);
+	temp = (char *)ft_memalloc(sizeof(char) * (len + 1));
 	if (temp == NULL)
 		return (-1);
 	str_cpy_no_quotes(temp, *word);

@@ -81,7 +81,7 @@ t_simple_cmd	*parse_simple_command(t_token **token)
 		handle_error_str(parsing_error, (*token)->value);
 		return (NULL);
 	}
-	simple_command = ft_memalloc(sizeof(t_simple_cmd) * 1);
+	simple_command = (t_simple_cmd *)ft_memalloc(sizeof(t_simple_cmd) * 1);
 	if (simple_command == NULL)
 		return (handle_error_p(malloc_error, NULL));
 	while (is_start_of_cmd(*token) == 1)

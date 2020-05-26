@@ -38,7 +38,8 @@ static int		abort_dollar(char *key, char *ret, char **start, size_t len)
 	return (-1);
 }
 
-static int		expand_dollar(t_env *env_list, char **string, char **start)
+static int		expand_dollar(t_env *env_list, char **string, char **start,
+								int opts)
 {
 	char	*key;
 	char	*ret;
@@ -50,7 +51,7 @@ static int		expand_dollar(t_env *env_list, char **string, char **start)
 	key = ft_strndup((*start) + 1, len);
 	if (ret == NULL || key == NULL || len == 0)
 		return (abort_dollar(key, ret, start, len));
-	value = ft_getenv_quote(env_list, key, VAR_TYPE);
+	value = ft_getenv(env_list, key, opts);
 	free(key);
 	str_expand_triple(&ret, value, (*start) + len + 1);
 	if (ret == NULL)
@@ -66,7 +67,7 @@ static int		expand_dollar(t_env *env_list, char **string, char **start)
 	return (0);
 }
 
-static int		expand_home(t_env *env_list, char **string)
+static int		expand_home(t_env *env_list, char **string, int opts)
 {
 	char	*temp;
 	char	*value;
@@ -76,7 +77,7 @@ static int		expand_home(t_env *env_list, char **string)
 	temp = *string;
 	if (temp[0] == '~' && (temp[1] == '\0' || temp[1] == '/'))
 	{
-		value = ft_getenv_quote(env_list, "HOME", VAR_TYPE);
+		value = ft_getenv(env_list, "HOME", opts);
 		if (value != NULL)
 		{
 			temp = ft_strjoin(value, (temp + 1));
@@ -90,7 +91,7 @@ static int		expand_home(t_env *env_list, char **string)
 	return (ret);
 }
 
-int				expand_variable(t_shell *shell, char **string)
+int				expand_variable(t_shell *shell, char **string, int opts)
 {
 	int		ret;
 	char	*offset;
@@ -104,14 +105,14 @@ int				expand_variable(t_shell *shell, char **string)
 	ret = 0;
 	if ((*string)[0] == '~' && ((*string)[1] == '\0' || (*string)[1] == '/'))
 	{
-		ret = expand_home(env, string);
+		ret = expand_home(env, string, opts);
 		if (ret == -1)
 			return (handle_error(malloc_error));
 	}
 	offset = ft_strchr(*string, '$');
 	while (offset != NULL && offset != &(*string)[ft_strlen(*string) - 1])
 	{
-		ret = expand_dollar(env, string, &offset);
+		ret = expand_dollar(env, string, &offset, opts);
 		if (ret == -1)
 			return (handle_error(malloc_error));
 		offset = ft_strchr(offset, '$');

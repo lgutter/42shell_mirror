@@ -38,7 +38,7 @@ t_io_here		*parse_io_here(t_token **token)
 		return (NULL);
 	}
 	*token = (*token)->next;
-	io_here = ft_memalloc(sizeof(t_io_here) * 1);
+	io_here = (t_io_here *)ft_memalloc(sizeof(t_io_here) * 1);
 	if (io_here == NULL)
 		return (handle_error_p(malloc_error, NULL));
 	io_here->here_end = ft_strdup((*token)->value);

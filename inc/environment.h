@@ -15,10 +15,11 @@
 
 # define ENV_VAR	1
 # define SHELL_VAR	2
-# define RO_VAR		4
-# define FORCE_VAR	8
-# define MASK_VAR	7
 # define VAR_TYPE	3
+# define RO_VAR		4
+# define MASK_VAR	7
+# define FORCE_VAR	8
+# define QUOTE_VAR	16
 
 # include "handle_error.h"
 # include "utils.h"
@@ -51,18 +52,12 @@ t_env				*dup_sys_env(void);
 **	example: 'ft_getenv("PWD");' will return the path of our current directory.
 **	when an error occurs, returns NULL.
 **	(on failure, error will be printed)
+**	opts contains options to specify ft_getenv's behaviour. Applicable options:
+**	ENV_VAR, SHELL_VAR or VAR_TYPE: ft_getenv will return the first variable
+**									that matches this type.
+**	QUOTE_VAR:	ft_getenv will place backslashes before quote characters.
 */
 char				*ft_getenv(t_env *env, const char *key, int opts);
-
-/*
-**	takes the env and a key as argument and returns a freshy allocated copy
-**	the value, but with any quote characters
-**	(["], ['], [\]) escaped with a backslash([\]).
-**	example: with 'FOO=hel"lo', 'ft_getenv("FOO");' will return 'hel\"lo'.
-**	when an error occurs, returns NULL.
-**	(on failure, error will be printed)
-*/
-char				*ft_getenv_quote(t_env *env, const char *key, int opts);
 
 /*
 **	Takes env, a key, value, and either 'y' or 'n' as arguments.
@@ -71,6 +66,11 @@ char				*ft_getenv_quote(t_env *env, const char *key, int opts);
 **	Returns the following:
 **	0 on succes, an errid error code on failure.
 **	(on failure, error will be printed)
+**	opts contains options to specify ft_getenv's behaviour. Applicable options:
+**	ENV_VAR, SHELL_VAR or VAR_TYPE: ft_getenv will return the first variable
+**									that matches this type.
+**	RO_VAR:		variable will be made read only IF it did not exist yet.
+**	FORCE_VAR:	ignore read only attributes.
 */
 int					ft_setenv(t_env *env, const char *key, const char *value,
 																	int opts);
@@ -108,8 +108,13 @@ char				**convert_env_to_envp(t_env *list_start);
 **	Returns:
 **	- 0 on succes.
 **	- errid error code on failure.
+**	opts contains options to specify expand_variable's behaviour.
+**	Applicable options:
+**	ENV_VAR, SHELL_VAR or VAR_TYPE: only variables that match this type will be
+									expanded. VAR_TYPE means any type.
+**	QUOTE_VAR:	expand_variable will place backslashes before quote characters.
 */
-int					expand_variable(t_shell *shell, char **string);
+int					expand_variable(t_shell *shell, char **string, int opts);
 
 /*
 **	Takes a pointer to an environment list, and frees everything in it.

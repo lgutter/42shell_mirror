@@ -20,7 +20,7 @@
 # include "ft_printf.h"
 # include "libft.h"
 
-# define INPUT_BUFF_SIZE 32
+# define INP_BUFF_SIZE 32
 # define CUR_BUFF_SIZE 32
 # define REALLOC_SIZE 32
 # define INPUT_STATE 0

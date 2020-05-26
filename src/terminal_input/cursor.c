@@ -46,7 +46,7 @@ void		set_cursor_pos(t_cursor *cursor, size_t buff_len, size_t prompt_len)
 		send_terminal("rc");
 		send_terminal("cd");
 		get_winsize(cursor, prompt_len);
-		ft_printf("%c[%d;%dH", ESCAPE, cursor->start.y, 0);
+		ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, 0);
 	}
 	cursor_next_line(cursor, buff_len, prompt_len);
 	ft_memset(&cursor->cur_buff, '\0', CUR_BUFF_SIZE);
@@ -55,7 +55,7 @@ void		set_cursor_pos(t_cursor *cursor, size_t buff_len, size_t prompt_len)
 	if (cursor->current.x > (buff_len + prompt_len) &&
 			cursor->current.y == cursor->start.y)
 		cursor->current.x = buff_len + prompt_len;
-	ft_snprintf(cursor->cur_buff, CUR_BUFF_SIZE, "%c[%d;%dH", ESCAPE \
+	ft_snprintf(cursor->cur_buff, CUR_BUFF_SIZE, "%c[%d;%dH", ESCAPE_KEY \
 				, cursor->current.y, cursor->current.x);
 }
 
@@ -66,7 +66,7 @@ void		get_cursor_pos(t_cursor *cursor, size_t prompt_len)
 	int		temp;
 
 	send_terminal("sc");
-	ft_printf("%c[6n", ESCAPE);
+	ft_printf("%c[6n", ESCAPE_KEY);
 	ft_memset(&pos, '\0', sizeof(pos));
 	ret = read(STDIN_FILENO, &pos, sizeof(pos));
 	if (ret == -1)
