@@ -26,11 +26,11 @@
 **--------------------------Defines-------------------------------------------
 */
 
-# define PROMPT_NORMAL "Cetush >>"
-# define PROMPT_QUOTE "quote>"
-# define PROMPT_DQUOTE "dquote>"
-# define PROMPT_PIPE "pipe>"
-# define PROMPT_HEREDOC "heredoc>"
+# define PROMPT_NORMAL "Cetush >> "
+# define PROMPT_QUOTE "quote> "
+# define PROMPT_DQUOTE "dquote> "
+# define PROMPT_PIPE "pipe> "
+# define PROMPT_HEREDOC "heredoc> "
 # define CLEAR_TO_END "ce"
 # define CURSOR_DOWN "do"
 # define CLEAR_SCREEN "cl"
