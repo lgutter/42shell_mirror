@@ -59,7 +59,7 @@ void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq)
 
 void		home_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
-	if (strncmp(seq, HOME, ft_strlen(HOME)) == 0)
+	if (ft_strncmp(seq, HOME, ft_strlen(HOME)) == 0)
 	{
 		cursor->current.x = buffer->prompt_len;
 		cursor->current.y = cursor->start.y;
@@ -69,7 +69,7 @@ void		home_key(t_buff *buffer, t_cursor *cursor, char *seq)
 
 void		end_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
-	if (strncmp(seq, END, ft_strlen(END)) == 0)
+	if (ft_strncmp(seq, END, ft_strlen(END)) == 0)
 	{
 		cursor->current.x = (buffer->buff_len + buffer->prompt_len)\
 							% cursor->max.x;

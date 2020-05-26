@@ -19,14 +19,17 @@
 static t_shell	*init_shell(void)
 {
 	t_shell		*shell;
+	char		*temp;
 
 	shell = (t_shell *)ft_memalloc(sizeof(t_shell));
 	if (shell == NULL)
 		return (handle_error_p(malloc_error, NULL));
-	shell->buffer = (t_buff *)ft_memalloc(sizeof(t_buff));
-	shell->hist = (t_history *)ft_memalloc(sizeof(t_history));
+	shell->buffer = (t_buff *)ft_memalloc(sizeof(t_buff) * 1);
+	shell->hist = (t_history *)ft_memalloc(sizeof(t_history) * 1);
 	shell->env = dup_sys_env();
-	ft_setenv(shell->env, "HOME", getenv("HOME"), SHELL_VAR);
+	temp = ft_getenv(shell->env, "HOME", VAR_TYPE);
+	ft_setenv(shell->env, "HOME", temp, SHELL_VAR);
+	free(temp);
 	configure_terminal(shell, 1);
 	if (shell->hist == NULL)
 		handle_error(malloc_error);
@@ -70,7 +73,7 @@ int				cetushell(void)
 		if (g_signal_handler == SIGINT_BUFF)
 		{
 			free(input);
-			input = strdup("");
+			input = ft_strdup("");
 		}
 		if (input == NULL)
 			break ;
