@@ -19,7 +19,6 @@ int		builtin_exit(t_command *command, t_env *env)
 	int		final_code;
 
 	temp = ft_getenv(env, "STATUS", SHELL_VAR);
-	ft_printf("exit\n");
 	configure_terminal(NULL, 0);
 	if (command->argc > 1)
 		final_code = ft_atoi(command->argv[1]);

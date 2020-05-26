@@ -26,10 +26,8 @@ static int	parent_wait(int pipe_fds[2], t_pipe_sequence *pipe_seq,
 	}
 	else
 	{
-		exec_pipe_sequence(pipe_seq->next, env);
+		ret = exec_pipe_sequence(pipe_seq->next, env);
 		waitpid(child_pid, &stat_loc, 0);
-		ft_setstatus(env, WEXITSTATUS(stat_loc));
-		ret = WEXITSTATUS(stat_loc);
 	}
 	close(pipe_fds[0]);
 	return (ret);
