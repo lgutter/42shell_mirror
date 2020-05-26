@@ -13,6 +13,7 @@
 #include "cetushell.h"
 #include "input_control.h"
 #include "signal_handler.h"
+#include "environment.h"
 
 static int	ft_putchar(int c)
 {
@@ -32,7 +33,7 @@ void		configure_terminal(t_shell *shell, int activator)
 
 	if (activator > 0)
 	{
-		temp = getenv("TERM");
+		temp = ft_getenv(shell->env, "TERM", ENV_VAR);
 		if (temp == NULL)
 			temp = "xterm-256color";
 		tgetent(NULL, temp);
