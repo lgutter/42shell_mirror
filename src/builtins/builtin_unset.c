@@ -45,8 +45,10 @@ static int	handle_unsetenv(char *arg, char *argz, t_env *env, int opts)
 	int ret;
 
 	ret = ft_unsetenv(env, arg, opts);
-	if (ret != 0)
+	if (ret == error_ronly)
 		handle_prefix_error_str(ret, argz, arg);
+	else if (ret == env_not_found)
+		ret = 0;
 	return (ret);
 }
 
