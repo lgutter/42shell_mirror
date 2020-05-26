@@ -67,7 +67,8 @@ static int		process_simple_cmd(t_shell *shell, t_simple_cmd *simple_command)
 	{
 		if (cur_arg->argument != NULL)
 		{
-			if (process_word(shell, &(cur_arg->argument), 'y') != 0)
+			if (process_word(shell, &(cur_arg->argument),
+														WORD_PROCESS_ALL) != 0)
 				return (-1);
 		}
 		cur_arg = cur_arg->next;

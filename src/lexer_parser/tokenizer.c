@@ -17,7 +17,7 @@
 **	expand_buff will expand the buffer where the value to be stored in a token
 **	is kept until the token is delimited.
 **	normally this just means adding a character, but if the length of
-**	the token value exceeds the TOKEN_BUFF_SIZE, the size of the buffer is doubled.
+**	the token value exceeds the TOKEN_BUFF_SIZE, the size of buffer is doubled.
 **	if there was no buffer yet, it is allocated.
 **	the size of the buffer is stored in a static variable so we can always
 **	know its exact size.

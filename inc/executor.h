@@ -21,6 +21,13 @@
 # include <sys/wait.h>
 # include <dirent.h>
 
+# define WORD_EXPAND		1
+# define WORD_UNQUOTE		2
+# define WORD_FIX_QUOTES	4
+# define WORD_PROCESS_ALL	7
+# define WORD_FORCE_EXPAND	8
+# define WORD_PROCESS_FORCE	15
+
 /*
 **	contains the required information to execute a command.
 **	fields:
@@ -121,17 +128,19 @@ int				find_executable(t_env *env_list, t_command *command,
 /*
 **	performs environment expansions and quote removal on the string pointed
 **	to by the argument word. If the string contains an unterminated quote,
-**	the user will be asked to complete it.
+**	the user will be asked to complete it if WORD_FIX_QUOTE was passed.
 **	arguments:
-**	shell:		a pointer to the shell struct. (needed for quote completion)
-**	env_list:	a pointer to the first element in the environment list.
+**	shell:		a pointer to the shell struct.
 **	word:		a pointer to the string to be processed.
-**	char:		if this argument == 'y', environment expansions will be done.
+**	char:		contains options for expansion and quote removal.
+**				(use a combination of WORD_EXPAND, WORD_FORCE_EXPAND,
+**				WORD_UNQUOTE and WORD_FIX_QUOTE,
+**				or WORD_PROCESS_ALL or WORD_PROCESS_FORCE.)
 **	returns:
 **	0 on succes.
 **	-1 on failure.
 */
-int				process_word(t_shell *shell, char **word, char expand);
+int				process_word(t_shell *shell, char **word, int opts);
 
 /*
 **	performs environment expansions and quote completion + removal on all
