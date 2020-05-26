@@ -73,11 +73,32 @@ void		set_cursor_pos(t_cursor *cursor, size_t buff_len, size_t prompt_len)
 				, cursor->current.y, cursor->current.x);
 }
 
+void		parse_cursor_pos(t_cursor *cursor, char *pos, size_t prompt_len
+							, int ret)
+{
+	int		temp;
+
+	temp = ft_atoi(&pos[2]);
+	if (temp != 0)
+		cursor->start.y = temp;
+	while (ft_isdigit(pos[ret]) == 0)
+		ret = ret - 1;
+	while (ft_isdigit(pos[ret - 1]) == 1)
+		ret = ret - 1;
+	cursor->current.x = ft_atoi(&pos[ret]);
+	if (cursor->current.x > 1)
+	{
+		cursor->start.y++;
+		cursor->new_line_x = cursor->current.x;
+	}
+	else
+		cursor->start.x = prompt_len;
+}
+
 void		get_cursor_pos(t_cursor *cursor, size_t prompt_len)
 {
 	char	pos[16];
 	int		ret;
-	int		temp;
 
 	send_terminal("sc");
 	ft_printf("%c[6n", ESCAPE_KEY);
@@ -88,16 +109,7 @@ void		get_cursor_pos(t_cursor *cursor, size_t prompt_len)
 	if (ret < 3)
 		read(STDIN_FILENO, &pos, sizeof(pos));
 	else
-	{
-		temp = ft_atoi(&pos[2]);
-		if (temp != 0)
-			cursor->start.y = temp;
-		while (ft_isdigit(pos[ret]) == 0)
-			ret = ret - 1;
-		while (ft_isdigit(pos[ret - 1]) == 1)
-			ret = ret - 1;
-		cursor->start.x = prompt_len + 4;
-	}
+		parse_cursor_pos(cursor, pos, prompt_len, ret);
 	cursor->current.x = prompt_len;
 	cursor->current.y = cursor->start.y;
 }
