@@ -25,7 +25,13 @@ size_t	insert_word(t_buff *buffer, t_cursor *cursor, char *word, size_t len)
 	{
 		if (insert_char(buffer, word[i]) != 0)
 			return (1);
-		cursor->current.x++;
+		if (word[i] == '\n')
+		{
+			cursor->current.x = 1;
+			cursor->new_line = 1;
+		}
+		else
+			cursor->current.x++;
 		set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
 		i++;
 	}

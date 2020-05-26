@@ -14,6 +14,18 @@
 #include "input_control.h"
 #include "signal_handler.h"
 
+static void	handle_new_line(t_cursor *cursor)
+{
+	cursor->current.y++;
+	if (cursor->current.y > cursor->max.y)
+	{
+		send_terminal(CURSOR_DOWN);
+		cursor->start.y--;
+		cursor->current.y--;
+	}
+	cursor->new_line == 0;
+}
+
 static void	cursor_next_line(t_cursor *cursor, size_t len, size_t prompt_len)
 {
 	if (cursor->max.x == 0)
@@ -37,6 +49,8 @@ static void	cursor_next_line(t_cursor *cursor, size_t len, size_t prompt_len)
 		if (cursor->current.y != cursor->start.y)
 			cursor->current.y--;
 	}
+	if (cursor->new_line == 1)
+		handle_new_line(cursor);
 }
 
 void		set_cursor_pos(t_cursor *cursor, size_t buff_len, size_t prompt_len)

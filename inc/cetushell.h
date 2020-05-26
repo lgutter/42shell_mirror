@@ -54,6 +54,7 @@ typedef struct			s_cursor
 	t_point				current;
 	t_point				max;
 	char				cur_buff[CUR_BUFF_SIZE];
+	size_t				new_line;
 }						t_cursor;
 
 typedef struct			s_shell
