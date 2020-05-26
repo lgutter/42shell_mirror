@@ -70,7 +70,7 @@ int			update_history(t_history *hist, t_env *env, char *buff)
 	if (hist->hist_list != NULL)
 		hist->real_num_index++;
 	len = ft_intlen(hist->real_num_index) + ft_strlen(buff) + 3;
-	tmp = (char *)ft_memalloc(sizeof(char) * len + 1);
+	tmp = (char *)ft_memalloc(sizeof(char) * (len + 1));
 	if (tmp == NULL)
 		return (1);
 	ft_snprintf(tmp, len, ":%d:%s", hist->real_num_index, buff);
@@ -104,7 +104,7 @@ t_hist_list	*add_history_element(t_hist_list **start, char *buff, size_t i)
 		return (NULL);
 	if (*start == NULL)
 	{
-		*start = (t_hist_list *)ft_memalloc(sizeof(t_hist_list));
+		*start = (t_hist_list *)ft_memalloc(sizeof(t_hist_list) * 1);
 		current = *start;
 		prev = NULL;
 	}
@@ -113,7 +113,7 @@ t_hist_list	*add_history_element(t_hist_list **start, char *buff, size_t i)
 		current = *start;
 		while (current->next != NULL)
 			current = current->next;
-		current->next = (t_hist_list *)ft_memalloc(sizeof(t_hist_list));
+		current->next = (t_hist_list *)ft_memalloc(sizeof(t_hist_list) * 1);
 		prev = current;
 		current = current->next;
 	}

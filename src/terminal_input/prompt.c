@@ -63,14 +63,14 @@ static int		init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
 		free(buffer->prompt);
 		buffer->prompt = ft_strndup(prompt, buffer->prompt_len);
 	}
-	buffer->buff = (char *)ft_memalloc(sizeof(char) * INPUT_BUFF_SIZE + 1);
+	buffer->buff = (char *)ft_memalloc(sizeof(char) * (INP_BUFF_SIZE + 1));
 	if (buffer->copy == NULL)
-		buffer->copy = (char *)ft_memalloc(sizeof(char) * INPUT_BUFF_SIZE + 1);
+		buffer->copy = (char *)ft_memalloc(sizeof(char) * (INP_BUFF_SIZE + 1));
 	ft_memset(cursor->cur_buff, '\0', CUR_BUFF_SIZE);
 	if (buffer->buff == NULL || buffer->copy == NULL || buffer->prompt == NULL)
 		return (1);
-	buffer->buff_size = INPUT_BUFF_SIZE;
-	buffer->copy_size = INPUT_BUFF_SIZE;
+	buffer->buff_size = INP_BUFF_SIZE;
+	buffer->copy_size = INP_BUFF_SIZE;
 	get_cursor_pos(cursor, buffer->prompt_len);
 	return (0);
 }

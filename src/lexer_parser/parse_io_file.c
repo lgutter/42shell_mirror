@@ -36,7 +36,7 @@ t_io_file		*parse_io_file(t_token **token)
 		handle_error_str(parsing_error, (*token)->value);
 		return (NULL);
 	}
-	io_file = ft_memalloc(sizeof(t_io_file) * 1);
+	io_file = (t_io_file *)ft_memalloc(sizeof(t_io_file) * 1);
 	if (io_file == NULL)
 		return (handle_error_p(malloc_error, NULL));
 	io_file->redirect_op = (t_redirect_op)(*token)->type;

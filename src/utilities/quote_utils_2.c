@@ -51,7 +51,7 @@ char		*backslash_quotes(char *str)
 	s_i = 0;
 	t_i = 0;
 	count = count_quote_chars(str);
-	temp = (char *)ft_memalloc(ft_strlen(str) + count + 1);
+	temp = (char *)ft_memalloc(sizeof(char) * (ft_strlen(str) + count + 1));
 	if (temp == NULL)
 		return (NULL);
 	while (str[s_i] != '\0')

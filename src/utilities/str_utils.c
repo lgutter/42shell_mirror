@@ -48,7 +48,7 @@ char	*ft_strndup(const char *string, size_t len)
 	}
 	if (ft_strlen(string) < len)
 		len = ft_strlen(string);
-	ret = (char *)malloc(sizeof(char) * (len + 1));
+	ret = (char *)ft_memalloc(sizeof(char) * (len + 1));
 	if (ret != NULL)
 	{
 		while (index < len)

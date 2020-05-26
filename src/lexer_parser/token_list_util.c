@@ -48,7 +48,7 @@ static t_token	*init_token(t_token **start)
 	previous = NULL;
 	if (*start == NULL)
 	{
-		*start = (t_token *)ft_memalloc(sizeof(t_token));
+		*start = (t_token *)ft_memalloc(sizeof(t_token) * 1);
 		temp = *start;
 	}
 	else
@@ -56,7 +56,7 @@ static t_token	*init_token(t_token **start)
 		temp = *start;
 		while (temp->next != NULL)
 			temp = temp->next;
-		temp->next = (t_token *)ft_memalloc(sizeof(t_token));
+		temp->next = (t_token *)ft_memalloc(sizeof(t_token) * 1);
 		previous = temp;
 		temp = temp->next;
 	}

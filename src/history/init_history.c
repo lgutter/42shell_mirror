@@ -25,7 +25,7 @@ static char		*read_history(t_history *hist)
 
 	i = 0;
 	ret = 1;
-	temp = (char *)ft_memalloc(sizeof(char) * (hist->file_size) + 1);
+	temp = (char *)ft_memalloc(sizeof(char) * ((hist->file_size) + 1));
 	if (temp == NULL)
 		return (NULL);
 	fd_hist = open(hist->hist_path, O_RDONLY | O_CREAT, 0664);

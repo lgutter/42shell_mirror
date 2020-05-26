@@ -35,14 +35,14 @@ static int		expand_buff(char **buff, char new)
 	i = 0;
 	if (*buff == NULL)
 	{
-		*buff = (char *)ft_memalloc(size);
+		*buff = (char *)ft_memalloc(sizeof(char) * (size + 1));
 		if (*buff == NULL)
 			return (handle_error(malloc_error));
 	}
 	i = ft_strlen(*buff);
 	if (i >= (size - 1))
 	{
-		temp = ft_memalloc(size * 2);
+		temp = (char *)ft_memalloc(sizeof(char) * ((size * 2) + 1));
 		if (temp == NULL)
 			return (handle_error(malloc_error));
 		temp = ft_strcpy(temp, *buff);

@@ -28,7 +28,7 @@ int		copy(t_buff *buffer)
 	}
 	ft_memdel((void **)&buffer->copy);
 	buffer->copy = NULL;
-	buffer->copy = ft_memalloc(sizeof(char) * len + 1);
+	buffer->copy = (char *)ft_memalloc(sizeof(char) * (len + 1));
 	if (buffer->copy == NULL)
 		return (1);
 	ft_strncpy(buffer->copy, &buffer->buff[buffer->rv_end], len);
