@@ -23,7 +23,7 @@ static void	handle_new_line(t_cursor *cursor)
 		cursor->start.y--;
 		cursor->current.y--;
 	}
-	cursor->new_line == 0;
+	cursor->new_line = 0;
 }
 
 static void	cursor_next_line(t_cursor *cursor, size_t len, size_t prompt_len)
