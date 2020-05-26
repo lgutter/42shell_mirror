@@ -51,6 +51,7 @@ int				exit_shell(t_shell *shell, int ret)
 		ret = ft_atoi(exit_code);
 	free(exit_code);
 	free_shell(shell, 1);
+	printf("exit\n");
 	return (ret);
 }
 
