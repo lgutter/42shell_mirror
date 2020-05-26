@@ -41,8 +41,8 @@
 # define ARROW_DOWN     "[B"
 # define ARROW_RIGHT    "[C"
 # define ARROW_LEFT     "[D"
-# define END            "[F"
-# define HOME           "[H"
+# define END_KEY        "[F"
+# define HOME_KEY       "[H"
 # define SHIFT_UP       "[1;2A"
 # define SHIFT_DOWN     "[1;2B"
 # define SHIFT_RIGHT    "[1;2C"
@@ -66,9 +66,9 @@
 # define CNTRL_V 026
 # define CNTRL_X 030
 
-# define TAB 011
-# define RETURN	012
-# define ESCAPE 033
+# define TAB_KEY	011
+# define RETURN_KEY	012
+# define ESCAPE_KEY 033
 # define BACKSPACE 0177
 
 /*
@@ -170,7 +170,7 @@ void		remove_buff(t_buff *buffer, t_cursor *cursor);
 **
 ** arg: *cursor: pointer to struct t_cursor defined in cetushell.h
 ** arg: *buffer: pointer to struct t_buff defined in cetushell.h
-** arg: c: character input from user which must be TAB (\011)
+** arg: c: character input from user which must be TAB_KEY (\011)
 */
 void		tab_key(t_buff *buffer, t_cursor *cursor, char c);
 
@@ -192,7 +192,7 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c);
 **
 ** arg: *buffer: pointer to struct t_buff defined in cetushell.h
 ** arg: *cursor: pointer to struct t_cursor defined in cetushell.h
-** arg: c: character input from user which must be RETURN (\012)
+** arg: c: character input from user which must be RETURN_KEY (\012)
 ** return: int: this int must signal the terminal to process the buffer.
 */
 int			return_key(t_buff *buffer, t_cursor *cursor, char c);

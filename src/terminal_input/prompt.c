@@ -36,7 +36,7 @@ static void		print_buffer(t_buff *buffer)
 
 static void		clear_prompt(t_cursor *cursor)
 {
-	ft_printf("%c[%d;%dH", ESCAPE, cursor->start.y, 0);
+	ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, 0);
 	send_terminal("cd");
 }
 

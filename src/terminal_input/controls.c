@@ -15,7 +15,7 @@
 
 int			return_key(t_buff *buffer, t_cursor *cursor, char c)
 {
-	if (c == RETURN)
+	if (c == RETURN_KEY)
 	{
 		send_terminal(CURSOR_DOWN);
 		buffer->buff_len = 0;
@@ -30,7 +30,7 @@ void		tab_key(t_buff *buffer, t_cursor *cursor, char c)
 	int		i;
 
 	i = 0;
-	if (c == TAB)
+	if (c == TAB_KEY)
 	{
 		while (i != 4)
 		{

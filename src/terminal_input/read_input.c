@@ -22,7 +22,7 @@ static int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
 	int		ret;
 
 	ft_bzero(seq, ESC_SEQ_SIZE);
-	if (c == ESCAPE)
+	if (c == ESCAPE_KEY)
 	{
 		ret = read(STDIN_FILENO, seq, ESC_SEQ_SIZE);
 		if (ret == -1)
