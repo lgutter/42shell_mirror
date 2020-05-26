@@ -14,7 +14,8 @@
 
 char	*ft_getenv(t_env *env, const char *key, int opts)
 {
-	t_env *current;
+	t_env	*current;
+	char	*temp;
 
 	if (key == NULL)
 		return (NULL);
@@ -24,20 +25,14 @@ char	*ft_getenv(t_env *env, const char *key, int opts)
 		if (ft_strcmp(key, current->key) == 0 &&
 			(opts & (current->type & VAR_TYPE)) != 0)
 		{
-			return (ft_strdup(current->value));
+			if ((opts & QUOTE_VAR) != 0)
+				temp = backslash_quotes(current->value);
+			else
+				temp = ft_strdup(current->value);
+			return (temp);
 		}
 		current = current->next;
 	}
 	return (NULL);
 }
 
-char	*ft_getenv_quote(t_env *env, const char *key, int opts)
-{
-	char	*temp;
-	char	*unquote;
-
-	temp = ft_getenv(env, key, opts);
-	unquote = backslash_quotes(temp);
-	free(temp);
-	return (unquote);
-}

@@ -59,7 +59,7 @@ Test(unit_ft_getenv, mandatory_basic_get_valid_value_from_system_list, .init = r
 	cr_assert_stderr_eq_str("-");
 }
 
-Test(unit_ft_getenv_quote, mandatory_basic_get_valid_value_in_single_element_list)
+Test(unit_ft_getenv, mandatory_basic_get_valid_value_in_single_element_list_escape_quotes)
 {
 	char *value;
 	t_env *list;
@@ -69,30 +69,30 @@ Test(unit_ft_getenv_quote, mandatory_basic_get_valid_value_in_single_element_lis
 	list->value = strdup("VALUE_\\FOR\"_TE\'ST_1");
 	list->type = ENV_VAR;
 	list->next = NULL;
-	value = ft_getenv_quote(list, "MINISHELL_TEST_GET_ENV", ENV_VAR);
+	value = ft_getenv(list, "MINISHELL_TEST_GET_ENV", ENV_VAR | QUOTE_VAR);
 	cr_assert_str_eq(value, "VALUE_\\\\FOR\\\"_TE\\\'ST_1");
 }
 
-Test(unit_ft_getenv_quote, mandatory_basic_get_from_empty_list, .init = redirect_std_err)
+Test(unit_ft_getenv, mandatory_basic_get_from_empty_list_escape_quotes, .init = redirect_std_err)
 {
 	char *value;
 	t_env *list = NULL;
 
-	value = ft_getenv_quote(list, "MINISHELL_TEST_GET_ENV", ENV_VAR);
+	value = ft_getenv(list, "MINISHELL_TEST_GET_ENV", ENV_VAR | QUOTE_VAR);
 	cr_assert_eq(NULL, value);
 	ft_dprintf(2, "-");
 	fflush(stderr);
 	cr_assert_stderr_eq_str("-");
 }
 
-Test(unit_ft_getenv_quote, mandatory_basic_get_valid_value_from_system_list, .init = redirect_std_err)
+Test(unit_ft_getenv, mandatory_basic_get_valid_value_from_system_list_escape_quotes, .init = redirect_std_err)
 {
 	char *value;
 	t_env *list;
 
 	setenv("MINISHELL_TEST_GET_ENV", "VA\'LU\"E_FOR_TES\\T_3", 1);
 	list = dup_sys_env();
-	value = ft_getenv_quote(list, "MINISHELL_TEST_GET_ENV", ENV_VAR);
+	value = ft_getenv(list, "MINISHELL_TEST_GET_ENV", ENV_VAR | QUOTE_VAR);
 	cr_assert_str_eq(value, "VA\\\'LU\\\"E_FOR_TES\\\\T_3");
 	ft_dprintf(2, "-");
 	fflush(stderr);
@@ -106,19 +106,6 @@ Test(unit_ft_getenv, mandatory_basic_error_NULL_string, .init = redirect_std_err
 
 	list = dup_sys_env();
 	value = ft_getenv(list, NULL, ENV_VAR);
-	cr_assert_eq(NULL, value);
-	ft_dprintf(2, "-");
-	fflush(stderr);
-	cr_assert_stderr_eq_str("-");
-}
-
-Test(unit_ft_getenv_quote, mandatory_basic_error_NULL_string, .init = redirect_std_err)
-{
-	char *value;
-	t_env *list = NULL;
-
-	list = dup_sys_env();
-	value = ft_getenv_quote(list, NULL, ENV_VAR);
 	cr_assert_eq(NULL, value);
 	ft_dprintf(2, "-");
 	fflush(stderr);

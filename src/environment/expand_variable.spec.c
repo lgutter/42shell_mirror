@@ -29,7 +29,7 @@ Test(unit_ft_expand_variable, basic_mandatory_expand_tilde)
 	env->value = strdup("/home/criteriontest");
 	env->type = ENV_VAR;
 	env->next = NULL;
-	ret = expand_variable(&shell, &test_string);
+	ret = expand_variable(&shell, &test_string, VAR_TYPE | QUOTE_VAR);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "/home/criteriontest");
 }
@@ -47,7 +47,7 @@ Test(unit_ft_expand_variable, basic_mandatory_expand_HOME)
 	env->value = strdup("Barcriteriontest");
 	env->type = ENV_VAR;
 	env->next = NULL;
-	ret = expand_variable(&shell, &test_string);
+	ret = expand_variable(&shell, &test_string, VAR_TYPE | QUOTE_VAR);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "Barcriteriontest");
 }
@@ -65,7 +65,7 @@ Test(unit_ft_expand_variable, basic_mandatory_no_key)
 	env->value = strdup("Barcriteriontest");
 	env->type = ENV_VAR;
 	env->next = NULL;
-	ret = expand_variable(&shell, &test_string);
+	ret = expand_variable(&shell, &test_string, VAR_TYPE | QUOTE_VAR);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "$.FOO");
 }
@@ -83,7 +83,7 @@ Test(unit_ft_expand_variable, basic_mandatory_loop_key, .timeout = 2)
 	env->value = strdup("$FOO");
 	env->type = ENV_VAR;
 	env->next = NULL;
-	ret = expand_variable(&shell, &test_string);
+	ret = expand_variable(&shell, &test_string, VAR_TYPE | QUOTE_VAR);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "$FOO");
 }
@@ -97,7 +97,7 @@ Test(unit_ft_expand_variable, basic_mandatory_error_NULL_env_list)
 
 	ft_bzero(&shell, sizeof(t_shell));
 	shell.env = env;
-	ret = expand_variable(&shell, &test_string);
+	ret = expand_variable(&shell, &test_string, VAR_TYPE | QUOTE_VAR);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "");
 }
@@ -106,7 +106,7 @@ Test(unit_ft_expand_variable, basic_mandatory_error_NULL_shell)
 {
 	char *test_string = strdup("$FOO");
 	int ret;
-	ret = expand_variable(NULL, &test_string);
+	ret = expand_variable(NULL, &test_string, VAR_TYPE | QUOTE_VAR);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "");
 }
@@ -124,7 +124,7 @@ Test(unit_ft_expand_variable, basic_mandatory_error_NULL_string)
 	env->value = strdup("$FOO");
 	env->type = ENV_VAR;
 	env->next = NULL;
-	ret = expand_variable(&shell, &test_string);
+	ret = expand_variable(&shell, &test_string, VAR_TYPE | QUOTE_VAR);
 	cr_expect_eq(ret, -1);
 	cr_assert_eq(test_string, NULL);
 }

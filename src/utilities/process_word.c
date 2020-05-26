@@ -12,6 +12,16 @@
 
 #include "executor.h"
 
+static int	get_exp_opts(int process_opts, int quote_type)
+{
+	int	opts;
+
+	opts = VAR_TYPE;
+	if (quote_type != 1 && (process_opts & WORD_UNQUOTE) != 0)
+		opts |= QUOTE_VAR;
+	return (opts);
+}
+
 int	process_word(t_shell *shell, char **word, int opts)
 {
 	int	quote_type;
@@ -28,7 +38,7 @@ int	process_word(t_shell *shell, char **word, int opts)
 	if ((opts & WORD_FORCE_EXPAND) != 0 ||
 		((opts & WORD_EXPAND) != 0 && (quote_type == 0 || quote_type == 2)))
 	{
-		if (expand_variable(shell, word) != 0)
+		if (expand_variable(shell, word, get_exp_opts(opts, quote_type)) != 0)
 			return (-1);
 	}
 	if ((opts & WORD_UNQUOTE) != 0 && count_quote_chars(*word) > 0)
