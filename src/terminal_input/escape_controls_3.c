@@ -66,7 +66,12 @@ static void		cntrl_up(t_buff *buffer, t_cursor *cursor, char *seq)
 		cursor->current.y--;
 		if (cursor->current.y == cursor->start.y &&
 			cursor->current.x < buffer->prompt_len)
+		{
+			buffer->index = 0;
 			cursor->current.x = cursor->start.x;
+		}
+		else
+			buffer->index = buffer->index - cursor->max.x;
 	}
 }
 
@@ -74,15 +79,19 @@ static void		cntrl_down(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	size_t		temp;
 
-	if (ft_strcmp(seq, CNTRL_DOWN) == 0 && cursor->current.y < cursor->max.x)
+	temp = (((buffer->prompt_len + buffer->buff_len) / cursor->max.x) +
+		cursor->start.y);
+	if (ft_strcmp(seq, CNTRL_DOWN) == 0 && cursor->current.y < temp)
 	{
 		cursor->current.y++;
-		if (cursor->current.y == cursor->max.y)
+		temp = (buffer->prompt_len + buffer->buff_len) % cursor->max.x;
+		if (cursor->current.y == cursor->max.y && cursor->current.x > temp)
 		{
-			temp = (buffer->buff_len + buffer->prompt_len) / cursor->max.x;
-			if (cursor->current.x > temp)
-				cursor->current.x = temp;
+			buffer->index = buffer->buff_len;
+			cursor->current.x = temp;
 		}
+		else
+			buffer->index = buffer->index + cursor->max.x;
 	}
 }
 
