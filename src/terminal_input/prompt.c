@@ -42,6 +42,14 @@ static void		clear_prompt(t_cursor *cursor)
 
 static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 {
+	if (cursor->new_line_x > 1)
+	{
+		ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y - 1,
+			cursor->new_line_x);
+		ft_printf("%s%%%s", RV_MODE, RV_RESET);
+		ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, cursor->start.x);
+		cursor->new_line_x = 1;
+	}
 	clear_prompt(cursor);
 	ft_printf("%s", buffer->prompt);
 	print_buffer(buffer);
@@ -71,7 +79,6 @@ static int		init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
 		return (1);
 	buffer->buff_size = INP_BUFF_SIZE;
 	buffer->copy_size = INP_BUFF_SIZE;
-	get_cursor_pos(cursor, buffer->prompt_len);
 	return (0);
 }
 

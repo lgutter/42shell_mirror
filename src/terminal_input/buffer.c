@@ -97,6 +97,8 @@ void			remove_word(t_buff *buffer, t_cursor *cursor)
 	+ buffer->prompt_len) / cursor->max.x)))
 		cursor->current.y = cursor->start.y + ((buffer->rv_start + \
 		buffer->prompt_len) / cursor->max.x);
+	if (buffer->rv_start - buffer->rv_end == 1)
+		buffer->rv_end--;
 	while (buffer->rv_start > buffer->rv_end)
 	{
 		remove_char(buffer);

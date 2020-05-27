@@ -27,6 +27,7 @@ static int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
 		ret = read(STDIN_FILENO, seq, ESC_SEQ_SIZE);
 		if (ret == -1)
 			return (2);
+		handle_cntrl_arrows(buffer, cursor, seq);
 		if (cut_copy_paste(buffer, cursor, seq, 0) != 0)
 			return (1);
 		shift_right_key(buffer, cursor, seq);
@@ -42,15 +43,27 @@ static int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
 	return (0);
 }
 
-static int		handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
+static int		handle_printable_char(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (ft_isprint(c) != 0)
 	{
 		buffer->state = INPUT_STATE;
+		if (buffer->rv_start != buffer->rv_end)
+		{
+			ft_swap_rv(buffer);
+			remove_word(buffer, cursor);
+		}
 		if (insert_char(buffer, c) > 0)
 			return (1);
 		cursor->current.x++;
 	}
+	return (0);
+}
+
+static int		handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
+{
+	if (handle_printable_char(buffer, cursor, c) == 1)
+		return (1);
 	if (c == CNTRL_R)
 	{
 		cursor->current.y = cursor->current.y - cursor->start.y;

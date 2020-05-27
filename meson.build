@@ -40,6 +40,7 @@ src_files = files([
   'src/terminal_input/controls.c',
   'src/terminal_input/escape_controls_1.c',
   'src/terminal_input/escape_controls_2.c',
+  'src/terminal_input/escape_controls_3.c',
   'src/terminal_input/cut_copy.c',
   'src/lexer_parser/tokenizer.c',
   'src/lexer_parser/token_list_util.c',
