@@ -44,9 +44,10 @@ static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 {
 	if (cursor->new_line_x > 1)
 	{
-		ft_printf("%c[%d;%dH", ESCAPE, cursor->start.y - 1, cursor->new_line_x);
+		ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y - 1,
+			cursor->new_line_x);
 		ft_printf("%s%%%s", RV_MODE, RV_RESET);
-		ft_printf("%c[%d;%dH", ESCAPE, cursor->start.y, cursor->start.x);
+		ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, cursor->start.x);
 		cursor->new_line_x = 1;
 	}
 	clear_prompt(cursor);
@@ -76,8 +77,8 @@ static int		init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
 	ft_memset(cursor->cur_buff, '\0', CUR_BUFF_SIZE);
 	if (buffer->buff == NULL || buffer->copy == NULL || buffer->prompt == NULL)
 		return (1);
-	buffer->buff_size = INPUT_BUFF_SIZE;
-	buffer->copy_size = INPUT_BUFF_SIZE;
+	buffer->buff_size = INP_BUFF_SIZE;
+	buffer->copy_size = INP_BUFF_SIZE;
 	return (0);
 }
 

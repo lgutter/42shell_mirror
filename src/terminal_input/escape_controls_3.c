@@ -65,7 +65,7 @@ static void		cntrl_up(t_buff *buffer, t_cursor *cursor, char *seq)
 	{
 		cursor->current.y--;
 		if (cursor->current.y == cursor->start.y &&
-			cursor->current.x < buffer->prompt_len)
+			cursor->current.x < buffer->prompt_len - 1)
 		{
 			buffer->index = 0;
 			cursor->current.x = cursor->start.x;
