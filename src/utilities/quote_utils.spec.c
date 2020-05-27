@@ -147,7 +147,7 @@ Test(remove_quotes_unit, valid_no_quotes)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -160,7 +160,7 @@ Test(remove_quotes_unit, valid_double_quote)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -173,7 +173,7 @@ Test(remove_quotes_unit, valid_empty_double_quote)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -186,7 +186,7 @@ Test(remove_quotes_unit, valid_only_escaped_double_quote_in_double_quote)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -199,7 +199,7 @@ Test(remove_quotes_unit, valid_only_escaped_newline_in_double_quote)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -212,7 +212,7 @@ Test(remove_quotes_unit, valid_only_escaped_dollar_in_double_quote)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -225,7 +225,7 @@ Test(remove_quotes_unit, valid_only_escaped_normal_char_in_double_quote)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -238,7 +238,7 @@ Test(remove_quotes_unit, valid_single_quote)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -251,7 +251,7 @@ Test(remove_quotes_unit, valid_single_quote_containing_backslash)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -264,7 +264,7 @@ Test(remove_quotes_unit, valid_single_quote_containing_backslash_at_start)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -277,7 +277,7 @@ Test(remove_quotes_unit, valid_single_quote_containing_backslash_at_end)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -290,7 +290,7 @@ Test(remove_quotes_unit, valid_single_quote_containing_double_quote_char)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -303,7 +303,7 @@ Test(remove_quotes_unit, valid_double_quote_containing_backslash)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -316,7 +316,7 @@ Test(remove_quotes_unit, valid_double_quote_containing_single_quote_char)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -329,7 +329,33 @@ Test(remove_quotes_unit, valid_double_quote_escaped_double_quote)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
+	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
+	cr_assert_neq(str, NULL, "malloc failed!");
+	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
+}
+
+Test(remove_quotes_unit, valid_double_quote_escaped_double_quote_in_heredoc)
+{
+	char *str		= strdup("\"hello foo b\\\"\"ar");
+	char *expected	= "\"hello foo b\\\"\"ar";
+	int ret;
+	int expected_ret = 0;
+
+	ret = remove_quotes(&str, HEREDOCS_TABLE);
+	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
+	cr_assert_neq(str, NULL, "malloc failed!");
+	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
+}
+
+Test(remove_quotes_unit, valid_double_quote_escaped_newline_in_heredoc)
+{
+	char *str		= strdup("\"hello foo b\\\n\"ar");
+	char *expected	= "\"hello foo b\"ar";
+	int ret;
+	int expected_ret = 0;
+
+	ret = remove_quotes(&str, HEREDOCS_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -342,7 +368,7 @@ Test(remove_quotes_unit, valid_multiple_backslashes)
 	int ret;
 	int expected_ret = 0;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -355,7 +381,7 @@ Test(remove_quotes_unit, invalid_unterminated_double_quote)
 	int ret;
 	int expected_ret = -1;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -368,7 +394,7 @@ Test(remove_quotes_unit, invalid_unterminated_single_quote)
 	int ret;
 	int expected_ret = -1;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_neq(str, NULL, "malloc failed!");
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
@@ -380,7 +406,7 @@ Test(remove_quotes_unit, invalid_NULL_string)
 	int ret;
 	int expected_ret = -1;
 
-	ret = remove_quotes(&str);
+	ret = remove_quotes(&str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
 	cr_assert_eq(str, NULL);
 }
@@ -391,7 +417,7 @@ Test(count_quote_chars_unit, valid_no_qoutes)
 	size_t ret;
 	size_t expected_ret = 0;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -401,7 +427,7 @@ Test(count_quote_chars_unit, valid_double_qoute)
 	size_t ret;
 	size_t expected_ret = 2;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -411,7 +437,7 @@ Test(count_quote_chars_unit, valid_empty_double_qoute)
 	size_t ret;
 	size_t expected_ret = 2;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -421,7 +447,7 @@ Test(count_quote_chars_unit, valid_single_qoute)
 	size_t ret;
 	size_t expected_ret = 2;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -431,7 +457,17 @@ Test(count_quote_chars_unit, valid_single_qoute_containing_backslash)
 	size_t ret;
 	size_t expected_ret = 2;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
+	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
+}
+
+Test(count_quote_chars_unit, valid_single_qoute_containing_backslash_in_heredoc)
+{
+	char *str		= "\'single quot\\e \'here!";
+	size_t ret;
+	size_t expected_ret = 0;
+
+	ret = count_quote_chars(str, HEREDOCS_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -441,7 +477,7 @@ Test(count_quote_chars_unit, valid_single_qoute_containing_double_quote_char)
 	size_t ret;
 	size_t expected_ret = 2;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -451,7 +487,7 @@ Test(count_quote_chars_unit, valid_double_qoute_containing_backslash)
 	size_t ret;
 	size_t expected_ret = 2;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -461,7 +497,7 @@ Test(count_quote_chars_unit, valid_double_qoute_containing_singe_quote_char)
 	size_t ret;
 	size_t expected_ret = 2;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -471,7 +507,17 @@ Test(count_quote_chars_unit, valid_double_qoute_containing_escaped_double_quote)
 	size_t ret;
 	size_t expected_ret = 3;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
+	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
+}
+
+Test(count_quote_chars_unit, valid_double_qoute_containing_escaped_newline_in_heredoc)
+{
+	char *str		= "\"double quot\\\ne \"here!";
+	size_t ret;
+	size_t expected_ret = 2;
+
+	ret = count_quote_chars(str, HEREDOCS_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -481,7 +527,7 @@ Test(count_quote_chars_unit, valid_double_qoute_containing_escaped_single_quote)
 	size_t ret;
 	size_t expected_ret = 2;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -491,7 +537,7 @@ Test(count_quote_chars_unit, valid_single_qoute_containing_escaped_double_quote)
 	size_t ret;
 	size_t expected_ret = 2;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -501,7 +547,7 @@ Test(count_quote_chars_unit, valid_multiple_backslashes)
 	size_t ret;
 	size_t expected_ret = 4;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 
@@ -511,7 +557,7 @@ Test(count_quote_chars_unit, invalid_NULL_string)
 	size_t ret;
 	size_t expected_ret = -1;
 
-	ret = count_quote_chars(str);
+	ret = count_quote_chars(str, ALL_QUOTES_TABLE);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
 }
 

@@ -41,9 +41,11 @@ int	process_word(t_shell *shell, char **word, int opts)
 		if (expand_variable(shell, word, get_exp_opts(opts, quote_type)) != 0)
 			return (-1);
 	}
-	if ((opts & WORD_UNQUOTE) != 0 && count_quote_chars(*word) > 0)
+	if ((opts & WORD_UNQUOTE) != 0 &&
+		count_quote_chars(*word, ALL_QUOTES_TABLE) > 0)
 	{
-		if (remove_quotes(word) != 0)
+		if (remove_quotes(word,
+			(opts & WORD_HERE_DOC) ? HEREDOCS_TABLE : ALL_QUOTES_TABLE) != 0)
 			return (-1);
 	}
 	return (0);

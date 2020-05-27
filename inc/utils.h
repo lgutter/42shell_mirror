@@ -13,6 +13,9 @@
 #ifndef UTILS_H
 # define UTILS_H
 
+# define ALL_QUOTES_TABLE 0
+# define HEREDOCS_TABLE 1
+
 # include "cetushell.h"
 # include "parser_structs.h"
 # include "input_control.h"
@@ -73,11 +76,13 @@ int			check_quote(char *word);
 /*
 **	removes the quote symbols from the beginning and end of quotes in word.
 **	it only removes quote symbols if the string only contains valid quotes.
+**	the argument table_type specifies which transition table is used, either
+**	ALL_QUOTES_TABLE, or HEREDOCS_TABLE.
 **	returns:
 **	-1:	on failure.
 **	 0:	on succes.
 */
-int			remove_quotes(char **word);
+int			remove_quotes(char **word, int table_type);
 
 /*
 **	completes an unterminated quote in word with character delim.
@@ -92,11 +97,13 @@ int			complete_quote(t_shell *shell, char **word);
 **	returns:
 **	number of quote characters in the string passed as argument.
 */
-int			count_quote_chars(char *str);
+int			count_quote_chars(char *str, int table_type);
 
 /*
 **	makes a copy of str with a backslash ([\]) in front of every
 **	quote character (["], ['], [\]) in the string, and returns it.
+**	the argument table_type specifies which transition table is used, either
+**	ALL_QUOTES_TABLE, or HEREDOCS_TABLE.
 **	returns:
 **	NULL: on error.
 **	copy of str with quote characters escaped on succes.
