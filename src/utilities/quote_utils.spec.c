@@ -192,6 +192,45 @@ Test(remove_quotes_unit, valid_only_escaped_double_quote_in_double_quote)
 	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
 }
 
+Test(remove_quotes_unit, valid_only_escaped_newline_in_double_quote)
+{
+	char *str		= strdup("hel\"\\\n\"lo foo bar");
+	char *expected	= "hello foo bar";
+	int ret;
+	int expected_ret = 0;
+
+	ret = remove_quotes(&str);
+	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
+	cr_assert_neq(str, NULL, "malloc failed!");
+	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
+}
+
+Test(remove_quotes_unit, valid_only_escaped_dollar_in_double_quote)
+{
+	char *str		= strdup("hel\"\\$\"lo foo bar");
+	char *expected	= "hel$lo foo bar";
+	int ret;
+	int expected_ret = 0;
+
+	ret = remove_quotes(&str);
+	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
+	cr_assert_neq(str, NULL, "malloc failed!");
+	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
+}
+
+Test(remove_quotes_unit, valid_only_escaped_normal_char_in_double_quote)
+{
+	char *str		= strdup("hel\"\\n\"lo foo bar");
+	char *expected	= "hel\\nlo foo bar";
+	int ret;
+	int expected_ret = 0;
+
+	ret = remove_quotes(&str);
+	cr_expect_eq(ret, expected_ret, "expected return value %i, got %i.", expected_ret, ret);
+	cr_assert_neq(str, NULL, "malloc failed!");
+	cr_expect_str_eq(str, expected, "expected string |%s|, got |%s|.", expected, str);
+}
+
 Test(remove_quotes_unit, valid_single_quote)
 {
 	char *str		= strdup("\'hello foo b\'ar");
@@ -260,7 +299,7 @@ Test(remove_quotes_unit, valid_single_quote_containing_double_quote_char)
 Test(remove_quotes_unit, valid_double_quote_containing_backslash)
 {
 	char *str		= strdup("\"hello f\\oo b\"ar");
-	char *expected	= "hello foo bar";
+	char *expected	= "hello f\\oo bar";
 	int ret;
 	int expected_ret = 0;
 
@@ -410,7 +449,7 @@ Test(count_quote_chars_unit, valid_double_qoute_containing_backslash)
 {
 	char *str		= "\"double quot\\e \"here!";
 	size_t ret;
-	size_t expected_ret = 3;
+	size_t expected_ret = 2;
 
 	ret = count_quote_chars(str);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);
@@ -440,7 +479,7 @@ Test(count_quote_chars_unit, valid_double_qoute_containing_escaped_single_quote)
 {
 	char *str		= "\"double quot\\\'e \"here!";
 	size_t ret;
-	size_t expected_ret = 3;
+	size_t expected_ret = 2;
 
 	ret = count_quote_chars(str);
 	cr_expect_eq(ret, expected_ret, "expected return value %zu, got %zu.", expected_ret, ret);

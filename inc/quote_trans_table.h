@@ -21,7 +21,9 @@
 typedef enum		e_q_action
 {
 	Q_SKIP_CHAR = 0,
-	Q_ADD_CHAR
+	Q_ADD_CHAR,
+	Q_REMOVE_BS,
+	Q_REMOVE_SKIP,
 }					t_q_action;
 
 /*
@@ -102,7 +104,7 @@ static const t_q_trans g_quote_trans[] = {
 		.rules = {
 			['\0']		= {q_eof, Q_ADD_CHAR},
 			['"']		= {no_quote, Q_SKIP_CHAR},
-			['\\']		= {q_dq_backslash, Q_SKIP_CHAR}
+			['\\']		= {q_dq_backslash, Q_ADD_CHAR}
 		},
 		.catch_state	= {q_dquote, Q_ADD_CHAR}
 	},
@@ -117,6 +119,10 @@ static const t_q_trans g_quote_trans[] = {
 	{
 		.rules = {
 			['\0']		= {q_eof, Q_ADD_CHAR},
+			['\\']		= {q_dquote, Q_REMOVE_BS},
+			['\"']		= {q_dquote, Q_REMOVE_BS},
+			['$']		= {q_dquote, Q_REMOVE_BS},
+			['\n']		= {q_dquote, Q_REMOVE_SKIP},
 		},
 		.catch_state	= {q_dquote, Q_ADD_CHAR}
 	}

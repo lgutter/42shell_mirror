@@ -97,22 +97,22 @@ int				expand_variable(t_shell *shell, char **string, int opts)
 	char	*offset;
 	t_env	*env;
 
-	env = NULL;
-	if (shell != NULL)
-		env = shell->env;
+	env = (shell != NULL) ? shell->env : NULL;
 	if (string == NULL || *string == NULL)
 		return (-1);
 	ret = 0;
 	if ((*string)[0] == '~' && ((*string)[1] == '\0' || (*string)[1] == '/'))
 	{
-		ret = expand_home(env, string, opts);
-		if (ret == -1)
+		if (expand_home(env, string, opts) == -1)
 			return (handle_error(malloc_error));
 	}
 	offset = ft_strchr(*string, '$');
 	while (offset != NULL && offset != &(*string)[ft_strlen(*string) - 1])
 	{
-		ret = expand_dollar(env, string, &offset, opts);
+		if (offset == *string || *(offset - 1) != '\\')
+			ret = expand_dollar(env, string, &offset, opts);
+		else
+			offset++;
 		if (ret == -1)
 			return (handle_error(malloc_error));
 		offset = ft_strchr(offset, '$');

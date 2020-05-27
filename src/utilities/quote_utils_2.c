@@ -30,8 +30,10 @@ int			count_quote_chars(char *str)
 		rules = g_quote_trans[state].rules[(size_t)str[i]];
 		if (rules.next_state == q_invalid)
 			rules = g_quote_trans[state].catch_state;
-		if (rules.add_char == Q_SKIP_CHAR)
+		if (rules.add_char == Q_SKIP_CHAR || rules.add_char == Q_REMOVE_BS)
 			count++;
+		if (rules.add_char == Q_REMOVE_SKIP)
+			count += 2;
 		if (rules.next_state == q_eof)
 			return (count);
 		state = rules.next_state;

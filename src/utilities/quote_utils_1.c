@@ -35,7 +35,7 @@ int			check_quote(char *word)
 		if (state == q_squote && rules.next_state == no_quote)
 			quote = 1;
 		if (rules.next_state == q_eof &&
-			(state == q_squote || state == q_dquote))
+			(state == q_squote || state == q_dquote || state == q_dq_backslash))
 			return (state == q_squote ? -1 : -2);
 		else if (rules.next_state == q_eof)
 			return (quote);
@@ -59,7 +59,9 @@ static void	str_cpy_no_quotes(char *dst, const char *src)
 		rules = g_quote_trans[state].rules[(size_t)src[i]];
 		if (rules.next_state == q_invalid)
 			rules = g_quote_trans[state].catch_state;
-		if (rules.add_char == Q_ADD_CHAR)
+		if (rules.add_char == Q_REMOVE_BS || rules.add_char == Q_REMOVE_SKIP)
+			j--;
+		if (rules.add_char == Q_ADD_CHAR || rules.add_char == Q_REMOVE_BS)
 		{
 			dst[j] = src[i];
 			j++;
