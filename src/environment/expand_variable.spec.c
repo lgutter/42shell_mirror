@@ -34,7 +34,7 @@ Test(unit_ft_expand_variable, basic_mandatory_expand_tilde)
 	cr_assert_str_eq(test_string, "/home/criteriontest");
 }
 
-Test(unit_ft_expand_variable, basic_mandatory_expand_HOME)
+Test(unit_ft_expand_variable, basic_mandatory_expand_normal)
 {
 	t_env *env = (t_env *)malloc(sizeof(t_env) * 1);
 	char *test_string = strdup("$FOO");
@@ -68,6 +68,24 @@ Test(unit_ft_expand_variable, basic_mandatory_no_key)
 	ret = expand_variable(&shell, &test_string, VAR_TYPE | QUOTE_VAR);
 	cr_assert_eq(ret, 0);
 	cr_assert_str_eq(test_string, "$.FOO");
+}
+
+Test(unit_ft_expand_variable, basic_mandatory_backslash_dollar)
+{
+	t_env *env = (t_env *)malloc(sizeof(t_env) * 1);
+	char *test_string = strdup("\\$FOO");
+	int ret;
+	t_shell	shell;
+
+	ft_bzero(&shell, sizeof(t_shell));
+	shell.env = env;
+	env->key = strdup("FOO");
+	env->value = strdup("Barcriteriontest");
+	env->type = ENV_VAR;
+	env->next = NULL;
+	ret = expand_variable(&shell, &test_string, VAR_TYPE | QUOTE_VAR);
+	cr_assert_eq(ret, 0);
+	cr_assert_str_eq(test_string, "\\$FOO");
 }
 
 Test(unit_ft_expand_variable, basic_mandatory_loop_key, .timeout = 2)

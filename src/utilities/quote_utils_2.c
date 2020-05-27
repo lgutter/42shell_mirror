@@ -13,7 +13,7 @@
 #include "utils.h"
 #include "quote_trans_table.h"
 
-int			count_quote_chars(char *str)
+int			count_quote_chars(char *str, int table_type)
 {
 	int			count;
 	size_t		i;
@@ -27,11 +27,13 @@ int			count_quote_chars(char *str)
 	count = 0;
 	while (1)
 	{
-		rules = g_quote_trans[state].rules[(size_t)str[i]];
+		rules = g_quote_trans[table_type][state].rules[(size_t)str[i]];
 		if (rules.next_state == q_invalid)
-			rules = g_quote_trans[state].catch_state;
-		if (rules.add_char == Q_SKIP_CHAR)
+			rules = g_quote_trans[table_type][state].catch_state;
+		if (rules.add_char == Q_SKIP_CHAR || rules.add_char == Q_REMOVE_BS)
 			count++;
+		if (rules.add_char == Q_REMOVE_SKIP)
+			count += 2;
 		if (rules.next_state == q_eof)
 			return (count);
 		state = rules.next_state;
@@ -50,7 +52,7 @@ char		*backslash_quotes(char *str)
 		return (NULL);
 	s_i = 0;
 	t_i = 0;
-	count = count_quote_chars(str);
+	count = count_quote_chars(str, ALL_QUOTES_TABLE);
 	temp = (char *)ft_memalloc(sizeof(char) * (ft_strlen(str) + count + 1));
 	if (temp == NULL)
 		return (NULL);

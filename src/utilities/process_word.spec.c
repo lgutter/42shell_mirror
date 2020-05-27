@@ -31,7 +31,7 @@ Test(process_word_unit, valid_quote_removal)
 {
 	char 	*input = strdup("\"hel\\lo\"");
 	int		ret;
-	char *	expected_str = "hello";
+	char *	expected_str = "hel\\lo";
 	int		expected_ret = 0;
 
 	ret = process_word(NULL, &input, WORD_PROCESS_ALL);

@@ -27,6 +27,7 @@
 # define WORD_PROCESS_ALL	7
 # define WORD_FORCE_EXPAND	8
 # define WORD_PROCESS_FORCE	15
+# define WORD_HERE_DOC		16
 
 /*
 **	contains the required information to execute a command.
@@ -134,7 +135,7 @@ int				find_executable(t_env *env_list, t_command *command,
 **	word:		a pointer to the string to be processed.
 **	char:		contains options for expansion and quote removal.
 **				(use a combination of WORD_EXPAND, WORD_FORCE_EXPAND,
-**				WORD_UNQUOTE and WORD_FIX_QUOTE,
+**				WORD_UNQUOTE, WORD_HERE_DOC, and WORD_FIX_QUOTE,
 **				or WORD_PROCESS_ALL or WORD_PROCESS_FORCE.)
 **	returns:
 **	0 on succes.

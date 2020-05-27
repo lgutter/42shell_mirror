@@ -27,15 +27,15 @@ int			check_quote(char *word)
 	quote = 0;
 	while (1)
 	{
-		rules = g_quote_trans[state].rules[(size_t)*word];
+		rules = g_quote_trans[ALL_QUOTES_TABLE][state].rules[(size_t)*word];
 		if (rules.next_state == q_invalid)
-			rules = g_quote_trans[state].catch_state;
+			rules = g_quote_trans[ALL_QUOTES_TABLE][state].catch_state;
 		if (state == q_dquote && rules.next_state == no_quote)
 			quote = 2;
 		if (state == q_squote && rules.next_state == no_quote)
 			quote = 1;
 		if (rules.next_state == q_eof &&
-			(state == q_squote || state == q_dquote))
+			(state == q_squote || state == q_dquote || state == q_dq_backslash))
 			return (state == q_squote ? -1 : -2);
 		else if (rules.next_state == q_eof)
 			return (quote);
@@ -44,7 +44,7 @@ int			check_quote(char *word)
 	}
 }
 
-static void	str_cpy_no_quotes(char *dst, const char *src)
+static void	str_cpy_no_quotes(char *dst, const char *src, int table_type)
 {
 	size_t		i;
 	size_t		j;
@@ -56,10 +56,12 @@ static void	str_cpy_no_quotes(char *dst, const char *src)
 	state = no_quote;
 	while (1)
 	{
-		rules = g_quote_trans[state].rules[(size_t)src[i]];
+		rules = g_quote_trans[table_type][state].rules[(size_t)src[i]];
 		if (rules.next_state == q_invalid)
-			rules = g_quote_trans[state].catch_state;
-		if (rules.add_char == Q_ADD_CHAR)
+			rules = g_quote_trans[table_type][state].catch_state;
+		if (rules.add_char == Q_REMOVE_BS || rules.add_char == Q_REMOVE_SKIP)
+			j--;
+		if (rules.add_char == Q_ADD_CHAR || rules.add_char == Q_REMOVE_BS)
 		{
 			dst[j] = src[i];
 			j++;
@@ -71,7 +73,7 @@ static void	str_cpy_no_quotes(char *dst, const char *src)
 	}
 }
 
-int			remove_quotes(char **word)
+int			remove_quotes(char **word, int table_type)
 {
 	char	*temp;
 	int		quotes;
@@ -84,13 +86,13 @@ int			remove_quotes(char **word)
 		return (-1);
 	else if (quotes == 0 && ft_strchr(*word, '\\') == NULL)
 		return (0);
-	quotes = count_quote_chars(*word);
+	quotes = count_quote_chars(*word, table_type);
 	len = ft_strlen(*word);
 	len -= (quotes);
 	temp = (char *)ft_memalloc(sizeof(char) * (len + 1));
 	if (temp == NULL)
 		return (-1);
-	str_cpy_no_quotes(temp, *word);
+	str_cpy_no_quotes(temp, *word, table_type);
 	free(*word);
 	*word = temp;
 	return (0);

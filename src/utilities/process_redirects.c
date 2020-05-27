@@ -22,7 +22,10 @@ static int	process_here_doc(t_shell *shell, t_io_here *io_here)
 	if (get_here_doc(io_here, shell) != 0)
 		return (handle_error(malloc_error));
 	if (quotes == 0)
-		return (process_word(shell, &(io_here->here_doc), WORD_FORCE_EXPAND));
+	{
+		return (process_word(shell, &(io_here->here_doc),
+							WORD_FORCE_EXPAND | WORD_UNQUOTE | WORD_HERE_DOC));
+	}
 	return (0);
 }
 
