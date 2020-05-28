@@ -20,8 +20,12 @@ int		builtin_exit(t_command *command, t_env *env)
 
 	temp = ft_getenv(env, "STATUS", SHELL_VAR);
 	configure_terminal(NULL, 0);
-	if (command->argc > 1)
+	if (command != NULL && command->argc > 1 &&
+		command->argv != NULL &&
+		command->argv[0] != NULL && command->argv[1] != NULL)
+	{
 		final_code = ft_atoi(command->argv[1]);
+	}
 	else if (temp == NULL)
 		final_code = 0;
 	else

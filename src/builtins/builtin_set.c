@@ -99,7 +99,8 @@ int				builtin_set(t_command *comm, t_env *env)
 
 	i = 1;
 	ret = 0;
-	if (comm == NULL || env == NULL || comm->argv == NULL)
+	if (comm == NULL || env == NULL ||
+		comm->argv == NULL || comm->argv[0] == NULL)
 		return (-1);
 	if (comm->argc == 1)
 	{

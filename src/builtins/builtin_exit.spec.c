@@ -64,6 +64,86 @@ Test(unit_builtin_exit, basic_mandatory_error_no_exit_code)
 	cr_expect_str_eq(temp, "0", "expected exit code var %s, got %s!", "0", temp);
 }
 
+Test(unit_builtin_exit, basic_mandatory_error_NULL_argv_1)
+{
+	t_command	command;
+	int			ret;
+	t_env		*env = (t_env *)malloc(sizeof(t_env) * 1);
+	char		*temp;
+
+	env->key = strdup("FOO");
+	env->value = strdup("BAR");
+	env->type = SHELL_VAR;
+	env->next = NULL;
+	command.argv = ft_strsplit("exit", ' ');
+	command.argc = 2;
+	command.envp = NULL;
+	command.path = NULL;
+	ret = builtin_exit(&command, env);
+	cr_expect_eq(ret, exit_shell_code, "expected ret %i, got %i!", exit_shell_code, ret);
+	temp = ft_getenv(env, "EXIT_CODE", SHELL_VAR);
+	cr_expect_str_eq(temp, "0", "expected exit code var %s, got %s!", "0", temp);
+}
+
+Test(unit_builtin_exit, basic_mandatory_error_NULL_argv_0)
+{
+	t_command	command;
+	int			ret;
+	t_env		*env = (t_env *)malloc(sizeof(t_env) * 1);
+	char		*temp;
+
+	env->key = strdup("FOO");
+	env->value = strdup("BAR");
+	env->type = SHELL_VAR;
+	env->next = NULL;
+	command.argv = (char **)malloc(sizeof(char *) * 1);
+	command.argv[0] = NULL;
+	command.argc = 2;
+	command.envp = NULL;
+	command.path = NULL;
+	ret = builtin_exit(&command, env);
+	cr_expect_eq(ret, exit_shell_code, "expected ret %i, got %i!", exit_shell_code, ret);
+	temp = ft_getenv(env, "EXIT_CODE", SHELL_VAR);
+	cr_expect_str_eq(temp, "0", "expected exit code var %s, got %s!", "0", temp);
+}
+
+Test(unit_builtin_exit, basic_mandatory_error_NULL_argv)
+{
+	t_command	command;
+	int			ret;
+	t_env		*env = (t_env *)malloc(sizeof(t_env) * 1);
+	char		*temp;
+
+	env->key = strdup("FOO");
+	env->value = strdup("BAR");
+	env->type = SHELL_VAR;
+	env->next = NULL;
+	command.argv = NULL;
+	command.argc = 2;
+	command.envp = NULL;
+	command.path = NULL;
+	ret = builtin_exit(&command, env);
+	cr_expect_eq(ret, exit_shell_code, "expected ret %i, got %i!", exit_shell_code, ret);
+	temp = ft_getenv(env, "EXIT_CODE", SHELL_VAR);
+	cr_expect_str_eq(temp, "0", "expected exit code var %s, got %s!", "0", temp);
+}
+
+Test(unit_builtin_exit, basic_mandatory_error_NULL_command)
+{
+	int			ret;
+	t_env		*env = (t_env *)malloc(sizeof(t_env) * 1);
+	char		*temp;
+
+	env->key = strdup("FOO");
+	env->value = strdup("BAR");
+	env->type = SHELL_VAR;
+	env->next = NULL;
+	ret = builtin_exit(NULL, env);
+	cr_expect_eq(ret, exit_shell_code, "expected ret %i, got %i!", exit_shell_code, ret);
+	temp = ft_getenv(env, "EXIT_CODE", SHELL_VAR);
+	cr_expect_str_eq(temp, "0", "expected exit code var %s, got %s!", "0", temp);
+}
+
 Test(unit_builtin_exit, undefined_error_nothing_defined, .init = redirect_std_err)
 {
 	t_command	command;
