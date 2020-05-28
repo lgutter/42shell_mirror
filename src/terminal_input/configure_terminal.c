@@ -15,14 +15,14 @@
 #include "signal_handler.h"
 #include "environment.h"
 
-static int	ft_putchar(int c)
+static int	ft_puterrchar(int c)
 {
 	return (write(STDERR_FILENO, &c, 1));
 }
 
 void		send_terminal(char *command)
 {
-	tputs(tgetstr(command, NULL), 1, ft_putchar);
+	tputs(tgetstr(command, NULL), 1, ft_puterrchar);
 }
 
 void		configure_terminal(t_shell *shell, int activator)

@@ -111,7 +111,7 @@ char				**convert_env_to_envp(t_env *list_start);
 **	opts contains options to specify expand_variable's behaviour.
 **	Applicable options:
 **	ENV_VAR, SHELL_VAR or VAR_TYPE: only variables that match this type will be
-									expanded. VAR_TYPE means any type.
+**									expanded. VAR_TYPE means any type.
 **	QUOTE_VAR:	expand_variable will place backslashes before quote characters.
 */
 int					expand_variable(t_shell *shell, char **string, int opts);

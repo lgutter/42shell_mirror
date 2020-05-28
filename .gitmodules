@@ -1,6 +1,0 @@
-[submodule "subprojects/libft"]
-	path = subprojects/libft
-	url = https://git.sr.ht/~nloomans/libft
-[submodule "subprojects/ft_printf"]
-	path = subprojects/ft_printf
-	url = https://github.com/emiflake/ft_printf

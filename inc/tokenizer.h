@@ -13,7 +13,6 @@
 #ifndef TOKENIZER_H
 # define TOKENIZER_H
 # include "ft_printf.h"
-# include "libft.h"
 # include "token_trans_table.h"
 # include "handle_error.h"
 # include "cetushell.h"

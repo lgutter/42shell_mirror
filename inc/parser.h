@@ -13,7 +13,6 @@
 #ifndef PARSER_H
 # define PARSER_H
 # include "ft_printf.h"
-# include "libft.h"
 # include "handle_error.h"
 # include "tokenizer.h"
 # include "parser_utils.h"

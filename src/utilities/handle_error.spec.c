@@ -16,6 +16,7 @@
 #include <criterion/parameterized.h>
 #include "handle_error.h"
 #include "error_str.h"
+#include <stdio.h>
 
 static void redirect_std_err()
 {
@@ -108,89 +109,84 @@ ParameterizedTestParameters(handle_error_str_p_tests, param_test_all_error_codes
 
 ParameterizedTest(int *param, handle_error_tests, param_test_all_error_codes, .init= redirect_std_err)
 {
-	char *temp = NULL;
+	char	temp[1024];
 
 	handle_error(*param);
-	ft_asprintf(&temp, "%s\n", g_error_str[*param]);
+	snprintf(temp, 1024, "%s\n", g_error_str[*param]);
 	cr_assert_neq(temp, NULL);
 	fflush(stderr);
 	cr_expect_stderr_eq_str(temp);
-	free(temp);
-	temp = NULL;
 }
 
 ParameterizedTest(struct s_err_str_params *param, handle_error_str_tests, param_test_all_error_codes_with_str, .init= redirect_std_err)
 {
-	char *temp = NULL;
+	char temp[1024];
 
+	ft_bzero(temp, 1024);
 	cr_redirect_stderr();
 	handle_error_str(param->err_code, param->err_str);
-	ft_asprintf(&temp, "%s: %s\n", g_error_str[param->err_code], param->err_str);
+	snprintf(temp, 1024, "%s: %s\n", g_error_str[param->err_code], param->err_str);
 	cr_assert_neq(temp, NULL);
 	fflush(stderr);
 	cr_expect_stderr_eq_str(temp);
-	free(temp);
-	temp = NULL;
 }
 
 ParameterizedTest(struct s_err_str_p_params *param, handle_error_str_p_tests, param_test_all_error_codes_with_str_p, .init= redirect_std_err)
 {
-	char	*temp = NULL;
+	char temp[1024];
 	void	*ret = NULL;
 
+	ft_bzero(temp, 1024);
 	cr_redirect_stderr();
 	ret = handle_error_str_p(param->err_code, param->err_str, param->pointer);
-	ft_asprintf(&temp, "%s: %s\n", g_error_str[param->err_code], param->err_str);
+	snprintf(temp, 1024, "%s: %s\n", g_error_str[param->err_code], param->err_str);
 	cr_assert_neq(temp, NULL);
 	fflush(stderr);
 	cr_expect_stderr_eq_str(temp);
 	cr_expect_eq(ret, param->pointer);
-	free(temp);
-	temp = NULL;
 }
 
 ParameterizedTest(struct s_err_p_params *param, handle_error_p_tests, param_test_all_error_codes_with_p, .init= redirect_std_err)
 {
-	char	*temp = NULL;
+	char temp[1024];
 	void	*ret = NULL;
 
+	ft_bzero(temp, 1024);
 	cr_redirect_stderr();
 	ret = handle_error_p(param->err_code, param->pointer);
-	ft_asprintf(&temp, "%s\n", g_error_str[param->err_code]);
+	snprintf(temp, 1024, "%s\n", g_error_str[param->err_code]);
 	cr_assert_neq(temp, NULL);
 	fflush(stderr);
 	cr_expect_stderr_eq_str(temp);
 	cr_expect_eq(ret, param->pointer);
-	free(temp);
-	temp = NULL;
 }
 
 Test(handle_error_str_tests, invalid_NULL_string, .init= redirect_std_err)
 {
-	char *temp = NULL;
+	char temp[1024];
+	char *null = NULL;
 
+	ft_bzero(temp, 1024);
 	cr_redirect_stderr();
 	handle_error_str(1, NULL);
-	ft_asprintf(&temp, "%s: %s\n", g_error_str[1], NULL);
+	snprintf(temp, 1024, "%s: %s\n", g_error_str[1], null);
 	cr_assert_neq(temp, NULL);
 	fflush(stderr);
 	cr_expect_stderr_eq_str(temp);
-	free(temp);
-	temp = NULL;
 }
 
 Test(handle_error_str_p_tests, invalid_NULL_string, .init= redirect_std_err)
 {
-	char *temp = NULL;
+	char temp[1024];
 	char *ret;
+	char *null = NULL;
 
+	ft_bzero(temp, 1024);
 	cr_redirect_stderr();
 	ret = handle_error_str_p(1, NULL, (void*)42);
-	ft_asprintf(&temp, "%s: %s\n", g_error_str[1], NULL);
+	snprintf(temp, 1024, "%s: %s\n", g_error_str[1], null);
 	cr_assert_neq(temp, NULL);
 	fflush(stderr);
 	cr_expect_stderr_eq_str(temp);
 	cr_expect_eq((void*)42, ret);
-	free(temp);
-	temp = NULL;
 }
