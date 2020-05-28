@@ -22,7 +22,7 @@ static int	get_exp_opts(int process_opts, int quote_type)
 	return (opts);
 }
 
-int	process_word(t_shell *shell, char **word, int opts)
+int			process_word(t_shell *shell, char **word, int opts)
 {
 	int	quote_type;
 

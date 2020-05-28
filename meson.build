@@ -18,9 +18,6 @@ add_project_arguments(cc.get_supported_arguments([
   '-Wno-unused-result',
 ]), language: 'c')
 
-libft_proj = subproject('libft')
-libft_deb = libft_proj.get_variable('libft_deb')
-
 libftprintf_proj = subproject('ft_printf')
 libftprintf_deb = libftprintf_proj.get_variable('libftprintf_deb')
 
@@ -100,7 +97,7 @@ executable(
   'cetushell',
   sources: src_files + main_file,
   include_directories: inc_dir,
-  dependencies: [libft_deb, libftprintf_deb, libcurses_deb],
+  dependencies: [libftprintf_deb, libcurses_deb],
 )
 
 libcriterion_deb = dependency('criterion', required: false)
@@ -151,7 +148,7 @@ if libcriterion_deb.found()
   tester = executable('test-cetushell',
     sources: test_files,
     include_directories: inc_dir,
-    dependencies: [libft_deb, libftprintf_deb, libcurses_deb, libcriterion_deb])
+    dependencies: [libftprintf_deb, libcurses_deb, libcriterion_deb])
 
   test('cetushell',
   tester,

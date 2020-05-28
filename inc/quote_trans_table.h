@@ -10,10 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-
 #ifndef QUOTE_TRANS_TABLE_H
 # define QUOTE_TRANS_TABLE_H
+# include "utils.h"
 
 /*
 **	enumerations used to specify what do to with the current character.

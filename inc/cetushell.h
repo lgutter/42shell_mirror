@@ -18,7 +18,6 @@
 # include <sys/ioctl.h>
 # include <term.h>
 # include "ft_printf.h"
-# include "libft.h"
 
 # define INP_BUFF_SIZE 32
 # define CUR_BUFF_SIZE 32

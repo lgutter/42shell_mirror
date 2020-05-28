@@ -35,4 +35,3 @@ char	*ft_getenv(t_env *env, const char *key, int opts)
 	}
 	return (NULL);
 }
-

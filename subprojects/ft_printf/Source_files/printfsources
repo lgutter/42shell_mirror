@@ -1,0 +1,36 @@
+PRINTFSOURCES = Find_files/ft_find_flags \
+Find_files/ft_find_lenmod \
+Find_files/ft_find_precision \
+Find_files/ft_find_width \
+Format_files/csp_files/ft_formatchar \
+Format_files/csp_files/ft_formatpointer \
+Format_files/csp_files/ft_formatstring \
+Format_files/csp_files/ft_precision_string \
+Format_files/diouxX_files/ft_format_decimal \
+Format_files/diouxX_files/ft_format_lowhex \
+Format_files/diouxX_files/ft_format_octal \
+Format_files/diouxX_files/ft_format_upphex \
+Format_files/diouxX_files/ft_formatlonglong \
+Format_files/diouxX_files/ft_formatlonglongunsigned \
+Format_files/diouxX_files/ft_formatulllowhex \
+Format_files/diouxX_files/ft_formatulloctal \
+Format_files/diouxX_files/ft_formatullupphex \
+Format_files/diouxX_files/ft_format_unsigneddecimal \
+Format_files/diouxX_files/ft_precision_int \
+Format_files/f_files/ft_format_float_utils \
+Format_files/f_files/ft_format_floats \
+Format_files/f_files/ft_precision_float \
+Format_files/f_files/ft_formatunsignedfloat \
+Format_files/ft_formatunknown \
+Write_files/ft_write_flags \
+Write_files/ft_write_order \
+Write_files/ft_write_width \
+Write_files/ft_writer_fd \
+Write_files/ft_writer_string_n \
+Write_files/ft_write_middle_width \
+ft_dispatcher \
+ft_init_info \
+ft_printf \
+ft_dprintf \
+ft_snprintf \
+ft_process_conversion
