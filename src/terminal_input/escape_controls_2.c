@@ -13,7 +13,27 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
+static size_t	resolve_x_newline(t_buff *buffer, t_cursor *cursor)
+{
+	size_t i;
+	size_t start;
+
+	i = buffer->index;
+	start = 0;
+	while (i > 1)
+	{
+		i--;
+		start++;
+		if (buffer->buff[i] == '\n')
+			break ;
+	}
+	if (cursor->current.y == cursor->start.y)
+		return (buffer->prompt_len + start + 1);
+	else
+		return (start);
+}
+
+void			left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (ft_strncmp(seq, ARROW_LEFT, ft_strlen(ARROW_LEFT)) == 0 &&
 	cursor->current.x > 0)
@@ -24,15 +44,27 @@ void		left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 			buffer->index--;
 			cursor->current.x--;
 		}
+		if (cursor->current.x == 0 && cursor->current.y != cursor->start.y &&
+			buffer->buff[buffer->index] == '\n')
+		{
+			cursor->current.y--;
+			cursor->current.x = resolve_x_newline(buffer, cursor);
+		}
 	}
 }
 
-void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
+void			right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (ft_strncmp(seq, ARROW_RIGHT, ft_strlen(ARROW_RIGHT)) == 0)
 	{
 		buffer->rv_start = buffer->rv_end;
-		if (buffer->index < buffer->buff_len)
+		if (buffer->buff[buffer->index] == '\n')
+		{
+			cursor->current.y++;
+			cursor->current.x = 1;
+			buffer->index++;
+		}
+		else if (buffer->index < buffer->buff_len)
 		{
 			cursor->current.x++;
 			buffer->index++;
@@ -40,7 +72,7 @@ void		right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 	}
 }
 
-int			up_arrow_key(t_buff *buffer, t_cursor *cursor, t_history *hist,
+int				up_arrow_key(t_buff *buffer, t_cursor *cursor, t_history *hist,
 						char *seq)
 {
 	if (ft_strncmp(seq, ARROW_UP, ft_strlen(ARROW_UP)) == 0)
@@ -55,8 +87,8 @@ int			up_arrow_key(t_buff *buffer, t_cursor *cursor, t_history *hist,
 	return (0);
 }
 
-int			down_arrow_key(t_buff *buffer, t_cursor *cursor, t_history *hist,
-							char *seq)
+int				down_arrow_key(t_buff *buffer, t_cursor *cursor,
+						t_history *hist, char *seq)
 {
 	if (ft_strncmp(seq, ARROW_DOWN, ft_strlen(ARROW_DOWN)) == 0)
 	{
