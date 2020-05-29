@@ -13,6 +13,7 @@
 #include <criterion/criterion.h>
 #include <stdlib.h>
 #include "environment.h"
+#include "history.h"
 
 Test(unit_ft_dup_sys_env, mandatory_basic_convert_sys_environ)
 {
