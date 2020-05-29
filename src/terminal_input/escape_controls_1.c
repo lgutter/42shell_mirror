@@ -28,6 +28,7 @@ void		shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq)
 				buffer->rv_end = buffer->index + 1;
 			buffer->index++;
 			cursor->current.x++;
+			cursor->direction = CURSOR_RIGHT;
 		}
 	}
 }
@@ -53,6 +54,7 @@ void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq)
 				buffer->rv_end = buffer->index - 1;
 			buffer->index--;
 			cursor->current.x--;
+			cursor->direction = CURSOR_LEFT;
 		}
 	}
 }
