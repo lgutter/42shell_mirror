@@ -101,6 +101,7 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 				free_buffer_buffs(shell, 1);
 				return (NULL);
 			}
+			shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
 		}
 		shell->buffer->state = INPUT_STATE;
 		temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);

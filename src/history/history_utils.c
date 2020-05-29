@@ -59,7 +59,7 @@ size_t			scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor)
 	char	*temp;
 
 	if (hist == NULL || buffer == NULL || buffer->buff == NULL
-	|| cursor == NULL)
+		|| cursor == NULL)
 		return (1);
 	if (get_temp_hist_buff(buffer, hist) != 0)
 		return (1);

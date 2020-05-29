@@ -86,7 +86,8 @@ int				read_input(t_shell *shell)
 
 	c = '\0';
 	signal(SIGINT, signal_handler_buff);
-	shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
+	if (shell == NULL || shell->buffer == NULL || shell->buffer->buff == NULL)
+		return (1);
 	ret = read(STDIN_FILENO, &c, 1);
 	if (g_signal_handler == SIGINT_BUFF)
 	{

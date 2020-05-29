@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   cursor.c                                           :+:    :+:            */
+/*   set_cursor.c                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
@@ -88,6 +88,9 @@ static void		cursor_next_line(t_cursor *cursor, size_t len,
 
 void			set_cursor_pos(t_cursor *cursor, t_buff *buffer)
 {
+	if (buffer == NULL || buffer->buff == NULL || cursor == NULL
+		|| buffer->prompt == NULL)
+		return ;
 	if (g_signal_handler == SIG_WINDOW)
 	{
 		send_terminal("rc");

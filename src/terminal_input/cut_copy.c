@@ -13,7 +13,7 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-int		copy(t_buff *buffer)
+static int		copy(t_buff *buffer)
 {
 	size_t len;
 
@@ -35,7 +35,7 @@ int		copy(t_buff *buffer)
 	return (0);
 }
 
-int		cut(t_buff *buffer, t_cursor *cursor)
+static int		cut(t_buff *buffer, t_cursor *cursor)
 {
 	if (buffer->rv_end != buffer->rv_start)
 	{
@@ -46,7 +46,7 @@ int		cut(t_buff *buffer, t_cursor *cursor)
 	return (0);
 }
 
-int		paste(t_buff *buffer, t_cursor *cursor)
+static int		paste(t_buff *buffer, t_cursor *cursor)
 {
 	size_t len;
 
@@ -64,6 +64,8 @@ int		paste(t_buff *buffer, t_cursor *cursor)
 
 int		cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c)
 {
+	if (cursor == NULL || buffer == NULL || buffer->buff == NULL)
+		return (1);
 	if (c == CNTRL_X)
 		if (copy(buffer) != 0)
 			return (1);
