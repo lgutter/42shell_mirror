@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
+#include "input_handling.h"
 
 static size_t	buff_realloc(t_buff *buffer)
 {

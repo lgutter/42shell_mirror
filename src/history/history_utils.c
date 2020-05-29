@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
 #include "history.h"
 
 static size_t	get_temp_hist_buff(t_buff *buffer, t_history *hist)

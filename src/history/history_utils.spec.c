@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include "cetushell.h"
 #include "history.h"
-#include "input_control.h"
+#include "prompt.h"
 #include "handle_error.h"
 #include "error_str.h"
 #include "environment.h"

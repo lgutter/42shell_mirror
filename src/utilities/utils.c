@@ -13,6 +13,7 @@
 #include "environment.h"
 #include "utils.h"
 #include "signal_handler.h"
+#include "prompt.h"
 
 void	ft_swap_rv(t_buff *buffer)
 {

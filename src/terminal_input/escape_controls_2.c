@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
-
-
+#include "prompt.h"
+#include "input_handling.h"
 
 void			left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
