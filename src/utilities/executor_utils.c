@@ -17,18 +17,15 @@ void	std_fd_backup(int old[3])
 {
 	if (old != NULL)
 	{
-		if (old != NULL)
-		{
-			(old)[0] = dup(STDIN_FILENO);
-			(old)[1] = dup(STDOUT_FILENO);
-			(old)[2] = dup(STDERR_FILENO);
-		}
+		(old)[0] = dup(STDIN_FILENO);
+		(old)[1] = dup(STDOUT_FILENO);
+		(old)[2] = dup(STDERR_FILENO);
 	}
 }
 
 void	std_fd_restore(int old[3])
 {
-	if (old != NULL && old != NULL)
+	if (old != NULL)
 	{
 		if ((old)[0] != -1)
 		{
