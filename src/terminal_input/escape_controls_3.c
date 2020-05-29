@@ -22,7 +22,8 @@ static void		cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq)
 		{
 			buffer->index--;
 			cursor->current.x--;
-			set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+			cursor->direction = CURSOR_LEFT;
+			set_cursor_pos(cursor, buffer);
 		}
 		while (buffer->index > 0)
 		{
@@ -31,7 +32,8 @@ static void		cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq)
 				break ;
 			buffer->index--;
 			cursor->current.x--;
-			set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+			cursor->direction = CURSOR_LEFT;
+			set_cursor_pos(cursor, buffer);
 		}
 	}
 }
@@ -45,7 +47,8 @@ static void		cntrl_right(t_buff *buffer, t_cursor *cursor, char *seq)
 		{
 			buffer->index++;
 			cursor->current.x++;
-			set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+			cursor->direction = CURSOR_RIGHT;
+			set_cursor_pos(cursor, buffer);
 		}
 		while (buffer->buff[buffer->index] != '\0')
 		{
@@ -54,7 +57,8 @@ static void		cntrl_right(t_buff *buffer, t_cursor *cursor, char *seq)
 				break ;
 			buffer->index++;
 			cursor->current.x++;
-			set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+			cursor->direction = CURSOR_RIGHT;
+			set_cursor_pos(cursor, buffer);
 		}
 	}
 }

@@ -94,8 +94,7 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 			return (NULL);
 		while (shell->buffer->state != RETURN_STATE)
 		{
-			set_cursor_pos(&shell->cursor, shell->buffer->buff_len,
-			shell->buffer->prompt_len);
+			set_cursor_pos(&shell->cursor, shell->buffer);
 			refresh_prompt(shell->buffer, &shell->cursor);
 			if (read_input(shell) == 1)
 			{

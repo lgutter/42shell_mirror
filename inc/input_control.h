@@ -32,11 +32,15 @@
 # define PROMPT_PIPE "pipe> "
 # define PROMPT_HEREDOC "heredoc> "
 # define CLEAR_TO_END "ce"
-# define CURSOR_DOWN "do"
+# define TERM_DOWN "do"
 # define CLEAR_SCREEN "cl"
 # define CURSOR_POSITION "u7"
 
 # define ESC_SEQ_SIZE   16
+# define CURSOR_UP		2
+# define CURSOR_RIGHT	1
+# define CURSOR_LEFT	-1
+# define CURSOR_DOWN	-2
 # define ARROW_UP       "[A"
 # define ARROW_DOWN     "[B"
 # define ARROW_RIGHT    "[C"
@@ -287,8 +291,7 @@ void		remove_word(t_buff *buffer, t_cursor *cursor);
 ** arg: *cursor: pointer to t_cursor struct defined in cetushell.h.
 ** arg: len: the buffer max len to prevent the cursor from going over it.
 */
-void		set_cursor_pos(t_cursor *cursor, size_t buff_len,
-	size_t prompt_len);
+void		set_cursor_pos(t_cursor *cursor, t_buff *buffer);
 
 /*
 ** get_cursor_pos will get the starting cursor position and will set its
