@@ -50,8 +50,9 @@ static void		handle_newline(t_cursor *cursor, t_buff *buffer)
 				cursor->current.y--;
 			}
 		}
-		if (cursor->direction == CURSOR_LEFT &&
-				buffer->buff[buffer->index] == '\n')
+		if ((cursor->direction == CURSOR_LEFT
+				&& buffer->buff[buffer->index] == '\n')
+				|| cursor->direction == RM_NEWLINE)
 		{
 			cursor->current.y--;
 			cursor->current.x = resolve_x_newline(buffer, cursor);
