@@ -63,6 +63,8 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
 				cursor->direction = CURSOR_LEFT;
 			}
 			remove_char(buffer);
+			cursor->current.x--;
+			cursor->direction = CURSOR_LEFT;
 		}
 	}
 }
