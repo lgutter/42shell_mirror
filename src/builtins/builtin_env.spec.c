@@ -81,3 +81,35 @@ Test(builtin_shellenv_unit, valid_shell_no_arguments, .init = redirect_std_out)
 	sprintf(buff, "%s=%s\n", shell.key, shell.value);
 	cr_expect_stdout_eq_str(buff);
 }
+
+Test(builtin_env_unit, valid_env_no_arguments_NULL_command, .init = redirect_std_out)
+{
+	t_env		shell = {"baz", "blah", SHELL_VAR, NULL};
+	t_env		env = {"foo", "bar", (ENV_VAR | RO_VAR), &shell};
+	t_env		*start = &env;
+	int			ret = 0;
+
+	ret = builtin_env(NULL, start);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	char		buff[1024];
+	memset(buff, '\0', 1024);
+	fflush(stdout);
+	sprintf(buff, "%s=%s\n", env.key, env.value);
+	cr_expect_stdout_eq_str(buff);
+}
+
+Test(builtin_shellenv_unit, valid_shell_no_arguments_NULL_command, .init = redirect_std_out)
+{
+	t_env		shell = {"baz", "blah", (SHELL_VAR | RO_VAR), NULL};
+	t_env		env = {"foo", "bar", ENV_VAR, &shell};
+	t_env		*start = &env;
+	int			ret = 0;
+
+	ret = builtin_shellenv(NULL, start);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	char		buff[1024];
+	memset(buff, '\0', 1024);
+	fflush(stdout);
+	sprintf(buff, "%s=%s\n", shell.key, shell.value);
+	cr_expect_stdout_eq_str(buff);
+}

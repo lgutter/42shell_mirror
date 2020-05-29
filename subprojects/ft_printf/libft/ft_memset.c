@@ -12,17 +12,31 @@
 
 #include "libft.h"
 
-void	*ft_memset(void *input, int setvalue, size_t len)
+void	*ft_memset(void *target, int setvalue, size_t len)
 {
-	unsigned char	*str;
-	size_t			index;
+	size_t				i;
+	size_t				chunk_size;
+	unsigned long long	chunk;
 
-	str = input;
-	index = 0;
-	while (index < len)
+	chunk = 0;
+	chunk_size = sizeof(unsigned long long);
+	i = chunk_size / sizeof(unsigned char);
+	while (i > 0)
 	{
-		str[index] = setvalue;
-		index++;
+		chunk <<= 8;
+		chunk |= (unsigned long long)(unsigned char)setvalue;
+		i--;
 	}
-	return (str);
+	i = target == NULL ? len : 0;
+	while (len >= chunk_size && i < (len - chunk_size))
+	{
+		*(unsigned long long *)&(((unsigned char *)target)[i]) = chunk;
+		i += chunk_size;
+	}
+	while (i < len)
+	{
+		((unsigned char *)target)[i] = (unsigned char)setvalue;
+		i++;
+	}
+	return (target);
 }

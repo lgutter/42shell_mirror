@@ -45,7 +45,7 @@ static t_shell	*init_shell(void)
 	return (shell);
 }
 
-int				exit_shell(t_shell *shell, int ret)
+static int		exit_shell(t_shell *shell, int ret)
 {
 	char	*exit_code;
 
@@ -58,7 +58,7 @@ int				exit_shell(t_shell *shell, int ret)
 	return (ret);
 }
 
-int				cetushell(void)
+static int		cetushell(void)
 {
 	t_shell		*shell;
 	char		*input;

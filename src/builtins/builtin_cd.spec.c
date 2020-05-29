@@ -126,6 +126,8 @@ Test(builtin_cd_unit, invalid_cd_no_home, .init = redirect_std_err)
 	ret = ft_unsetenv(env, "HOME", VAR_TYPE);
 	cr_assert_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	comm.argc = 1;
+	comm.argv = ft_strsplit_t_s("cd");
+	comm.envp = NULL;
 	ret = builtin_cd(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
@@ -180,11 +182,33 @@ Test(builtin_cd_unit, invalid_cd_many_args)
 	t_env *env = dup_sys_env();
 
 	comm.argc = 4;
+	comm.argv = ft_strsplit_t_s("cd one two three");
 
 	int ret = 0;
 	cr_redirect_stderr();
 	ret = builtin_cd(&comm, env);
 	fflush(stderr);
 	cr_expect_stderr_eq_str("cd: Too many arguments given\n");
-	cr_expect_eq(too_many_arguments, ret);
+	cr_expect_eq(1, ret);
+}
+
+Test(builtin_cd_unit, invalid_NULL_argv)
+{
+	t_command comm;
+	t_env *env = dup_sys_env();
+
+	comm.argv = NULL;
+
+	int ret = 0;
+	ret = builtin_cd(&comm, env);
+	cr_expect_eq(-1, ret);
+}
+
+Test(builtin_cd_unit, invalid_NULL_command)
+{
+	t_env *env = dup_sys_env();
+
+	int ret = 0;
+	ret = builtin_cd(NULL, env);
+	cr_expect_eq(-1, ret);
 }
