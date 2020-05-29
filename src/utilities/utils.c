@@ -18,7 +18,7 @@ void	ft_swap_rv(t_buff *buffer)
 {
 	size_t		temp;
 
-	if (buffer->rv_start < buffer->rv_end)
+	if (buffer != NULL && buffer->rv_start < buffer->rv_end)
 	{
 		temp = buffer->rv_start;
 		buffer->rv_start = buffer->rv_end;
@@ -34,11 +34,6 @@ void	free_dchar_arr(char **string)
 	i = 0;
 	if (string == NULL)
 		return ;
-	if (string[i] == NULL)
-	{
-		free(string);
-		return ;
-	}
 	while (string[i] != NULL)
 	{
 		free(string[i]);
@@ -71,7 +66,7 @@ int		get_here_doc(t_io_here *io_here, t_shell *shell)
 
 	temp = NULL;
 	here_doc = ft_strdup("");
-	if (io_here->here_end == NULL)
+	if (io_here == NULL || io_here->here_end == NULL)
 		return (handle_error(parsing_error));
 	while (g_signal_handler != SIGINT_BUFF)
 	{
