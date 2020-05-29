@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "input_handling.h"
+#include "prompt.h"
 
 size_t		insert_word(t_buff *buffer, t_cursor *cursor, char *word,
 							size_t len)

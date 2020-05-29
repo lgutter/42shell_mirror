@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
+#include "input_handling.h"
 
 static void		cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq)
 {

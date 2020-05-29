@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
 #include "criterion/criterion.h"
 
 Test(remove_char, middle) {

@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
+#include "input_handling.h"
 
 static void	parse_cursor_pos(t_cursor *cursor, char *pos, size_t prompt_len
 							, int ret)

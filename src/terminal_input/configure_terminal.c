@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
 #include "signal_handler.h"
 #include "environment.h"
 

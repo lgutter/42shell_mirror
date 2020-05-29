@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "environment.h"
+#include "history.h"
 
 static void		init_histsize_term(t_env *env)
 {

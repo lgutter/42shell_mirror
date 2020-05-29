@@ -13,7 +13,7 @@
 #include "history.h"
 #include "cetushell.h"
 #include "environment.h"
-#include "input_control.h"
+#include "prompt.h"
 #include "handle_error.h"
 
 static char		*read_history(t_history *hist)

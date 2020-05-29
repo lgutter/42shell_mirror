@@ -10,10 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cetushell.h"
-#include "input_control.h"
-#include "signal_handler.h"
 #include <signal.h>
+#include "cetushell.h"
+#include "prompt.h"
+#include "input_handling.h"
+#include "signal_handler.h"
 
 static int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
 							t_history *hist)

@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
 #include "history.h"
+#include "input_handling.h"
 
 static void		print_buffer(t_buff *buffer)
 {

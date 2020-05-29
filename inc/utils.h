@@ -18,7 +18,6 @@
 
 # include "cetushell.h"
 # include "parser_structs.h"
-# include "input_control.h"
 
 /*
 ** ft_swap_rv requires as input a pointer to a t_buff struct and a string seq.
