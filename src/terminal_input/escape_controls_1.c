@@ -74,10 +74,10 @@ void		end_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (ft_strncmp(seq, END_KEY, ft_strlen(END_KEY)) == 0)
 	{
-		cursor->current.x = (buffer->buff_len + buffer->prompt_len)\
-							% cursor->max.x;
-		cursor->current.y = cursor->current.y + (buffer->buff_len
-		/ cursor->max.x);
-		buffer->index = buffer->buff_len;
+		while (buffer->buff[buffer->index] != '\0')
+		{
+			right_arrow_key(buffer, cursor, ARROW_RIGHT);
+			set_cursor_pos(cursor, buffer);
+		}
 	}
 }
