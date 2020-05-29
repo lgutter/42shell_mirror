@@ -91,7 +91,7 @@ int				read_input(t_shell *shell)
 	if (g_signal_handler == SIGINT_BUFF)
 	{
 		shell->buffer->state = RETURN_STATE;
-		send_terminal(CURSOR_DOWN);
+		send_terminal(TERM_DOWN);
 		return (0);
 	}
 	if (ret == -1)

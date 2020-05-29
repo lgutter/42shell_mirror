@@ -13,7 +13,8 @@
 #include "cetushell.h"
 #include "input_control.h"
 
-size_t	insert_word(t_buff *buffer, t_cursor *cursor, char *word, size_t len)
+size_t		insert_word(t_buff *buffer, t_cursor *cursor, char *word,
+							size_t len)
 {
 	size_t	i;
 
@@ -32,13 +33,14 @@ size_t	insert_word(t_buff *buffer, t_cursor *cursor, char *word, size_t len)
 		}
 		else
 			cursor->current.x++;
-		set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+		cursor->direction = CURSOR_RIGHT;
+		set_cursor_pos(cursor, buffer);
 		i++;
 	}
 	return (0);
 }
 
-void	remove_buff(t_buff *buffer, t_cursor *cursor)
+void		remove_buff(t_buff *buffer, t_cursor *cursor)
 {
 	if (buffer != NULL && buffer->buff != NULL)
 	{
@@ -50,7 +52,7 @@ void	remove_buff(t_buff *buffer, t_cursor *cursor)
 	}
 }
 
-void	free_buffer_buffs(t_shell *shell, size_t with_copy)
+void		free_buffer_buffs(t_shell *shell, size_t with_copy)
 {
 	if (shell != NULL && shell->buffer != NULL)
 	{
@@ -66,4 +68,45 @@ void	free_buffer_buffs(t_shell *shell, size_t with_copy)
 			shell->buffer->copy = NULL;
 		}
 	}
+}
+
+static void	parse_cursor_pos(t_cursor *cursor, char *pos, size_t prompt_len
+							, int ret)
+{
+	int		temp;
+
+	temp = ft_atoi(&pos[2]);
+	if (temp != 0)
+		cursor->start.y = temp;
+	while (ft_isdigit(pos[ret]) == 0)
+		ret = ret - 1;
+	while (ft_isdigit(pos[ret - 1]) == 1)
+		ret = ret - 1;
+	cursor->current.x = ft_atoi(&pos[ret]);
+	if (cursor->current.x > 1)
+	{
+		cursor->start.y++;
+		cursor->new_line_x = cursor->current.x;
+	}
+	else
+		cursor->start.x = prompt_len;
+}
+
+void		get_cursor_pos(t_cursor *cursor, size_t prompt_len)
+{
+	char	pos[16];
+	int		ret;
+
+	send_terminal("sc");
+	ft_printf("%c[6n", ESCAPE_KEY);
+	ft_memset(&pos, '\0', sizeof(pos));
+	ret = read(STDIN_FILENO, &pos, sizeof(pos));
+	if (ret == -1)
+		return ;
+	if (ret < 3)
+		read(STDIN_FILENO, &pos, sizeof(pos));
+	else
+		parse_cursor_pos(cursor, pos, prompt_len, ret);
+	cursor->current.x = prompt_len;
+	cursor->current.y = cursor->start.y;
 }
