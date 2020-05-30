@@ -11,13 +11,14 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
+#include "input_handling.h"
 
 int			return_key(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (c == RETURN_KEY)
 	{
-		send_terminal(CURSOR_DOWN);
+		send_terminal(TERM_DOWN);
 		buffer->buff_len = 0;
 		buffer->index = 0;
 		buffer->state = RETURN_STATE;
@@ -54,7 +55,13 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
 		cursor->current.x > buffer->prompt_len) ||
 		cursor->current.y != cursor->start.y)
 		{
-			cursor->current.x--;
+			if (buffer->buff[buffer->index - 1] == '\n')
+				cursor->direction = RM_NEWLINE;
+			else
+			{
+				cursor->current.x--;
+				cursor->direction = CURSOR_LEFT;
+			}
 			remove_char(buffer);
 		}
 	}
@@ -66,7 +73,7 @@ int			ctrl_d_key(char c, t_buff *buffer)
 		(ft_strcmp(buffer->prompt, PROMPT_NORMAL) == 0 ||
 		ft_strcmp(buffer->prompt, PROMPT_HEREDOC) == 0))
 	{
-		send_terminal(CURSOR_DOWN);
+		send_terminal(TERM_DOWN);
 		return (1);
 	}
 	return (0);

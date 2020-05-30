@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "utils.h"
-#include "input_control.h"
+#include "prompt.h"
 #include "quote_trans_table.h"
 #include "signal_handler.h"
 

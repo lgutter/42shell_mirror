@@ -53,6 +53,8 @@ int							update_history(t_history *hist, struct s_env *env,
 												char *buff);
 void						free_history(t_history *hist);
 void						free_hist_list(t_hist_list **start);
+size_t						scroll_hist(t_history *hist, t_buff *buffer,
+											t_cursor *cursor);
 
 /*
 ** Add history element will add an t_hist_list to the existing list of **start

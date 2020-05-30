@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   input_control.h                                    :+:    :+:            */
+/*   input_handling.h                                   :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INPUT_CONTROL_H
-# define INPUT_CONTROL_H
+#ifndef INPUT_HANDLING_H
+# define INPUT_HANDLING_H
 
 /*
 **--------------------------Includes------------------------------------------
@@ -19,22 +19,11 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include "cetushell.h"
-# include "utils.h"
 # include "history.h"
 
 /*
 **--------------------------Defines-------------------------------------------
 */
-
-# define PROMPT_NORMAL "Cetush >> "
-# define PROMPT_QUOTE "quote> "
-# define PROMPT_DQUOTE "dquote> "
-# define PROMPT_PIPE "pipe> "
-# define PROMPT_HEREDOC "heredoc> "
-# define CLEAR_TO_END "ce"
-# define CURSOR_DOWN "do"
-# define CLEAR_SCREEN "cl"
-# define CURSOR_POSITION "u7"
 
 # define ESC_SEQ_SIZE   16
 # define ARROW_UP       "[A"
@@ -76,39 +65,6 @@
 */
 
 /*
-** send_terminal will require a command specified by (5) terminfo under
-** termcap codes. This will send a instruction to the terminal by looking at
-** which terminal is running. This can make it usefull to make sure that this
-** program works on every terminal.
-**
-** arg: command: string command specified in man (5) terminfo.
-*/
-void		send_terminal(char *command);
-
-/*
-** get_winsize will require a pointer struct t_shell specified in "cetushell.h".
-** It will get the current window size and sets this into a winsize struct. This
-** is needed to print the prompt,input and output correctly.
-**
-** arg: *shell: poiter to struct t_shell defined in cethushell.h
-*/
-void		get_winsize(t_cursor *cursor, size_t len);
-
-/*
-** Configure_terminal will take in a pointer to a t_shell struct defined in
-** "cetushell.h" and a activator. It wil then put the terminal in
-** RAW mode (activator = 1), or put the original terminal settings back
-** (avtivator = 0). The original terminal will be saved in a static within the
-** function. This function is needed to be able to control the process input
-** handling of the terminal.
-**
-** arg:    *shell: pointer to struct defined in cetushell.h.
-** arg: activator; 1 for activation of RAW mode, 0 for returning original
-**                 settings.
-*/
-void		configure_terminal(t_shell *shell, int activator);
-
-/*
 ** read_input will take in a pointer to struct t_shell defined in "cetushell".
 ** it will read the input of the user and process it. The function will return
 ** an int specifying termination or succesion depending on which key is pressed.
@@ -117,8 +73,6 @@ void		configure_terminal(t_shell *shell, int activator);
 ** return: int: succes (0) or error_code
 */
 int			read_input(t_shell *shell);
-
-void		free_buffer_buffs(t_shell *shell, size_t with_copy);
 
 /*
 ** insert_char requires a pointer to the struct t_buff defined in cetushell.h
@@ -129,9 +83,6 @@ void		free_buffer_buffs(t_shell *shell, size_t with_copy);
 ** arg: char c: the character to be inserted within the buffer(buffer->buff)
 */
 int			insert_char(t_buff *buffer, char c);
-
-size_t		insert_word(t_buff *buffer, t_cursor *cursor, char *word,
-						size_t len);
 
 int			up_arrow_key(t_buff *buffer, t_cursor *cursor, t_history *hist,
 						char *seq);
@@ -158,10 +109,6 @@ void		remove_char(t_buff *buffer);
 ** arg: buff_size: The size of the current allocation of buffer.
 ** arg: len: The actual length (characters) of the buffer
 */
-
-size_t		scroll_hist(t_history *hist, t_buff *buffer, t_cursor *cursor);
-
-void		remove_buff(t_buff *buffer, t_cursor *cursor);
 
 /*
 ** the tab_key requires as input a pointer to a t_buff and t_cursor struct and
@@ -277,34 +224,6 @@ void		shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq);
 int			cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c);
 
 void		remove_word(t_buff *buffer, t_cursor *cursor);
-
-/*
-** set_cursor_pos will set the current cursor position defined in the t_cursor
-** struct (x,y) and uses the buffer len as limitation. It translates the
-** coordinates to a string (cur_buff) which then can be used to send an
-** instruction to the terminal.
-**
-** arg: *cursor: pointer to t_cursor struct defined in cetushell.h.
-** arg: len: the buffer max len to prevent the cursor from going over it.
-*/
-void		set_cursor_pos(t_cursor *cursor, size_t buff_len,
-	size_t prompt_len);
-
-/*
-** get_cursor_pos will get the starting cursor position and will set its
-** coordinates accordingly into the t_cursor struct.
-**
-** arg: *cursor: pointer to t_cursor struct defined in cetushell.h
-*/
-void		get_cursor_pos(t_cursor *cursor, size_t prompt_len);
-
-/*
-** prompt_shell will require the t_shell struct as input and will show  and
-** refresh the prompt after every iteration.
-**
-** arg: *shell: pointer to t_shell struct defined in cetushell.h
-*/
-char		*prompt_shell(t_shell *shell, const char *prompt);
 
 int			ctrl_d_key(char c, t_buff *buffer);
 

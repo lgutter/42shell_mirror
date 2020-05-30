@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
+#include "input_handling.h"
 
 void		shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
@@ -28,6 +29,7 @@ void		shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq)
 				buffer->rv_end = buffer->index + 1;
 			buffer->index++;
 			cursor->current.x++;
+			cursor->direction = CURSOR_RIGHT;
 		}
 	}
 }
@@ -53,6 +55,7 @@ void		shift_left_key(t_buff *buffer, t_cursor *cursor, char *seq)
 				buffer->rv_end = buffer->index - 1;
 			buffer->index--;
 			cursor->current.x--;
+			cursor->direction = CURSOR_LEFT;
 		}
 	}
 }
@@ -71,10 +74,10 @@ void		end_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (ft_strncmp(seq, END_KEY, ft_strlen(END_KEY)) == 0)
 	{
-		cursor->current.x = (buffer->buff_len + buffer->prompt_len)\
-							% cursor->max.x;
-		cursor->current.y = cursor->current.y + (buffer->buff_len
-		/ cursor->max.x);
-		buffer->index = buffer->buff_len;
+		while (buffer->buff[buffer->index] != '\0')
+		{
+			right_arrow_key(buffer, cursor, ARROW_RIGHT);
+			set_cursor_pos(cursor, buffer);
+		}
 	}
 }

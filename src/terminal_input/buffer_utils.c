@@ -11,9 +11,11 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "input_handling.h"
+#include "prompt.h"
 
-size_t	insert_word(t_buff *buffer, t_cursor *cursor, char *word, size_t len)
+size_t		insert_word(t_buff *buffer, t_cursor *cursor, char *word,
+							size_t len)
 {
 	size_t	i;
 
@@ -32,13 +34,14 @@ size_t	insert_word(t_buff *buffer, t_cursor *cursor, char *word, size_t len)
 		}
 		else
 			cursor->current.x++;
-		set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+		cursor->direction = CURSOR_RIGHT;
+		set_cursor_pos(cursor, buffer);
 		i++;
 	}
 	return (0);
 }
 
-void	remove_buff(t_buff *buffer, t_cursor *cursor)
+void		remove_buff(t_buff *buffer, t_cursor *cursor)
 {
 	if (buffer != NULL && buffer->buff != NULL)
 	{
@@ -50,7 +53,7 @@ void	remove_buff(t_buff *buffer, t_cursor *cursor)
 	}
 }
 
-void	free_buffer_buffs(t_shell *shell, size_t with_copy)
+void		free_buffer_buffs(t_shell *shell, size_t with_copy)
 {
 	if (shell != NULL && shell->buffer != NULL)
 	{

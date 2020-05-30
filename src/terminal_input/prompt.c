@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
 #include "history.h"
+#include "input_handling.h"
 
 static void		print_buffer(t_buff *buffer)
 {
@@ -87,21 +88,21 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 	char	*temp;
 
 	temp = NULL;
-	get_winsize(&shell->cursor, shell->buffer->prompt_len);
 	if (shell != NULL && prompt != NULL && shell->buffer != NULL)
 	{
+		get_winsize(&shell->cursor, shell->buffer->prompt_len);
 		if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
 			return (NULL);
 		while (shell->buffer->state != RETURN_STATE)
 		{
-			set_cursor_pos(&shell->cursor, shell->buffer->buff_len,
-			shell->buffer->prompt_len);
+			set_cursor_pos(&shell->cursor, shell->buffer);
 			refresh_prompt(shell->buffer, &shell->cursor);
 			if (read_input(shell) == 1)
 			{
 				free_buffer_buffs(shell, 1);
 				return (NULL);
 			}
+			shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
 		}
 		shell->buffer->state = INPUT_STATE;
 		temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);

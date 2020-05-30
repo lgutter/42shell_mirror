@@ -15,7 +15,7 @@
 # include "tokenizer.h"
 # include "parser.h"
 # include "utils.h"
-# include "input_control.h"
+# include "prompt.h"
 # include "cetushell.h"
 # include "executor.h"
 

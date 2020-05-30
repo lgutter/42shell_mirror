@@ -10,10 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cetushell.h"
-#include "input_control.h"
-#include "signal_handler.h"
 #include <signal.h>
+#include "cetushell.h"
+#include "prompt.h"
+#include "input_handling.h"
+#include "signal_handler.h"
 
 static int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
 							t_history *hist)
@@ -86,12 +87,13 @@ int				read_input(t_shell *shell)
 
 	c = '\0';
 	signal(SIGINT, signal_handler_buff);
-	shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
+	if (shell == NULL || shell->buffer == NULL || shell->buffer->buff == NULL)
+		return (1);
 	ret = read(STDIN_FILENO, &c, 1);
 	if (g_signal_handler == SIGINT_BUFF)
 	{
 		shell->buffer->state = RETURN_STATE;
-		send_terminal(CURSOR_DOWN);
+		send_terminal(TERM_DOWN);
 		return (0);
 	}
 	if (ret == -1)

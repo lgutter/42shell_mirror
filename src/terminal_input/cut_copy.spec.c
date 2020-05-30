@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
+#include "input_handling.h"
 #include "criterion/criterion.h"
 
 Test(copy, at_start_from_left_to_right) {

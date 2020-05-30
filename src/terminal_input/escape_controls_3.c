@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
+#include "input_handling.h"
 
 static void		cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq)
 {
@@ -22,7 +23,8 @@ static void		cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq)
 		{
 			buffer->index--;
 			cursor->current.x--;
-			set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+			cursor->direction = CURSOR_LEFT;
+			set_cursor_pos(cursor, buffer);
 		}
 		while (buffer->index > 0)
 		{
@@ -31,7 +33,8 @@ static void		cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq)
 				break ;
 			buffer->index--;
 			cursor->current.x--;
-			set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+			cursor->direction = CURSOR_LEFT;
+			set_cursor_pos(cursor, buffer);
 		}
 	}
 }
@@ -45,7 +48,8 @@ static void		cntrl_right(t_buff *buffer, t_cursor *cursor, char *seq)
 		{
 			buffer->index++;
 			cursor->current.x++;
-			set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+			cursor->direction = CURSOR_RIGHT;
+			set_cursor_pos(cursor, buffer);
 		}
 		while (buffer->buff[buffer->index] != '\0')
 		{
@@ -54,7 +58,8 @@ static void		cntrl_right(t_buff *buffer, t_cursor *cursor, char *seq)
 				break ;
 			buffer->index++;
 			cursor->current.x++;
-			set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+			cursor->direction = CURSOR_RIGHT;
+			set_cursor_pos(cursor, buffer);
 		}
 	}
 }
@@ -63,6 +68,8 @@ static void		cntrl_up(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (ft_strcmp(seq, CNTRL_UP) == 0 && cursor->current.y > cursor->start.y)
 	{
+		if (strchr(buffer->buff, '\n') != NULL)
+			return ;
 		cursor->current.y--;
 		if (cursor->current.y == cursor->start.y &&
 			cursor->current.x < buffer->prompt_len - 1)
@@ -83,6 +90,8 @@ static void		cntrl_down(t_buff *buffer, t_cursor *cursor, char *seq)
 		cursor->start.y);
 	if (ft_strcmp(seq, CNTRL_DOWN) == 0 && cursor->current.y < temp)
 	{
+		if (strchr(buffer->buff, '\n') != NULL)
+			return ;
 		cursor->current.y++;
 		temp = (buffer->prompt_len + buffer->buff_len) % cursor->max.x;
 		if (cursor->current.y == cursor->max.y && cursor->current.x > temp)

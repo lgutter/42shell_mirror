@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "cetushell.h"
-#include "input_control.h"
+#include "prompt.h"
+#include "input_handling.h"
 
 static size_t	buff_realloc(t_buff *buffer)
 {
@@ -33,15 +34,14 @@ int				insert_char(t_buff *buffer, char c)
 {
 	size_t			temp;
 
-	temp = 0;
+	temp = (buffer->buff_len != 0) ? buffer->buff_len - 1 : 0;
 	if (buffer == NULL || buffer->buff == NULL || c == '\0')
 		return (1);
-	if (buffer->buff_len != 0)
-		temp = buffer->buff_len - 1;
 	if (buffer->buff_len == buffer->buff_size)
 		if (buff_realloc(buffer) == 1)
 			return (1);
-	if (ft_isprint(buffer->buff[buffer->index]))
+	if (ft_isprint(buffer->buff[buffer->index]) ||
+				ft_isspace(buffer->buff[buffer->index]))
 	{
 		while (temp > buffer->index)
 		{
@@ -102,9 +102,10 @@ void			remove_word(t_buff *buffer, t_cursor *cursor)
 	while (buffer->rv_start > buffer->rv_end)
 	{
 		remove_char(buffer);
+		cursor->direction = CURSOR_LEFT;
 		buffer->rv_start--;
 		cursor->current.x--;
-		set_cursor_pos(cursor, buffer->buff_len, buffer->prompt_len);
+		set_cursor_pos(cursor, buffer);
 		i++;
 	}
 }
