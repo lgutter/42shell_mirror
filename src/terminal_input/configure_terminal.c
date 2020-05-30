@@ -33,6 +33,8 @@ void		configure_terminal(t_shell *shell, int activator)
 
 	if (activator > 0)
 	{
+		if (shell == NULL || shell->env == NULL)
+			return ;
 		temp = ft_getenv(shell->env, "TERM", ENV_VAR);
 		if (temp == NULL)
 			temp = "xterm-256color";
@@ -45,8 +47,7 @@ void		configure_terminal(t_shell *shell, int activator)
 		shell_temp.c_cc[VMIN] = 0;
 		shell_temp.c_cc[VTIME] = 1;
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell_temp);
-		if (shell != NULL)
-			shell->term = shell_temp;
+		shell->term = shell_temp;
 	}
 	if (activator == 0)
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig);
@@ -56,6 +57,8 @@ void		get_winsize(t_cursor *cursor, size_t len)
 {
 	struct winsize winsize;
 
+	if (cursor == NULL)
+		return ;
 	get_cursor_pos(cursor, len);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize);
 	cursor->max.x = (size_t)winsize.ws_col;
