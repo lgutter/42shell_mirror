@@ -221,7 +221,7 @@ void		shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq);
 ** arg: c: a character which defines what control is used.
 ** return:
 */
-int			cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c);
+int			cut_copy_paste(t_buff *buffer, t_cursor *cursor, char c);
 
 void		remove_word(t_buff *buffer, t_cursor *cursor);
 

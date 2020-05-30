@@ -29,8 +29,6 @@ static int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
 		if (ret == -1)
 			return (2);
 		handle_cntrl_arrows(buffer, cursor, seq);
-		if (cut_copy_paste(buffer, cursor, seq, 0) != 0)
-			return (1);
 		shift_right_key(buffer, cursor, seq);
 		shift_left_key(buffer, cursor, seq);
 		left_arrow_key(buffer, cursor, seq);
@@ -71,7 +69,7 @@ static int		handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
 		cursor->start.y = 1;
 		send_terminal("cl");
 	}
-	if (cut_copy_paste(buffer, cursor, NULL, c) != 0 ||
+	if (cut_copy_paste(buffer, cursor, c) != 0 ||
 		ctrl_d_key(c, buffer) == 1)
 		return (1);
 	tab_key(buffer, cursor, c);

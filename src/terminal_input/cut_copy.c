@@ -63,18 +63,17 @@ static int	paste(t_buff *buffer, t_cursor *cursor)
 	return (0);
 }
 
-int			cut_copy_paste(t_buff *buffer, t_cursor *cursor, char *seq, char c)
+int			cut_copy_paste(t_buff *buffer, t_cursor *cursor, char c)
 {
 	if (cursor == NULL || buffer == NULL || buffer->buff == NULL)
 		return (1);
-	if (c == CNTRL_X)
+	if (c == CNTRL_B)
 		if (copy(buffer) != 0)
 			return (1);
-	if (c == CNTRL_V || (seq != NULL
-	&& ft_strncmp(seq, CNTRL_RIGHT, sizeof(CNTRL_RIGHT)) == 0))
+	if (c == CNTRL_V)
 		if (paste(buffer, cursor) != 0)
 			return (1);
-	if (seq != NULL && ft_strncmp(seq, CNTRL_LEFT, sizeof(CNTRL_LEFT)) == 0)
+	if (c == CNTRL_X)
 		if (cut(buffer, cursor) != 0)
 			return (1);
 	return (0);
