@@ -48,6 +48,8 @@ int				up_arrow_key(t_buff *buffer, t_cursor *cursor, t_history *hist,
 {
 	if (ft_strncmp(seq, ARROW_UP, ft_strlen(ARROW_UP)) == 0)
 	{
+		if (hist == NULL)
+			return (1);
 		if (hist->current_index > 0)
 		{
 			hist->current_index--;
@@ -63,6 +65,8 @@ int				down_arrow_key(t_buff *buffer, t_cursor *cursor,
 {
 	if (ft_strncmp(seq, ARROW_DOWN, ft_strlen(ARROW_DOWN)) == 0)
 	{
+		if (hist == NULL)
+			return (1);
 		if (hist->current_index != hist->max_index + 1)
 		{
 			hist->current_index++;
