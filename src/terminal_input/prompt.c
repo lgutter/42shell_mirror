@@ -88,8 +88,7 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 	char	*temp;
 
 	temp = NULL;
-	if (shell != NULL && prompt != NULL && shell->buffer != NULL &&
-		shell->hist != NULL)
+	if (shell != NULL && prompt != NULL && shell->buffer != NULL)
 	{
 		get_winsize(&shell->cursor, shell->buffer->prompt_len);
 		if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
