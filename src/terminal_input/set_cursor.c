@@ -97,7 +97,10 @@ void			set_cursor_pos(t_cursor *cursor, t_buff *buffer)
 		send_terminal("rc");
 		send_terminal("cd");
 		get_winsize(cursor, buffer->prompt_len);
-		ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, 0);
+		cursor->current.x = ((buffer->prompt_len + buffer->index)
+								% cursor->max.x);
+		cursor->current.y = (((buffer->prompt_len + buffer->index)
+								/ cursor->max.x) + cursor->start.y);
 	}
 	handle_newline(cursor, buffer);
 	cursor_next_line(cursor, buffer->buff_len, buffer->prompt_len);

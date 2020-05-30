@@ -14,6 +14,7 @@
 #include "prompt.h"
 #include "history.h"
 #include "input_handling.h"
+#include "signal_handler.h"
 
 static void		print_buffer(t_buff *buffer)
 {
@@ -88,6 +89,7 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 	char	*temp;
 
 	temp = NULL;
+	signal(SIGWINCH, signal_handler_buff);
 	if (shell != NULL && prompt != NULL && shell->buffer != NULL)
 	{
 		get_winsize(&shell->cursor, shell->buffer->prompt_len);
