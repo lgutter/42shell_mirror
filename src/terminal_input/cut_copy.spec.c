@@ -32,7 +32,7 @@ Test(copy, at_start_from_left_to_right) {
 	buffer->rv_end = 4;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
-	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);
+	cut_copy_paste(buffer, &cursor, CNTRL_B);
 	cr_expect_str_eq(buffer->buff, "Hello world");
 	cr_expect_str_eq(buffer->copy, "Hello");
 	free(buffer->buff);
@@ -57,7 +57,7 @@ Test(copy, at_start_from_right_to_left) {
 	buffer->rv_end = 0;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
-	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);
+	cut_copy_paste(buffer, &cursor, CNTRL_B);
 	cr_expect_str_eq(buffer->buff, "Hello world");
 	cr_expect_str_eq(buffer->copy, "Hello");
 	free(buffer->buff);
@@ -82,7 +82,7 @@ Test(copy, at_start_length_null) {
 	buffer->rv_end = 4;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
-	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);;
+	cut_copy_paste(buffer, &cursor, CNTRL_B);;
 	cr_expect_str_eq(buffer->buff, "Hello world");
 	cr_expect_str_eq(buffer->copy, "");
 	free(buffer->buff);
@@ -107,7 +107,7 @@ Test(copy, at_end_from_left_to_right) {
 	buffer->rv_end = 11;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
-	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);
+	cut_copy_paste(buffer, &cursor, CNTRL_B);
 	cr_expect_str_eq(buffer->buff, "Hello world");
 	cr_expect_str_eq(buffer->copy, "world");
 	free(buffer->buff);
@@ -132,7 +132,7 @@ Test(copy, at_end_from_right_to_left) {
 	buffer->rv_end = 6;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
-	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);
+	cut_copy_paste(buffer, &cursor, CNTRL_B);
 	cr_expect_str_eq(buffer->buff, "Hello world");
 	cr_expect_str_eq(buffer->copy, "world");
 	free(buffer->buff);
@@ -157,7 +157,7 @@ Test(copy, all_from_right_to_left) {
 	buffer->rv_end = 0;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
-	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);
+	cut_copy_paste(buffer, &cursor, CNTRL_B);
 	cr_expect_str_eq(buffer->buff, "Hello world");
 	cr_expect_str_eq(buffer->copy, "Hello world");
 	free(buffer->buff);
@@ -182,7 +182,7 @@ Test(copy, two_characters_from_right_to_left) {
 	buffer->rv_end = 2;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
-	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);;
+	cut_copy_paste(buffer, &cursor, CNTRL_B);;
 	cr_expect_str_eq(buffer->buff, "Hello world");
 	cr_expect_str_eq(buffer->copy, "el");
 	free(buffer->buff);
@@ -207,7 +207,7 @@ Test(copy, two_character_from_left_to_right) {
 	buffer->rv_end = 1;
 	cursor.current.x = 1;
 	cursor.current.x = 2;
-	cut_copy_paste(buffer, &cursor, NULL, CNTRL_X);;
+	cut_copy_paste(buffer, &cursor, CNTRL_B);;
 	cr_expect_str_eq(buffer->buff, "Hello world");
 	cr_expect_str_eq(buffer->copy, "el");
 	free(buffer->buff);
@@ -232,7 +232,7 @@ Test(cut, at_start_from_left_to_right) {
 	buffer->rv_end = 4;
 	cursor.max.x = 100;
 	cursor.current.x = 20;
-	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);
+	cut_copy_paste(buffer, &cursor, CNTRL_X);
 	cr_expect_str_eq(buffer->buff, " world");
 	cr_expect_str_eq(buffer->copy, "Hello");
 	free(buffer->buff);
@@ -257,7 +257,7 @@ Test(cut, at_start_from_right_to_left) {
 	buffer->rv_end = 0;
 	cursor.max.x = 100;
 	cursor.current.x = 2;
-	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);
+	cut_copy_paste(buffer, &cursor, CNTRL_X);
 	cr_expect_str_eq(buffer->buff, " world");
 	cr_expect_str_eq(buffer->copy, "Hello");
 	free(buffer->buff);
@@ -282,7 +282,7 @@ Test(cut, at_start_length_null) {
 	buffer->rv_end = 4;
 	cursor.max.x = 100;
 	cursor.current.x = 20;
-	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);;
+	cut_copy_paste(buffer, &cursor, CNTRL_X);;
 	cr_expect_str_eq(buffer->buff, "Hello world");
 	free(buffer->buff);
 	free(buffer->copy);
@@ -306,7 +306,7 @@ Test(cut, at_end_from_left_to_right) {
 	buffer->rv_end = 10;
 	cursor.max.x = 100;
 	cursor.current.x = 20;
-	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);
+	cut_copy_paste(buffer, &cursor, CNTRL_X);
 	cr_expect_str_eq(buffer->buff, "Hello ");
 	cr_expect_str_eq(buffer->copy, "world");
 	free(buffer->buff);
@@ -331,7 +331,7 @@ Test(cut, at_end_from_right_to_left) {
 	buffer->rv_end = 6;
 	cursor.max.x = 100;
 	cursor.current.x = 20;
-	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);
+	cut_copy_paste(buffer, &cursor, CNTRL_X);
 	cr_expect_str_eq(buffer->buff, "Hello ");
 	cr_expect_str_eq(buffer->copy, "world");
 	free(buffer->buff);
@@ -356,7 +356,7 @@ Test(cut, all_from_right_to_left) {
 	buffer->rv_end = 0;
 	cursor.max.x = 100;
 	cursor.current.x = 20;
-	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);
+	cut_copy_paste(buffer, &cursor, CNTRL_X);
 	cr_expect_str_eq(buffer->buff, "");
 	cr_expect_str_eq(buffer->copy, "Hello world");
 	free(buffer->buff);
@@ -381,7 +381,7 @@ Test(cut, all_from_left_to_right) {
 	buffer->rv_end = 10;
 	cursor.max.x = 100;
 	cursor.current.x = 20;
-	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);;
+	cut_copy_paste(buffer, &cursor, CNTRL_X);;
 	cr_expect_str_eq(buffer->buff, "");
 	cr_expect_str_eq(buffer->copy, "Hello world");
 	free(buffer->buff);
@@ -406,7 +406,7 @@ Test(cut, two_character_right_to_left) {
 	buffer->rv_end = 9;
 	cursor.max.x = 100;
 	cursor.current.x = 20;
-	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);;
+	cut_copy_paste(buffer, &cursor, CNTRL_X);;
 	cr_expect_str_eq(buffer->buff, "Hello wor");
 	cr_expect_str_eq(buffer->copy, "ld");
 	free(buffer->buff);
@@ -431,7 +431,7 @@ Test(cut, two_character_left_to_right) {
 	buffer->rv_end = 10;
 	cursor.max.x = 1000;
 	cursor.current.x = 20;
-	cut_copy_paste(buffer, &cursor, CNTRL_LEFT, 0);;
+	cut_copy_paste(buffer, &cursor, CNTRL_X);;
 	cr_expect_str_eq(buffer->buff, "Hello wor");
 	cr_expect_str_eq(buffer->copy, "ld");
 	free(buffer->buff);
