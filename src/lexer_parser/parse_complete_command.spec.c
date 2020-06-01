@@ -128,6 +128,40 @@ Test(parse_complete_command_unit, valid_two_cmd_redirect_arg_semi)
 	cr_expect_eq(simple_cmd->arguments->next, NULL);
 }
 
+Test(parse_complete_command_unit, valid_two_cmd_redirect_arg_newline)
+{
+	t_complete_cmd *complete_command;
+	t_simple_cmd *simple_cmd;
+
+	t_token	*token5 = init_token(WORD, "ps", NULL);
+	cr_assert_neq(NULL, token5, "malloc failed!");
+	t_token	*token4 = init_token(NEWLINE, "\n", token5);
+	cr_assert_neq(NULL, token4, "malloc failed!");
+	t_token	*token3 = init_token(WORD, "cat", token4);
+	cr_assert_neq(NULL, token3, "malloc failed!");
+	t_token	*token2 = init_token(WORD, "filename", token3);
+	cr_assert_neq(NULL, token2, "malloc failed!");
+	t_token	*token1 = init_token(DGREAT, ">>", token2);
+	cr_assert_neq(NULL, token1, "malloc failed!");
+	t_token *tokens = token1;
+
+	complete_command = parse_complete_command(&tokens);
+	cr_expect_eq(tokens, NULL);
+	cr_assert_neq(NULL, complete_command);
+	cr_expect_eq(complete_command->seperator_op, newline_op);
+	cr_expect_neq(complete_command->next, NULL);
+	cr_assert_neq(NULL, complete_command->pipe_sequence);
+	cr_expect_eq(complete_command->pipe_sequence->pipe, no_pipe);
+	cr_assert_neq(complete_command->pipe_sequence->simple_command, NULL);
+	simple_cmd = complete_command->pipe_sequence->simple_command;
+	cr_expect_eq(simple_cmd->redirects->io_file->redirect_op, redirect_append);
+	cr_expect_str_eq(simple_cmd->redirects->io_file->filename, "filename");
+	cr_expect_eq(simple_cmd->redirects->next, NULL);
+	cr_assert_neq(simple_cmd->arguments, NULL);
+	cr_expect_str_eq(simple_cmd->arguments->argument, "cat");
+	cr_expect_eq(simple_cmd->arguments->next, NULL);
+}
+
 Test(parse_complete_command_unit, invalid_null_token, .init = redirect_std_err)
 {
 	t_complete_cmd *complete_command;
