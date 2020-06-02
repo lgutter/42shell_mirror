@@ -71,7 +71,7 @@ ParameterizedTestParameters(is_seperator_op_unit, check_all_tokens)
 	{undetermined, 0},
 	{WORD, 0},
 	{IO_NUMBER, 0},
-	{NEWLINE, 0},
+	{NEWLINE, 1},
 	{PIPE, 0},
 	{SEMI, 1},
 	{AMP, 1},
