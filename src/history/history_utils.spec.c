@@ -940,16 +940,21 @@ Test(get_histfile_unit, invalid_no_permission_HOME, .init = cr_redirect_stderr)
 	t_history	hist;
 	int			ret;
 	char		buff[1024];
+#ifdef __linux__
+	char		*home = "/root";
+#else
+	char		*home = "/exam";
+#endif
 
 	ft_bzero(&shell, sizeof(t_shell));
 	ft_bzero(&hist, sizeof(t_history));
 	shell.hist = &hist;
 	shell.env = dup_sys_env();
-	ft_setenv(shell.env, "HOME", "/root", VAR_TYPE);
+	ft_setenv(shell.env, "HOME", home, VAR_TYPE);
 	ret = get_histfile(&shell);
 	cr_expect_eq(ret, access_denied);
 	fflush(stderr);
-	sprintf(buff, "%.515s: /root\n", g_error_str[access_denied]);
+	sprintf(buff, "%.515s: %.505s\n", g_error_str[access_denied], home);
 	cr_expect_stderr_eq_str(buff);
 }
 
