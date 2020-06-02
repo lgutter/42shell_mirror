@@ -50,6 +50,8 @@ static int		exit_shell(t_shell *shell, int ret)
 	char	*exit_code;
 
 	exit_code = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
+	if (exit_code == NULL)
+		exit_code = ft_getenv(shell->env, "STATUS", SHELL_VAR);
 	if (exit_code != NULL)
 		ret = ft_atoi(exit_code);
 	free(exit_code);
