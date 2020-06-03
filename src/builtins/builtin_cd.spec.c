@@ -35,7 +35,11 @@ Test(builtin_cd_unit, valid_cd_oldpwd, .init = redirect_std_out)
 	int			ret = 0;
 	char		buff[1024];
 	char		*dir = "/tmp";
-
+#ifdef __linux__
+	char		*expected_dir = "/tmp";
+#else
+	char		*expected_dir = "/private/tmp";
+#endif
 
 	ret = ft_setenv(env, "OLDPWD", dir, ENV_VAR);
 	cr_assert_eq(ret, 0, "ret is %d but must be %d", ret, 0);
@@ -46,7 +50,7 @@ Test(builtin_cd_unit, valid_cd_oldpwd, .init = redirect_std_out)
 	ret = builtin_cd(&comm, env);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	getcwd(buff, 1024);
-	cr_expect_str_eq(buff, "/tmp", "did not change to correct dir! expected %s, got %s!", dir, buff);
+	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", dir, buff);
 	fflush(stdout);
 	memset(buff, '\0', 1024);
 	sprintf(buff, "%s\n", dir);
@@ -60,6 +64,11 @@ Test(builtin_cd_unit, valid_cd_normal)
 	int			ret = 0;
 	char		buff[1024];
 	char		*dir = "/tmp";
+#ifdef __linux__
+	char		*expected_dir = "/tmp";
+#else
+	char		*expected_dir = "/private/tmp";
+#endif
 	char		olddir[1024];
 
 	getcwd(olddir, 1024);
@@ -74,7 +83,7 @@ Test(builtin_cd_unit, valid_cd_normal)
 	cr_expect_str_eq(ft_getenv(env, "OLDPWD", VAR_TYPE), olddir);
 	getcwd(buff, 1024);
 	cr_expect_str_eq(ft_getenv(env, "PWD", VAR_TYPE), buff);
-	cr_expect_str_eq(buff, "/tmp", "did not change to correct dir! expected %s, got %s!", dir, buff);
+	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", dir, buff);
 }
 
 Test(builtin_cd_unit, valid_cd_from_removed_dir)
@@ -83,7 +92,13 @@ Test(builtin_cd_unit, valid_cd_from_removed_dir)
 	t_env		*env = dup_sys_env();
 	int			ret = 0;
 	char		buff[1024];
+#ifdef __linux__
 	char		*dir = "/tmp/tempdirtoremove";
+	char		*expected_dir = "/tmp";
+#else
+	char		*dir = "/private/tmp/tempdirtoremove";
+	char		*expected_dir = "/private/tmp";
+#endif
 	char		olddir[1024];
 
 	remove(dir);
@@ -112,7 +127,7 @@ Test(builtin_cd_unit, valid_cd_from_removed_dir)
 	cr_expect_str_eq(ft_getenv(env, "OLDPWD", VAR_TYPE), buff);
 	getcwd(buff, 1024);
 	cr_expect_str_eq(ft_getenv(env, "PWD", VAR_TYPE), buff);
-	cr_expect_str_eq(buff, "/tmp", "did not change to correct dir! expected %s, got %s!", "/tmp", buff);
+	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
 }
 
 Test(builtin_cd_unit, invalid_cd_no_home, .init = redirect_std_err)

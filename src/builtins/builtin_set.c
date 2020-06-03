@@ -34,14 +34,38 @@ static int		env_is_valid_key(char *key)
 	return (1);
 }
 
+static char **	get_key_value(char *arg)
+{
+	char	**key_value;
+	char	**temp;
+
+	key_value = ft_strsplit(arg, '=');
+	if (key_value == NULL || key_value[0] == NULL)
+	{
+		free_dchar_arr(key_value);
+		return (NULL);
+	}
+	if (key_value[1] == NULL)
+	{
+		temp = ft_memalloc(sizeof(char *) * 3);
+		if (temp == NULL)
+			return (NULL);
+		temp[0] = key_value[0];
+		temp[1] = ft_strdup("");
+		free(key_value);
+		key_value = temp;
+	}
+	return (key_value);
+}
+
 static int		resolve_set_values(t_env *env, char *arg, char *argz, int opts)
 {
 	char	**key_value;
 	int		ret;
 
 	ret = 0;
-	key_value = ft_strsplit(arg, '=');
-	if (key_value == NULL || key_value[0] == NULL)
+	key_value = get_key_value(arg);
+	if (key_value == NULL)
 		ret = malloc_error;
 	else if (key_value[2] == NULL)
 	{
@@ -49,8 +73,6 @@ static int		resolve_set_values(t_env *env, char *arg, char *argz, int opts)
 			ret = handle_prefix_error_str(error_inv_format, argz, key_value[0]);
 		else
 		{
-			if (key_value[1] == NULL)
-				key_value[1] = ft_strdup("");
 			ret = ft_setenv(env, key_value[0], key_value[1], opts);
 			if (ret != 0)
 				handle_prefix_error_str(ret, argz, key_value[0]);
