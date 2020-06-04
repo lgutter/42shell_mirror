@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "handle_input.h"
+#include "processing.h"
 
 static size_t	arg_list_len(t_argument *list)
 {
@@ -68,7 +68,7 @@ static int		process_simple_cmd(t_shell *shell, t_simple_cmd *simple_command)
 		if (cur_arg->argument != NULL)
 		{
 			if (process_word(shell, &(cur_arg->argument),
-														WORD_PROCESS_ALL) != 0)
+														ALL_QUOTES_TABLE) != 0)
 				return (-1);
 		}
 		cur_arg = cur_arg->next;

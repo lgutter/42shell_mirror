@@ -13,7 +13,7 @@
 #include <criterion/criterion.h>
 #include <criterion/assert.h>
 #include <criterion/redirect.h>
-#include "executor.h"
+#include "processing.h"
 #include "error_str.h"
 
 static void	redirect_std_err()

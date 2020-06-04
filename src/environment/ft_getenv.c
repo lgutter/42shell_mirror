@@ -25,10 +25,7 @@ char	*ft_getenv(t_env *env, const char *key, int opts)
 		if (ft_strcmp(key, current->key) == 0 &&
 			(opts & (current->type & VAR_TYPE)) != 0)
 		{
-			if ((opts & QUOTE_VAR) != 0)
-				temp = backslash_quotes(current->value);
-			else
-				temp = ft_strdup(current->value);
+			temp = ft_strdup(current->value);
 			return (temp);
 		}
 		current = current->next;

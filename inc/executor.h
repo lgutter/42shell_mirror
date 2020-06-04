@@ -23,14 +23,6 @@
 # include <sys/wait.h>
 # include <dirent.h>
 
-# define WORD_EXPAND		1
-# define WORD_UNQUOTE		2
-# define WORD_FIX_QUOTES	4
-# define WORD_PROCESS_ALL	7
-# define WORD_FORCE_EXPAND	8
-# define WORD_PROCESS_FORCE	15
-# define WORD_HERE_DOC		16
-
 /*
 **	contains the required information to execute a command.
 **	fields:
@@ -127,48 +119,5 @@ int				exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_env *env_list);
 int				exec_simple_command(t_simple_cmd *simple_cmd, t_env *env_list);
 int				find_executable(t_env *env_list, t_command *command,
 								char *arg_zero);
-
-/*
-**	performs environment expansions and quote removal on the string pointed
-**	to by the argument word. If the string contains an unterminated quote,
-**	the user will be asked to complete it if WORD_FIX_QUOTE was passed.
-**	arguments:
-**	shell:		a pointer to the shell struct.
-**	word:		a pointer to the string to be processed.
-**	char:		contains options for expansion and quote removal.
-**				(use a combination of WORD_EXPAND, WORD_FORCE_EXPAND,
-**				WORD_UNQUOTE, WORD_HERE_DOC, and WORD_FIX_QUOTE,
-**				or WORD_PROCESS_ALL or WORD_PROCESS_FORCE.)
-**	returns:
-**	0 on succes.
-**	-1 on failure.
-*/
-int				process_word(t_shell *shell, char **word, int opts);
-
-/*
-**	performs environment expansions and quote completion + removal on all
-**	relevant elements in the redirections.
-**	arguments:
-**	shell:		a pointer to the shell struct. (for quote completion)
-**	env_list:	a pointer to the first element in the environment list.
-**	redirects:	a pointer to the first io_redirect struct.
-**	returns:
-**	0 on succes.
-**	-1 on failure.
-*/
-int				process_redirects(t_shell *shell, t_io_redirect *redirects);
-
-/*
-**	performs environment expansions and quote completion + removal on all
-**	relevant elements in a complete_command. (arguments and redirections)
-**	arguments:
-**	shell:				a pointer to the shell struct. (for quote completion)
-**	env_list:			a pointer to the first element in the environment list.
-**	complete_command:	a pointer to the first complete_command struct.
-**	returns:
-**	0 on succes.
-**	-1 on failure.
-*/
-int				word_processing(t_shell *shell, t_complete_cmd *complete_cmd);
 
 #endif

@@ -10,21 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "processing.h"
 
 static int	process_here_doc(t_shell *shell, t_io_here *io_here)
 {
 	int	quotes;
 
 	quotes = check_quote(io_here->here_end);
-	if (process_word(shell, &(io_here->here_end), WORD_UNQUOTE | WORD_EXPAND))
+	if (process_word(shell, &(io_here->here_end), HERE_END_TABLE))
 		return (-1);
 	if (get_here_doc(io_here, shell) != 0)
 		return (handle_error(malloc_error));
 	if (quotes == 0)
 	{
-		return (process_word(shell, &(io_here->here_doc),
-							WORD_FORCE_EXPAND | WORD_UNQUOTE | WORD_HERE_DOC));
+		return (process_word(shell, &(io_here->here_doc), HEREDOCS_TABLE));
 	}
 	return (0);
 }
@@ -35,7 +34,7 @@ static int	process_io_file(t_shell *shell, t_io_file *io_file)
 	size_t		i;
 
 	i = 0;
-	if (process_word(shell, &(io_file->filename), WORD_PROCESS_ALL))
+	if (process_word(shell, &(io_file->filename), ALL_QUOTES_TABLE))
 		return (-1);
 	filename = io_file->filename;
 	if (io_file->redirect_op == redirect_fd_in ||

@@ -10,43 +10,64 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "processing.h"
+#include "quote_trans_table.h"
 
-static int	get_exp_opts(int process_opts, int quote_type)
+static size_t	process_init(t_shell *shell, char **word, t_q_table table)
 {
-	int	opts;
+	t_env	*env;
+	size_t	read;
+	size_t	write;
 
-	opts = VAR_TYPE;
-	if (quote_type != 1 && (process_opts & WORD_UNQUOTE) != 0)
-		opts |= QUOTE_VAR;
-	return (opts);
+	read = 0;
+	write = 0;
+	if (word == NULL || *word == NULL)
+		return (SIZE_MAX);
+	if (shell == NULL)
+		env = NULL;
+	else
+		env = shell->env;
+	if (table == ALL_QUOTES_TABLE)
+		expand_home(env, word, &read, &write);
+	return (write);
 }
 
-int			process_word(t_shell *shell, char **word, int opts)
+static int		init_vars(size_t *read, size_t *write,
+											t_q_state *state, size_t init)
 {
-	int	quote_type;
-
-	if (word == NULL || *word == NULL)
+	if (init == SIZE_MAX)
 		return (-1);
-	quote_type = check_quote(*word);
-	if ((opts & WORD_FIX_QUOTES) != 0 && quote_type < 0)
+	*read = init;
+	*write = init;
+	*state = no_quote;
+	return (0);
+}
+
+int				process_word(t_shell *shell, char **word, t_q_table table)
+{
+	size_t		read;
+	size_t		write;
+	t_q_rules	rules;
+	t_q_state	state;
+
+	if (init_vars(&read, &write, &state, process_init(shell, word, table)) != 0)
+		return (-1);
+	while (state != q_eof)
 	{
-		if (complete_quote(shell, word) != 0)
-			return (-1);
-		quote_type = check_quote(*word);
-	}
-	if ((opts & WORD_FORCE_EXPAND) != 0 ||
-		((opts & WORD_EXPAND) != 0 && (quote_type == 0 || quote_type == 2)))
-	{
-		if (expand_variable(shell, word, get_exp_opts(opts, quote_type)) != 0)
-			return (-1);
-	}
-	if ((opts & WORD_UNQUOTE) != 0 &&
-		count_quote_chars(*word, ALL_QUOTES_TABLE) > 0)
-	{
-		if (remove_quotes(word,
-			(opts & WORD_HERE_DOC) ? HEREDOCS_TABLE : ALL_QUOTES_TABLE) != 0)
-			return (-1);
+		rules = g_quote_trans[table][state].rules[(size_t)(*word)[read]];
+		if (rules.next_state == q_invalid)
+			rules = g_quote_trans[table][state].catch_state;
+		if (rules.add_char == Q_REMOVE_BS || rules.add_char == Q_REMOVE_SKIP)
+			write--;
+		if (rules.add_char == Q_ADD_CHAR || rules.add_char == Q_REMOVE_BS)
+		{
+			(*word)[write] = (*word)[read];
+			write++;
+		}
+		else if (rules.add_char == Q_EXPAND_VAR)
+			expand_variable(shell, word, &read, &write);
+		read++;
+		state = rules.next_state;
 	}
 	return (0);
 }

@@ -27,95 +27,94 @@ static size_t	env_str_len(char *string)
 	return (index);
 }
 
-static int		abort_dollar(char *key, char *ret, char **start, size_t len)
+static int		abort_dollar(char *key, char **string,
+													size_t *read, size_t *write)
 {
-	free(ret);
+	int ret;
+
+	ret = 0;
+	if (key != NULL)
+	{
+		(*read)++;
+		(*string)[*write] = '$';
+		(*write)++;
+	}
+	else
+		ret = malloc_error;
 	free(key);
-	if (len == 0)
-		(*start)++;
-	if (len == 0)
-		return (0);
-	return (-1);
+	return (ret);
 }
 
-static int		expand_dollar(t_env *env_list, char **string, char **start,
-								int opts)
+static int		expand_dollar(t_env *env_list, char **string,
+													size_t *read, size_t *write)
 {
 	char	*key;
 	char	*ret;
 	char	*value;
 	size_t	len;
 
-	ret = ft_strndup(*string, (*start - *string));
-	len = env_str_len((*start) + 1);
-	key = ft_strndup((*start) + 1, len);
-	if (ret == NULL || key == NULL || len == 0)
-		return (abort_dollar(key, ret, start, len));
-	value = ft_getenv(env_list, key, opts);
-	free(key);
-	str_expand_triple(&ret, value, (*start) + len + 1);
+	ret = ft_strndup(*string, (*write));
 	if (ret == NULL)
-		return (-1);
-	if (value == NULL)
-		len = 0;
-	else
-		len = ft_strlen(value);
-	*start = ret + (*start - *string) + len;
+		return (malloc_error);
+	len = env_str_len(&((*string)[*read + 1]));
+	key = ft_strndup(&((*string)[*read + 1]), len);
+	if (key == NULL || len == 0)
+		return (abort_dollar(key, string, read, write));
+	value = ft_getenv(env_list, key, VAR_TYPE);
+	free(key);
+	str_expand_triple(&ret, value, &(*string)[*read + len + 1]);
+	if (ret == NULL)
+		return (malloc_error);
+	len = ft_strlen(value);
+	*write += len;
+	*read = *write - 1;
 	free(value);
 	free(*string);
 	*string = ret;
 	return (0);
 }
 
-static int		expand_home(t_env *env_list, char **string, int opts)
+int				expand_home(t_env *env_list, char **string,
+													size_t *read, size_t *write)
 {
 	char	*temp;
 	char	*value;
-	int		ret;
 
-	ret = 0;
+	if (string == NULL || *string == NULL || read == NULL || write == NULL)
+		return (-1);
 	temp = *string;
 	if (temp[0] == '~' && (temp[1] == '\0' || temp[1] == '/'))
 	{
-		value = ft_getenv(env_list, "HOME", opts);
-		if (value != NULL)
+		value = ft_getenv(env_list, "HOME", VAR_TYPE);
+		if (value == NULL)
+			return (0);
+		temp = ft_strjoin(value, (temp + 1));
+		if (temp == NULL)
 		{
-			temp = ft_strjoin(value, (temp + 1));
 			free(value);
-			if (temp == NULL)
-				return (-1);
-			free(*string);
-			*string = temp;
+			return (-1);
 		}
+		*write += ft_strlen(value);
+		*read = *write;
+		free(value);
+		free(*string);
+		*string = temp;
 	}
-	return (ret);
+	return (0);
 }
 
-int				expand_variable(t_shell *shell, char **string, int opts)
+int				expand_variable(t_shell *shell, char **string,
+													size_t *read, size_t *write)
 {
 	int		ret;
-	char	*offset;
 	t_env	*env;
 
 	env = (shell != NULL) ? shell->env : NULL;
-	if (string == NULL || *string == NULL)
+	if (string == NULL || *string == NULL || read == NULL || write == NULL)
 		return (-1);
 	ret = 0;
-	if ((*string)[0] == '~' && ((*string)[1] == '\0' || (*string)[1] == '/'))
-	{
-		if (expand_home(env, string, opts) == -1)
-			return (handle_error(malloc_error));
-	}
-	offset = ft_strchr(*string, '$');
-	while (offset != NULL && offset != &(*string)[ft_strlen(*string) - 1])
-	{
-		if (offset == *string || *(offset - 1) != '\\')
-			ret = expand_dollar(env, string, &offset, opts);
-		else
-			offset++;
-		if (ret == -1)
-			return (handle_error(malloc_error));
-		offset = ft_strchr(offset, '$');
-	}
-	return (0);
+	ret = expand_dollar(env, string, read, write);
+	if (ret == malloc_error)
+		handle_error(malloc_error);
+	return (ret);
 }
