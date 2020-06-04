@@ -70,7 +70,7 @@ int				word_processing(t_shell *shell, t_complete_cmd *complete_cmd);
 **	- 0 on succes.
 **	- errid error code on failure.
 */
-int					expand_variable(t_shell *shell, char **string,
+int				expand_variable(t_shell *shell, char **string,
 												size_t *read, size_t *write);
 
 /*
@@ -82,7 +82,7 @@ int					expand_variable(t_shell *shell, char **string,
 **	- 0 on succes.
 **	- errid error code on failure.
 */
-int					expand_home(t_env *env_list, char **string,
+int				expand_home(t_env *env_list, char **string,
 												size_t *read, size_t *write);
 
 #endif

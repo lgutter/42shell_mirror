@@ -33,12 +33,13 @@ void		configure_terminal(t_shell *shell, int activator)
 
 	if (activator > 0)
 	{
-		if (shell == NULL || shell->env == NULL)
+		if (shell == NULL)
 			return ;
 		temp = ft_getenv(shell->env, "TERM", ENV_VAR);
 		if (temp == NULL)
 			temp = "xterm-256color";
 		tgetent(NULL, temp);
+		free(temp);
 		if (activator == 1)
 			tcgetattr(STDIN_FILENO, &orig);
 		shell_temp = orig;
