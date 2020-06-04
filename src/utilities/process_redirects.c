@@ -17,6 +17,8 @@ static int	process_here_doc(t_shell *shell, t_io_here *io_here)
 	int	quotes;
 
 	quotes = check_quote(io_here->here_end);
+	if (quotes == 0 && ft_strchr(io_here->here_end, '\\') != NULL)
+		quotes = 3;
 	if (process_word(shell, &(io_here->here_end), HERE_END_TABLE))
 		return (-1);
 	if (get_here_doc(io_here, shell) != 0)
