@@ -34,7 +34,7 @@ static int		env_is_valid_key(char *key)
 	return (1);
 }
 
-static char **	get_key_value(char *arg)
+static char		**get_key_value(char *arg)
 {
 	char	**key_value;
 	char	**temp;

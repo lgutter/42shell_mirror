@@ -13,8 +13,11 @@
 #include <criterion/criterion.h>
 #include <criterion/assert.h>
 #include <criterion/redirect.h>
-#include "handle_input.h"
+#include "processing.h"
 #include "error_str.h"
+#include "executor.h"
+#include "parser.h"
+#include "parser_structs.h"
 
 static void redirect_std_err()
 {
@@ -485,39 +488,6 @@ Test(word_processing_unit, valid_argument_redir_expansion_with_quotes)
 // 	cr_expect_str_eq(command->pipe_sequence->simple_command->redirects->io_here->here_doc, expected_here_doc);
 // 	cr_expect_eq(command->pipe_sequence->simple_command->redirects->io_file, NULL);
 // }
-
-Test(word_processing_unit, invalid_NULL_shell_unterminated_quote)
-{
-	t_token 		*token3 = init_token(WORD, "$foo", NULL);
-	t_token 		*token2 = init_token(DGREAT, ">>", token3);
-	t_token 		*token1 = init_token(WORD, "\"$foo", token2);
-	t_token 		*token_start = token1;
-	t_complete_cmd	*command;
-	int				ret;
-	int				expected_ret = -1;
-	char			*expected_str = "";
-	char			*expected_str2 = "\"$foo";
-
-	token_start = token1;
-	command = parse_complete_command(&token1);
-	token1 = token_start;
-	ret = word_processing(NULL, command);
-	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
-	cr_assert_neq(command, NULL);
-	cr_expect_eq(NULL, command->next);
-	cr_assert_neq(command->pipe_sequence, NULL);
-	cr_expect_eq(NULL, command->pipe_sequence->next);
-	cr_assert_neq(command->pipe_sequence->simple_command, NULL);
-	cr_assert_neq(command->pipe_sequence->simple_command->arguments, NULL);
-	cr_assert_neq(command->pipe_sequence->simple_command->arguments->argument, NULL);
-	cr_expect_str_eq(command->pipe_sequence->simple_command->arguments->argument, expected_str2);
-	cr_expect_eq(NULL, command->pipe_sequence->simple_command->arguments->next);
-	cr_assert_neq(command->pipe_sequence->simple_command->redirects, NULL);
-	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_file, NULL);
-	cr_assert_neq(command->pipe_sequence->simple_command->redirects->io_file->filename, NULL);
-	cr_expect_str_eq(command->pipe_sequence->simple_command->redirects->io_file->filename, expected_str);
-	cr_expect_eq(command->pipe_sequence->simple_command->redirects->io_here, NULL);
-}
 
 Test(word_processing_unit, valid_NULL_env_expansions)
 {

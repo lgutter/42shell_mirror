@@ -56,7 +56,6 @@ src_files = files([
   'src/utilities/utils.c',
   'src/utilities/str_utils.c',
   'src/utilities/quote_utils_1.c',
-  'src/utilities/quote_utils_2.c',
   'src/utilities/executor_utils.c',
   'src/utilities/process_word.c',
   'src/utilities/process_redirects.c',

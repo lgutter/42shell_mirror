@@ -12,6 +12,7 @@
 
 #include "executor.h"
 #include "signal_handler.h"
+#include "processing.h"
 
 int		exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd)
 {

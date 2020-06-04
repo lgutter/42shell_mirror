@@ -179,7 +179,6 @@ Test(builtin_cd_unit, invalid_cd_no_oldpwd, .init = redirect_std_err)
 
 
 	ret = ft_unsetenv(env, "OLDPWD", VAR_TYPE);
-	cr_assert_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	comm.argc = 2;
 	comm.argv = (char **)malloc(sizeof(char *) * 2);
 	comm.argv[0] = "cd";

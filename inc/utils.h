@@ -13,9 +13,6 @@
 #ifndef UTILS_H
 # define UTILS_H
 
-# define ALL_QUOTES_TABLE 0
-# define HEREDOCS_TABLE 1
-
 # include "cetushell.h"
 # include "parser_structs.h"
 

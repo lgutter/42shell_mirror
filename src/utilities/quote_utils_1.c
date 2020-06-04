@@ -44,60 +44,6 @@ int			check_quote(char *word)
 	}
 }
 
-static void	str_cpy_no_quotes(char *dst, const char *src, int table_type)
-{
-	size_t		i;
-	size_t		j;
-	t_q_rules	rules;
-	t_q_state	state;
-
-	i = 0;
-	j = 0;
-	state = no_quote;
-	while (1)
-	{
-		rules = g_quote_trans[table_type][state].rules[(size_t)src[i]];
-		if (rules.next_state == q_invalid)
-			rules = g_quote_trans[table_type][state].catch_state;
-		if (rules.add_char == Q_REMOVE_BS || rules.add_char == Q_REMOVE_SKIP)
-			j--;
-		if (rules.add_char == Q_ADD_CHAR || rules.add_char == Q_REMOVE_BS)
-		{
-			dst[j] = src[i];
-			j++;
-		}
-		if (rules.next_state == q_eof)
-			return ;
-		state = rules.next_state;
-		i++;
-	}
-}
-
-int			remove_quotes(char **word, int table_type)
-{
-	char	*temp;
-	int		quotes;
-	size_t	len;
-
-	if (word == NULL || *word == NULL)
-		return (-1);
-	quotes = check_quote(*word);
-	if (quotes < 0)
-		return (-1);
-	else if (quotes == 0 && ft_strchr(*word, '\\') == NULL)
-		return (0);
-	quotes = count_quote_chars(*word, table_type);
-	len = ft_strlen(*word);
-	len -= (quotes);
-	temp = (char *)ft_memalloc(sizeof(char) * (len + 1));
-	if (temp == NULL)
-		return (-1);
-	str_cpy_no_quotes(temp, *word, table_type);
-	free(*word);
-	*word = temp;
-	return (0);
-}
-
 static int	get_quote_input(t_shell *shell, char **word, char **temp)
 {
 	char	*buff;

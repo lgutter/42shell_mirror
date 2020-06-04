@@ -398,7 +398,7 @@ static const t_trans g_token_trans[] = {
 	[dq_backslash] =
 	{
 		.rules = {
-			['\0']		= {eof, WORD, SKIP_CHAR},
+			['\0']		= {unt_dquote, undetermined, ADD_CHAR_POST},
 		},
 		.catch_state	= {dquote, undetermined, ADD_CHAR_POST}
 	}

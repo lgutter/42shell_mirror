@@ -12,7 +12,7 @@
 
 #ifndef QUOTE_TRANS_TABLE_H
 # define QUOTE_TRANS_TABLE_H
-# include "utils.h"
+# include "processing.h"
 
 /*
 **	enumerations used to specify what do to with the current character.
@@ -25,6 +25,7 @@ typedef enum		e_q_action
 	Q_ADD_CHAR,
 	Q_REMOVE_BS,
 	Q_REMOVE_SKIP,
+	Q_EXPAND_VAR,
 }					t_q_action;
 
 /*
@@ -90,7 +91,57 @@ static const t_q_trans g_quote_trans[][q_state_count] = {
 				['\0']		= {q_eof, Q_ADD_CHAR},
 				['\'']		= {q_squote, Q_SKIP_CHAR},
 				['"']		= {q_dquote, Q_SKIP_CHAR},
-				['\\']		= {q_backslash, Q_SKIP_CHAR}
+				['\\']		= {q_backslash, Q_ADD_CHAR},
+				['$']		= {no_quote, Q_EXPAND_VAR}
+			},
+			.catch_state	= {no_quote, Q_ADD_CHAR}
+		},
+		[q_squote] =
+		{
+			.rules = {
+				['\0']		= {q_eof, Q_ADD_CHAR},
+				['\'']		= {no_quote, Q_SKIP_CHAR}
+			},
+			.catch_state	= {q_squote, Q_ADD_CHAR}
+		},
+		[q_dquote] =
+		{
+			.rules = {
+				['\0']		= {q_eof, Q_ADD_CHAR},
+				['"']		= {no_quote, Q_SKIP_CHAR},
+				['\\']		= {q_dq_backslash, Q_ADD_CHAR},
+				['$']		= {q_dquote, Q_EXPAND_VAR}
+			},
+			.catch_state	= {q_dquote, Q_ADD_CHAR}
+		},
+		[q_backslash] =
+		{
+			.rules = {
+				['\0']		= {q_eof, Q_REMOVE_BS},
+				['\n']		= {no_quote, Q_REMOVE_SKIP},
+			},
+			.catch_state	= {no_quote, Q_REMOVE_BS}
+		},
+		[q_dq_backslash] =
+		{
+			.rules = {
+				['\0']		= {q_eof, Q_ADD_CHAR},
+				['\\']		= {q_dquote, Q_REMOVE_BS},
+				['\"']		= {q_dquote, Q_REMOVE_BS},
+				['$']		= {q_dquote, Q_REMOVE_BS},
+				['\n']		= {q_dquote, Q_REMOVE_SKIP},
+			},
+			.catch_state	= {q_dquote, Q_ADD_CHAR}
+		}
+	},
+	[HERE_END_TABLE] = {
+		[no_quote] =
+		{
+			.rules = {
+				['\0']		= {q_eof, Q_ADD_CHAR},
+				['\'']		= {q_squote, Q_SKIP_CHAR},
+				['"']		= {q_dquote, Q_SKIP_CHAR},
+				['\\']		= {q_backslash, Q_ADD_CHAR}
 			},
 			.catch_state	= {no_quote, Q_ADD_CHAR}
 		},
@@ -114,9 +165,10 @@ static const t_q_trans g_quote_trans[][q_state_count] = {
 		[q_backslash] =
 		{
 			.rules = {
-				['\0']		= {q_eof, Q_ADD_CHAR},
+				['\0']		= {q_eof, Q_REMOVE_BS},
+				['\n']		= {no_quote, Q_REMOVE_SKIP},
 			},
-			.catch_state	= {no_quote, Q_ADD_CHAR}
+			.catch_state	= {no_quote, Q_REMOVE_BS}
 		},
 		[q_dq_backslash] =
 		{
@@ -135,7 +187,8 @@ static const t_q_trans g_quote_trans[][q_state_count] = {
 		{
 			.rules = {
 				['\0']		= {q_eof, Q_ADD_CHAR},
-				['\\']		= {q_backslash, Q_ADD_CHAR}
+				['\\']		= {q_backslash, Q_ADD_CHAR},
+				['$']		= {no_quote, Q_EXPAND_VAR}
 			},
 			.catch_state	= {no_quote, Q_ADD_CHAR}
 		},

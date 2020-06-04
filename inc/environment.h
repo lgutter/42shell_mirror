@@ -19,7 +19,6 @@
 # define RO_VAR		4
 # define MASK_VAR	7
 # define FORCE_VAR	8
-# define QUOTE_VAR	16
 
 # include "handle_error.h"
 # include "utils.h"
@@ -55,7 +54,6 @@ t_env				*dup_sys_env(void);
 **	opts contains options to specify ft_getenv's behaviour. Applicable options:
 **	ENV_VAR, SHELL_VAR or VAR_TYPE: ft_getenv will return the first variable
 **									that matches this type.
-**	QUOTE_VAR:	ft_getenv will place backslashes before quote characters.
 */
 char				*ft_getenv(t_env *env, const char *key, int opts);
 
@@ -99,22 +97,6 @@ int					ft_unsetenv(t_env *env, const char *key, int type);
 **	(on failure, error will be printed)
 */
 char				**convert_env_to_envp(t_env *list_start);
-
-/*
-**	Takes a pointer to a string and the env list,
-**	and expands the string correctly if it starts with ~ or $.
-**	on succes, frees the old string and replaces it with the new one.
-**	on failure, nothing is changed.
-**	Returns:
-**	- 0 on succes.
-**	- errid error code on failure.
-**	opts contains options to specify expand_variable's behaviour.
-**	Applicable options:
-**	ENV_VAR, SHELL_VAR or VAR_TYPE: only variables that match this type will be
-**									expanded. VAR_TYPE means any type.
-**	QUOTE_VAR:	expand_variable will place backslashes before quote characters.
-*/
-int					expand_variable(t_shell *shell, char **string, int opts);
 
 /*
 **	Takes a pointer to an environment list, and frees everything in it.
