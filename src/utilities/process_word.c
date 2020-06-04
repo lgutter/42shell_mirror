@@ -22,7 +22,7 @@ static size_t	process_init(t_shell *shell, char **word, t_q_table table)
 	read = 0;
 	write = 0;
 	if (word == NULL || *word == NULL)
-		return (SIZE_MAX);
+		return (__SIZE_MAX__);
 	if (shell == NULL)
 		env = NULL;
 	else
@@ -35,7 +35,7 @@ static size_t	process_init(t_shell *shell, char **word, t_q_table table)
 static int		init_vars(size_t *read, size_t *write,
 											t_q_state *state, size_t init)
 {
-	if (init == SIZE_MAX)
+	if (init == __SIZE_MAX__)
 		return (-1);
 	*read = init;
 	*write = init;

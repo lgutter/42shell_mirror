@@ -14,7 +14,7 @@
 #include <criterion/redirect.h>
 #include <criterion/assert.h>
 #include <string.h>
-#include "environment.h"
+#include "processing.h"
 
 Test(unit_ft_expand_home, basic_mandatory_expand_tilde)
 {
