@@ -28,6 +28,8 @@ static int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
 		ret = read(STDIN_FILENO, seq, ESC_SEQ_SIZE);
 		if (ret == -1)
 			return (2);
+		if (seq[0] == 'O')
+			seq[0] = '[';
 		handle_cntrl_arrows(buffer, cursor, seq);
 		shift_right_key(buffer, cursor, seq);
 		shift_left_key(buffer, cursor, seq);
