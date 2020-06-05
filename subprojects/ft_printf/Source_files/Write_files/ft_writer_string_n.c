@@ -24,7 +24,7 @@ void	ft_writer_string_n(void *target, unsigned long long *totallen,\
 	{
 		len = ft_strlen(string);
 	}
-	while (*(info->index) < info->len && string[i] != '\0' && i < len)
+	while (*(info->index) < info->len && i < len && string[i] != '\0')
 	{
 		(info->target)[*(info->index)] = string[i];
 		*(info->index) += 1;
