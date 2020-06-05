@@ -41,6 +41,7 @@
 # define CURSOR_LEFT	-1
 # define CURSOR_DOWN	-2
 # define RM_NEWLINE		4
+# define RM_LEFT		5
 # define ESCAPE_KEY 	033
 
 /*

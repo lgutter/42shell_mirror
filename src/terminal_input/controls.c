@@ -60,7 +60,7 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
 			else
 			{
 				cursor->current.x--;
-				cursor->direction = CURSOR_LEFT;
+				cursor->direction = RM_LEFT;
 			}
 			remove_char(buffer);
 		}
