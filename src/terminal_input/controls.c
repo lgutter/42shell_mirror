@@ -14,7 +14,7 @@
 #include "prompt.h"
 #include "input_handling.h"
 
-int			return_key(t_buff *buffer, t_cursor *cursor, char c)
+int			return_key(t_buff *buffer, char c)
 {
 	if (c == RETURN_KEY)
 	{
