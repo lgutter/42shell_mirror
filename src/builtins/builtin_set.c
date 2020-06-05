@@ -139,5 +139,5 @@ int				builtin_set(t_command *comm, t_env *env)
 			ret = 1;
 		i++;
 	}
-	return (ret);
+	return (ret == 0 ? 0 : 1);
 }

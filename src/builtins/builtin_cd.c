@@ -54,6 +54,7 @@ int			builtin_cd(t_command *command, t_env *env)
 	int		ret;
 
 	ret = 0;
+	temp = NULL;
 	if (command == NULL || command->argv == NULL)
 		return (-1);
 	key = (command->argc == 1) ? "HOME" : "OLDPWD";
@@ -69,9 +70,8 @@ int			builtin_cd(t_command *command, t_env *env)
 		temp = ft_strdup(command->argv[1]);
 	if (ret == 0 && temp == NULL)
 		ret = handle_error(malloc_error);
-	if (ret > 0)
-		return (1);
-	ret = cd(env, temp, command->argv[1]);
+	if (ret == 0)
+		ret = cd(env, temp, command->argv[1]);
 	free(temp);
-	return (ret);
+	return (ret == 0 ? 0 : 1);
 }
