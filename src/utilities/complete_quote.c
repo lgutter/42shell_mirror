@@ -52,7 +52,7 @@ static int	check_quote(char *word)
 	}
 }
 
-static int	get_quote_input(t_shell *shell, char **word, char **temp)
+static int	get_quote_input(t_shell *shell, char **temp)
 {
 	char				*buff;
 	static const char	*prompts[] = {
@@ -91,7 +91,7 @@ int			complete_quote(t_shell *shell, char **word)
 	temp = ft_strdup(*word);
 	if (temp == NULL)
 		return (malloc_error);
-	ret = get_quote_input(shell, word, &temp);
+	ret = get_quote_input(shell, &temp);
 	free(*word);
 	*word = temp;
 	return (ret);

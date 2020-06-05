@@ -138,11 +138,10 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c);
 ** of the terminal process. The function itself will return an int.
 **
 ** arg: *buffer: pointer to struct t_buff defined in cetushell.h
-** arg: *cursor: pointer to struct t_cursor defined in cetushell.h
 ** arg: c: character input from user which must be RETURN_KEY (\012)
 ** return: int: this int must signal the terminal to process the buffer.
 */
-int			return_key(t_buff *buffer, t_cursor *cursor, char c);
+int			return_key(t_buff *buffer, char c);
 
 /*
 ** the return_key requires as input a pointer to a t_buff and t_cursor struct
