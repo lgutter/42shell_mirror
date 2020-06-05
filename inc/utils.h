@@ -56,55 +56,12 @@ char		*ft_strcdup(const char *string, char delim);
 size_t		ft_strlenc(const char *string, int delim, size_t size);
 
 /*
-**	checks if the given string contains invalid single or double quoted strings.
-**	check_quote assumes the word is a result of the tokenizer, and only contains
-**	one single or double quote. otherwise it will return the type of the last
-**	quote in the word.
-**	returns:
-**	-2:	if the string contains an unterminated double quote.
-**	-1:	if the string contains an unterminated single quote.
-**	 0:	if the string does not contain quotes.
-**	 1:	if the string contains an valid single quote.
-**	 2:	if the string contains an valid double quote.
-*/
-int			check_quote(char *word);
-
-/*
-**	removes the quote symbols from the beginning and end of quotes in word.
-**	it only removes quote symbols if the string only contains valid quotes.
-**	the argument table_type specifies which transition table is used, either
-**	ALL_QUOTES_TABLE, or HEREDOCS_TABLE.
-**	returns:
-**	-1:	on failure.
-**	 0:	on succes.
-*/
-int			remove_quotes(char **word, int table_type);
-
-/*
 **	completes an unterminated quote in word with character delim.
 **	returns:
 **	-1: on failure.
 **	 0:	on succes.
 */
 int			complete_quote(t_shell *shell, char **word);
-
-/*
-**	counts the number of quote symbols (["], ['], [\]) in str.
-**	returns:
-**	number of quote characters in the string passed as argument.
-*/
-int			count_quote_chars(char *str, int table_type);
-
-/*
-**	makes a copy of str with a backslash ([\]) in front of every
-**	quote character (["], ['], [\]) in the string, and returns it.
-**	the argument table_type specifies which transition table is used, either
-**	ALL_QUOTES_TABLE, or HEREDOCS_TABLE.
-**	returns:
-**	NULL: on error.
-**	copy of str with quote characters escaped on succes.
-*/
-char		*backslash_quotes(char *str);
 
 /*
 **	asks the user for more input for the heredoc.

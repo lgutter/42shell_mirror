@@ -38,7 +38,7 @@ typedef enum	e_q_table
 int				process_word(t_shell *shell, char **word, t_q_table table_type);
 
 /*
-**	performs environment expansions and quote completion + removal on all
+**	performs environment expansions and quote removal on all
 **	relevant elements in the redirections.
 **	arguments:
 **	shell:		a pointer to the shell struct.

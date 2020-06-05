@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include "environment.h"
 #include "history.h"
+#include "prompt.h"
 
 Test(unit_ft_dup_sys_env, mandatory_basic_convert_sys_environ)
 {
@@ -75,6 +76,13 @@ Test(unit_ft_dup_sys_env, mandatory_basic_init_empty_environ)
 	current = current->next;
 	cr_assert_not_null(current->key);
 	cr_assert_not_null(current->value);
+	cr_expect_str_eq(current->key, "PS1");
+	cr_expect_str_eq(current->value, PROMPT_NORMAL);
+	cr_expect_eq(current->type, SHELL_VAR | RO_VAR);
+	cr_assert_not_null(current->next);
+	current = current->next;
+	cr_assert_not_null(current->key);
+	cr_assert_not_null(current->value);
 	cr_expect_str_eq(current->key, "TERM");
 	cr_expect_str_eq(current->value, "vt100");
 	cr_expect_eq(current->type, ENV_VAR);
@@ -130,9 +138,71 @@ Test(unit_ft_dup_sys_env, mandatory_basic_init_empty_environ_but_with_histsize)
 	current = current->next;
 	cr_assert_not_null(current->key);
 	cr_assert_not_null(current->value);
+	cr_expect_str_eq(current->key, "PS1");
+	cr_expect_str_eq(current->value, PROMPT_NORMAL);
+	cr_expect_eq(current->type, SHELL_VAR | RO_VAR);
+	cr_assert_not_null(current->next);
+	current = current->next;
+	cr_assert_not_null(current->key);
+	cr_assert_not_null(current->value);
 	cr_expect_str_eq(current->key, "TERM");
 	cr_expect_str_eq(current->value, "vt100");
 	cr_expect_eq(current->type, ENV_VAR);
+	cr_expect_null(current->next);
+}
+
+Test(unit_ft_dup_sys_env, mandatory_basic_init_empty_environ_but_with_term)
+{
+	t_env	*start_env;
+	t_env	*current;
+	extern char **environ;
+
+	environ[1] = NULL;
+	environ[0] = "TERM=xterm-256color";
+	start_env = dup_sys_env();
+	current = start_env;
+	cr_assert_neq(NULL, current);
+	cr_assert_not_null(current->key);
+	cr_assert_not_null(current->value);
+	cr_expect_str_eq(current->key, "TERM");
+	cr_expect_str_eq(current->value, "xterm-256color");
+	cr_expect_eq(current->type, ENV_VAR);
+	cr_assert_not_null(current->next);
+	current = current->next;
+	cr_assert_not_null(current->key);
+	cr_assert_not_null(current->value);
+	cr_expect_str_eq(current->key, "SHLVL");
+	cr_expect_str_eq(current->value, "1");
+	cr_expect_eq(current->type, ENV_VAR);
+	cr_assert_not_null(current->next);
+	current = current->next;
+	cr_assert_not_null(current->key);
+	cr_assert_not_null(current->value);
+	cr_expect_str_eq(current->key, "PATH");
+	cr_expect_str_eq(current->value, "/bin:/usr/bin:/usr/local/bin:");
+	cr_expect_eq(current->type, ENV_VAR);
+	cr_assert_not_null(current->next);
+	current = current->next;
+	cr_assert_neq(NULL, current);
+	cr_assert_not_null(current->key);
+	cr_assert_not_null(current->value);
+	cr_expect_str_eq(current->key, "PWD");
+	cr_expect_str_eq(current->value, getcwd(NULL, 0));
+	cr_expect_eq(current->type, ENV_VAR);
+	cr_assert_not_null(current->next);
+	current = current->next;
+	cr_assert_not_null(current->key);
+	cr_assert_not_null(current->value);
+	cr_expect_str_eq(current->key, "HISTSIZE");
+	cr_expect_str_eq(current->value, ft_itoa(HISTSIZE));
+	cr_expect_eq(current->type, SHELL_VAR | RO_VAR);
+	cr_assert_not_null(current->next);
+	current = current->next;
+	cr_assert_not_null(current->key);
+	cr_assert_not_null(current->value);
+	cr_expect_str_eq(current->key, "PS1");
+	cr_expect_str_eq(current->value, PROMPT_NORMAL_COLOUR);
+	cr_expect_eq(current->type, SHELL_VAR | RO_VAR);
 	cr_expect_null(current->next);
 }
 

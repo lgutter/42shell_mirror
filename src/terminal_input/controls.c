@@ -71,6 +71,7 @@ int			ctrl_d_key(char c, t_buff *buffer)
 {
 	if (c == CNTRL_D && buffer->buff_len == 0 &&
 		(ft_strcmp(buffer->prompt, PROMPT_NORMAL) == 0 ||
+		ft_strcmp(buffer->prompt, PROMPT_NORMAL_COLOUR) == 0 ||
 		ft_strcmp(buffer->prompt, PROMPT_HEREDOC) == 0))
 	{
 		send_terminal(TERM_DOWN);
