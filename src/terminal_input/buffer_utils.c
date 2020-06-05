@@ -46,7 +46,7 @@ void		remove_buff(t_buff *buffer, t_cursor *cursor)
 	if (buffer != NULL && buffer->buff != NULL)
 	{
 		ft_memset(buffer->buff, '\0', buffer->buff_len);
-		cursor->current.x = cursor->start.x;
+		cursor->current.x = buffer->prompt_len + 1;
 		cursor->current.y = cursor->start.y;
 		buffer->index = 0;
 		buffer->buff_len = 0;
