@@ -37,7 +37,7 @@ void		configure_terminal(t_shell *shell, int activator)
 			return ;
 		temp = ft_getenv(shell->env, "TERM", ENV_VAR);
 		if (temp == NULL)
-			temp = "xterm-256color";
+			temp = "vt100";
 		tgetent(NULL, temp);
 		free(temp);
 		if (activator == 1)

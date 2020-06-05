@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   quote_utils_1.c                                    :+:    :+:            */
+/*   complete_quote.c                                   :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
@@ -12,33 +12,41 @@
 
 #include "utils.h"
 #include "prompt.h"
-#include "quote_trans_table.h"
+#include "token_trans_table.h"
 #include "signal_handler.h"
 
-int			check_quote(char *word)
+/*
+**	checks if the given string contains invalid single or double quotes,
+**	or if it end with a backslash (unterminated backslash).
+**	returns:
+**	3:	if the string contains an unterminated backslash.
+**	2:	if the string contains an unterminated double quote.
+**	1:	if the string contains an unterminated single quote.
+**	0:	if the string does not contain invalid quotes.
+**	-1:	on error.
+*/
+
+static int	check_quote(char *word)
 {
-	int			quote;
-	t_q_rules	rules;
-	t_q_state	state;
+	t_rules		rules;
+	t_state		state;
 
 	if (word == NULL)
 		return (-1);
-	state = no_quote;
-	quote = 0;
+	state = blank;
 	while (1)
 	{
-		rules = g_quote_trans[ALL_QUOTES_TABLE][state].rules[(size_t)*word];
-		if (rules.next_state == q_invalid)
-			rules = g_quote_trans[ALL_QUOTES_TABLE][state].catch_state;
-		if (state == q_dquote && rules.next_state == no_quote)
-			quote = 2;
-		if (state == q_squote && rules.next_state == no_quote)
-			quote = 1;
-		if (rules.next_state == q_eof &&
-			(state == q_squote || state == q_dquote || state == q_dq_backslash))
-			return (state == q_squote ? -1 : -2);
-		else if (rules.next_state == q_eof)
-			return (quote);
+		rules = g_token_trans[state].rules[(size_t)*word];
+		if (rules.next_state == invalid)
+			rules = g_token_trans[state].catch_state;
+		if (rules.next_state == unt_squote)
+			return (1);
+		if (rules.next_state == unt_dquote)
+			return (2);
+		if (rules.next_state == unt_backslash)
+			return (3);
+		else if (rules.next_state == eof)
+			return (0);
 		state = rules.next_state;
 		word++;
 	}
@@ -46,15 +54,18 @@ int			check_quote(char *word)
 
 static int	get_quote_input(t_shell *shell, char **word, char **temp)
 {
-	char	*buff;
-	int		quotes;
+	char				*buff;
+	static const char	*prompts[] = {
+							"", PROMPT_QUOTE, PROMPT_DQUOTE, PROMPT_BACKSLASH};
+	int					quotes;
 
 	buff = NULL;
 	quotes = check_quote(*temp);
-	while (quotes < 0)
+	while (quotes > 0)
 	{
-		ft_strexpand(temp, "\n");
-		buff = prompt_shell(shell, quotes == -2 ? PROMPT_DQUOTE : PROMPT_QUOTE);
+		if (quotes < 3)
+			ft_strexpand(temp, "\n");
+		buff = prompt_shell(shell, prompts[quotes]);
 		ft_strexpand(temp, buff);
 		free(buff);
 		if (*temp == NULL)

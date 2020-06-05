@@ -12,6 +12,7 @@
 
 #include "environment.h"
 #include "history.h"
+#include "prompt.h"
 
 static void		init_histsize_term(t_env *env)
 {
@@ -22,8 +23,7 @@ static void		init_histsize_term(t_env *env)
 	temp = ft_getenv(env, "HISTSIZE", ENV_VAR);
 	if (temp != NULL)
 		histsize = ft_atoi(temp);
-	if (histsize < 0)
-		histsize = 1;
+	histsize = histsize < 0 ? 1 : histsize;
 	free(temp);
 	temp = ft_itoa(histsize);
 	if (temp == NULL)
@@ -33,9 +33,13 @@ static void		init_histsize_term(t_env *env)
 		ft_setenv(env, "HISTSIZE", temp, SHELL_VAR | RO_VAR);
 		free(temp);
 	}
+	ft_setenv(env, "PS1", PROMPT_NORMAL, SHELL_VAR | RO_VAR);
 	temp = ft_getenv(env, "TERM", ENV_VAR);
 	if (temp == NULL)
 		ft_setenv(env, "TERM", "vt100", ENV_VAR);
+	else if (ft_strcmp(temp, "xterm-256color") == 0)
+		ft_setenv(env, "PS1", PROMPT_NORMAL_COLOUR,
+												SHELL_VAR | RO_VAR | FORCE_VAR);
 	free(temp);
 }
 

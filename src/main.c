@@ -60,19 +60,18 @@ static int		exit_shell(t_shell *shell, int ret)
 	return (ret);
 }
 
-static int		cetushell(void)
+static int		cetushell(t_shell *shell)
 {
-	t_shell		*shell;
 	char		*input;
+	char		*prompt;
 	int			ret;
 
 	ret = 0;
-	shell = init_shell();
-	if (shell == NULL)
-		return (1);
 	while (ret != exit_shell_code)
 	{
-		input = prompt_shell(shell, PROMPT_NORMAL);
+		prompt = ft_getenv(shell->env, "PS1", SHELL_VAR);
+		input = prompt_shell(shell, prompt == NULL ? PROMPT_NORMAL : prompt);
+		free(prompt);
 		if (g_signal_handler == SIGINT_BUFF)
 		{
 			free(input);
@@ -91,11 +90,16 @@ static int		cetushell(void)
 
 int				main(int ac, char **av)
 {
+	t_shell		*shell;
+
 	if (ac != 1)
 		ft_dprintf(2, "Huh? why %s? No arguments needed!\n", av[1]);
 	else
 	{
-		return (cetushell());
+		shell = init_shell();
+		if (shell == NULL)
+			return (1);
+		return (cetushell(shell));
 	}
 	return (1);
 }

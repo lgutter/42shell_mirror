@@ -69,6 +69,7 @@ typedef enum		e_state
 	dquote,
 	unt_dquote,
 	backslash,
+	unt_backslash,
 	dq_backslash
 }					t_state;
 
@@ -388,10 +389,17 @@ static const t_trans g_token_trans[] = {
 		},
 		.catch_state	= {dquote, undetermined, ADD_CHAR_POST}
 	},
+	[unt_backslash] =
+	{
+		.rules = {
+			['\0']		= {backslash, undetermined, ADD_CHAR_POST}
+		},
+		.catch_state	= {backslash, undetermined, ADD_CHAR_POST}
+	},
 	[backslash] =
 	{
 		.rules = {
-			['\0']		= {eof, WORD, SKIP_CHAR},
+			['\0']		= {unt_backslash, undetermined, ADD_CHAR_POST},
 		},
 		.catch_state	= {state_word, undetermined, ADD_CHAR_POST}
 	},

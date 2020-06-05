@@ -96,6 +96,12 @@ static int		check_unquoted(t_shell *shell, t_rules *rules,
 			return (-1);
 		*rules = init_state(squote, (*input)[*i]);
 	}
+	else if (rules->next_state == unt_backslash)
+	{
+		if (complete_quote(shell, input) != 0)
+			return (-1);
+		*rules = init_state(backslash, (*input)[*i]);
+	}
 	return (0);
 }
 

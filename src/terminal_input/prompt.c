@@ -73,6 +73,8 @@ static int		init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
 		free(buffer->prompt);
 		buffer->prompt = ft_strndup(prompt, buffer->prompt_len);
 	}
+	if (strcmp(prompt, PROMPT_NORMAL_COLOUR) == 0)
+		buffer->prompt_len = 10;
 	buffer->buff = (char *)ft_memalloc(sizeof(char) * (INP_BUFF_SIZE + 1));
 	if (buffer->copy == NULL)
 		buffer->copy = (char *)ft_memalloc(sizeof(char) * (INP_BUFF_SIZE + 1));
