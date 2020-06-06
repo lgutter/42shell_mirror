@@ -12,7 +12,52 @@
 
 #include "executor.h"
 
-static int		set_left_fd(t_redir_info *redir_info, int *left_fd,
+static t_fd_list	*close_remove_fd(t_fd_list *cur, t_fd_list *prev)
+{
+	close(cur->og_fd);
+	if (prev == NULL)
+	{
+		cur->fd = cur->next->fd;
+		cur->og_fd = cur->next->og_fd;
+		cur->next = cur->next->next;
+		prev = cur->next;
+		prev->next = NULL;
+		free(prev);
+		return (cur);
+	}
+	else
+	{
+		prev->next = cur->next;
+		cur->next = NULL;
+		free(cur);
+		return (prev->next);
+	}
+}
+
+static void			handle_closing_fds(t_redir_info *redir_info)
+{
+	t_fd_list	*temp;
+	t_fd_list	*prev;
+
+	if (redir_info == NULL)
+		return ;
+	prev = NULL;
+	temp = redir_info->fd_list;
+	while (temp != NULL)
+	{
+		if (temp->fd == -2)
+		{
+			temp = close_remove_fd(temp, prev);
+		}
+		else
+		{
+			prev = temp;
+			temp = temp->next;
+		}
+	}
+}
+
+static int			set_left_fd(t_redir_info *redir_info, int *left_fd,
 							t_io_redirect *redirect)
 {
 	if (redirect->io_number != NULL && redirect->io_fd >= 0)
@@ -38,7 +83,7 @@ static int		set_left_fd(t_redir_info *redir_info, int *left_fd,
 	return (0);
 }
 
-static int		set_up_io_here(t_redir_info *redir_info, int left_fd,
+static int			set_up_io_here(t_redir_info *redir_info, int left_fd,
 								t_io_redirect *redirect)
 {
 	int		pipe_fds[2];
@@ -65,7 +110,7 @@ static int		set_up_io_here(t_redir_info *redir_info, int left_fd,
 	return (0);
 }
 
-t_redir_info	*set_up_redirections(t_io_redirect *redirect)
+t_redir_info		*set_up_redirections(t_io_redirect *redirect)
 {
 	t_redir_info	*redir_info;
 	int				left_fd;
@@ -90,34 +135,6 @@ t_redir_info	*set_up_redirections(t_io_redirect *redirect)
 	}
 	if (ret != 0)
 		reset_redirections(&redir_info);
+	handle_closing_fds(redir_info);
 	return (redir_info);
-}
-
-int				reset_redirections(t_redir_info **redir_info)
-{
-	t_fd_list	*current;
-	t_fd_list	*temp;
-
-	if (redir_info == NULL || (*redir_info) == NULL)
-		return (-1);
-	std_fd_restore((*redir_info)->std_fds);
-	current = (*redir_info)->fd_list;
-	while (current != NULL)
-	{
-		temp = current;
-		if (current->og_fd >= 0 && current->fd >= 0)
-			if (dup2(current->fd, current->og_fd) < 0)
-				d_handle_error_int((*redir_info)->std_fds[2],
-									restore_fd_fail, current->og_fd);
-		if (current->fd < 0 && current->og_fd >= 0)
-			close(current->og_fd);
-		close(current->fd);
-		current = current->next;
-		temp->next = NULL;
-		free(temp);
-	}
-	(*redir_info)->fd_list = NULL;
-	free(*redir_info);
-	*redir_info = NULL;
-	return (0);
 }

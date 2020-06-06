@@ -80,6 +80,7 @@ src_files = files([
   'src/executor/exec_pipe_sequence.c',
   'src/executor/exec_simple_command.c',
   'src/executor/set_up_redirections.c',
+  'src/executor/reset_redirections.c',
   'src/executor/set_up_io_file.c',
   'src/executor/add_fd_to_list.c',
   'temp/temp_print_token_parse.c',

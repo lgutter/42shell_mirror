@@ -236,6 +236,184 @@ Test(set_up_redirections_unit, valid_write_to_fd)
 	cr_expect_not_null(info->std_fds, "std_fds was not prepared!");
 }
 
+Test(set_up_redirections_unit, valid_write_to_fd_unclosed_stdout)
+{
+	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
+	char			*filename = NULL;
+	t_io_file		io_file;
+	t_io_file		io_file2;
+	int				left_fd = STDOUT_FILENO;
+	t_io_redirect	redirect;
+	t_io_redirect	redirect2;
+	t_redir_info	*info = NULL;
+	char			buff[1024];
+
+	redirect.io_fd = left_fd;
+	redirect.io_number = ft_itoa(left_fd);
+	redirect.io_file = &io_file;
+	redirect.io_here = NULL;
+	redirect.next = &redirect2;
+	redirect2.io_fd = left_fd;
+	redirect2.io_number = ft_itoa(left_fd);
+	redirect2.io_file = &io_file2;
+	redirect2.io_here = NULL;
+	redirect2.next = NULL;
+	io_file.redirect_op = redirect_fd_out;
+	io_file.filename = strdup("-");
+	memset(buff, 0, 1024);
+	cr_assert_eq(pipe(pipe_fds), 0, "pipe failed!");
+	filename = ft_itoa(pipe_fds[1]);
+	cr_assert_not_null(filename, "fd not correctly copied to filename!");
+	io_file2.redirect_op = redirect_fd_out;
+	io_file2.filename = filename;
+
+	info = set_up_redirections(&redirect);
+	cr_expect_eq(4, write(left_fd, "test", 4), "write went wrong!");
+	memset(buff, 0, 1024);
+	cr_expect_eq(4, read(pipe_fds[0], buff, 1024), "incorrect number of bytes read");
+	cr_expect_str_eq(buff, "test", "expected file content |test|, but got |%s|!", buff);
+	cr_assert_not_null(info, "unexpected NULL return!");
+	cr_expect_not_null(info->std_fds, "std_fds was not prepared!");
+	cr_assert_not_null(info->fd_list, "fd_list was not created!");
+	cr_expect_eq(info->fd_list->og_fd, STDOUT_FILENO);
+	cr_expect_gt(info->fd_list->fd, 0);
+	cr_assert_not_null(info->fd_list->next);
+	cr_expect_eq(info->fd_list->next->og_fd, STDOUT_FILENO);
+	cr_expect_gt(info->fd_list->next->fd, 0);
+	cr_expect_null(info->fd_list->next->next);
+}
+
+Test(set_up_redirections_unit, valid_write_to_fd_unclosed_stderr)
+{
+	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
+	char			*filename = NULL;
+	t_io_file		io_file;
+	t_io_file		io_file2;
+	int				left_fd = STDERR_FILENO;
+	t_io_redirect	redirect;
+	t_io_redirect	redirect2;
+	t_redir_info	*info = NULL;
+	char			buff[1024];
+
+	redirect.io_fd = left_fd;
+	redirect.io_number = ft_itoa(left_fd);
+	redirect.io_file = &io_file;
+	redirect.io_here = NULL;
+	redirect.next = &redirect2;
+	redirect2.io_fd = left_fd;
+	redirect2.io_number = ft_itoa(left_fd);
+	redirect2.io_file = &io_file2;
+	redirect2.io_here = NULL;
+	redirect2.next = NULL;
+	io_file.redirect_op = redirect_fd_out;
+	io_file.filename = strdup("-");
+	memset(buff, 0, 1024);
+	cr_assert_eq(pipe(pipe_fds), 0, "pipe failed!");
+	filename = ft_itoa(pipe_fds[1]);
+	cr_assert_not_null(filename, "fd not correctly copied to filename!");
+	io_file2.redirect_op = redirect_fd_out;
+	io_file2.filename = filename;
+
+	info = set_up_redirections(&redirect);
+	cr_expect_eq(4, write(left_fd, "test", 4), "write went wrong!");
+	memset(buff, 0, 1024);
+	cr_expect_eq(4, read(pipe_fds[0], buff, 1024), "incorrect number of bytes read");
+	cr_expect_str_eq(buff, "test", "expected file content |test|, but got |%s|!", buff);
+	cr_assert_not_null(info, "unexpected NULL return!");
+	cr_expect_not_null(info->std_fds, "std_fds was not prepared!");
+	cr_assert_not_null(info->fd_list, "fd_list was not created!");
+	cr_expect_eq(info->fd_list->og_fd, STDERR_FILENO);
+	cr_expect_gt(info->fd_list->fd, 0);
+	cr_assert_not_null(info->fd_list->next);
+	cr_expect_eq(info->fd_list->next->og_fd, STDERR_FILENO);
+	cr_expect_gt(info->fd_list->next->fd, 0);
+	cr_expect_null(info->fd_list->next->next);
+}
+
+Test(set_up_redirections_unit, valid_close_fd_stdin)
+{
+	char			*filename = NULL;
+	t_io_file		io_file;
+	int				left_fd = STDIN_FILENO;
+	t_io_redirect	redirect;
+	t_redir_info	*info = NULL;
+	char			buff[1024];
+
+	redirect.io_fd = left_fd;
+	redirect.io_number = ft_itoa(left_fd);
+	redirect.io_file = &io_file;
+	redirect.io_here = NULL;
+	redirect.next = NULL;
+	filename = ft_strdup("-");
+	io_file.redirect_op = redirect_fd_out;
+	io_file.filename = filename;
+
+	info = set_up_redirections(&redirect);
+	memset(buff, 0, 1024);
+	cr_expect_eq(-1, read(STDIN_FILENO, buff, 1024), "could read from STDIN, but should be closed!");
+	cr_assert_not_null(info, "unexpected NULL return!");
+	cr_expect_not_null(info->fd_list, "fd_list was not created!");
+	cr_expect_not_null(info->std_fds, "std_fds was not prepared!");
+	cr_expect_eq(info->fd_list->og_fd, STDIN_FILENO);
+	cr_expect_null(info->fd_list->next);
+}
+
+Test(set_up_redirections_unit, valid_close_fd_stdout)
+{
+	char			*filename = NULL;
+	t_io_file		io_file;
+	int				left_fd = STDOUT_FILENO;
+	t_io_redirect	redirect;
+	t_redir_info	*info = NULL;
+	char			buff[1024];
+
+	redirect.io_fd = left_fd;
+	redirect.io_number = ft_itoa(left_fd);
+	redirect.io_file = &io_file;
+	redirect.io_here = NULL;
+	redirect.next = NULL;
+	filename = ft_strdup("-");
+	io_file.redirect_op = redirect_fd_out;
+	io_file.filename = filename;
+
+	info = set_up_redirections(&redirect);
+	memset(buff, 0, 1024);
+	cr_expect_eq(-1, write(STDOUT_FILENO, "TEST", 4), "could write to STDOUT, but should be closed!");
+	cr_assert_not_null(info, "unexpected NULL return!");
+	cr_expect_not_null(info->fd_list, "fd_list was not created!");
+	cr_expect_not_null(info->std_fds, "std_fds was not prepared!");
+	cr_expect_eq(info->fd_list->og_fd, STDOUT_FILENO);
+	cr_expect_null(info->fd_list->next);
+}
+
+Test(set_up_redirections_unit, valid_close_fd_stderr)
+{
+	char			*filename = NULL;
+	t_io_file		io_file;
+	int				left_fd = STDERR_FILENO;
+	t_io_redirect	redirect;
+	t_redir_info	*info = NULL;
+	char			buff[1024];
+
+	redirect.io_fd = left_fd;
+	redirect.io_number = ft_itoa(left_fd);
+	redirect.io_file = &io_file;
+	redirect.io_here = NULL;
+	redirect.next = NULL;
+	filename = ft_strdup("-");
+	io_file.redirect_op = redirect_fd_out;
+	io_file.filename = filename;
+
+	info = set_up_redirections(&redirect);
+	memset(buff, 0, 1024);
+	cr_expect_eq(-1, write(STDERR_FILENO, "TEST", 4), "could write to STDERR, but should be closed!");
+	cr_assert_not_null(info, "unexpected NULL return!");
+	cr_expect_not_null(info->fd_list, "fd_list was not created!");
+	cr_expect_not_null(info->std_fds, "std_fds was not prepared!");
+	cr_expect_eq(info->fd_list->og_fd, STDERR_FILENO);
+	cr_expect_null(info->fd_list->next);
+}
+
 Test(set_up_redirections_unit, valid_read_from_fd)
 {
 	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
@@ -266,6 +444,53 @@ Test(set_up_redirections_unit, valid_read_from_fd)
 	cr_assert_not_null(info, "unexpected NULL return!");
 	cr_expect_not_null(info->fd_list, "fd_list was not created!");
 	cr_expect_not_null(info->std_fds, "std_fds was not prepared!");
+}
+
+Test(set_up_redirections_unit, valid_read_from_fd_unclosed_stdin)
+{
+	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
+	char			*filename = NULL;
+	t_io_file		io_file;
+	t_io_file		io_file2;
+	int				left_fd = STDIN_FILENO;
+	t_io_redirect	redirect;
+	t_io_redirect	redirect2;
+	t_redir_info	*info = NULL;
+	char			buff[1024];
+
+	redirect.io_fd = left_fd;
+	redirect.io_number = ft_itoa(left_fd);
+	redirect.io_file = &io_file;
+	redirect.io_here = NULL;
+	redirect.next = &redirect2;
+	redirect2.io_fd = left_fd;
+	redirect2.io_number = ft_itoa(left_fd);
+	redirect2.io_file = &io_file2;
+	redirect2.io_here = NULL;
+	redirect2.next = NULL;
+	io_file.redirect_op = redirect_fd_in;
+	io_file.filename = strdup("-");
+	memset(buff, 0, 1024);
+	cr_assert_eq(pipe(pipe_fds), 0, "pipe failed!");
+	filename = ft_itoa(pipe_fds[0]);
+	cr_assert_not_null(filename, "fd not correctly copied to filename!");
+	io_file2.redirect_op = redirect_fd_in;
+	io_file2.filename = filename;
+
+	info = set_up_redirections(&redirect);
+	cr_expect_eq(4, write(pipe_fds[1], "test", 4), "write went wrong!");
+	memset(buff, 0, 1024);
+	cr_expect_eq(4, read(left_fd, buff, 1024), "incorrect number of bytes read");
+	cr_expect_str_eq(buff, "test", "expected file content |test|, but got |%s|!", buff);
+	cr_assert_not_null(info, "unexpected NULL return!");
+	cr_expect_not_null(info->std_fds, "std_fds was not prepared!");
+	cr_assert_not_null(info->fd_list, "fd_list was not created!");
+	cr_expect_eq(info->fd_list->og_fd, STDIN_FILENO);
+	cr_expect_gt(info->fd_list->fd, 0);
+	cr_assert_not_null(info->fd_list->next);
+	cr_expect_eq(info->fd_list->next->og_fd, STDIN_FILENO);
+	cr_expect_gt(info->fd_list->next->fd, 0);
+	cr_expect_null(info->fd_list->next->next);
 }
 
 Test(set_up_redirections_unit, valid_read_from_fd_no_left_fd)

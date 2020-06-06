@@ -102,7 +102,7 @@ int				set_up_io_file(t_redir_info *redir_info, int left_fd,
 	if (redir_info == NULL || io_file == NULL || io_file->filename == NULL)
 		return (-1);
 	if (io_file->filename[0] == '-' && io_file->filename[1] == '\0')
-		return (close(left_fd));
+		return (add_fd_to_list(-2, left_fd, redir_info));
 	fd = set_file_fd(redir_info, io_file);
 	if (fd < 0)
 		return (-1);
