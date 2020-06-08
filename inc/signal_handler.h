@@ -14,13 +14,15 @@
 # define SIGNAL_HANDLER_H
 
 # include <signal.h>
+# include <stdlib.h>
+# include "ft_printf.h"
 
 # define SIGINT_BUFF 1
-# define SIGINT_EXEC 2
-# define SIG_WINDOW 3
+# define SIG_WINDOW 2
 
 unsigned long g_signal_handler;
 void	signal_handler_buff(int sig);
-void	signal_handler_exec(int sig);
+void	terminal_signal(int sig);
+void	catch_terminal_signal(void);
 
 #endif

@@ -53,6 +53,7 @@ static int	execute_command(t_env *env_list, t_command *command)
 	if (ret == 0)
 	{
 		configure_terminal(NULL, 0);
+		catch_terminal_signal();
 		pid = fork();
 		if (pid == 0)
 		{
