@@ -66,23 +66,20 @@ static int		init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
 	buffer->rv_end = 0;
 	buffer->state = 0;
 	buffer->prompt_len = ft_strlen(prompt) + 1;
-	if (buffer->prompt == NULL)
-		buffer->prompt = ft_strndup(prompt, buffer->prompt_len);
-	else if (prompt != NULL && ft_strcmp(prompt, buffer->prompt) != 0)
-	{
-		free(buffer->prompt);
-		buffer->prompt = ft_strndup(prompt, buffer->prompt_len);
-	}
-	if (strcmp(prompt, PROMPT_NORMAL_COLOUR) == 0)
-		buffer->prompt_len = 10;
+	buffer->prompt = ft_strndup(prompt, buffer->prompt_len);
+	if (prompt == NULL)
+		return (1);
+	if (ft_strcmp(prompt, PROMPT_NORMAL_COLOUR) == 0)
+		buffer->prompt_len = PROMPT_COLOUR_LEN;
 	buffer->buff = (char *)ft_memalloc(sizeof(char) * (INP_BUFF_SIZE + 1));
 	if (buffer->copy == NULL)
 		buffer->copy = (char *)ft_memalloc(sizeof(char) * (INP_BUFF_SIZE + 1));
 	ft_memset(cursor->cur_buff, '\0', CUR_BUFF_SIZE);
-	if (buffer->buff == NULL || buffer->copy == NULL || buffer->prompt == NULL)
+	if (buffer->buff == NULL || buffer->copy == NULL)
 		return (1);
 	buffer->buff_size = INP_BUFF_SIZE;
 	buffer->copy_size = INP_BUFF_SIZE;
+	get_winsize(cursor, buffer->prompt_len);
 	return (0);
 }
 
@@ -94,7 +91,6 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 	signal(SIGWINCH, signal_handler_buff);
 	if (shell != NULL && prompt != NULL && shell->buffer != NULL)
 	{
-		get_winsize(&shell->cursor, shell->buffer->prompt_len);
 		if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
 			return (NULL);
 		while (shell->buffer->state != RETURN_STATE)

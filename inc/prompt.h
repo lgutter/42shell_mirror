@@ -27,6 +27,7 @@
 */
 
 # define PROMPT_NORMAL_COLOUR "\033[38;5;75mCetush »\033[0;00m "
+# define PROMPT_COLOUR_LEN 10
 # define PROMPT_NORMAL "Cetush > "
 # define PROMPT_QUOTE "quote> "
 # define PROMPT_DQUOTE "dquote> "
