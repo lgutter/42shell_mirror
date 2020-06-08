@@ -43,8 +43,7 @@ void		configure_terminal(t_shell *shell, int activator)
 		if (activator == 1)
 			tcgetattr(STDIN_FILENO, &orig);
 		shell_temp = orig;
-		shell_temp.c_lflag &= ~(ECHO | ICANON | IEXTEN);
-		shell_temp.c_iflag &= ~(IXON);
+		shell_temp.c_lflag &= ~(ECHO | ICANON);
 		shell_temp.c_cc[VMIN] = 0;
 		shell_temp.c_cc[VTIME] = 1;
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell_temp);
