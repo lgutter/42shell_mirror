@@ -532,7 +532,7 @@ Test(word_processing_unit, invalid_NULL_command, .init = redirect_std_err)
 	ret = word_processing(NULL, NULL);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	fflush(stdout);
-	sprintf(buff, "%.999s: NULL complete command\n", g_error_str[parsing_error]);
+	sprintf(buff, "Cetushell: %.980s: NULL complete command\n", g_error_str[parsing_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -547,7 +547,7 @@ Test(word_processing_unit, invalid_NULL_simple_command, .init = redirect_std_err
 	ret = word_processing(NULL, &compl_cmd);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	fflush(stdout);
-	sprintf(buff, "%.1001s: NULL simple command\n", g_error_str[parsing_error]);
+	sprintf(buff, "Cetushell: %.985s: NULL simple command\n", g_error_str[parsing_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -561,7 +561,7 @@ Test(word_processing_unit, invalid_NULL_pipe_seq, .init = redirect_std_err)
 	ret = word_processing(NULL, &compl_cmd);
 	cr_expect_eq(ret, expected_ret, "expected return %i, got %i.", expected_ret, ret);
 	fflush(stdout);
-	sprintf(buff, "%.1000s: NULL pipe sequence\n", g_error_str[parsing_error]);
+	sprintf(buff, "Cetushell: %.985s: NULL pipe sequence\n", g_error_str[parsing_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -579,7 +579,7 @@ Test(word_processing_unit, invalid_empty_redirect, .init = redirect_std_err)
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
 	char buff[1024];
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[parsing_error], "empty redirect");
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[parsing_error], "empty redirect");
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -594,6 +594,6 @@ Test(word_processing_unit, invalid_incomplete_pipe, .init = redirect_std_err)
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
 	char buff[1024];
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[exp_ret], "incomplete pipe");
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[exp_ret], "incomplete pipe");
 	cr_expect_stderr_eq_str(buff);
 }

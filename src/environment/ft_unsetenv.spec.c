@@ -139,7 +139,7 @@ Test(unit_ft_unsetenv, mandatory_error_unset_NULL_list, .init = redirect_std_err
 	ret = ft_unsetenv(env, "FOO", ENV_VAR);
 	cr_assert_eq(ret, env_empty_error);
 	fflush(stderr);
-	cr_assert_stderr_eq_str("Environment is empty\n");
+	cr_assert_stderr_eq_str("Cetushell: Environment is empty\n");
 }
 
 Test(unit_ft_unsetenv, mandatory_error_unset_NULL_key, .init = redirect_std_err)

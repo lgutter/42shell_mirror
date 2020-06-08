@@ -301,7 +301,7 @@ Test(set_up_io_file_unit, invalid_no_read_perm, .init = redirect_std_err)
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[access_denied], filename);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[access_denied], filename);
 	cr_expect_stderr_eq_str(buff);
 	remove(filename);
 }
@@ -324,7 +324,7 @@ Test(set_up_io_file_unit, invalid_no_file, .init = redirect_std_err)
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[no_such_file_or_dir], filename);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[no_such_file_or_dir], filename);
 	cr_expect_stderr_eq_str(buff);
 	remove(filename);
 }
@@ -351,7 +351,7 @@ Test(set_up_io_file_unit, invalid_no_write_perm, .init = redirect_std_err)
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[access_denied], filename);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[access_denied], filename);
 	cr_expect_stderr_eq_str(buff);
 	remove(filename);
 }
@@ -453,7 +453,7 @@ Test(set_up_io_file_unit, invalid_dir_no_write_perm, .init = redirect_std_err)
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[access_denied], dirname);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[access_denied], dirname);
 	cr_expect_stderr_eq_str(buff);
 	remove(filename);
 	remove(dirname);
@@ -479,7 +479,7 @@ Test(set_up_io_file_unit, invalid_dir_does_not_exist, .init = redirect_std_err)
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[no_such_file_or_dir], dirname);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[no_such_file_or_dir], dirname);
 	cr_expect_stderr_eq_str(buff);
 	remove(filename);
 	remove(dirname);
@@ -504,7 +504,7 @@ Test(set_up_io_file_unit, invalid_target_is_dir_in_dir, .init = redirect_std_err
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[is_dir_error], filename);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[is_dir_error], filename);
 	cr_expect_stderr_eq_str(buff);
 	remove(filename);
 }
@@ -526,7 +526,7 @@ Test(set_up_io_file_unit, invalid_target_is_dir, .init = redirect_std_err)
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[is_dir_error], filename);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[is_dir_error], filename);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -554,7 +554,7 @@ Test(set_up_io_file_unit, invalid_dir_not_a_dir, .init = redirect_std_err)
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[not_a_dir_error], dirname);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[not_a_dir_error], dirname);
 	cr_expect_stderr_eq_str(buff);
 	remove(filename);
 	remove(dirname);

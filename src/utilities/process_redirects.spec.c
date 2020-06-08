@@ -106,7 +106,7 @@ Test(process_redirects_unit, invalid_std_err_to_fd_string, .init = redirect_std_
 	cr_expect_not_null(io_file.filename);
 	char buff[1024];
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[ambig_redirect], io_file.filename);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[ambig_redirect], io_file.filename);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -119,6 +119,6 @@ Test(process_redirects_unit, invalid_empty_redirect, .init = redirect_std_err)
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
 	char buff[1024];
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[exp_ret], "empty redirect");
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[exp_ret], "empty redirect");
 	cr_expect_stderr_eq_str(buff);
 }

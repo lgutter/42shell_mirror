@@ -76,7 +76,7 @@ Test(exec_simple_command_unit, invalid_is_dir, .init = redirect_std_err)
 	ret = exec_simple_command(&simple_cmd, dup_sys_env());
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[exp_ret], argv[0]);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[exp_ret], argv[0]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -93,7 +93,7 @@ Test(exec_simple_command_unit, invalid_does_not_exist, .init = redirect_std_err)
 	ret = exec_simple_command(&simple_cmd, dup_sys_env());
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[exp_ret], argv[0]);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[exp_ret], argv[0]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -113,7 +113,7 @@ Test(exec_simple_command_unit, invalid_no_exec_perm, .init = redirect_std_err)
 	ret = exec_simple_command(&simple_cmd, dup_sys_env());
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", g_error_str[exp_ret], argv[0]);
+	sprintf(buff, "Cetushell: %s: %s\n", g_error_str[exp_ret], argv[0]);
 	cr_expect_stderr_eq_str(buff);
 	remove(argv[0]);
 }
@@ -133,7 +133,7 @@ Test(exec_simple_command_unit, valid_NULL_env, .init = redirect_std_err_out)
 	fflush(stdout);
 	cr_expect_stdout_eq_str("foo\n");
 	fflush(stderr);
-	sprintf(buff, "%s\n", g_error_str[env_empty_error]);
+	sprintf(buff, "Cetushell: %s\n", g_error_str[env_empty_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 

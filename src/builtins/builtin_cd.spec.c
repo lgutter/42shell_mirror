@@ -146,7 +146,7 @@ Test(builtin_cd_unit, invalid_cd_no_home, .init = redirect_std_err)
 	ret = builtin_cd(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
-	sprintf(buff, "cd: HOME: %s\n", g_error_str[var_not_set]);
+	sprintf(buff, "Cetushell: cd: HOME: %s\n", g_error_str[var_not_set]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -166,7 +166,7 @@ Test(builtin_cd_unit, invalid_cd_no_such_file, .init = redirect_std_err)
 	ret = builtin_cd(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
-	sprintf(buff, "cd: foobar: %s\n", g_error_str[no_such_file_or_dir]);
+	sprintf(buff, "Cetushell: cd: foobar: %s\n", g_error_str[no_such_file_or_dir]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -186,7 +186,7 @@ Test(builtin_cd_unit, invalid_cd_no_oldpwd, .init = redirect_std_err)
 	ret = builtin_cd(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
-	sprintf(buff, "cd: OLDPWD: %s\n", g_error_str[var_not_set]);
+	sprintf(buff, "Cetushell: cd: OLDPWD: %s\n", g_error_str[var_not_set]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -202,7 +202,7 @@ Test(builtin_cd_unit, invalid_cd_many_args)
 	cr_redirect_stderr();
 	ret = builtin_cd(&comm, env);
 	fflush(stderr);
-	cr_expect_stderr_eq_str("cd: Too many arguments given\n");
+	cr_expect_stderr_eq_str("Cetushell: cd: Too many arguments given\n");
 	cr_expect_eq(1, ret);
 }
 

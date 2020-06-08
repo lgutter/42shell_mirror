@@ -38,8 +38,6 @@ static char		*read_history(t_history *hist)
 			return (NULL);
 		i = i + ret;
 	}
-	if (i == 0)
-		return (ft_strdup(""));
 	hist->file_size = i;
 	close(fd_hist);
 	return (temp);

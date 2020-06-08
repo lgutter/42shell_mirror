@@ -262,7 +262,7 @@ Test(initialize_hist, no_home_env, .init = cr_redirect_stderr)
 	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	fflush(stderr);
-	sprintf(buff, "%.1015s: HOME\n", g_error_str[env_not_found]);
+	sprintf(buff, "Cetushell: %.1000s: HOME\n", g_error_str[env_not_found]);
 	cr_expect_stderr_eq_str(buff);
 	cr_expect_null(hist->hist_list);
 	cr_expect_eq(env_not_found, ret);
@@ -292,7 +292,7 @@ Test(initialize_hist, check_format)
 	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	cr_assert_eq(ret, histfile_format_error);
-	cr_assert_stderr_eq_str("Histfile formatted incorrectly\n");
+	cr_assert_stderr_eq_str("Cetushell: Histfile formatted incorrectly\n");
 	close(fd);
 }
 
@@ -438,7 +438,7 @@ Test(initialize_hist, no_read_acc)
 	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	fflush(stderr);
-	sprintf(buff, "%s\n", g_error_str[no_read_permission_hist]);
+	sprintf(buff, "Cetushell: %s\n", g_error_str[no_read_permission_hist]);
 	cr_expect_stderr_eq_str(buff);
 	cr_expect_eq(ret, no_read_permission_hist, "expected ret %i, got %i!", no_read_permission_hist, ret);
 	remove(hist->hist_path);
@@ -466,7 +466,7 @@ Test(initialize_hist, no_write_acc)
 	shell.env = dup_sys_env();
 	ret = initialize_history(&shell);
 	fflush(stderr);
-	sprintf(buff, "%s\n", g_error_str[no_write_permission_hist]);
+	sprintf(buff, "Cetushell: %s\n", g_error_str[no_write_permission_hist]);
 	cr_expect_stderr_eq_str(buff);
 	cr_expect_eq(ret, no_write_permission_hist, "expected ret %i, got %i!", no_write_permission_hist, ret);
 }
@@ -908,7 +908,7 @@ Test(get_histfile_unit, invalid_no_HOME_var, .init = cr_redirect_stderr)
 	ret = get_histfile(&shell);
 	cr_expect_eq(ret, env_not_found);
 	fflush(stderr);
-	sprintf(buff, "%.1015s: HOME\n", g_error_str[env_not_found]);
+	sprintf(buff, "Cetushell: %.1000s: HOME\n", g_error_str[env_not_found]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -927,7 +927,7 @@ Test(get_histfile_unit, invalid_nonexistent_HOME, .init = cr_redirect_stderr)
 	ret = get_histfile(&shell);
 	cr_expect_eq(ret, no_such_file_or_dir);
 	fflush(stderr);
-	sprintf(buff, "%.515s: FOOBAR\n", g_error_str[no_such_file_or_dir]);
+	sprintf(buff, "Cetushell: %.500s: FOOBAR\n", g_error_str[no_such_file_or_dir]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -954,7 +954,7 @@ Test(get_histfile_unit, invalid_no_permission_HOME, .init = cr_redirect_stderr)
 	ret = get_histfile(&shell);
 	cr_expect_eq(ret, access_denied);
 	fflush(stderr);
-	sprintf(buff, "%.515s: %.505s\n", g_error_str[access_denied], home);
+	sprintf(buff, "Cetushell: %.500s: %.505s\n", g_error_str[access_denied], home);
 	cr_expect_stderr_eq_str(buff);
 }
 

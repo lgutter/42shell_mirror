@@ -92,14 +92,13 @@ int				main(int ac, char **av)
 {
 	t_shell		*shell;
 
-	if (ac != 1)
-		ft_dprintf(2, "Huh? why %s? No arguments needed!\n", av[1]);
+	shell = init_shell();
+	if (shell == NULL)
+	{
+		return (1);
+	}
 	else
 	{
-		shell = init_shell();
-		if (shell == NULL)
-			return (1);
 		return (cetushell(shell));
 	}
-	return (1);
 }
