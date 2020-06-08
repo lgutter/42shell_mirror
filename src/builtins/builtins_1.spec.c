@@ -89,7 +89,7 @@ Test(execute_builtin_echo_unit, valid_echo_no_arguments, .init = redirect_std_er
 	cr_expect_stdout_eq_str(buff);
 	memset(buff, '\0', 1024);
 	fflush(stderr);
-	sprintf(buff, "%.1022s\n", g_error_str[env_empty_error]);
+	sprintf(buff, "Cetushell: %.1000s\n", g_error_str[env_empty_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 

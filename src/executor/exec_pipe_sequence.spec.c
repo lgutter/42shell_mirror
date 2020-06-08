@@ -85,7 +85,7 @@ Test(exec_pipe_sequence_unit, invalid_pipe_sequence_2_commands_no_pipe_op, .init
 	fflush(stdout);
 	cr_expect_stdout_eq_str("foo\n");
 	fflush(stderr);
-	sprintf(buff, "%.978s: no pipe operator, but more pipe sequences\n", g_error_str[parsing_error]);
+	sprintf(buff, "Cetushell: %.960s: no pipe operator, but more pipe sequences\n", g_error_str[parsing_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -105,7 +105,7 @@ Test(exec_pipe_sequence_unit, foo_valid_NULL_env, .init = redirect_std_err_out)
 	fflush(stdout);
 	cr_expect_stdout_eq_str("foo\n");
 	fflush(stderr);
-	sprintf(buff, "%.1022s\n", g_error_str[env_empty_error]);
+	sprintf(buff, "Cetushell: %.1000s\n", g_error_str[env_empty_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 

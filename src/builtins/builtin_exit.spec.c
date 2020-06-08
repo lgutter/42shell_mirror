@@ -161,7 +161,7 @@ Test(unit_builtin_exit, undefined_error_nothing_defined, .init = redirect_std_er
 	temp = ft_getenv(env, "EXIT_CODE", SHELL_VAR);
 	cr_expect_null(temp);
 	fflush(stderr);
-	sprintf(buff, "%.1022s\n", g_error_str[env_empty_error]);
+	sprintf(buff, "Cetushell: %.1000s\n", g_error_str[env_empty_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 

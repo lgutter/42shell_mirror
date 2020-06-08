@@ -43,7 +43,7 @@ Test(builtin_set_env_unit, invalid_key_bad_format, .init = redirect_std_err)
 	ret = builtin_set(&comm, env);
 	cr_assert_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
-	sprintf(buff, "%s: 0test: %s\n", comm.argv[0], g_error_str[error_inv_format]);
+	sprintf(buff, "Cetushell: %s: 0test: %s\n", comm.argv[0], g_error_str[error_inv_format]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -62,7 +62,7 @@ Test(builtin_set_env_unit, invalid_too_many_equals_signs, .init = redirect_std_e
 	ret = builtin_set(&comm, env);
 	cr_assert_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
-	sprintf(buff, "%s: test=foo=bar: %s\n", comm.argv[0], g_error_str[error_inv_format]);
+	sprintf(buff, "Cetushell: %s: test=foo=bar: %s\n", comm.argv[0], g_error_str[error_inv_format]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -81,7 +81,7 @@ Test(builtin_set_env_unit, invalid_spaces_in_key, .init = redirect_std_err)
 	ret = builtin_set(&comm, env);
 	cr_assert_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
-	sprintf(buff, "%s: te st: %s\n", comm.argv[0], g_error_str[error_inv_format]);
+	sprintf(buff, "Cetushell: %s: te st: %s\n", comm.argv[0], g_error_str[error_inv_format]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -102,7 +102,7 @@ Test(builtin_set_env_unit, invalid_deny_read_only_overwrite, .init = redirect_st
 	ret = builtin_set(&comm, env);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
-	sprintf(buff, "%s: READONLY: %s\n", comm.argv[0], g_error_str[error_ronly]);
+	sprintf(buff, "Cetushell: %s: READONLY: %s\n", comm.argv[0], g_error_str[error_ronly]);
 	cr_expect_stderr_eq_str(buff);
 	cr_expect_str_eq(ft_getenv(env, "READONLY", ENV_VAR), "ORIGINAL");
 }
@@ -233,7 +233,7 @@ Test(builtin_set_env_unit, invalid_invalid_option, .init = redirect_std_err)
 	cr_expect_null(ft_getenv(env, "testinvalidoption", VAR_TYPE));
 	memset(buff, '\0', 1024);
 	fflush(stderr);
-	sprintf(buff, "%s: %s: %s\n", comm.argv[0], comm.argv[1], g_error_str[invalid_option]);
+	sprintf(buff, "Cetushell: %s: %s: %s\n", comm.argv[0], comm.argv[1], g_error_str[invalid_option]);
 	cr_expect_stderr_eq_str(buff);
 }
 

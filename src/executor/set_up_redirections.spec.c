@@ -647,7 +647,7 @@ Test(set_up_redirections_unit, invalid_here_doc_no_here_doc, .init = redirect_st
 	info = set_up_redirections(&redirect);
 	cr_expect_null(info, "unexpected non-NULL return!");
 	fflush(stderr);
-	cr_expect_stderr_eq_str("Parsing error detected: NULL heredoc\n");
+	cr_expect_stderr_eq_str("Cetushell: Parsing error detected: NULL heredoc\n");
 }
 
 Test(set_up_redirections_unit, invalid_NULL_redirect)
@@ -668,7 +668,7 @@ Test(set_up_redirections_unit, invalid_empty_redirect, .init = redirect_std_err)
 	info = set_up_redirections(&redirect);
 	cr_expect_null(info, "unexpected NULL return!");
 	fflush(stderr);
-	cr_expect_stderr_eq_str("Parsing error detected\n");
+	cr_expect_stderr_eq_str("Cetushell: Parsing error detected\n");
 }
 
 Test(reset_redirections_unit, valid_close_single_fd)

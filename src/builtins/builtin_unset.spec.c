@@ -40,7 +40,7 @@ Test(builtin_unset_env_unit, invalid_deny_read_only_unset, .init = redirect_std_
 	fflush(stderr);
 	char		buff[1024];
 	memset(buff, '\0', 1024);
-	sprintf(buff, "%s: READONLY: %s\n", comm.argv[0], g_error_str[error_ronly]);
+	sprintf(buff, "Cetushell: %s: READONLY: %s\n", comm.argv[0], g_error_str[error_ronly]);
 	cr_expect_stderr_eq_str(buff);
 	cr_expect_str_eq(ft_getenv(env, "READONLY", ENV_VAR), "ORIGINAL");
 }
@@ -119,7 +119,7 @@ Test(builtin_unset_env_unit, invalid_invalid_option, .init = redirect_std_err)
 	cr_expect_null(ft_getenv(env, "testinvalidoption", VAR_TYPE));
 	memset(buff, '\0', 1024);
 	fflush(stderr);
-	sprintf(buff, "%s: %s: %s\n", comm.argv[0], comm.argv[1], g_error_str[invalid_option]);
+	sprintf(buff, "Cetushell: %s: %s: %s\n", comm.argv[0], comm.argv[1], g_error_str[invalid_option]);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -140,7 +140,7 @@ Test(builtin_unset_env_unit, invalid_shell_no_arguments, .init = redirect_std_er
 	char		buff[1024];
 	memset(buff, '\0', 1024);
 	fflush(stderr);
-	sprintf(buff, "%s: %s\n", comm.argv[0], g_error_str[too_few_arguments]);
+	sprintf(buff, "Cetushell: %s: %s\n", comm.argv[0], g_error_str[too_few_arguments]);
 	cr_expect_stderr_eq_str(buff);
 }
 
