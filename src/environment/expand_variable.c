@@ -35,7 +35,6 @@ static int		abort_dollar(char *key, char **string,
 	ret = 0;
 	if (key != NULL)
 	{
-		(*read)++;
 		(*string)[*write] = '$';
 		(*write)++;
 	}
@@ -53,13 +52,13 @@ static int		expand_dollar(t_env *env_list, char **string,
 	char	*value;
 	size_t	len;
 
-	ret = ft_strndup(*string, (*write));
-	if (ret == NULL)
-		return (malloc_error);
 	len = env_str_len(&((*string)[*read + 1]));
 	key = ft_strndup(&((*string)[*read + 1]), len);
 	if (key == NULL || len == 0)
 		return (abort_dollar(key, string, read, write));
+	ret = ft_strndup(*string, (*write));
+	if (ret == NULL)
+		return (malloc_error);
 	value = ft_getenv(env_list, key, VAR_TYPE);
 	free(key);
 	str_expand_triple(&ret, value, &(*string)[*read + len + 1]);
