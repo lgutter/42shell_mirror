@@ -92,6 +92,8 @@ int				main(int ac, char **av)
 {
 	t_shell		*shell;
 
+	if (write(STDIN_FILENO, "\0", 0) == -1)
+		return (1);
 	shell = init_shell();
 	if (shell == NULL)
 	{
