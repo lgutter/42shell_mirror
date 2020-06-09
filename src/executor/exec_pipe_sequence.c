@@ -11,11 +11,12 @@
 /* ************************************************************************** */
 
 #include "executor.h"
+#include <signal.h>
+#include <sys/types.h>
 
 static int	parent_wait(int pipe_fds[2], t_pipe_sequence *pipe_seq,
 						pid_t child_pid, t_env *env)
 {
-	int		stat_loc;
 	int		ret;
 
 	ret = 0;
@@ -27,7 +28,7 @@ static int	parent_wait(int pipe_fds[2], t_pipe_sequence *pipe_seq,
 	else
 	{
 		ret = exec_pipe_sequence(pipe_seq->next, env);
-		waitpid(child_pid, &stat_loc, 0);
+		kill(child_pid, SIGTERM);
 	}
 	close(pipe_fds[0]);
 	return (ret);
