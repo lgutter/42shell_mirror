@@ -83,7 +83,6 @@ src_files = files([
   'src/executor/reset_redirections.c',
   'src/executor/set_up_io_file.c',
   'src/executor/add_fd_to_list.c',
-  'temp/temp_print_token_parse.c',
   'src/builtins/builtin_cd.c',
   'src/builtins/builtins_1.c',
   'src/builtins/builtin_exit.c',
