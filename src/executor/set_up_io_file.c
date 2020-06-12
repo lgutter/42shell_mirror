@@ -33,7 +33,7 @@ static int		check_dir_perm(int stderrfd, t_io_file *io_file)
 		ret = d_handle_error_str(stderrfd, no_such_file_or_dir, temp);
 	else if (S_ISDIR(statbuff.st_mode) == 0)
 		ret = d_handle_error_str(stderrfd, not_a_dir_error, temp);
-	else if (access(temp, W_OK) != 0)
+	else if (access(temp, X_OK) != 0)
 		ret = d_handle_error_str(stderrfd, access_denied, temp);
 	free(temp);
 	return (ret);

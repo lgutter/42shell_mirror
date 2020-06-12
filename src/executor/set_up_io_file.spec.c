@@ -428,7 +428,7 @@ Test(set_up_io_file_unit, valid_empty_file_before_redir_to_fd)
 	remove(filename);
 }
 
-Test(set_up_io_file_unit, invalid_dir_no_write_perm, .init = redirect_std_err)
+Test(set_up_io_file_unit, invalid_dir_no_search_perm, .init = redirect_std_err)
 {
 	if (getuid() == 0)
 		cr_skip_test("Cannot be tested as root!\n");
@@ -448,7 +448,7 @@ Test(set_up_io_file_unit, invalid_dir_no_write_perm, .init = redirect_std_err)
 	io_file.filename = filename;
 	remove(filename);
 	remove(dirname);
-	mkdir(dirname, 0555);
+	mkdir(dirname, 0666);
 	open(filename, O_RDWR | O_CREAT, 0664);
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
