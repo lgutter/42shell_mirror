@@ -92,19 +92,9 @@ int				main(void)
 {
 	t_shell		*shell;
 
-	if (write(STDIN_FILENO, "\0", 0) == -1)
-		return (1);
-	if (write(STDOUT_FILENO, "\0", 0) == -1)
-		return (1);
-	if (write(STDERR_FILENO, "\0", 0) == -1)
-		return (1);
 	shell = init_shell();
 	if (shell == NULL)
-	{
 		return (1);
-	}
 	else
-	{
 		return (cetushell(shell));
-	}
 }
