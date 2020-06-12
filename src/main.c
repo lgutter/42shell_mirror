@@ -88,7 +88,7 @@ static int		cetushell(t_shell *shell)
 	return (exit_shell(shell, ret));
 }
 
-int				main(int ac, char **av)
+int				main(void)
 {
 	t_shell		*shell;
 

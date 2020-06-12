@@ -12,10 +12,6 @@ cc = meson.get_compiler('c')
 add_project_arguments(cc.get_supported_arguments([
   '-Woverflow',
   '-Wassign-enum',
-  '-Wno-missing-braces',
-  '-Wno-missing-field-initializers',
-  '-Wno-unused-parameter',
-  '-Wno-unused-result',
 ]), language: 'c')
 
 libftprintf_proj = subproject('ft_printf')

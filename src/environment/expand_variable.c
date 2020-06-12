@@ -27,8 +27,7 @@ static size_t	env_str_len(char *string)
 	return (index);
 }
 
-static int		abort_dollar(char *key, char **string,
-													size_t *read, size_t *write)
+static int		abort_dollar(char *key, char **string, size_t *write)
 {
 	int ret;
 
@@ -55,7 +54,7 @@ static int		expand_dollar(t_env *env_list, char **string,
 	len = env_str_len(&((*string)[*read + 1]));
 	key = ft_strndup(&((*string)[*read + 1]), len);
 	if (key == NULL || len == 0)
-		return (abort_dollar(key, string, read, write));
+		return (abort_dollar(key, string, write));
 	ret = ft_strndup(*string, (*write));
 	if (ret == NULL)
 		return (malloc_error);
