@@ -28,7 +28,8 @@ static int	parent_wait(int pipe_fds[2], t_pipe_sequence *pipe_seq,
 	else
 	{
 		ret = exec_pipe_sequence(pipe_seq->next, env);
-		kill(child_pid, SIGTERM);
+		kill(child_pid, SIGKILL);
+		waitpid(child_pid, NULL, 0);
 	}
 	close(pipe_fds[0]);
 	return (ret);
