@@ -68,7 +68,7 @@ static void		cntrl_up(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (ft_strcmp(seq, CNTRL_UP) == 0 && cursor->current.y > cursor->start.y)
 	{
-		if (strchr(buffer->buff, '\n') != NULL)
+		if (ft_strchr(buffer->buff, '\n') != NULL)
 			return ;
 		cursor->current.y--;
 		if (cursor->current.y == cursor->start.y &&
@@ -90,7 +90,7 @@ static void		cntrl_down(t_buff *buffer, t_cursor *cursor, char *seq)
 		cursor->start.y);
 	if (ft_strcmp(seq, CNTRL_DOWN) == 0 && cursor->current.y < temp)
 	{
-		if (strchr(buffer->buff, '\n') != NULL)
+		if (ft_strchr(buffer->buff, '\n') != NULL)
 			return ;
 		cursor->current.y++;
 		temp = (buffer->prompt_len + buffer->buff_len) % cursor->max.x;
