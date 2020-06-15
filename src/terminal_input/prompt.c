@@ -15,6 +15,33 @@
 #include "history.h"
 #include "input_handling.h"
 #include "signal_handler.h"
+#include "environment.h"
+
+static int		check_fds(t_shell *shell)
+{
+	int	ret;
+
+	ret = 0;
+	if (write(STDIN_FILENO, "\0", 0) == -1)
+	{
+		ret = handle_error_int(bad_fd_error, STDIN_FILENO);
+	}
+	else if (write(STDOUT_FILENO, "\0", 0) == -1)
+	{
+		ret = handle_error_int(bad_fd_error, STDOUT_FILENO);
+	}
+	else if (write(STDERR_FILENO, "\0", 0) == -1)
+	{
+		ret = d_handle_error_int(STDIN_FILENO, bad_fd_error, STDERR_FILENO);
+	}
+	if (ret != 0)
+	{
+		ft_setstatus(shell->env, 1);
+		g_error_internal = 0;
+		ret = 1;
+	}
+	return (ret);
+}
 
 static void		print_buffer(t_buff *buffer)
 {
@@ -36,12 +63,6 @@ static void		print_buffer(t_buff *buffer)
 		ft_printf("%s", buffer->buff);
 }
 
-static void		clear_prompt(t_cursor *cursor)
-{
-	ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, 0);
-	send_terminal("cd");
-}
-
 static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 {
 	if (cursor->new_line_x > 1)
@@ -52,7 +73,8 @@ static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 		ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, cursor->start.x);
 		cursor->new_line_x = 1;
 	}
-	clear_prompt(cursor);
+	ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, 0);
+	send_terminal("cd");
 	ft_printf("%s", buffer->prompt);
 	print_buffer(buffer);
 	ft_printf("%s", cursor->cur_buff);
@@ -97,7 +119,7 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 		{
 			set_cursor_pos(&shell->cursor, shell->buffer);
 			refresh_prompt(shell->buffer, &shell->cursor);
-			if (read_input(shell) == 1)
+			if (check_fds(shell) == 1 || read_input(shell) == 1)
 			{
 				free_buffer_buffs(shell, 1);
 				return (NULL);

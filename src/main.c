@@ -88,23 +88,13 @@ static int		cetushell(t_shell *shell)
 	return (exit_shell(shell, ret));
 }
 
-int				main(int ac, char **av)
+int				main(void)
 {
 	t_shell		*shell;
 
-	if (write(STDIN_FILENO, "\0", 0) == -1)
-		return (1);
-	if (write(STDOUT_FILENO, "\0", 0) == -1)
-		return (1);
-	if (write(STDERR_FILENO, "\0", 0) == -1)
-		return (1);
 	shell = init_shell();
 	if (shell == NULL)
-	{
 		return (1);
-	}
 	else
-	{
 		return (cetushell(shell));
-	}
 }

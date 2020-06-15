@@ -17,7 +17,7 @@
 
 Test(add_fd_to_list_unit, valid_add_first_element)
 {
-	t_redir_info	info = {0, 0, 0, NULL};
+	t_redir_info	info = {{0, 0, 0}, NULL};
 	int				fd = 42;
 	int				og_fd = -1;
 	int				ret;
@@ -33,7 +33,7 @@ Test(add_fd_to_list_unit, valid_add_first_element)
 
 Test(add_fd_to_list_unit, valid_add_first_two_elements)
 {
-	t_redir_info	info = {0, 0, 0, NULL};
+	t_redir_info	info = {{0, 0, 0}, NULL};
 	int				fd = 42;
 	int				og_fd = -1;
 	int				ret;

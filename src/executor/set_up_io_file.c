@@ -33,7 +33,7 @@ static int		check_dir_perm(int stderrfd, t_io_file *io_file)
 		ret = d_handle_error_str(stderrfd, no_such_file_or_dir, temp);
 	else if (S_ISDIR(statbuff.st_mode) == 0)
 		ret = d_handle_error_str(stderrfd, not_a_dir_error, temp);
-	else if (access(temp, W_OK) != 0)
+	else if (access(temp, X_OK) != 0)
 		ret = d_handle_error_str(stderrfd, access_denied, temp);
 	free(temp);
 	return (ret);
@@ -94,6 +94,20 @@ static int		set_file_fd(t_redir_info *redir_info, t_io_file *io_file)
 	return (fd);
 }
 
+static int		check_closed_fd(t_redir_info *redir_info, int fd)
+{
+	t_fd_list	*list;
+
+	list = redir_info->fd_list;
+	while (list != NULL)
+	{
+		if (list->fd == -2 && list->og_fd == fd)
+			return (-1);
+		list = list->next;
+	}
+	return (0);
+}
+
 int				set_up_io_file(t_redir_info *redir_info, int left_fd,
 								t_io_file *io_file)
 {
@@ -106,7 +120,7 @@ int				set_up_io_file(t_redir_info *redir_info, int left_fd,
 	fd = set_file_fd(redir_info, io_file);
 	if (fd < 0)
 		return (-1);
-	if (dup2(fd, left_fd) < 0)
+	else if (check_closed_fd(redir_info, fd) != 0 || dup2(fd, left_fd) < 0)
 	{
 		d_handle_error_int(redir_info->std_fds[2], bad_fd_error, fd);
 		return (-1);

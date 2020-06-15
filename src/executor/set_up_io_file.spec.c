@@ -24,7 +24,7 @@ static void redirect_std_err()
 
 Test(set_up_io_file_unit, valid_append_file_once)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_append_file_once");
 	t_io_file		io_file = {redirect_append, filename};
 	int				ret;
@@ -57,7 +57,7 @@ Test(set_up_io_file_unit, valid_append_file_once)
 
 Test(set_up_io_file_unit, valid_append_file_twice)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_append_file_twice");
 	t_io_file		io_file = {redirect_append, filename};
 	int				ret;
@@ -96,7 +96,7 @@ Test(set_up_io_file_unit, valid_append_file_twice)
 
 Test(set_up_io_file_unit, valid_overwrite_file_once)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_overwrite_file_once");
 	t_io_file		io_file = {redirect_out, filename};
 	int				ret;
@@ -129,7 +129,7 @@ Test(set_up_io_file_unit, valid_overwrite_file_once)
 
 Test(set_up_io_file_unit, valid_overwrite_file_twice)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_overwrite_file_twice");
 	t_io_file		io_file = {redirect_out, filename};
 	int				ret;
@@ -172,7 +172,7 @@ Test(set_up_io_file_unit, valid_overwrite_file_twice)
 
 Test(set_up_io_file_unit, valid_write_to_fd)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
@@ -202,7 +202,7 @@ Test(set_up_io_file_unit, valid_write_to_fd)
 
 Test(set_up_io_file_unit, valid_read_from_fd)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
@@ -247,7 +247,7 @@ Test(set_up_io_file_unit, invalid_NULL_info)
 
 Test(set_up_io_file_unit, invalid_NULL_filename)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = NULL;
 	t_io_file		io_file;
 	int				ret;
@@ -266,7 +266,7 @@ Test(set_up_io_file_unit, invalid_NULL_filename)
 
 Test(set_up_io_file_unit, invalid_NULL_io_file)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	int				ret;
 	int				exp_ret = -1;
 	int				left_fd = 429;
@@ -284,7 +284,7 @@ Test(set_up_io_file_unit, invalid_no_read_perm, .init = redirect_std_err)
 	if (getuid() == 0)
 		cr_skip_test("Cannot be tested as root!\n");
 
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_no_read_perm");
 	t_io_file		io_file;
 	int				ret;
@@ -308,7 +308,7 @@ Test(set_up_io_file_unit, invalid_no_read_perm, .init = redirect_std_err)
 
 Test(set_up_io_file_unit, invalid_no_file, .init = redirect_std_err)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_no_file");
 	t_io_file		io_file;
 	int				ret;
@@ -334,7 +334,7 @@ Test(set_up_io_file_unit, invalid_no_write_perm, .init = redirect_std_err)
 	if (getuid() == 0)
 		cr_skip_test("Cannot be tested as root!\n");
 
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_no_write_perm");
 	t_io_file		io_file;
 	int				ret;
@@ -358,7 +358,7 @@ Test(set_up_io_file_unit, invalid_no_write_perm, .init = redirect_std_err)
 
 Test(set_up_io_file_unit, valid_read_from_file)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_valid_read_from_file");;
 	t_io_file		io_file;
 	int				ret;
@@ -391,7 +391,7 @@ Test(set_up_io_file_unit, valid_read_from_file)
 
 Test(set_up_io_file_unit, valid_empty_file_before_redir_to_fd)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = "/tmp/set_up_io_file_unit_valid_empty_file_before_redir_to_fd";
 	t_io_file		io_file;
 	int				ret;
@@ -428,12 +428,12 @@ Test(set_up_io_file_unit, valid_empty_file_before_redir_to_fd)
 	remove(filename);
 }
 
-Test(set_up_io_file_unit, invalid_dir_no_write_perm, .init = redirect_std_err)
+Test(set_up_io_file_unit, invalid_dir_no_search_perm, .init = redirect_std_err)
 {
 	if (getuid() == 0)
 		cr_skip_test("Cannot be tested as root!\n");
 
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*dirname = strdup("/tmp/nopermdir");
 	char			*filename = strdup("/tmp/nopermdir/set_up_io_file_unit_invalid_dir_no_write_perm");
 	t_io_file		io_file;
@@ -448,7 +448,7 @@ Test(set_up_io_file_unit, invalid_dir_no_write_perm, .init = redirect_std_err)
 	io_file.filename = filename;
 	remove(filename);
 	remove(dirname);
-	mkdir(dirname, 0555);
+	mkdir(dirname, 0666);
 	open(filename, O_RDWR | O_CREAT, 0664);
 	ret = set_up_io_file(&info, left_fd, &io_file);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
@@ -461,7 +461,7 @@ Test(set_up_io_file_unit, invalid_dir_no_write_perm, .init = redirect_std_err)
 
 Test(set_up_io_file_unit, invalid_dir_does_not_exist, .init = redirect_std_err)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*dirname = strdup("/tmp/dirnothere");
 	char			*filename = strdup("/tmp/dirnothere/set_up_io_file_unit_invalid_dir_does_not_exist");
 	t_io_file		io_file;
@@ -487,7 +487,7 @@ Test(set_up_io_file_unit, invalid_dir_does_not_exist, .init = redirect_std_err)
 
 Test(set_up_io_file_unit, invalid_target_is_dir_in_dir, .init = redirect_std_err)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = strdup("/tmp/set_up_io_file_unit_invalid_target_is_dir");
 	t_io_file		io_file;
 	int				ret;
@@ -511,7 +511,7 @@ Test(set_up_io_file_unit, invalid_target_is_dir_in_dir, .init = redirect_std_err
 
 Test(set_up_io_file_unit, invalid_target_is_dir, .init = redirect_std_err)
 {
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*filename = strdup("/tmp");
 	t_io_file		io_file;
 	int				ret;
@@ -535,7 +535,7 @@ Test(set_up_io_file_unit, invalid_dir_not_a_dir, .init = redirect_std_err)
 	if (getuid() == 0)
 		cr_skip_test("Cannot be tested as root!\n");
 
-	t_redir_info	info = {0, 1, 2, NULL};
+	t_redir_info	info = {{0, 1, 2}, NULL};
 	char			*dirname = strdup("/tmp/notadir");
 	char			*filename = strdup("/tmp/notadir/set_up_io_file_unit_invalid_dir_not_a_dir");
 	t_io_file		io_file;

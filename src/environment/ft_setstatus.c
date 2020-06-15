@@ -12,7 +12,7 @@
 
 #include "environment.h"
 
-int		ft_setstatus(t_env *env, t_error error_code)
+int		ft_setstatus(t_env *env, int error_code)
 {
 	char	*new;
 	int		ret;
