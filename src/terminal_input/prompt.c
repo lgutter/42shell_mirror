@@ -63,12 +63,6 @@ static void		print_buffer(t_buff *buffer)
 		ft_printf("%s", buffer->buff);
 }
 
-static void		clear_prompt(t_cursor *cursor)
-{
-	ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, 0);
-	send_terminal("cd");
-}
-
 static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 {
 	if (cursor->new_line_x > 1)
@@ -79,7 +73,8 @@ static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 		ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, cursor->start.x);
 		cursor->new_line_x = 1;
 	}
-	clear_prompt(cursor);
+	ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, 0);
+	send_terminal("cd");
 	ft_printf("%s", buffer->prompt);
 	print_buffer(buffer);
 	ft_printf("%s", cursor->cur_buff);
