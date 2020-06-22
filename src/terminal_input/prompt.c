@@ -110,7 +110,7 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 	char	*temp;
 
 	temp = NULL;
-	signal(SIGWINCH, signal_handler_buff);
+	simple_sigaction(SIGWINCH, signal_handler_buff, NULL);
 	if (shell != NULL && prompt != NULL && shell->buffer != NULL)
 	{
 		if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)

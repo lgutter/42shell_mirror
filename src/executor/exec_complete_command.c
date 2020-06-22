@@ -26,7 +26,7 @@ int		exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd)
 	while (comp_cmd != NULL && ret != exit_shell_code)
 	{
 		ret = word_processing(shell, comp_cmd);
-		if (g_signal_handler == SIGINT_BUFF)
+		if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
 			return (1);
 		if (ret == 0)
 			ret = exec_pipe_sequence(comp_cmd->pipe_sequence, env);

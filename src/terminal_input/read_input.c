@@ -86,25 +86,20 @@ int				read_input(t_shell *shell)
 	int			ret;
 
 	c = '\0';
-	signal(SIGINT, signal_handler_buff);
+	simple_sigaction(SIGINT, signal_handler_buff, NULL);
 	if (shell == NULL || shell->buffer == NULL || shell->buffer->buff == NULL)
 		return (1);
 	ret = read(STDIN_FILENO, &c, 1);
-	if (g_signal_handler == SIGINT_BUFF)
+	if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
 	{
-		shell->buffer->state = RETURN_STATE;
 		send_terminal(TERM_DOWN);
+		return (1);
+	}
+	if (ret <= 0)
 		return (0);
-	}
-	if (ret == -1)
-		return (2);
-	if (ret == 1)
-	{
-		ret = read_esc_seq(c, &shell->cursor, shell->buffer, shell->hist);
-		if (ret != 0)
-			return (ret);
-		if (handle_control_char(shell->buffer, &shell->cursor, c) != 0)
-			return (1);
-	}
+	if (read_esc_seq(c, &shell->cursor, shell->buffer, shell->hist) != 0)
+		return (1);
+	else if (handle_control_char(shell->buffer, &shell->cursor, c) != 0)
+		return (1);
 	return (0);
 }

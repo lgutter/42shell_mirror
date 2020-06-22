@@ -44,13 +44,13 @@ void		configure_terminal(t_shell *shell, int activator)
 			tcgetattr(STDIN_FILENO, &orig);
 		shell_temp = orig;
 		shell_temp.c_lflag &= ~(ECHO | ICANON);
-		shell_temp.c_cc[VMIN] = 0;
-		shell_temp.c_cc[VTIME] = 1;
-		tcsetattr(STDIN_FILENO, TCSAFLUSH, &shell_temp);
+		shell_temp.c_cc[VMIN] = 1;
+		shell_temp.c_cc[VTIME] = 0;
+		tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_temp);
 		shell->term = shell_temp;
 	}
 	if (activator == 0)
-		tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig);
+		tcsetattr(STDIN_FILENO, TCSADRAIN, &orig);
 }
 
 void		get_winsize(t_cursor *cursor, size_t len)
