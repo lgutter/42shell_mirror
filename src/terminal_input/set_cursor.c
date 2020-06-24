@@ -92,7 +92,7 @@ void			set_cursor_pos(t_cursor *cursor, t_buff *buffer)
 	if (buffer == NULL || buffer->buff == NULL || cursor == NULL
 		|| buffer->prompt == NULL)
 		return ;
-	if (g_signal_handler == SIG_WINDOW)
+	if ((g_signal_handler & SIG_WINDOW) == SIG_WINDOW)
 	{
 		send_terminal("rc");
 		send_terminal("cd");
@@ -101,6 +101,7 @@ void			set_cursor_pos(t_cursor *cursor, t_buff *buffer)
 								% cursor->max.x);
 		cursor->current.y = (((buffer->prompt_len + buffer->index)
 								/ cursor->max.x) + cursor->start.y);
+		g_signal_handler &= ~SIG_WINDOW;
 	}
 	handle_newline(cursor, buffer);
 	cursor_next_line(cursor, buffer->buff_len, buffer->prompt_len);

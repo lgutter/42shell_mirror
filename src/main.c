@@ -72,7 +72,7 @@ static int		cetushell(t_shell *shell)
 		prompt = ft_getenv(shell->env, "PS1", SHELL_VAR);
 		input = prompt_shell(shell, prompt == NULL ? PROMPT_NORMAL : prompt);
 		free(prompt);
-		if (g_signal_handler == SIGINT_BUFF)
+		if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
 		{
 			free(input);
 			input = ft_strdup("");

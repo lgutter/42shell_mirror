@@ -12,12 +12,21 @@
 
 #include "signal_handler.h"
 
+void	simple_sigaction(int sig, void handler(int), struct sigaction *old_act)
+{
+	struct sigaction	action;
+
+	ft_memset(&action, 0, sizeof(struct sigaction));
+	action.sa_handler = handler;
+	sigaction(sig, &action, old_act);
+}
+
 void	signal_handler_buff(int sig)
 {
 	if (sig == SIGINT)
-		g_signal_handler = SIGINT_BUFF;
+		g_signal_handler |= SIGINT_BUFF;
 	if (sig == SIGWINCH)
-		g_signal_handler = SIG_WINDOW;
+		g_signal_handler |= SIG_WINDOW;
 }
 
 void	terminal_signal(int sig)
