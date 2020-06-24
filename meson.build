@@ -1,5 +1,5 @@
 project(
-  '21shell',
+  '42shell',
   'c',
   default_options: [
     'warning_level=3',
@@ -85,6 +85,7 @@ src_files = files([
   'src/builtins/builtin_env.c',
   'src/builtins/builtin_set.c',
   'src/builtins/builtin_unset.c',
+  'src/autocomplete/auto_complete.c',
 ])
 
 main_file = files('src/main.c')
