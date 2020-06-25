@@ -105,4 +105,11 @@ int			is_builtin(char *exec_name);
 */
 size_t		str_arr_len(char **str_array);
 
+/*
+**	check if the 3 standard file descriptors (stdin, stdout & stderr) can be
+**	read from or written to.
+**	returns 0 if all 3 fd's are working as expected, or an error code otherwise.
+*/
+int			check_fds(t_shell *shell);
+
 #endif

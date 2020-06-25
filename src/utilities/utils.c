@@ -66,9 +66,9 @@ int		get_here_doc(t_io_here *io_here, t_shell *shell)
 	char	*here_doc;
 
 	temp = NULL;
-	here_doc = ft_strdup("");
 	if (io_here == NULL || io_here->here_end == NULL)
 		return (handle_error(parsing_error));
+	here_doc = ft_strdup("");
 	while ((g_signal_handler & SIGINT_BUFF) != SIGINT_BUFF)
 	{
 		temp = prompt_shell(shell, PROMPT_HEREDOC);

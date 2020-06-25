@@ -60,6 +60,7 @@ typedef struct			s_cursor
 
 typedef struct			s_shell
 {
+	int					interactive;
 	struct termios		term;
 	t_cursor			cursor;
 	struct winsize		winsize;

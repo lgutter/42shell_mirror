@@ -17,32 +17,6 @@
 #include "signal_handler.h"
 #include "environment.h"
 
-static int		check_fds(t_shell *shell)
-{
-	int	ret;
-
-	ret = 0;
-	if (write(STDIN_FILENO, "\0", 0) == -1)
-	{
-		ret = handle_error_int(bad_fd_error, STDIN_FILENO);
-	}
-	else if (write(STDOUT_FILENO, "\0", 0) == -1)
-	{
-		ret = handle_error_int(bad_fd_error, STDOUT_FILENO);
-	}
-	else if (write(STDERR_FILENO, "\0", 0) == -1)
-	{
-		ret = d_handle_error_int(STDIN_FILENO, bad_fd_error, STDERR_FILENO);
-	}
-	if (ret != 0)
-	{
-		ft_setstatus(shell->env, 1);
-		g_error_internal = 0;
-		ret = 1;
-	}
-	return (ret);
-}
-
 static void		print_buffer(t_buff *buffer)
 {
 	if (buffer->rv_end > buffer->rv_start)
@@ -105,30 +79,50 @@ static int		init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
 	return (0);
 }
 
+static char		*interactive_prompt_shell(t_shell *shell, const char *prompt)
+{
+	char *temp;
+
+	temp = NULL;
+	if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
+		return (NULL);
+	simple_sigaction(SIGWINCH, signal_handler_buff, NULL);
+	while (shell->buffer->state != RETURN_STATE)
+	{
+		set_cursor_pos(&shell->cursor, shell->buffer);
+		refresh_prompt(shell->buffer, &shell->cursor);
+		if (check_fds(shell) == 1 || read_input(shell) == 1)
+		{
+			free_buffer_buffs(shell, 1);
+			return (NULL);
+		}
+		shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
+	}
+	shell->buffer->state = INPUT_STATE;
+	temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);
+	free_buffer_buffs(shell, 0);
+	return (temp);
+}
+
 char			*prompt_shell(t_shell *shell, const char *prompt)
 {
 	char	*temp;
 
 	temp = NULL;
-	simple_sigaction(SIGWINCH, signal_handler_buff, NULL);
 	if (shell != NULL && prompt != NULL && shell->buffer != NULL)
 	{
-		if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
-			return (NULL);
-		while (shell->buffer->state != RETURN_STATE)
+		if (shell->interactive == 1)
 		{
-			set_cursor_pos(&shell->cursor, shell->buffer);
-			refresh_prompt(shell->buffer, &shell->cursor);
-			if (check_fds(shell) == 1 || read_input(shell) == 1)
-			{
-				free_buffer_buffs(shell, 1);
-				return (NULL);
-			}
-			shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
+			temp = interactive_prompt_shell(shell, prompt);
 		}
-		shell->buffer->state = INPUT_STATE;
-		temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);
-		free_buffer_buffs(shell, 0);
+		else
+		{
+			if (get_next_line(STDIN_FILENO, &temp) == 0)
+			{
+				free(temp);
+				temp = NULL;
+			}
+		}
 	}
 	return (temp);
 }

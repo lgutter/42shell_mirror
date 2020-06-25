@@ -16,32 +16,54 @@
 #include "history.h"
 #include "signal_handler.h"
 
-static t_shell	*init_shell(void)
+static t_shell	*alloc_shell(int interactive)
+{
+	t_shell		*shell;
+
+	shell = (t_shell *)ft_memalloc(sizeof(t_shell));
+	if (shell == NULL)
+		return (NULL);
+	shell->hist = NULL;
+	if (interactive == 1)
+	{
+		shell->hist = (t_history *)ft_memalloc(sizeof(t_history) * 1);
+		if (shell->hist == NULL)
+			handle_error_str(malloc_error, "when creating history");
+	}
+	shell->buffer = (t_buff *)ft_memalloc(sizeof(t_buff) * 1);
+	if (shell->buffer == NULL)
+	{
+		free_shell(shell, 0);
+		handle_error(malloc_error);
+		shell = NULL;
+	}
+	return (shell);
+}
+
+static t_shell	*init_shell(int interactive)
 {
 	t_shell		*shell;
 	char		*temp;
 
-	shell = (t_shell *)ft_memalloc(sizeof(t_shell));
+	shell = alloc_shell(interactive);
 	if (shell == NULL)
 		return (handle_error_p(malloc_error, NULL));
-	shell->buffer = (t_buff *)ft_memalloc(sizeof(t_buff) * 1);
-	shell->hist = (t_history *)ft_memalloc(sizeof(t_history) * 1);
 	shell->env = dup_sys_env();
+	if (shell->env == NULL)
+	{
+		free_shell(shell, 0);
+		return (handle_error_p(malloc_error, NULL));
+	}
 	temp = ft_getenv(shell->env, "HOME", VAR_TYPE);
 	ft_setenv(shell->env, "HOME", temp, SHELL_VAR);
 	free(temp);
-	configure_terminal(shell, 1);
-	if (shell->hist == NULL)
-		handle_error(malloc_error);
-	else
-		initialize_history(shell);
-	if (shell->buffer == NULL || shell->env == NULL)
+	shell->interactive = interactive;
+	if (interactive == 1)
 	{
-		free_shell(shell, 0);
-		if (shell->buffer == NULL)
-			handle_error(malloc_error);
-		shell = NULL;
+		configure_terminal(shell, 1);
 	}
+	if (shell->hist != NULL)
+		initialize_history(shell);
 	return (shell);
 }
 
@@ -55,8 +77,9 @@ static int		exit_shell(t_shell *shell, int ret)
 	if (exit_code != NULL)
 		ret = ft_atoi(exit_code);
 	free(exit_code);
+	if (shell->interactive == 1)
+		ft_printf("exit\n");
 	free_shell(shell, 1);
-	ft_printf("exit\n");
 	return (ret);
 }
 
@@ -75,7 +98,7 @@ static int		cetushell(t_shell *shell)
 		if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
 		{
 			free(input);
-			input = ft_strdup("");
+			input = shell->interactive == 1 ? ft_strdup("") : NULL;
 		}
 		if (input == NULL)
 			break ;
@@ -91,8 +114,10 @@ static int		cetushell(t_shell *shell)
 int				main(void)
 {
 	t_shell		*shell;
+	int			interactive;
 
-	shell = init_shell();
+	interactive = isatty(STDIN_FILENO);
+	shell = init_shell(interactive);
 	if (shell == NULL)
 		return (1);
 	else
