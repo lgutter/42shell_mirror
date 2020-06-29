@@ -34,4 +34,17 @@ int					builtin_exit(t_command *command, t_env *env);
 int					builtin_echo(t_command *command, t_env *env);
 int					builtin_shellenv(t_command *command, t_env *env);
 
+static const struct s_builtin	g_builtins[] = {
+	{"cd", builtin_cd},
+	{"env", builtin_env},
+	{"shellenv", builtin_shellenv},
+	{"setenv", builtin_set},
+	{"unsetenv", builtin_unset},
+	{"setshell", builtin_set},
+	{"unsetshell", builtin_unset},
+	{"echo", builtin_echo},
+	{"exit", builtin_exit},
+	{NULL, NULL},
+};
+
 #endif
