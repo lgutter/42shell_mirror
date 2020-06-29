@@ -113,6 +113,7 @@ size_t		initialize_complete(t_complete *com, t_buff *buffer)
 		free(simple_command);
 		return (1);
 	}
+	com->to_complen = ft_strlen(com->to_complete);
 	com->options = get_auto_complete_opt(com->to_complete, simple_command, i);
 	free(simple_command);
 	return (0);
@@ -124,9 +125,19 @@ int			free_complete(t_complete *com, size_t ret)
 	return (ret);
 }
 
-int			complete(t_complete *com)
+int			complete(t_shell *shell, t_complete *comp)
 {
-	com = (void *)com;
+	comp->list = (t_clist*)ft_memalloc(sizeof(t_clist));
+	if (comp->list == NULL)
+		handle_error(malloc_error);
+	// if (comp->options & (1 << BUILTINS))
+	// 	complete_builtins();
+	// if (comp->options & (1 << EXECUTABLES))
+	// 	complete_exec();
+	// if (comp->options & (1 << DIRECTORIES) || comp->options & (1 << FILES))
+	// 	complete_files();
+	if ((comp->options & (1 << SHELLVAR)) == 0)
+		complete_var(shell->env, comp);
 	return (0);
 }
 
@@ -136,10 +147,8 @@ int			auto_complete(t_shell *shell)
 
 	if (initialize_complete(&comp, shell->buffer) != 0)
 		return (handle_error(free_complete(&comp, malloc_error)));
-	if (complete(&comp) != 0)
+	if (complete(shell, &comp) != 0)
 		return (handle_error(free_complete(&comp, malloc_error)));
-	int fd = open("test", O_CREAT | O_APPEND | O_WRONLY, 0644);
-	ft_dprintf(fd, "TEST == (%d), (%s) (%d)  \n", shell->buffer->index, comp.to_complete, comp.options);
-	close(fd);
+	free_complete(&comp, 0);
 	return (0);
 }

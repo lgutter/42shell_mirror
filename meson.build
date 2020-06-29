@@ -86,6 +86,8 @@ src_files = files([
   'src/builtins/builtin_set.c',
   'src/builtins/builtin_unset.c',
   'src/autocomplete/auto_complete.c',
+  'src/autocomplete/auto_complete_lists.c',
+  'src/autocomplete/complete_var.c',
 ])
 
 main_file = files('src/main.c')
