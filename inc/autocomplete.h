@@ -14,6 +14,7 @@
 # define AUTOCOMPLETE_H
 
 # include "input_handling.h"
+# include "environment.h"
 
 typedef unsigned long	t_opt;
 
@@ -28,6 +29,7 @@ typedef struct			s_clist
 typedef struct			s_complete
 {
 	char				*to_complete;
+	size_t				to_complen;
 	t_opt				options;
 	size_t				max_len;
 	t_clist				*list;
@@ -40,4 +42,6 @@ typedef struct			s_complete
 # define FILES          16
 
 int		auto_complete(t_shell *shell);
+int		complete_var(t_env *env, t_complete *comp);
+int		add_complete_list(t_complete *comp, char *match);
 #endif
