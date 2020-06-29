@@ -33,7 +33,7 @@ static size_t	match_exec(t_complete *comp, char *path)
 	return (0);
 }
 
-size_t			complete_exec(t_complete *comp, t_env *env)
+size_t			complete_exec(t_env *env, t_complete *comp)
 {
 	char	*paths;
 	char	**path;
