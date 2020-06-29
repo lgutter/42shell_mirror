@@ -61,22 +61,23 @@ static int		handle_printable_char(t_buff *buffer, t_cursor *cursor, char c)
 	return (0);
 }
 
-static int		handle_control_char(t_buff *buffer, t_cursor *cursor, char c)
+static int		handle_control_char(t_shell *shell, char c)
 {
-	if (handle_printable_char(buffer, cursor, c) == 1)
+	if (handle_printable_char(shell->buffer, &shell->cursor, c) == 1)
 		return (1);
 	if (c == CNTRL_R)
 	{
-		cursor->current.y = cursor->current.y - cursor->start.y;
-		cursor->start.y = 1;
+		shell->cursor.current.y = (shell->cursor.current.y
+										- shell->cursor.start.y);
+		shell->cursor.start.y = 1;
 		send_terminal("cl");
 	}
-	if (cut_copy_paste(buffer, cursor, c) != 0 ||
-		ctrl_d_key(c, buffer) == 1)
+	if (cut_copy_paste(shell->buffer, &shell->cursor, c) != 0 ||
+		ctrl_d_key(c, shell->buffer) == 1)
 		return (1);
-	tab_key(buffer, cursor, c);
-	backspace_key(buffer, cursor, c);
-	return_key(buffer, c);
+	tab_key(shell, c);
+	backspace_key(shell->buffer, &shell->cursor, c);
+	return_key(shell->buffer, c);
 	return (0);
 }
 
@@ -93,13 +94,17 @@ int				read_input(t_shell *shell)
 	if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
 	{
 		send_terminal(TERM_DOWN);
-		return (1);
-	}
-	if (ret <= 0)
 		return (0);
-	if (read_esc_seq(c, &shell->cursor, shell->buffer, shell->hist) != 0)
-		return (1);
-	else if (handle_control_char(shell->buffer, &shell->cursor, c) != 0)
-		return (1);
+	}
+	if (ret == -1)
+		return (2);
+	if (ret == 1)
+	{
+		ret = read_esc_seq(c, &shell->cursor, shell->buffer, shell->hist);
+		if (ret != 0)
+			return (ret);
+		if (handle_control_char(shell, c) != 0)
+			return (1);
+	}
 	return (0);
 }

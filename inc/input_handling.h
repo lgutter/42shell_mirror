@@ -119,7 +119,7 @@ void		remove_char(t_buff *buffer);
 ** arg: *buffer: pointer to struct t_buff defined in cetushell.h
 ** arg: c: character input from user which must be TAB_KEY (\011)
 */
-void		tab_key(t_buff *buffer, t_cursor *cursor, char c);
+void		tab_key(t_shell *shell, char c);
 
 /*
 ** the backspace_key requires as input a pointer to a t_buff and t_cursor struct
