@@ -27,24 +27,30 @@ int			return_key(t_buff *buffer, char c)
 	return (0);
 }
 
-void		tab_key(t_buff *buffer, t_cursor *cursor, char c)
+void		tab_key(t_shell *shell, char c)
 {
 	int		i;
+	char	*trim;
 
 	i = 0;
 	if (c == TAB_KEY)
 	{
-		if (buffer->buff_len == 0)
+		trim = ft_strtrim(shell->buffer->buff);
+		i = ft_strlen(trim);
+		free(trim);
+		if (i != 0)
+			auto_complete(shell);
+		else
 		{
-			while (i != 4)
+			i = 0;
+			while (i < 4)
 			{
-				insert_char(buffer, ' ');
-				cursor->current.x++;
+				insert_char(shell->buffer, ' ');
+				shell->cursor.current.x++;
+				set_cursor_pos(&shell->cursor, shell->buffer);
 				i++;
 			}
 		}
-		else
-			auto_complete(buffer, cursor);
 	}
 }
 
