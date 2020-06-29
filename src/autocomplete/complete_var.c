@@ -12,22 +12,22 @@
 
 #include "autocomplete.h"
 
-int     complete_var(t_env *env, t_complete *comp)
+size_t		complete_var(t_env *env, t_complete *comp)
 {
-    char *match;
+	char *match;
 
-    if (comp->to_complete[1] == '{')
-        match = ft_strdup(&comp->to_complete[2]);
-    else
-        match = ft_strdup(&comp->to_complete[1]);
-    if (match == NULL)
-        return (1);
-    comp->to_complen = ft_strlen(match);
-    while (env != NULL)
-    {
-        if (ft_strncmp(match, env->key, comp->to_complen) == 0)
-            add_complete_list(comp, env->key);
-        env = env->next;
-    }
-    return (0);
+	if (comp->options & VAR_DBRACK)
+		match = ft_strdup(&comp->to_complete[2]);
+	else
+		match = ft_strdup(&comp->to_complete[1]);
+	if (match == NULL)
+		return (1);
+	comp->to_complen = ft_strlen(match);
+	while (env != NULL)
+	{
+		if (ft_strncmp(match, env->key, comp->to_complen) == 0)
+			add_complete_list(comp, env->key);
+		env = env->next;
+	}
+	return (0);
 }

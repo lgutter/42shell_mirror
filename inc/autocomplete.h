@@ -37,11 +37,15 @@ typedef struct			s_complete
 
 # define EXECUTABLES    1
 # define BUILTINS       2
-# define SHELLVAR       4
+# define VAR_DOLLAR     4
 # define DIRECTORIES    8
 # define FILES          16
+# define VAR_DBRACK		32
 
-int		auto_complete(t_shell *shell);
-int		complete_var(t_env *env, t_complete *comp);
-int		add_complete_list(t_complete *comp, char *match);
+size_t		auto_complete(t_shell *shell);
+size_t		complete_var(t_env *env, t_complete *comp);
+size_t		complete_exec(t_complete *comp, t_env *env);
+size_t		add_complete_list(t_complete *comp, char *match);
+void    	debug_complete_list(t_complete *comp);
+size_t		initialize_complete(t_complete *com, t_buff *buffer);
 #endif
