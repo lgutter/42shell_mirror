@@ -31,13 +31,13 @@
 
 size_t        search_cd(char *string)
 {
-	char    **split;
+	char	**split;
 	size_t	ret;
 	char	*trimmed;
 
 	trimmed = ft_strtrim(string);
 	if (trimmed == NULL)
-		return 3;
+		return (1);
 	split = ft_strsplit_t_s(trimmed);
 	free(trimmed);
 	if (split[0] != NULL && ft_strcmp(split[0], "cd") == 0)
@@ -92,14 +92,14 @@ t_opt		get_auto_complete_opt(char *to_complete, char *command, size_t i)
 	{
 		options = (options & ~(BUILTINS | EXECUTABLES)) | FILES | DIRECTORIES;
 		if (search_cd(command) == 0)
-			 options &= ~FILES;
+			options &= ~FILES;
 	}
 	return (options);
 }
 
 size_t		initialize_complete(t_complete *com, t_buff *buffer)
 {
-	size_t 	i;
+	size_t	i;
 	char	*simple_command;
 
 	i = is_op_offset(buffer->index, buffer->buff);
@@ -130,17 +130,16 @@ int			complete(t_complete *com)
 	return (0);
 }
 
-int         auto_complete(t_buff *buffer, t_cursor *cursor)
+int			auto_complete(t_shell *shell)
 {
 	t_complete	comp;
 
-	if (initialize_complete(&comp, buffer) != 0)
-		return(handle_error(free_complete(&comp, malloc_error)));
+	if (initialize_complete(&comp, shell->buffer) != 0)
+		return (handle_error(free_complete(&comp, malloc_error)));
 	if (complete(&comp) != 0)
-		return(handle_error(free_complete(&comp, malloc_error)));
+		return (handle_error(free_complete(&comp, malloc_error)));
 	int fd = open("test", O_CREAT | O_APPEND | O_WRONLY, 0644);
-	ft_dprintf(fd, "TEST == (%d), (%s) (%d)  \n", buffer->index, comp.to_complete, comp.options);
+	ft_dprintf(fd, "TEST == (%d), (%s) (%d)  \n", shell->buffer->index, comp.to_complete, comp.options);
 	close(fd);
-	cursor = (void *)cursor;
 	return (0);
 }
