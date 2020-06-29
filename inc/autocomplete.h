@@ -42,10 +42,11 @@ typedef struct			s_complete
 # define FILES          16
 # define VAR_DBRACK		32
 
-size_t		auto_complete(t_shell *shell);
-size_t		complete_var(t_env *env, t_complete *comp);
-size_t		complete_exec(t_complete *comp, t_env *env);
-size_t		add_complete_list(t_complete *comp, char *match);
-void    	debug_complete_list(t_complete *comp);
-size_t		initialize_complete(t_complete *com, t_buff *buffer);
+size_t					auto_complete(t_shell *shell);
+size_t					complete_var(t_env *env, t_complete *comp);
+size_t					complete_exec(t_complete *comp, t_env *env);
+size_t					add_complete_list(t_complete *comp, char *match);
+void					debug_complete_list(t_complete *comp);
+size_t					initialize_complete(t_complete *com, t_buff *buffer);
+
 #endif

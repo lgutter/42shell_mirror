@@ -12,10 +12,10 @@
 
 #include "autocomplete.h"
 
-void    debug_complete_list(t_complete *comp)
+void			debug_complete_list(t_complete *comp)
 {
-	t_clist *list;
-	static size_t  i = 0;
+	t_clist			*list;
+	static size_t	i = 0;
 
 	list = comp->list;
 	if (comp == NULL || comp->list == NULL)
