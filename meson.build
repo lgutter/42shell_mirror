@@ -90,6 +90,7 @@ src_files = files([
   'src/autocomplete/auto_complete_lists.c',
   'src/autocomplete/complete_var.c',
   'src/autocomplete/complete_exec.c',
+  'src/autocomplete/complete_builtin.c',
 ])
 
 main_file = files('src/main.c')

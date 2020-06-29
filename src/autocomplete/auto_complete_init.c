@@ -68,10 +68,10 @@ t_opt		get_auto_complete_opt(char *to_complete, char *command, size_t i)
 	t_opt	options;
 
 	options = 0;
-	if (to_complete[0] == '$')
-		options |= VAR_DOLLAR;
-	else if (strncmp("${", to_complete, 2) == 0)
+	if (strncmp("${", to_complete, 2) == 0)
 		options |= VAR_DBRACK;
+	else if (to_complete[0] == '$')
+		options |= VAR_DOLLAR;
 	else if (i == 0 && to_complete[0] != '.' && to_complete[0] != '/')
 		options = (BUILTINS | EXECUTABLES);
 	else

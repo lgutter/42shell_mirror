@@ -40,10 +40,10 @@ static size_t		complete(t_shell *shell, t_complete *comp)
 	comp->list = (t_clist*)ft_memalloc(sizeof(t_clist));
 	if (comp->list == NULL)
 		handle_error(malloc_error);
-	// if (comp->options & (1 << BUILTINS))
-	// 	complete_builtins();
+	if (comp->options & BUILTINS)
+		complete_builtin(comp);
 	if (comp->options & EXECUTABLES)
-		if (complete_exec(comp, shell->env) != 0)
+		if (complete_exec(shell->env, comp) != 0)
 			return (1);
 	// if (comp->options & (1 << DIRECTORIES) || comp->options & (1 << FILES))
 	// 	complete_files();
@@ -51,7 +51,7 @@ static size_t		complete(t_shell *shell, t_complete *comp)
 		(comp->options & VAR_DBRACK))
 		if (complete_var(shell->env, comp) != 0)
 			return (1);
-	debug_complete_list(comp);
+	print_complete_list(shell, comp);
 	return (0);
 }
 

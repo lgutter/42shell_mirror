@@ -12,19 +12,29 @@
 
 #include "autocomplete.h"
 
-void			debug_complete_list(t_complete *comp)
+void			print_complete_list(t_shell *shell, t_complete *comp)
 {
 	t_clist			*list;
-	static size_t	i = 0;
+	size_t			col;
+	size_t			i;
 
 	list = comp->list;
+	col = ((shell->cursor.max.x - 2) / (comp->max_len + 1));
+	i = col;
 	if (comp == NULL || comp->list == NULL)
 		return ;
-	ft_printf("\n");
 	while (list != NULL)
 	{
-		ft_printf("%-*s ", comp->max_len + 1, list->match);
+		if (i >= col)
+			i = (size_t)ft_printf("\n");
+		if (comp->options & (VAR_DBRACK | VAR_DOLLAR))
+			ft_printf("%s%s%-*s ", ((comp->options & VAR_DBRACK) ? "${" : "$"),
+			list->match, (comp->max_len - list->length + 3),
+			((comp->options & VAR_DBRACK) ? "}" : ""));
+		else
+			ft_printf("%-*s ", comp->max_len, list->match);
 		list = list->next;
+		i++;
 	}
 	ft_printf("\n");
 	i++;
