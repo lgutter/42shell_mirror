@@ -15,6 +15,11 @@
 
 # include "input_handling.h"
 # include "environment.h"
+# ifdef __linux__
+#  include <linux/limits.h>
+# else
+#  include <limits.h>
+# endif
 
 typedef unsigned long	t_opt;
 
@@ -46,8 +51,11 @@ size_t					auto_complete(t_shell *shell);
 size_t					complete_var(t_env *env, t_complete *comp);
 size_t					complete_exec(t_env *env, t_complete *comp);
 size_t					complete_builtin(t_complete *comp);
+size_t					complete_files(t_env *env, t_complete *comp);
 size_t					add_complete_list(t_complete *comp, char *match);
 void					print_complete_list(t_shell *shell, t_complete *comp);
 size_t					initialize_complete(t_complete *com, t_buff *buffer);
+size_t					is_directory(char *file, char *path);
+char					*get_shell_cwd(t_env *env);
 
 #endif

@@ -35,9 +35,9 @@ static size_t	match_exec(t_complete *comp, char *path)
 
 size_t			complete_exec(t_env *env, t_complete *comp)
 {
-	char	*paths;
-	char	**path;
-	size_t	i;
+	char			*paths;
+	char			**path;
+	size_t			i;
 
 	i = 0;
 	paths = ft_getenv(env, "PATH", VAR_TYPE);
