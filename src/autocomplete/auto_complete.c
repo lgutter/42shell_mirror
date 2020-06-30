@@ -14,28 +14,14 @@
 #include "cetushell.h"
 #include "autocomplete.h"
 #include "handle_error.h"
-/*
- * structure:
- * When tab pressed:
- * 1. check input give options back 
- *      > cd        : only directories
- *      > ""        : executables in PATH + builtins
- *      > "ascii"   : current dir
- *      > $ or ${}  : env + internal variables 
- * 2. check possibilities complete(dir, options)
- *      > 1 match               :complete 
- *      > fit screen 1+ match   : create matrix / selection
- *      > small creen 1+ match  : create matrix / set viewcoordinates / selection with scrolling matrix
- * 
-*/
 
-size_t		free_complete(t_complete *com, size_t ret)
+size_t			free_complete(t_complete *com, size_t ret)
 {
 	com = (void *)com;
 	return (ret);
 }
 
-static size_t		complete(t_shell *shell, t_complete *comp)
+static size_t	complete(t_shell *shell, t_complete *comp)
 {
 	comp->list = (t_clist*)ft_memalloc(sizeof(t_clist));
 	if (comp->list == NULL)
@@ -45,8 +31,8 @@ static size_t		complete(t_shell *shell, t_complete *comp)
 	if (comp->options & EXECUTABLES)
 		if (complete_exec(shell->env, comp) != 0)
 			return (1);
-	// if (comp->options & (1 << DIRECTORIES) || comp->options & (1 << FILES))
-	// 	complete_files();
+	if (comp->options & DIRECTORIES || comp->options & FILES)
+		complete_files(shell->env, comp);
 	if ((comp->options & VAR_DOLLAR) ||
 		(comp->options & VAR_DBRACK))
 		if (complete_var(shell->env, comp) != 0)
