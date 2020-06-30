@@ -943,7 +943,7 @@ Test(get_histfile_unit, invalid_no_permission_HOME, .init = cr_redirect_stderr)
 #ifdef __linux__
 	char		*home = "/root";
 #else
-	char		*home = "/exam";
+	char		*home = "/.Spotlight-V100";
 #endif
 
 	ft_bzero(&shell, sizeof(t_shell));
