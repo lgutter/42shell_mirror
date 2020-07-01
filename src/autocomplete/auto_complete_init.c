@@ -78,7 +78,7 @@ t_opt		get_auto_complete_opt(char *to_complete, char *command, size_t i)
 	{
 		options |= FILES | DIRECTORIES;
 		if (search_cd(command) == 0)
-			options |= FILES;
+			options ^= FILES;
 	}
 	return (options);
 }

@@ -63,7 +63,7 @@ size_t		filter_files(t_complete *comp, char *file, char *path)
 {
 	if ((comp->options & FILES) == 0)
 	{
-		if (is_directory(file, path) == 0)
+		if (is_directory(file, path) != 0)
 			return (1);
 	}
 	else if ((ft_strlen(file) == 1 && file[0] == '.') || (ft_strlen(file) == 2
