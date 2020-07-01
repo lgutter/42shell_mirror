@@ -18,14 +18,12 @@
 size_t		is_directory(char *file, char *path)
 {
 	struct stat		statbuff;
-	char			joinedforces[PATH_MAX];
+	char			complete_path[PATH_MAX];
 
 	if (file == NULL || path == NULL)
 		return (1);
-	ft_snprintf(joinedforces, PATH_MAX, "%s/%s", path, file);
-	if (joinedforces == NULL)
-		return (1);
-	if (lstat(file, &statbuff) == -1)
+	ft_snprintf(complete_path, PATH_MAX, "%s/%s", path, file);
+	if (lstat(complete_path, &statbuff) == -1)
 		return (1);
 	if (S_ISDIR(statbuff.st_mode))
 		return (0);
