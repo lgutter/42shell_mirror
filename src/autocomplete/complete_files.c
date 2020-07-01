@@ -76,6 +76,7 @@ size_t		add_file_match(t_complete *comp, char *path, char *complete)
 {
 	DIR				*directory;
 	struct dirent	*files;
+	char			*temp;
 
 	directory = opendir(path);
 	if (directory == NULL)
@@ -85,18 +86,19 @@ size_t		add_file_match(t_complete *comp, char *path, char *complete)
 	{
 		if (strncmp(complete, files->d_name, ft_strlen(complete)) == 0)
 		{
-			if (filter_files(comp, files->d_name, path) == 0)
+			if (filter_files(comp, files->d_name, path) == 0 &&
+					is_directory(files->d_name, path) != 0)
+				add_complete_list(comp, files->d_name);
+			else
 			{
-				if (is_directory(files->d_name, path) == 0)
-					add_complete_list(comp, ft_strjoin(files->d_name, "/"));
-				else
-					add_complete_list(comp, files->d_name);
+				temp = ft_strjoin(files->d_name, "/");
+				add_complete_list(comp, temp);
+				free(temp);
 			}
 		}
 		files = readdir(directory);
 	}
-	(void)closedir(directory);
-	return (0);
+	return (closedir(directory));
 }
 
 size_t		complete_files(t_env *env, t_complete *comp)

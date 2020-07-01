@@ -17,7 +17,15 @@
 
 size_t			free_complete(t_complete *com, size_t ret)
 {
-	com = (void *)com;
+	t_clist *temp;
+
+	while (com->list != NULL)
+	{
+		temp = com->list;
+		com->list = com->list->next;
+		free(temp->match);
+		free(temp);
+	}
 	return (ret);
 }
 
