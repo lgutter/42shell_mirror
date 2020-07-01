@@ -48,9 +48,9 @@ int			is_op_offset(size_t i, char *string)
 
 int			is_space_offset(char *simple_command)
 {
-	size_t i;
+	int		i;
 
-	i = ft_strlen(simple_command) - 1;
+	i = (int)ft_strlen(simple_command) - 1;
 	while (i > 0)
 	{
 		if (simple_command[i] == ' ')
@@ -60,6 +60,8 @@ int			is_space_offset(char *simple_command)
 		}
 		i--;
 	}
+	if (i < 0)
+		i = 0;
 	return (i);
 }
 
@@ -72,7 +74,7 @@ t_opt		get_auto_complete_opt(char *to_complete, char *command, size_t i)
 		options |= VAR_DBRACK;
 	else if (to_complete[0] == '$')
 		options |= VAR_DOLLAR;
-	else if (i == 0 && to_complete[0] != '.' && to_complete[0] != '/')
+	else if (i < 1 && to_complete[0] != '.' && to_complete[0] != '/')
 		options = (BUILTINS | EXECUTABLES);
 	else
 	{

@@ -24,7 +24,7 @@ char	*resolve_complete(t_complete *comp)
 	i = (int)comp->to_complen - 1;
 	while (comp->to_complete[i] != '/' && i > -1)
 		i--;
-	if (i == 0 || (comp->to_complen == 2 && comp->to_complete[i] == '/'))
+	if (i < 1 || (comp->to_complen == 2 && comp->to_complete[i] == '/'))
 		complete = ft_strdup("");
 	else
 		complete = ft_strdup(&comp->to_complete[i + 1]);
@@ -115,5 +115,7 @@ size_t		complete_files(t_env *env, t_complete *comp)
 		return (1);
 	if (add_file_match(comp, path, complete) != 0)
 		return (1);
+	free(path);
+	free(complete);
 	return (0);
 }
