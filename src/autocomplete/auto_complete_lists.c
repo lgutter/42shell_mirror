@@ -21,7 +21,7 @@ void			print_complete_list(t_shell *shell, t_complete *comp)
 	list = comp->list;
 	col = ((shell->cursor.max.x - 2) / (comp->max_len + 1));
 	i = col;
-	if (comp == NULL || comp->list == NULL)
+	if (comp == NULL || comp->list == NULL || comp->list->match == NULL)
 		return ;
 	while (list != NULL)
 	{
