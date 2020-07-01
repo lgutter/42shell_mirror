@@ -21,7 +21,7 @@ static size_t	match_exec(t_complete *comp, char *path)
 
 	directory = opendir(path);
 	if (directory == NULL)
-		return (handle_error(readdir_error));
+		return (readdir_error);
 	files = readdir(directory);
 	while (files != NULL)
 	{
