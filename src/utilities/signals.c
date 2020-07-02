@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/05/18 12:49:02 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/23 16:21:37 by devan         ########   odam.nl         */
+/*   Updated: 2020/07/08 20:15:40 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,25 +21,34 @@ void	simple_sigaction(int sig, void handler(int), struct sigaction *old_act)
 	sigaction(sig, &action, old_act);
 }
 
-void	signal_handler_buff(int sig)
+void	signal_handler(int sig)
 {
 	if (sig == SIGINT)
 		g_signal_handler |= SIGINT_BUFF;
-	if (sig == SIGWINCH)
+	else if (sig == SIGWINCH)
 		g_signal_handler |= SIG_WINDOW;
+	else if (sig <= 32)
+		g_signal_handler |= (1 << sig);
+	
 }
 
-void	terminal_signal(int sig)
+void	setup_signals(void)
 {
-	ft_printf("a subshell sent signal %i to cetushell, ", sig);
-	ft_printf("which means we no longer have access to the terminal!\n");
-	ft_printf("We can't fix this issue with the allowed functions in 21sh.\n");
-	ft_printf("aborting cetushell, exit.\n");
-	exit(1);
+	simple_sigaction(SIGINT, signal_handler, NULL);
+	simple_sigaction(SIGWINCH, signal_handler, NULL);
+	// simple_sigaction(SIGTSTP, signal_handler, NULL);
+	signal (SIGQUIT, SIG_IGN);
+	signal (SIGTSTP, SIG_IGN);
+	signal (SIGTTIN, SIG_IGN);
+	signal (SIGTTOU, SIG_IGN);
 }
 
-void	catch_terminal_signal(void)
+void	reset_signals(void)
 {
-	signal(SIGTTIN, terminal_signal);
-	signal(SIGTTOU, terminal_signal);
+	simple_sigaction(SIGINT, SIG_DFL, NULL);
+	simple_sigaction(SIGWINCH, SIG_DFL, NULL);
+	simple_sigaction(SIGTSTP, SIG_DFL, NULL);
+	signal(SIGQUIT, SIG_DFL);
+	signal(SIGTTIN, SIG_DFL);
+	signal(SIGTTOU, SIG_DFL);
 }

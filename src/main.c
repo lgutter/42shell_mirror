@@ -50,7 +50,7 @@ static void		cetushell(t_shell *shell)
 		if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
 		{
 			free(input);
-			input = shell->interactive == 1 ? ft_strdup("") : NULL;
+			input = shell->interactive == true ? ft_strdup("") : NULL;
 		}
 		if (input == NULL)
 			break ;
@@ -67,18 +67,21 @@ int				main(int argc, char **argv)
 	t_shell		*shell;
 	int			interactive;
 	int			exit_code;
+	pid_t		old_term_pgrp;
 
 	if (argc > 1 && argv[1] != NULL)
 	{
 		if (redir_file_argument(argv[1]) != 0)
 			return (1);
 	}
+	old_term_pgrp = tcgetpgrp(STDIN_FILENO);
 	interactive = isatty(STDIN_FILENO);
 	shell = init_shell(interactive);
 	if (shell == NULL)
 		return (1);
 	cetushell(shell);
 	exit_code = get_exit_code(shell);
+	tcsetpgrp(STDIN_FILENO, old_term_pgrp);
 	free_shell(shell, 1);
 	return (exit_code);
 }

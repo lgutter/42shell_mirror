@@ -31,7 +31,8 @@ int		handle_input(t_shell *shell, char **buffer)
 		{
 			ret = exec_complete_command(shell, complete_command);
 			free_complete_command(complete_command);
-			configure_terminal(shell, 2);
+			if (shell->interactive == true)
+				configure_terminal(shell, 3);
 		}
 		free_token_list(&tokens_start);
 	}

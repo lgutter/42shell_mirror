@@ -86,7 +86,6 @@ static char		*interactive_prompt_shell(t_shell *shell, const char *prompt)
 	temp = NULL;
 	if (init_buffs(shell->buffer, &shell->cursor, prompt) == 1)
 		return (NULL);
-	simple_sigaction(SIGWINCH, signal_handler_buff, NULL);
 	while (shell->buffer->state != RETURN_STATE)
 	{
 		set_cursor_pos(&shell->cursor, shell->buffer);
@@ -111,7 +110,7 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 	temp = NULL;
 	if (shell != NULL && prompt != NULL && shell->buffer != NULL)
 	{
-		if (shell->interactive == 1)
+		if (shell->interactive == true)
 		{
 			temp = interactive_prompt_shell(shell, prompt);
 		}

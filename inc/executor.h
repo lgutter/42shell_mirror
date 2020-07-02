@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/28 15:36:54 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/28 15:36:54 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/07/08 17:39:26 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "handle_error.h"
 # include "parser_structs.h"
 # include "environment.h"
+# include "job_control.h"
 # include <unistd.h>
 # include <sys/stat.h>
 # include <fcntl.h>
@@ -115,9 +116,11 @@ int				reset_redirections(t_redir_info **redir_info);
 */
 int				add_fd_to_list(int fd, int og_fd, t_redir_info *redir_info);
 int				exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd);
-int				exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_env *env_list);
-int				exec_simple_command(t_simple_cmd *simple_cmd, t_env *env_list);
+int				exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_shell *shell,
+									t_job *job);
+int				exec_simple_command(t_simple_cmd *simple_cmd, t_shell *shell);
 int				find_executable(t_env *env_list, t_command *command,
 								char *arg_zero);
+int				execute_command(t_command *command, t_shell *shell);
 
 #endif

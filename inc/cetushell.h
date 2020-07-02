@@ -6,7 +6,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/01/10 17:35:25 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/02/10 16:45:21 by dkroeke       ########   odam.nl         */
+/*   Updated: 2020/07/08 17:34:16 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <sys/ioctl.h>
 # include <term.h>
+# include <stdbool.h>
 # include "ft_printf.h"
 
 # define INP_BUFF_SIZE 32
@@ -60,16 +61,19 @@ typedef struct			s_cursor
 
 typedef struct			s_shell
 {
-	int					interactive;
+	bool				interactive;
+	pid_t				pid;
+	pid_t				pgid;
 	struct termios		term;
 	t_cursor			cursor;
 	struct winsize		winsize;
 	t_buff				*buffer;
 	struct s_history	*hist;
+	struct s_job_cont	*job_control;
 	struct s_env		*env;
 }						t_shell;
 
-t_shell					*init_shell(int interactive);
+t_shell					*init_shell(bool interactive);
 int						free_shell(t_shell *shell, int ret);
 void					free_dchar_arr(char **string);
 void					configure_terminal(t_shell *shell, int activator);

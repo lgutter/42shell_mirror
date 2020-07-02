@@ -87,7 +87,6 @@ int				read_input(t_shell *shell)
 	int			ret;
 
 	c = '\0';
-	simple_sigaction(SIGINT, signal_handler_buff, NULL);
 	if (shell == NULL || shell->buffer == NULL || shell->buffer->buff == NULL)
 		return (1);
 	ret = read(STDIN_FILENO, &c, 1);

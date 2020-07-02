@@ -75,6 +75,7 @@ typedef struct					s_program
 typedef struct					s_complete_cmd
 {
 	struct s_pipe_sequence		*pipe_sequence;
+	char						*cmd_string;
 	t_seperator_op				seperator_op;
 	struct s_complete_cmd		*next;
 }								t_complete_cmd;
@@ -91,6 +92,7 @@ typedef struct					s_complete_cmd
 typedef struct					s_pipe_sequence
 {
 	struct s_simple_command		*simple_command;
+	char						*cmd_string;
 	t_pipe_op					pipe;
 	struct s_pipe_sequence		*next;
 }								t_pipe_sequence;

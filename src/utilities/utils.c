@@ -96,7 +96,7 @@ int		get_exit_code(t_shell *shell)
 	if (exit_code != NULL)
 		ret = ft_atoi(exit_code);
 	free(exit_code);
-	if (shell->interactive == 1)
+	if (shell->interactive == true)
 		ft_printf("exit\n");
 	return (ret);
 }

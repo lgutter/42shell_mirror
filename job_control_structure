@@ -1,0 +1,47 @@
+job_control struct:
+- index number for current job (synonym is +)
+- index number for previous job (synonym is -)
+- pointer to linked list of jobs, or NULL if there are no jobs.
+
+example job : "echo foo   		|  cat	-e|  sleep 42&"
+job struct:
+- id / index of the job (starting at 1)
+- string containing complete job command ("echo foo | cat -e | sleep 42 &")
+- process group id of the job (pid of first process in job)
+- linked list of processes in the job
+- pointer to next job
+
+process struct:
+- string containing part of the job command this process is running (i.e. "echo foo |")
+- process group id of the job (for easy access)
+- process id
+- status
+- pointer to next process struct
+
+add a node in the job linked list in exec_complete_command,
+since 1 job is 1 complete command.
+The first time we fork, we will initialize the process group id for the job.
+
+If an error occurs anywhere, we have to make sure we remove the job from the list.
+Maybe we should allocate the job in complete_command,
+but only add it to the list after successful execution(with &) or suspension.
+
+we should change the code structure so we always fork in exec_pipe_sequence,
+so we can register the PID of every process in the job in the main thread,
+while avoiding race conditions.
+
+the strings of every part of the job could be generated during parsing,
+and added to every simple command.
+And the string for the job could then be created by adding the parts,
+after which it can be added to complete_command.
+This might be the best place since we still have the token list,
+which contains the order. this order is destroyed after parsing in some cases,
+for example: "1>&2 echo foo" would result in the exact same AST as "echo foo 1>&2".
+
+in cetushell, we run a job_control_status function just before we call prompt_shell,
+to check status of jobs and update the jobs list accordingly.
+This is also when status changes of jobs are printed.
+
+I personally think it would also be good to block the exit builtin when there are still jobs,
+but this is not mandatory. It is simply a way to warn the user they are leaving jobs running.
+

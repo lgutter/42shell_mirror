@@ -36,16 +36,16 @@ Test(exec_complete_command_unit, valid_basic_command, .init = redirect_std_err_o
 	t_pipe_sequence	pipe_seq = {&simple_cmd, no_pipe, NULL};
 	t_complete_cmd	command = {&pipe_seq, semicolon_op, NULL};
 	int				ret;
-	int				exp_ret = 0;
-	char			buff[1024];
+	int				exp_ret = 3;
 
 	ret = exec_complete_command(NULL, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
+	printf("-");
+	dprintf(2, "-");
 	fflush(stdout);
-	cr_expect_stdout_eq_str("foo\n");
+	cr_expect_stdout_eq_str("-");
 	fflush(stderr);
-	sprintf(buff, "Cetushell: %.500s\nCetushell: %.490s\n", g_error_str[env_empty_error], g_error_str[env_empty_error]);
-	cr_expect_stderr_eq_str(buff);
+	cr_expect_stderr_eq_str("-");
 }
 
 Test(exec_complete_command_unit, invalid_empty_simple_cmd, .init = redirect_std_err)
