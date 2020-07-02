@@ -15,7 +15,7 @@
 #include "autocomplete.h"
 #include "handle_error.h"
 
-size_t			free_complete(t_complete *com, size_t ret)
+static size_t	free_complete(t_complete *com, size_t ret)
 {
 	t_clist *temp;
 
@@ -26,6 +26,7 @@ size_t			free_complete(t_complete *com, size_t ret)
 		free(temp->match);
 		free(temp);
 	}
+	free(com->to_complete);
 	return (ret);
 }
 
@@ -58,7 +59,8 @@ size_t			auto_complete(t_shell *shell)
 		return (handle_error(free_complete(&comp, malloc_error)));
 	if (complete(shell, &comp) != 0)
 		return (free_complete(&comp, 1));
-	insert_match(shell, &comp);
+	if (insert_match(shell, &comp) != 0)
+		return (free_complete(&comp, 1));
 	free_complete(&comp, 0);
 	return (0);
 }

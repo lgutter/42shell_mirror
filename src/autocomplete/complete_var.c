@@ -23,6 +23,8 @@ size_t		complete_var(t_env *env, t_complete *comp)
 	if (match == NULL)
 		return (1);
 	comp->to_complen = ft_strlen(match);
+	free(comp->to_complete);
+	comp->to_complete = match;
 	while (env != NULL)
 	{
 		if (ft_strncmp(match, env->key, comp->to_complen) == 0)

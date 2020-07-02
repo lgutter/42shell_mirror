@@ -16,7 +16,7 @@
 #include <dirent.h>
 #include <unistd.h>
 
-char	*resolve_complete(t_complete *comp)
+static char		*resolve_complete(t_complete *comp)
 {
 	int		i;
 	char	*complete;
@@ -24,14 +24,17 @@ char	*resolve_complete(t_complete *comp)
 	i = (int)comp->to_complen - 1;
 	while (comp->to_complete[i] != '/' && i > -1)
 		i--;
-	if (i < 1 || (comp->to_complen == 2 && comp->to_complete[i] == '/'))
+	if (i < 0)
+		complete = ft_strdup(comp->to_complete);
+	else if ((i == 0 && comp->to_complete[0] != '/') ||
+				(comp->to_complen == 2 && comp->to_complete[i] == '/'))
 		complete = ft_strdup("");
 	else
 		complete = ft_strdup(&comp->to_complete[i + 1]);
 	return (complete);
 }
 
-char	*resolve_path(t_complete *comp, char *curdir)
+static char		*resolve_path(t_complete *comp, char *curdir)
 {
 	char			*temp;
 	char			path[PATH_MAX];
@@ -59,20 +62,20 @@ char	*resolve_path(t_complete *comp, char *curdir)
 	return (temp);
 }
 
-size_t		filter_files(t_complete *comp, char *file, char *path)
+static size_t	filter_files(t_complete *comp, char *file, char *path)
 {
 	if ((comp->options & FILES) == 0)
 	{
 		if (is_directory(file, path) != 0)
 			return (1);
 	}
-	else if ((ft_strlen(file) == 1 && file[0] == '.') || (ft_strlen(file) == 2
+	if ((ft_strlen(file) == 1 && file[0] == '.') || (ft_strlen(file) == 2
 			&& ft_strncmp(file, "..", 2) == 0))
 		return (1);
 	return (0);
 }
 
-size_t		add_file_match(t_complete *comp, char *path, char *complete)
+static size_t	add_file_match(t_complete *comp, char *path, char *complete)
 {
 	DIR				*directory;
 	struct dirent	*files;
@@ -89,7 +92,7 @@ size_t		add_file_match(t_complete *comp, char *path, char *complete)
 			if (filter_files(comp, files->d_name, path) == 0 &&
 					is_directory(files->d_name, path) != 0)
 				add_complete_list(comp, files->d_name);
-			else
+			else if (is_directory(files->d_name, path) == 0)
 			{
 				temp = ft_strjoin(files->d_name, "/");
 				add_complete_list(comp, temp);
@@ -101,7 +104,7 @@ size_t		add_file_match(t_complete *comp, char *path, char *complete)
 	return (closedir(directory));
 }
 
-size_t		complete_files(t_env *env, t_complete *comp)
+size_t			complete_files(t_env *env, t_complete *comp)
 {
 	char			*path;
 	char			*curdir;
