@@ -69,6 +69,7 @@ typedef struct			s_shell
 	struct s_env		*env;
 }						t_shell;
 
+t_shell					*init_shell(int interactive);
 int						free_shell(t_shell *shell, int ret);
 void					free_dchar_arr(char **string);
 void					configure_terminal(t_shell *shell, int activator);

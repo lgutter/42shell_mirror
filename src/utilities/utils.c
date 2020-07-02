@@ -43,23 +43,6 @@ void	free_dchar_arr(char **string)
 	free(string);
 }
 
-int		free_shell(t_shell *shell, int ret)
-{
-	if (shell != NULL)
-	{
-		free_history(shell->hist);
-		shell->hist = NULL;
-		free_buffer_buffs(shell, 1);
-		if (shell->buffer != NULL)
-			free(shell->buffer);
-		shell->buffer = NULL;
-		configure_terminal(shell, 0);
-		free_env_list(shell->env);
-		free(shell);
-	}
-	return (ret);
-}
-
 int		get_here_doc(t_io_here *io_here, t_shell *shell)
 {
 	char	*temp;
@@ -99,4 +82,21 @@ size_t	str_arr_len(char **str_array)
 		index++;
 	}
 	return (index);
+}
+
+int		get_exit_code(t_shell *shell)
+{
+	char	*exit_code;
+	int		ret;
+
+	ret = 0;
+	exit_code = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
+	if (exit_code == NULL)
+		exit_code = ft_getenv(shell->env, "STATUS", SHELL_VAR);
+	if (exit_code != NULL)
+		ret = ft_atoi(exit_code);
+	free(exit_code);
+	if (shell->interactive == 1)
+		ft_printf("exit\n");
+	return (ret);
 }

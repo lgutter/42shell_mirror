@@ -16,74 +16,26 @@
 #include "history.h"
 #include "signal_handler.h"
 
-static t_shell	*alloc_shell(int interactive)
+static int		redir_file_argument(char *filename)
 {
-	t_shell		*shell;
+	int			fd;
+	struct stat	statbuff;
 
-	shell = (t_shell *)ft_memalloc(sizeof(t_shell));
-	if (shell == NULL)
-		return (NULL);
-	shell->hist = NULL;
-	if (interactive == 1)
-	{
-		shell->hist = (t_history *)ft_memalloc(sizeof(t_history) * 1);
-		if (shell->hist == NULL)
-			handle_error_str(malloc_error, "when creating history");
-	}
-	shell->buffer = (t_buff *)ft_memalloc(sizeof(t_buff) * 1);
-	if (shell->buffer == NULL)
-	{
-		free_shell(shell, 0);
-		handle_error(malloc_error);
-		shell = NULL;
-	}
-	return (shell);
+	if (access(filename, F_OK) != 0)
+		return (handle_error_str(no_such_file_or_dir, filename));
+	if (access(filename, R_OK) != 0)
+		return (handle_error_str(access_denied, filename));
+	stat(filename, &statbuff);
+	if (S_ISDIR(statbuff.st_mode) != 0)
+		return (handle_error_str(is_dir_error, filename));
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		return (handle_error_str(access_denied, filename));
+	dup2(fd, STDIN_FILENO);
+	return (0);
 }
 
-static t_shell	*init_shell(int interactive)
-{
-	t_shell		*shell;
-	char		*temp;
-
-	shell = alloc_shell(interactive);
-	if (shell == NULL)
-		return (handle_error_p(malloc_error, NULL));
-	shell->env = dup_sys_env();
-	if (shell->env == NULL)
-	{
-		free_shell(shell, 0);
-		return (handle_error_p(malloc_error, NULL));
-	}
-	temp = ft_getenv(shell->env, "HOME", VAR_TYPE);
-	ft_setenv(shell->env, "HOME", temp, SHELL_VAR);
-	free(temp);
-	shell->interactive = interactive;
-	if (interactive == 1)
-	{
-		configure_terminal(shell, 1);
-	}
-	if (shell->hist != NULL)
-		initialize_history(shell);
-	return (shell);
-}
-
-static int		exit_shell(t_shell *shell, int ret)
-{
-	char	*exit_code;
-
-	exit_code = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
-	if (exit_code == NULL)
-		exit_code = ft_getenv(shell->env, "STATUS", SHELL_VAR);
-	if (exit_code != NULL)
-		ret = ft_atoi(exit_code);
-	free(exit_code);
-	if (shell->interactive == 1)
-		ft_printf("exit\n");
-	free_shell(shell, 1);
-	return (ret);
-}
-
-static int		cetushell(t_shell *shell)
+static void		cetushell(t_shell *shell)
 {
 	char		*input;
 	char		*prompt;
@@ -108,18 +60,25 @@ static int		cetushell(t_shell *shell)
 		input = NULL;
 		g_signal_handler = 0;
 	}
-	return (exit_shell(shell, ret));
 }
 
-int				main(void)
+int				main(int argc, char **argv)
 {
 	t_shell		*shell;
 	int			interactive;
+	int			exit_code;
 
+	if (argc > 1 && argv[1] != NULL)
+	{
+		if (redir_file_argument(argv[1]) != 0)
+			return (1);
+	}
 	interactive = isatty(STDIN_FILENO);
 	shell = init_shell(interactive);
 	if (shell == NULL)
 		return (1);
-	else
-		return (cetushell(shell));
+	cetushell(shell);
+	exit_code = get_exit_code(shell);
+	free_shell(shell, 1);
+	return (exit_code);
 }

@@ -58,6 +58,7 @@ src_files = files([
   'src/utilities/word_processing.c',
   'src/utilities/signals.c',
   'src/utilities/check_fds.c',
+  'src/utilities/shell_utils.c',
   'src/environment/convert_env_to_envp.c',
   'src/environment/dup_sys_env.c',
   'src/environment/expand_variable.c',
