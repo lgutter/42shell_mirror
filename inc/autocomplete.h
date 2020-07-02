@@ -57,5 +57,6 @@ void					print_complete_list(t_shell *shell, t_complete *comp);
 size_t					initialize_complete(t_complete *com, t_buff *buffer);
 size_t					is_directory(char *file, char *path);
 char					*get_shell_cwd(t_env *env);
+size_t					insert_match(t_shell *shell, t_complete *comp);
 
 #endif

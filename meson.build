@@ -88,6 +88,7 @@ src_files = files([
   'src/autocomplete/auto_complete.c',
   'src/autocomplete/auto_complete_init.c',
   'src/autocomplete/auto_complete_lists.c',
+  'src/autocomplete/auto_complete_insert.c',
   'src/autocomplete/complete_var.c',
   'src/autocomplete/complete_exec.c',
   'src/autocomplete/complete_builtin.c',

@@ -58,6 +58,7 @@ size_t			auto_complete(t_shell *shell)
 		return (handle_error(free_complete(&comp, malloc_error)));
 	if (complete(shell, &comp) != 0)
 		return (free_complete(&comp, 1));
+	insert_match(shell, &comp);
 	free_complete(&comp, 0);
 	return (0);
 }
