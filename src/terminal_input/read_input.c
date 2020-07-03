@@ -94,10 +94,10 @@ int				read_input(t_shell *shell)
 	if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
 	{
 		send_terminal(TERM_DOWN);
-		return (0);
+		return (1);
 	}
 	if (ret == -1)
-		return (2);
+		return (1);
 	if (ret == 1)
 	{
 		ret = read_esc_seq(c, &shell->cursor, shell->buffer, shell->hist);
