@@ -28,6 +28,12 @@ size_t		complete_var(t_env *env, t_complete *comp)
 	while (env != NULL)
 	{
 		if (ft_strncmp(match, env->key, comp->to_complen) == 0)
+		{
+			if (comp->options & VAR_DBRACK)
+			{
+				free(match);
+				match = ft_strjoin(env->key, "}");
+			}
 			add_complete_list(comp, env->key);
 		env = env->next;
 	}
