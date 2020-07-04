@@ -39,6 +39,8 @@ size_t			complete_exec(t_env *env, t_complete *comp)
 	char			**path;
 	size_t			i;
 
+	if (env == NULL || comp == NULL || comp->to_complete == NULL)
+		return (1);
 	i = 0;
 	paths = ft_getenv(env, "PATH", VAR_TYPE);
 	if (paths == NULL)

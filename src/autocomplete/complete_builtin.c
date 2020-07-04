@@ -18,6 +18,8 @@ size_t		complete_builtin(t_complete *comp)
 	size_t	i;
 
 	i = 0;
+	if (comp == NULL)
+		return (1);
 	while (g_builtins[i].builtin_name != NULL)
 	{
 		if (ft_strncmp(g_builtins[i].builtin_name, comp->to_complete,

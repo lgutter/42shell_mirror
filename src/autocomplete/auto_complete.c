@@ -54,6 +54,8 @@ size_t			auto_complete(t_shell *shell)
 {
 	t_complete	comp;
 
+	if (shell == NULL || shell->env == NULL || shell->buffer == NULL)
+		return (1);
 	ft_memset((void *)&comp, 0, sizeof(t_complete));
 	if (initialize_complete(&comp, shell->buffer) != 0)
 		return (handle_error(free_complete(&comp, malloc_error)));

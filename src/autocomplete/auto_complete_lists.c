@@ -18,19 +18,18 @@ void			print_complete_list(t_shell *shell, t_complete *comp)
 	size_t			col;
 	size_t			i;
 
+	if (comp == NULL || comp->list == NULL || comp->list->match == NULL)
+		return ;
 	list = comp->list;
 	col = ((shell->cursor.max.x - 2) / (comp->max_len + 1));
 	i = col;
-	if (comp == NULL || comp->list == NULL || comp->list->match == NULL)
-		return ;
 	while (list != NULL)
 	{
 		if (i >= col)
 			i = (size_t)ft_printf("\n");
 		if (comp->options & (VAR_DBRACK | VAR_DOLLAR))
-			ft_printf("%s%s%-*s ", ((comp->options & VAR_DBRACK) ? "${" : "$"),
-			list->match, (comp->max_len - list->length + 3),
-			((comp->options & VAR_DBRACK) ? "}" : ""));
+			ft_printf("%s%-*s ", ((comp->options & VAR_DBRACK) ? "${" : "$"),
+			(comp->max_len - list->length + 3), list->match);
 		else
 			ft_printf("%-*s ", comp->max_len, list->match);
 		list = list->next;
@@ -75,9 +74,9 @@ size_t			add_complete_list(t_complete *comp, char *match)
 {
 	t_clist *head;
 
-	head = comp->list;
-	if (head == NULL || match == NULL)
+	if (comp == NULL || comp->list == NULL || match == NULL)
 		return (1);
+	head = comp->list;
 	if (check_duplicate(head, match) != 0)\
 		return (1);
 	head = add_next_complete(head, match);

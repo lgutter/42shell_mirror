@@ -110,8 +110,10 @@ size_t			complete_files(t_env *env, t_complete *comp)
 	char			*curdir;
 	char			*complete;
 
+	if (comp == NULL || comp->to_complete == NULL || env == NULL)
+		return (1);
 	curdir = get_shell_cwd(env);
-	if (comp->to_complete == NULL || curdir == NULL)
+	if (curdir == NULL)
 		return (1);
 	complete = resolve_complete(comp);
 	path = resolve_path(comp, curdir);

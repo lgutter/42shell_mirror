@@ -65,8 +65,9 @@ size_t				insert_match(t_shell *shell, t_complete *comp)
 	int			i;
 
 	insert = NULL;
-	if (comp == NULL || comp->list == NULL || comp->to_complete == NULL ||
-			update_to_complete(comp) != 0 || comp->list->match == NULL)
+	if (shell == NULL || shell->env == NULL || comp == NULL ||
+		comp->list == NULL || comp->to_complete == NULL ||
+		update_to_complete(comp) != 0 || comp->list->match == NULL)
 		return (1);
 	if (comp->list->next == NULL && comp->list->match != NULL &&
 			comp->list->length != 0)
@@ -79,8 +80,8 @@ size_t				insert_match(t_shell *shell, t_complete *comp)
 		insert = ft_strndup(&comp->list->match[comp->to_complen],
 								i - comp->to_complen);
 	}
-	if (insert_word(shell->buffer, &shell->cursor, insert, ft_strlen(insert))
-					!= 0)
+	if (insert == NULL || insert_word(shell->buffer, &shell->cursor, insert,
+			ft_strlen(insert)) != 0)
 		return (1);
 	free(insert);
 	return (0);
