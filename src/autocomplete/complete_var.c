@@ -14,12 +14,16 @@
 
 static size_t	update_complete_var(t_complete *comp)
 {
-	char *match;
+	char	*match;
+	size_t	i;
 
-	if (comp->options & VAR_DBRACK)
+	i = ft_strlen(comp->to_complete);
+	if (comp->options & VAR_DBRACK && i > 3)
 		match = ft_strdup(&comp->to_complete[2]);
-	else
+	else if (comp->options & VAR_DOLLAR && i > 2)
 		match = ft_strdup(&comp->to_complete[1]);
+	else
+		match = ft_strdup("");
 	if (match == NULL)
 		return (1);
 	comp->to_complen = ft_strlen(match);
