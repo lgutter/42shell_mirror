@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/06/29 05:40:01 by devan         #+#    #+#                 */
-/*   Updated: 2020/06/29 05:40:01 by devan         ########   odam.nl         */
+/*   Updated: 2020/07/03 16:26:47 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ size_t		complete_var(t_env *env, t_complete *comp)
 				match = ft_strjoin(env->key, "}");
 			}
 			add_complete_list(comp, env->key);
+		}
 		env = env->next;
 	}
 	return (0);
