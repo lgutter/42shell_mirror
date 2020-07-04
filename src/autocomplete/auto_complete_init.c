@@ -33,14 +33,15 @@ static size_t	search_cd(char *string)
 
 static char		*is_op_offset(t_buff *buffer)
 {
-	size_t 	i;
+	size_t	i;
 	char	*op;
-	
+
 	i = (buffer->index != 0) ? buffer->index - 1 : buffer->index;
 	while (i > 0)
 	{
-		if (buffer->buff[i] == '|' || buffer->buff[i] == ';' || buffer->buff[i] == '&'
-			|| buffer->buff[i] == '>' || buffer->buff[i] == '<')
+		if (buffer->buff[i] == '|' || buffer->buff[i] == ';' ||
+			buffer->buff[i] == '&' || buffer->buff[i] == '>' ||
+				buffer->buff[i] == '<')
 		{
 			i++;
 			break ;
