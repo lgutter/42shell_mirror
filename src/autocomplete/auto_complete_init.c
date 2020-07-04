@@ -31,20 +31,27 @@ static size_t	search_cd(char *string)
 	return (ret);
 }
 
-static int		is_op_offset(size_t i, char *string)
+static char		*is_op_offset(t_buff *buffer)
 {
-	i = (i != 0) ? i - 1 : i;
+	size_t 	i;
+	char	*op;
+	
+	i = (buffer->index != 0) ? buffer->index - 1 : buffer->index;
 	while (i > 0)
 	{
-		if (string[i] == '|' || string[i] == ';' || string[i] == '&'
-			|| string[i] == '>' || string[i] == '<')
+		if (buffer->buff[i] == '|' || buffer->buff[i] == ';' || buffer->buff[i] == '&'
+			|| buffer->buff[i] == '>' || buffer->buff[i] == '<')
 		{
 			i++;
 			break ;
 		}
 		i--;
 	}
-	return (i);
+	if (i >= buffer->index)
+		op = ft_strdup("");
+	else
+		op = ft_strdup(&buffer->buff[i]);
+	return (op);
 }
 
 static char		*is_space_offset(char *simple_command)
@@ -68,7 +75,7 @@ static char		*is_space_offset(char *simple_command)
 	return (ft_strdup(&trim[i]));
 }
 
-static t_opt	get_autocomp_opt(char *to_complete, char *command, size_t i)
+static t_opt	get_autocomp_opt(char *to_complete, char *command)
 {
 	t_opt	options;
 
@@ -77,7 +84,7 @@ static t_opt	get_autocomp_opt(char *to_complete, char *command, size_t i)
 		options |= VAR_DBRACK;
 	else if (to_complete[0] == '$')
 		options |= VAR_DOLLAR;
-	else if (i < 1 && to_complete[0] != '.' && to_complete[0] != '/')
+	else if (to_complete[0] != '.' && to_complete[0] != '/')
 		options = (BUILTINS | EXECUTABLES);
 	else
 	{
@@ -90,13 +97,11 @@ static t_opt	get_autocomp_opt(char *to_complete, char *command, size_t i)
 
 size_t			initialize_complete(t_complete *com, t_buff *buffer)
 {
-	size_t	i;
 	char	*simple_command;
 
 	if (com == NULL || buffer == NULL || buffer->buff == NULL)
 		return (1);
-	i = is_op_offset(buffer->index, buffer->buff);
-	simple_command = ft_strdup(&buffer->buff[i]);
+	simple_command = is_op_offset(buffer);
 	if (simple_command == NULL)
 		return (1);
 	com->to_complete = is_space_offset(simple_command);
@@ -106,7 +111,7 @@ size_t			initialize_complete(t_complete *com, t_buff *buffer)
 		return (1);
 	}
 	com->to_complen = ft_strlen(com->to_complete);
-	com->options = get_autocomp_opt(com->to_complete, simple_command, i);
+	com->options = get_autocomp_opt(com->to_complete, simple_command);
 	free(simple_command);
 	return (0);
 }
