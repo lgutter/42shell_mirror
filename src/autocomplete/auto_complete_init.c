@@ -12,7 +12,7 @@
 
 #include "autocomplete.h"
 
-size_t		search_cd(char *string)
+static size_t	search_cd(char *string)
 {
 	char	**split;
 	size_t	ret;
@@ -31,7 +31,7 @@ size_t		search_cd(char *string)
 	return (ret);
 }
 
-int			is_op_offset(size_t i, char *string)
+static int		is_op_offset(size_t i, char *string)
 {
 	i = (i != 0) ? i - 1 : i;
 	while (i > 0)
@@ -46,7 +46,7 @@ int			is_op_offset(size_t i, char *string)
 	return (i);
 }
 
-int			is_space_offset(char *simple_command)
+static int		is_space_offset(char *simple_command)
 {
 	int		i;
 
@@ -65,7 +65,7 @@ int			is_space_offset(char *simple_command)
 	return (i);
 }
 
-t_opt		get_auto_complete_opt(char *to_complete, char *command, size_t i)
+static t_opt	get_autocomp_opt(char *to_complete, char *command, size_t i)
 {
 	t_opt	options;
 
@@ -85,11 +85,13 @@ t_opt		get_auto_complete_opt(char *to_complete, char *command, size_t i)
 	return (options);
 }
 
-size_t		initialize_complete(t_complete *com, t_buff *buffer)
+size_t			initialize_complete(t_complete *com, t_buff *buffer)
 {
 	size_t	i;
 	char	*simple_command;
 
+	if (com == NULL || buffer == NULL || buffer->buff == NULL)
+		return (1);
 	i = is_op_offset(buffer->index, buffer->buff);
 	simple_command = ft_strdup(&buffer->buff[i]);
 	if (simple_command == NULL)
@@ -102,7 +104,7 @@ size_t		initialize_complete(t_complete *com, t_buff *buffer)
 		return (1);
 	}
 	com->to_complen = ft_strlen(com->to_complete);
-	com->options = get_auto_complete_opt(com->to_complete, simple_command, i);
+	com->options = get_autocomp_opt(com->to_complete, simple_command, i);
 	free(simple_command);
 	return (0);
 }
