@@ -12,7 +12,7 @@
 
 #include "autocomplete.h"
 
-size_t		complete_var(t_env *env, t_complete *comp)
+static size_t	update_complete_var(t_complete *comp)
 {
 	char *match;
 
@@ -25,16 +25,28 @@ size_t		complete_var(t_env *env, t_complete *comp)
 	comp->to_complen = ft_strlen(match);
 	free(comp->to_complete);
 	comp->to_complete = match;
+	return (0);
+}
+
+size_t			complete_var(t_env *env, t_complete *comp)
+{
+	char	*match;
+
+	if (comp == NULL || comp->to_complete == NULL || comp->options == 0)
+		return (1);
+	update_complete_var(comp);
 	while (env != NULL)
 	{
-		if (ft_strncmp(match, env->key, comp->to_complen) == 0)
+		if (ft_strncmp(comp->to_complete, env->key, comp->to_complen) == 0)
 		{
 			if (comp->options & VAR_DBRACK)
 			{
-				free(match);
 				match = ft_strjoin(env->key, "}");
+				add_complete_list(comp, match);
+				free(match);
 			}
-			add_complete_list(comp, env->key);
+			else
+				add_complete_list(comp, env->key);
 		}
 		env = env->next;
 	}
