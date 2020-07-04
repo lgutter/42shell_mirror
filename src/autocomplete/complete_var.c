@@ -34,19 +34,19 @@ size_t			complete_var(t_env *env, t_complete *comp)
 
 	if (comp == NULL || comp->to_complete == NULL || comp->options == 0)
 		return (1);
+	match = NULL;
 	update_complete_var(comp);
 	while (env != NULL)
 	{
 		if (ft_strncmp(comp->to_complete, env->key, comp->to_complen) == 0)
 		{
 			if (comp->options & VAR_DBRACK)
-			{
-				match = ft_strjoin(env->key, "}");
-				add_complete_list(comp, match);
-				free(match);
-			}
+				match = ft_strcharjoin(env->key, '}');
 			else
-				add_complete_list(comp, env->key);
+				match = ft_strdup(env->key);
+			add_complete_list(comp, match);
+			free(match);
+			match = NULL;
 		}
 		env = env->next;
 	}

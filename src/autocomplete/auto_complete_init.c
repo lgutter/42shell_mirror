@@ -36,7 +36,8 @@ static int		is_op_offset(size_t i, char *string)
 	i = (i != 0) ? i - 1 : i;
 	while (i > 0)
 	{
-		if (string[i] == '|' || string[i] == ';' || string[i] == '&')
+		if (string[i] == '|' || string[i] == ';' || string[i] == '&'
+			|| string[i] == '>' || string[i] == '<')
 		{
 			i++;
 			break ;
@@ -46,14 +47,16 @@ static int		is_op_offset(size_t i, char *string)
 	return (i);
 }
 
-static int		is_space_offset(char *simple_command)
+static char		*is_space_offset(char *simple_command)
 {
 	int		i;
+	char	*trim;
 
-	i = (int)ft_strlen(simple_command) - 1;
+	trim = ft_strtrim(simple_command);
+	i = (int)ft_strlen(trim) - 1;
 	while (i > 0)
 	{
-		if (simple_command[i] == ' ')
+		if (trim[i] == ' ')
 		{
 			i++;
 			break ;
@@ -62,7 +65,7 @@ static int		is_space_offset(char *simple_command)
 	}
 	if (i < 0)
 		i = 0;
-	return (i);
+	return (ft_strdup(&trim[i]));
 }
 
 static t_opt	get_autocomp_opt(char *to_complete, char *command, size_t i)
@@ -96,8 +99,7 @@ size_t			initialize_complete(t_complete *com, t_buff *buffer)
 	simple_command = ft_strdup(&buffer->buff[i]);
 	if (simple_command == NULL)
 		return (1);
-	i = is_space_offset(simple_command);
-	com->to_complete = ft_strdup(&simple_command[i]);
+	com->to_complete = is_space_offset(simple_command);
 	if (com->to_complete == NULL)
 	{
 		free(simple_command);
