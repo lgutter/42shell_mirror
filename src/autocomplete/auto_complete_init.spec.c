@@ -31,6 +31,21 @@ Test(init_complete, to_complete_dir)
     cr_expect_eq(comp.options, DIRECTORIES);
 }
 
+Test(init_complete, to_complete_dir_multi)
+{
+    t_buff      buffer;
+    t_complete  comp;
+
+    buffer.buff = ft_strdup("echo foo;cd to_comp");
+    buffer.index = 20;
+
+    initialize_complete(&comp, &buffer);
+    cr_expect_str_eq(comp.to_complete, "to_comp");
+    cr_expect_eq(comp.to_complen, 7);
+    cr_expect_eq(comp.options, DIRECTORIES);
+}
+
+
 Test(init_complete, to_complete_dirfiles)
 {
     t_buff      buffer;
@@ -45,6 +60,21 @@ Test(init_complete, to_complete_dirfiles)
     cr_expect_eq(comp.options, DIRECTORIES + FILES);
 }
 
+Test(init_complete, to_complete_dirfiles_multi)
+{
+    t_buff      buffer;
+    t_complete  comp;
+
+    buffer.buff = ft_strdup("echo foo;ls to_comp");
+    buffer.index = 20;
+
+    initialize_complete(&comp, &buffer);
+    cr_expect_str_eq(comp.to_complete, "to_comp");
+    cr_expect_eq(comp.to_complen, 7);
+    cr_expect_eq(comp.options, DIRECTORIES);
+}
+
+
 Test(init_complete, to_complete_exec)
 {
     t_buff      buffer;
@@ -52,6 +82,21 @@ Test(init_complete, to_complete_exec)
 
     buffer.buff = ft_strdup("crazyexecutablewhichisverylong");
     buffer.index = 31;
+
+    initialize_complete(&comp, &buffer);
+    cr_expect_str_eq(comp.to_complete, "crazyexecutablewhichisverylong");
+    cr_expect_eq(comp.to_complen, 30);
+    cr_expect_eq(comp.options, EXECUTABLES + BUILTINS);
+}
+
+
+Test(init_complete, to_complete_exec_multi)
+{
+    t_buff      buffer;
+    t_complete  comp;
+
+    buffer.buff = ft_strdup("echo foo;crazyexecutablewhichisverylong");
+    buffer.index = 40;
 
     initialize_complete(&comp, &buffer);
     cr_expect_str_eq(comp.to_complete, "crazyexecutablewhichisverylong");
@@ -87,7 +132,7 @@ Test(init_complete, to_complete_dollar_bracket)
     cr_expect_eq(comp.options, VAR_DBRACK);
 }
 
-Test(init_complete, to_complete_spaces)
+Test(init_complete, to_complete_exec_spaces)
 {
     t_buff      buffer;
     t_complete  comp;
