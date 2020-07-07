@@ -22,13 +22,13 @@ Test(init_complete, to_complete_dir)
     t_buff      buffer;
     t_complete  comp;
 
-    buffer.buff = ft_strdup("cd to_comp");
-    buffer.index = 10;
+    buffer.buff = ft_strdup("cd ./to_comp");
+    buffer.index = 12;
 
     initialize_complete(&comp, &buffer);
-    cr_expect_str_eq(comp.to_complete, "to_comp");
-    cr_expect_eq(comp.to_complen, 7);
-    cr_expect_eq(comp.options, DIRECTORIES);
+    cr_expect_str_eq(comp.to_complete, "./to_comp");
+    cr_expect_eq(comp.to_complen, 9);
+    cr_assert_eq(comp.options, DIRECTORIES, "is %d , must be %d", (int)comp.options, DIRECTORIES);
 }
 
 Test(init_complete, to_complete_dir_multi)
@@ -36,13 +36,13 @@ Test(init_complete, to_complete_dir_multi)
     t_buff      buffer;
     t_complete  comp;
 
-    buffer.buff = ft_strdup("echo foo;cd to_comp");
-    buffer.index = 20;
+    buffer.buff = ft_strdup("echo foo;cd ./to_comp");
+    buffer.index = 21;
 
     initialize_complete(&comp, &buffer);
-    cr_expect_str_eq(comp.to_complete, "to_comp");
-    cr_expect_eq(comp.to_complen, 7);
-    cr_expect_eq(comp.options, DIRECTORIES);
+    cr_expect_str_eq(comp.to_complete, "./to_comp");
+    cr_expect_eq(comp.to_complen, 9);
+    cr_assert_eq(comp.options, DIRECTORIES, "is %d , must be %d", (int)comp.options, DIRECTORIES);
 }
 
 
@@ -51,13 +51,13 @@ Test(init_complete, to_complete_dirfiles)
     t_buff      buffer;
     t_complete  comp;
 
-    buffer.buff = ft_strdup("ls to_comp");
-    buffer.index = 10;
+    buffer.buff = ft_strdup("ls .to_comp");
+    buffer.index = 11;
 
     initialize_complete(&comp, &buffer);
-    cr_expect_str_eq(comp.to_complete, "to_comp");
-    cr_expect_eq(comp.to_complen, 7);
-    cr_expect_eq(comp.options, DIRECTORIES + FILES);
+    cr_expect_str_eq(comp.to_complete, ".to_comp");
+    cr_expect_eq(comp.to_complen, 8);
+    cr_assert_eq(comp.options, (DIRECTORIES + FILES), "is %d , must be %d", (int)comp.options, DIRECTORIES);
 }
 
 Test(init_complete, to_complete_dirfiles_multi)
@@ -65,13 +65,13 @@ Test(init_complete, to_complete_dirfiles_multi)
     t_buff      buffer;
     t_complete  comp;
 
-    buffer.buff = ft_strdup("echo foo;ls to_comp");
+    buffer.buff = ft_strdup("echo foo;ls .to_comp");
     buffer.index = 20;
 
     initialize_complete(&comp, &buffer);
-    cr_expect_str_eq(comp.to_complete, "to_comp");
-    cr_expect_eq(comp.to_complen, 7);
-    cr_expect_eq(comp.options, DIRECTORIES);
+    cr_expect_str_eq(comp.to_complete, ".to_comp");
+    cr_expect_eq(comp.to_complen, 8);
+    cr_expect_eq(comp.options, (DIRECTORIES + FILES));
 }
 
 
@@ -153,6 +153,7 @@ Test(init_complete, null_checks)
     t_complete  comp;
     size_t      ret;
 
+    buffer.buff = NULL;
     ret = initialize_complete(&comp, &buffer);
     cr_expect_eq(ret, 1);
     buffer.buff = ft_strdup("   spaces");
