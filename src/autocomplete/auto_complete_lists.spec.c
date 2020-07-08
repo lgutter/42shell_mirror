@@ -250,6 +250,9 @@ Test(auto_complete_lists, add_dir_multi)
 	cr_expect_eq(ret, 0);
 	ret = mkdir("/tmp/add_dir_multi/dir2", 0777);
 	cr_expect_eq(ret, 0);
+	ret = open("/tmp/add_dirfiles_multi/dirfiles1", O_CREAT, O_WRONLY, O_APPEND, 0777);
+	ft_dprintf(ret, "test");
+	close(ret);
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	comp.options |= DIRECTORIES;
@@ -259,6 +262,7 @@ Test(auto_complete_lists, add_dir_multi)
 	cr_expect_eq(ret, 0);
     cr_expect_str_eq(comp.list->match, "dir2/");
 	cr_expect_str_eq(comp.list->next->match, "dir1/");
+	cr_expect_null(comp.list->next->next);
 	remove("/tmp/add_dir_multi/dir1");
 	remove("/tmp/add_dir_multi/dir2");
 	remove("/tmp/add_dir_multi");
@@ -286,6 +290,7 @@ Test(auto_complete_lists, add_dirfiles_multi)
 	cr_expect_eq(ret, 0);
     cr_expect_str_eq(comp.list->match, "dirfiles1");
 	cr_expect_str_eq(comp.list->next->match, "dir1/");
+	cr_expect_null(comp.list->next->next);
 	remove("/tmp/add_dirfiles_multi/dirfiles1");
 	remove("/tmp/add_dirfiles_multi/dir1");
 	remove("/tmp/add_dirfiles_multi");
