@@ -243,30 +243,50 @@ Test(auto_complete_lists, add_dir_multi)
     t_complete  comp;
 	size_t		ret;
 	t_env		*env;
-	char 		*curdir; 
 
-	curdir = NULL;
 	ret = mkdir("/tmp/add_dir_multi", 0777);
 	cr_expect_eq(ret, 0);
 	ret = mkdir("/tmp/add_dir_multi/dir1", 0777);
 	cr_expect_eq(ret, 0);
 	ret = mkdir("/tmp/add_dir_multi/dir2", 0777);
 	cr_expect_eq(ret, 0);
-	getcwd(curdir, PATH_MAX);
-	chdir("/tmp/add_dir_multi");
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	comp.options |= DIRECTORIES;
-	comp.to_complete = ft_strdup("/tmp/add_dir_multi/");
-	comp.to_complen = 19;
-
+	comp.to_complete = ft_strdup("/tmp/add_dir_multi/d");
+	comp.to_complen = 20;
 	ret = complete_files(env, &comp);
 	cr_expect_eq(ret, 0);
     cr_expect_str_eq(comp.list->match, "dir1/");
-	cr_expect_str_eq(comp.list->next->match, "../");
-	cr_expect_str_eq(comp.list->next->next->match, "./");
-	cr_expect_str_eq(comp.list->next->next->next->match, "dir2/");
+	cr_expect_str_eq(comp.list->next->match, "dir2/");
 	remove("/tmp/add_dir_multi/dir1");
 	remove("/tmp/add_dir_multi/dir2");
 	remove("/tmp/add_dir_multi");
+}
+
+Test(auto_complete_lists, add_dirfiles_multi)
+{
+    t_complete  comp;
+	size_t		ret;
+	t_env		*env;
+
+	ret = mkdir("/tmp/add_dirfiles_multi", 0777);
+	cr_expect_eq(ret, 0);
+	ret = mkdir("/tmp/add_dirfiles_multi/dir1", 0777);
+	cr_expect_eq(ret, 0);
+	ret = open("/tmp/add_dirfiles_multi/dirfiles1", O_CREAT, O_WRONLY, O_APPEND, 0777);
+	ft_dprintf(ret, "test");
+	close(ret);
+	env = (t_env *)ft_memalloc(sizeof(t_env));
+	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
+	comp.options |= (DIRECTORIES | FILES);
+	comp.to_complete = ft_strdup("/tmp/add_dirfiles_multi/d");
+	comp.to_complen = 25;
+	ret = complete_files(env, &comp);
+	cr_expect_eq(ret, 0);
+    cr_expect_str_eq(comp.list->match, "dir1/");
+	cr_expect_str_eq(comp.list->next->match, "dirfiles1");
+	remove("/tmp/add_dirfiles_multi/dirfiles1");
+	remove("/tmp/add_dirfiles_multi/dir1");
+	remove("/tmp/add_dirfiles_multi");
 }
