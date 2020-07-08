@@ -18,7 +18,8 @@ void			print_complete_list(t_shell *shell, t_complete *comp)
 	size_t			col;
 	size_t			i;
 
-	if (comp == NULL || comp->list == NULL || comp->list->match == NULL)
+	if (shell == NULL || comp == NULL || comp->list == NULL ||
+		comp->list->match == NULL)
 		return ;
 	list = comp->list;
 	col = ((shell->cursor.max.x - 2) / (comp->max_len + 1));
@@ -29,7 +30,7 @@ void			print_complete_list(t_shell *shell, t_complete *comp)
 			i = (size_t)ft_printf("\n");
 		if (comp->options & (VAR_DBRACK | VAR_DOLLAR))
 			ft_printf("%s%-*s ", ((comp->options & VAR_DBRACK) ? "${" : "$"),
-			(comp->max_len - list->length + 3), list->match);
+			(comp->max_len + 3), list->match);
 		else
 			ft_printf("%-*s ", comp->max_len, list->match);
 		list = list->next;
