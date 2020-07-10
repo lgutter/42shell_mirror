@@ -23,11 +23,7 @@ void	simple_sigaction(int sig, void handler(int), struct sigaction *old_act)
 
 void	signal_handler(int sig)
 {
-	if (sig == SIGINT)
-		g_signal_handler |= SIGINT_BUFF;
-	else if (sig == SIGWINCH)
-		g_signal_handler |= SIG_WINDOW;
-	else if (sig <= 32)
+	if (sig <= 32)
 		g_signal_handler |= (1 << sig);
 }
 

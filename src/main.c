@@ -47,10 +47,11 @@ static void		cetushell(t_shell *shell)
 		prompt = ft_getenv(shell->env, "PS1", SHELL_VAR);
 		input = prompt_shell(shell, prompt == NULL ? PROMPT_NORMAL : prompt);
 		free(prompt);
-		if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
+		if ((g_signal_handler & (1 << SIGINT)) != 0)
 		{
 			free(input);
 			input = shell->interactive == true ? ft_strdup("") : NULL;
+			g_signal_handler &= ~(1 << SIGINT);
 		}
 		if (input == NULL)
 			break ;
@@ -58,7 +59,6 @@ static void		cetushell(t_shell *shell)
 		update_history(shell->hist, shell->env, input);
 		free(input);
 		input = NULL;
-		g_signal_handler = 0;
 	}
 }
 

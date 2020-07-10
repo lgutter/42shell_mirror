@@ -70,7 +70,7 @@ static int	get_quote_input(t_shell *shell, char **temp, int quotes)
 		free(buff);
 		if (*temp == NULL)
 			return (-1);
-		if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
+		if ((g_signal_handler & (1 << SIGINT)) != 0)
 		{
 			*temp[0] = '\0';
 			return (-1);

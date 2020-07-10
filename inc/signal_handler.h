@@ -17,9 +17,6 @@
 # include <stdlib.h>
 # include "ft_printf.h"
 
-# define SIGINT_BUFF 1
-# define SIG_WINDOW 2
-
 volatile int g_signal_handler;
 void	simple_sigaction(int sig, void handler(int), struct sigaction *old_act);
 void	signal_handler_buff(int sig);
