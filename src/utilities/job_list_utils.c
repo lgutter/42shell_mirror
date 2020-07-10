@@ -60,6 +60,7 @@ void		add_job_to_list(t_shell *shell, t_job *job)
 			temp = temp->next;
 		temp->next = job;
 	}
+	ft_printf("[%i] %i %s\n", job->id, job->pgrp, job->command);
 	shell->job_control->previous = shell->job_control->current;
 	shell->job_control->current = job->id;
 }

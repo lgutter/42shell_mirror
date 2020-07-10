@@ -60,6 +60,7 @@ src_files = files([
   'src/utilities/check_fds.c',
   'src/utilities/shell_utils.c',
   'src/utilities/job_control_utils.c',
+  'src/utilities/get_command_strings.c',
   'src/utilities/job_list_utils.c',
   'src/utilities/term_utils.c',
   'src/environment/convert_env_to_envp.c',

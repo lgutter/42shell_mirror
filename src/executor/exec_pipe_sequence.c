@@ -108,8 +108,8 @@ static int	execute_simple(t_pipe_sequence *pipe_seq, t_shell *shell,
 int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 								t_shell *shell, t_job *job)
 {
-	int		old_fds[3];
-	int		ret;
+	int			old_fds[3];
+	int			ret;
 	t_process	*process;
 
 	process = init_process(&(job->pgrp), pipe_seq->cmd_string);
@@ -123,9 +123,9 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 		ret = execute_pipe(pipe_seq, shell, job, process);
 	else if (is_builtin(pipe_seq->simple_command->argv[0]) == 1)
 	{
-		ft_printf("BUILTINS BROKEN\n");
-		// THE NEW EXEC_BUILTIN FUNCTION SHOULD ALSO HANDLE REDIRECTIONS,
-		// AND USE FT_SETSTATUS TO STORE EXIT STATUS!
+		ft_printf("BUILTINS DISABLED\n");
+		ret = 0; // THE NEW EXEC_BUILTIN FUNCTION SHOULD ALSO HANDLE REDIRECTIONS,
+				// AND USE FT_SETSTATUS TO STORE EXIT STATUS!
 	}
 	else
 		ret = execute_simple(pipe_seq, shell, job, process);

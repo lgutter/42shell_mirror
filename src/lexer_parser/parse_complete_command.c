@@ -35,6 +35,7 @@ static t_complete_cmd	*init_complete_command(t_token **token)
 		handle_error(malloc_error);
 		return (NULL);
 	}
+	complete_cmd->cmd_string = get_command_str(*token);
 	complete_cmd->pipe_sequence = parse_pipe_sequence(token);
 	if (complete_cmd->pipe_sequence == NULL)
 	{

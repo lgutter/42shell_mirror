@@ -29,27 +29,27 @@ static void		set_terminal_ownership(t_shell *shell)
 	tcsetpgrp(STDIN_FILENO, shell->pgid);
 }
 
-static void set_terminal_attr(t_shell *shell, struct termios *orig)
+static void		set_terminal_attr(t_shell *shell, struct termios *orig)
 {
 	struct termios			shell_temp;
 	char					*temp;
 
-		if (shell == NULL)
-			return ;
-		temp = ft_getenv(shell->env, "TERM", ENV_VAR);
-		if (temp == NULL)
-			temp = "dumb";
-		tgetent(NULL, temp);
-		free(temp);
-		shell_temp = *orig;
-		shell_temp.c_lflag &= ~(ECHO | ICANON);
-		shell_temp.c_cc[VMIN] = 1;
-		shell_temp.c_cc[VTIME] = 0;
-		tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_temp);
-		shell->term = shell_temp;
+	if (shell == NULL)
+		return ;
+	temp = ft_getenv(shell->env, "TERM", ENV_VAR);
+	if (temp == NULL)
+		temp = "dumb";
+	tgetent(NULL, temp);
+	free(temp);
+	shell_temp = *orig;
+	shell_temp.c_lflag &= ~(ECHO | ICANON);
+	shell_temp.c_cc[VMIN] = 1;
+	shell_temp.c_cc[VTIME] = 0;
+	tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_temp);
+	shell->term = shell_temp;
 }
 
-void		configure_terminal(t_shell *shell, int activator)
+void			configure_terminal(t_shell *shell, int activator)
 {
 	static struct termios	orig;
 

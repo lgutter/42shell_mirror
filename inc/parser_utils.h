@@ -49,4 +49,25 @@ int		is_start_of_cmd(t_token *token);
 **	1 if the token IS a valid seperation operator.
 */
 int		is_seperator_op(t_token *token);
+
+/*
+**	walks through the token list and builds a string for the current
+**	pipe sequence, which is up until (and including) the first PIPE token.
+**	every token will be seperated by a single space.
+**	returns:
+**		the resulting string on succes.
+**		NULL on failure (malloc failure)
+*/
+char	*get_pipe_seq_str(t_token *token);
+
+/*
+**	walks through the token list and builds a string for the current
+**	complete command, which is up until (and including) the first
+**	seperator token.
+**	every token will be seperated by a single space.
+**	returns:
+**		the resulting string on succes.
+**		NULL on failure (malloc failure)
+*/
+char	*get_command_str(t_token *token);
 #endif

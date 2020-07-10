@@ -21,7 +21,7 @@ t_job		*init_job(size_t id, char *command, bool foreground)
 	{
 		job->id = id;
 		job->pgrp = 0;
-		job->status = running;
+		job->status = exited;
 		job->foreground = foreground;
 		job->command = ft_strdup(command);
 		job->processes = NULL;
@@ -52,6 +52,6 @@ int			set_process_job_group(t_job *job, t_process *process)
 		return (-1);
 	if (job->pgrp == 0)
 		job->pgrp = process->pid;
-	setpgid (process->pid, job->pgrp);
+	setpgid(process->pid, job->pgrp);
 	return (0);
 }

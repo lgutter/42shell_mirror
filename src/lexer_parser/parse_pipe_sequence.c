@@ -35,6 +35,7 @@ static t_pipe_sequence	*init_pipe_sequence(t_token **token)
 		handle_error(malloc_error);
 		return (NULL);
 	}
+	pipe_sequence->cmd_string = get_pipe_seq_str(*token);
 	pipe_sequence->simple_command = parse_simple_command(token);
 	if (pipe_sequence->simple_command == NULL)
 	{
