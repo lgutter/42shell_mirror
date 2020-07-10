@@ -34,6 +34,7 @@ static size_t	free_complete(t_complete *com, size_t ret)
 static size_t	complete(t_shell *shell, t_complete *comp)
 {
 	comp->list = (t_clist*)ft_memalloc(sizeof(t_clist));
+	comp->list->next = NULL;
 	if (comp->list == NULL)
 		handle_error(malloc_error);
 	if (comp->options & BUILTINS)

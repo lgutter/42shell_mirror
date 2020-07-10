@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/06/29 05:24:17 by devan         #+#    #+#                 */
-/*   Updated: 2020/06/29 05:24:17 by devan         ########   odam.nl         */
+/*   Updated: 2020/07/09 15:51:12 by devanando     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,8 +260,16 @@ Test(auto_complete_lists, add_dir_multi)
 	comp.to_complen = 20;
 	ret = complete_files(env, &comp);
 	cr_expect_eq(ret, 0);
-    cr_expect_str_eq(comp.list->match, "dir2/");
-	cr_expect_str_eq(comp.list->next->match, "dir1/");
+	if (comp.list->match != NULL && ft_strcmp(comp.list->match, "dir2/") == 0)
+	{
+    	cr_expect_str_eq(comp.list->match, "dir2/");
+		cr_expect_str_eq(comp.list->next->match, "dir1/");
+	}
+	else
+	{
+    	cr_expect_str_eq(comp.list->match, "dir1/");
+		cr_expect_str_eq(comp.list->next->match, "dir2/");
+	}
 	cr_expect_null(comp.list->next->next);
 	remove("/tmp/add_dir_multi/dir1");
 	remove("/tmp/add_dir_multi/dir2");
@@ -288,8 +296,17 @@ Test(auto_complete_lists, add_dirfiles_multi)
 	comp.to_complen = 25;
 	ret = complete_files(env, &comp);
 	cr_expect_eq(ret, 0);
-    cr_expect_str_eq(comp.list->match, "dirfiles1");
-	cr_expect_str_eq(comp.list->next->match, "dir1/");
+	if (comp.list->match != NULL && ft_strcmp(comp.list->match, "dirfiles1") == 0)
+	{
+		cr_expect_str_eq(comp.list->match, "dirfiles1");
+		cr_expect_str_eq(comp.list->next->match, "dir1/");
+	}
+	else
+	{
+		cr_expect_str_eq(comp.list->match, "dir1/");
+		cr_expect_str_eq(comp.list->next->match, "dirfiles1");
+
+	}
 	cr_expect_null(comp.list->next->next);
 	remove("/tmp/add_dirfiles_multi/dirfiles1");
 	remove("/tmp/add_dirfiles_multi/dir1");
