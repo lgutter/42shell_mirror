@@ -12,25 +12,6 @@
 
 #include "autocomplete.h"
 
-static size_t	search_cd(char *string)
-{
-	char	**split;
-	size_t	ret;
-	char	*trimmed;
-
-	trimmed = ft_strtrim(string);
-	if (trimmed == NULL)
-		return (1);
-	split = ft_strsplit_t_s(trimmed);
-	free(trimmed);
-	if (split[0] != NULL && ft_strcmp(split[0], "cd") == 0)
-		ret = 0;
-	else
-		ret = 1;
-	free_dchar_arr(split);
-	return (ret);
-}
-
 static char		*is_op_offset(t_buff *buffer)
 {
 	size_t	i;
@@ -55,42 +36,44 @@ static char		*is_op_offset(t_buff *buffer)
 	return (op);
 }
 
-static char		*is_space_offset(char *simple_command)
+static size_t	get_to_complete(t_complete *comp, char *simple_command)
 {
 	int		i;
-	char	*trim;
+	int		j;
 
-	trim = ft_strtrim(simple_command);
-	i = (int)ft_strlen(trim) - 1;
-	while (i > 0)
-	{
-		if (trim[i] == ' ')
-		{
-			i++;
-			break ;
-		}
-		i--;
-	}
-	if (i < 0)
-		i = 0;
-	return (ft_strdup(&trim[i]));
+	j = ft_strlen(simple_command);
+	comp->command = ft_strsplit_t_s(simple_command);
+	if (comp->command == NULL || comp->command[0] == NULL)
+		return (1);
+	i = 0;
+	while (comp->command[i] != NULL)
+		i++;
+	if (i == 1 && simple_command[j - 1] == ' ')
+		comp->to_complete = ft_strdup("");
+	else
+		comp->to_complete = ft_strdup(comp->command[i - 1]);
+	if (comp->to_complete == NULL)
+		return (1);
+	comp->to_complen = ft_strlen(comp->to_complete);
+	return (0);
 }
 
-static t_opt	get_autocomp_opt(char *to_complete, char *command)
+static t_opt	get_autocomp_opt(t_complete *comp)
 {
 	t_opt	options;
 
 	options = 0;
-	if (strncmp("${", to_complete, 2) == 0)
+	if (strncmp("${", comp->to_complete, 2) == 0)
 		options |= VAR_DBRACK;
-	else if (to_complete[0] == '$')
+	else if (comp->to_complete[0] == '$')
 		options |= VAR_DOLLAR;
-	else if (to_complete[0] != '.' && to_complete[0] != '/')
+	else if (comp->command[1] == NULL && comp->to_complen != 0 &&
+		comp->to_complete[0] != '.' && comp->to_complete[0] != '/')
 		options = (BUILTINS | EXECUTABLES);
 	else
 	{
 		options |= FILES | DIRECTORIES;
-		if (search_cd(command) == 0)
+		if (ft_strncmp("cd", comp->command[0], 2) == 0)
 			options ^= FILES;
 	}
 	return (options);
@@ -105,14 +88,12 @@ size_t			initialize_complete(t_complete *com, t_buff *buffer)
 	simple_command = is_op_offset(buffer);
 	if (simple_command == NULL)
 		return (1);
-	com->to_complete = is_space_offset(simple_command);
-	if (com->to_complete == NULL)
+	if (get_to_complete(com, simple_command) != 0)
 	{
 		free(simple_command);
 		return (1);
 	}
-	com->to_complen = ft_strlen(com->to_complete);
-	com->options = get_autocomp_opt(com->to_complete, simple_command);
+	com->options = get_autocomp_opt(com);
 	free(simple_command);
 	return (0);
 }

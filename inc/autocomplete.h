@@ -33,6 +33,7 @@ typedef struct			s_clist
 
 typedef struct			s_complete
 {
+	char				**command;
 	char				*to_complete;
 	size_t				to_complen;
 	t_opt				options;

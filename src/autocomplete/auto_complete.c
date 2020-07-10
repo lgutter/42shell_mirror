@@ -26,6 +26,7 @@ static size_t	free_complete(t_complete *com, size_t ret)
 		free(temp->match);
 		free(temp);
 	}
+	free_dchar_arr(com->command);
 	free(com->to_complete);
 	return (ret);
 }
@@ -36,12 +37,14 @@ static size_t	complete(t_shell *shell, t_complete *comp)
 	if (comp->list == NULL)
 		handle_error(malloc_error);
 	if (comp->options & BUILTINS)
-		complete_builtin(comp);
+		if (complete_builtin(comp) != 0)
+			return (1);
 	if (comp->options & EXECUTABLES)
 		if (complete_exec(shell->env, comp) != 0)
 			return (1);
 	if (comp->options & DIRECTORIES || comp->options & FILES)
-		complete_files(shell->env, comp);
+		if (complete_files(shell->env, comp) != 0)
+			return (1);
 	if ((comp->options & VAR_DOLLAR) ||
 		(comp->options & VAR_DBRACK))
 		if (complete_var(shell->env, comp) != 0)
