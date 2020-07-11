@@ -22,11 +22,12 @@ static char		*resolve_complete(t_complete *comp)
 	char	*complete;
 
 	i = (int)comp->to_complen - 1;
-	while (comp->to_complete[i] != '/' && i > -1)
-		i--;
+	if (comp->to_complen != 0)
+		while (comp->to_complete[i] != '/' && i > -1)
+			i--;
 	if (i < 0)
 		complete = ft_strdup(comp->to_complete);
-	else if ((i == 0 && comp->to_complete[0] != '/') ||
+	else if ((i == 0 && comp->to_complete[0] != '/') || comp->to_complen != 0 ||
 				(comp->to_complen == 2 && comp->to_complete[i] == '/'))
 		complete = ft_strdup("");
 	else
@@ -42,8 +43,9 @@ static char		*resolve_path(t_complete *comp, char *curdir)
 
 	ft_bzero(path, PATH_MAX);
 	i = (int)comp->to_complen - 1;
-	while (comp->to_complete[i] != '/' && i > -1)
-		i--;
+	if (comp->to_complen != 0)
+		while (comp->to_complete[i] != '/' && i > -1)
+			i--;
 	if (comp->to_complen == 1 && comp->to_complete[0] == '.')
 		temp = ft_strdup("");
 	else if ((int)comp->to_complen - 1 == i)
@@ -53,7 +55,7 @@ static char		*resolve_path(t_complete *comp, char *curdir)
 				(comp->to_complen - (comp->to_complen - (i + 1))));
 	if (temp == NULL)
 		return (NULL);
-	if (comp->to_complete[0] == '/')
+	if (comp->to_complen > 0 && comp->to_complete[0] == '/')
 		ft_strncpy(path, temp, PATH_MAX);
 	else if (curdir != NULL)
 		ft_snprintf(path, PATH_MAX, "%s/%s", curdir, temp);

@@ -44,9 +44,13 @@ static size_t		update_to_complete(t_complete *comp)
 	if ((comp->options & SHELL_VAR) != 0)
 		return (0);
 	i = (int)comp->to_complen - 1;
-	while (comp->to_complete[i] != '/' && i > -1)
-		i--;
-	complete = ft_strdup(&comp->to_complete[i + 1]);
+	if (comp->to_complen != 0)
+		while (comp->to_complete[i] != '/' && i > -1)
+			i--;
+	if (comp->to_complen == 0)
+		complete = ft_strdup("");
+	else
+		complete = ft_strdup(&comp->to_complete[i + 1]);
 	if (complete == NULL)
 		return (1);
 	len = ft_strlen(complete);
