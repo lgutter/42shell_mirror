@@ -56,6 +56,7 @@ typedef struct			s_cursor
 	size_t				new_line;
 	size_t				new_line_x;
 	int					direction;
+	int					scroll;
 }						t_cursor;
 
 typedef struct			s_shell

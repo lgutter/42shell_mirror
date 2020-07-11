@@ -117,4 +117,6 @@ void		remove_buff(t_buff *buffer, t_cursor *cursor);
 size_t		insert_word(t_buff *buffer, t_cursor *cursor, char *word,
 							size_t len);
 
+void		change_cursor(t_cursor *cursor, t_buff *buffer);
+
 #endif

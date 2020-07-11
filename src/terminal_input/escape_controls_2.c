@@ -23,9 +23,9 @@ void			left_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 		if (buffer->index != 0)
 		{
 			buffer->index--;
-			cursor->current.x--;
+			cursor->direction = CURSOR_LEFT;
+			change_cursor(cursor, buffer);
 		}
-		cursor->direction = CURSOR_LEFT;
 	}
 }
 
@@ -36,9 +36,9 @@ void			right_arrow_key(t_buff *buffer, t_cursor *cursor, char *seq)
 		buffer->rv_start = buffer->rv_end;
 		if (buffer->index < buffer->buff_len)
 		{
-			cursor->current.x++;
 			buffer->index++;
 			cursor->direction = CURSOR_RIGHT;
+			change_cursor(cursor, buffer);
 		}
 	}
 }

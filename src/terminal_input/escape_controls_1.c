@@ -28,7 +28,6 @@ void		shift_right_key(t_buff *buffer, t_cursor *cursor, char *seq)
 			else
 				buffer->rv_end = buffer->index + 1;
 			buffer->index++;
-			cursor->current.x++;
 			cursor->direction = CURSOR_RIGHT;
 		}
 	}
@@ -73,11 +72,6 @@ void		home_key(t_buff *buffer, t_cursor *cursor, char *seq)
 void		end_key(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (ft_strncmp(seq, END_KEY, ft_strlen(END_KEY)) == 0)
-	{
 		while (buffer->buff[buffer->index] != '\0')
-		{
 			right_arrow_key(buffer, cursor, ARROW_RIGHT);
-			set_cursor_pos(cursor, buffer);
-		}
-	}
 }

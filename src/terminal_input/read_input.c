@@ -56,7 +56,8 @@ static int		handle_printable_char(t_buff *buffer, t_cursor *cursor, char c)
 		}
 		if (insert_char(buffer, c) > 0)
 			return (1);
-		cursor->current.x++;
+		cursor->direction = CURSOR_RIGHT;
+		change_cursor(cursor, buffer);
 	}
 	return (0);
 }

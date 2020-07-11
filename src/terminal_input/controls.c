@@ -46,8 +46,8 @@ void		tab_key(t_shell *shell, char c)
 			while (i < 4)
 			{
 				insert_char(shell->buffer, ' ');
-				shell->cursor.current.x++;
-				set_cursor_pos(&shell->cursor, shell->buffer);
+				shell->cursor.direction = CURSOR_RIGHT;
+				change_cursor(&shell->cursor, shell->buffer);
 				i++;
 			}
 		}
@@ -70,10 +70,8 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
 			if (buffer->buff[buffer->index - 1] == '\n')
 				cursor->direction = RM_NEWLINE;
 			else
-			{
-				cursor->current.x--;
-				cursor->direction = RM_LEFT;
-			}
+				cursor->direction = CURSOR_LEFT;
+			change_cursor(cursor, buffer);
 			remove_char(buffer);
 		}
 	}

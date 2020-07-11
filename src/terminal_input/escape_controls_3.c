@@ -22,9 +22,8 @@ static void		cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq)
 			ft_isspace((int)buffer->buff[buffer->index - 1]))
 		{
 			buffer->index--;
-			cursor->current.x--;
 			cursor->direction = CURSOR_LEFT;
-			set_cursor_pos(cursor, buffer);
+			change_cursor(cursor, buffer);
 		}
 		while (buffer->index > 0)
 		{
@@ -32,9 +31,8 @@ static void		cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq)
 				ft_isspace((int)buffer->buff[buffer->index - 1]))
 				break ;
 			buffer->index--;
-			cursor->current.x--;
 			cursor->direction = CURSOR_LEFT;
-			set_cursor_pos(cursor, buffer);
+			change_cursor(cursor, buffer);
 		}
 	}
 }
@@ -47,9 +45,8 @@ static void		cntrl_right(t_buff *buffer, t_cursor *cursor, char *seq)
 			ft_isspace((int)buffer->buff[buffer->index - 1]))
 		{
 			buffer->index++;
-			cursor->current.x++;
 			cursor->direction = CURSOR_RIGHT;
-			set_cursor_pos(cursor, buffer);
+			change_cursor(cursor, buffer);
 		}
 		while (buffer->buff[buffer->index] != '\0')
 		{
@@ -57,9 +54,8 @@ static void		cntrl_right(t_buff *buffer, t_cursor *cursor, char *seq)
 				ft_isspace((int)buffer->buff[buffer->index - 1]))
 				break ;
 			buffer->index++;
-			cursor->current.x++;
 			cursor->direction = CURSOR_RIGHT;
-			set_cursor_pos(cursor, buffer);
+			change_cursor(cursor, buffer);
 		}
 	}
 }

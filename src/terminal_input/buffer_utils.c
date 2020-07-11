@@ -33,9 +33,8 @@ size_t		insert_word(t_buff *buffer, t_cursor *cursor, char *word,
 			cursor->new_line = 1;
 		}
 		else
-			cursor->current.x++;
-		cursor->direction = CURSOR_RIGHT;
-		set_cursor_pos(cursor, buffer);
+			cursor->direction = CURSOR_RIGHT;
+		change_cursor(cursor, buffer);
 		i++;
 	}
 	return (0);

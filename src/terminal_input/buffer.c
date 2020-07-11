@@ -104,8 +104,7 @@ void			remove_word(t_buff *buffer, t_cursor *cursor)
 		remove_char(buffer);
 		cursor->direction = CURSOR_LEFT;
 		buffer->rv_start--;
-		cursor->current.x--;
-		set_cursor_pos(cursor, buffer);
+		change_cursor(cursor, buffer);
 		i++;
 	}
 }
