@@ -18,9 +18,9 @@ static size_t	update_complete_var(t_complete *comp)
 	size_t	i;
 
 	i = ft_strlen(comp->to_complete);
-	if (comp->options & VAR_DBRACK && i > 3)
+	if (comp->options & VAR_DBRACK && i >= 3)
 		match = ft_strdup(&comp->to_complete[2]);
-	else if (comp->options & VAR_DOLLAR && i > 2)
+	else if (comp->options & VAR_DOLLAR && i >= 2)
 		match = ft_strdup(&comp->to_complete[1]);
 	else
 		match = ft_strdup("");

@@ -27,7 +27,7 @@ static char		*resolve_complete(t_complete *comp)
 			i--;
 	if (i < 0)
 		complete = ft_strdup(comp->to_complete);
-	else if ((i == 0 && comp->to_complete[0] != '/') || comp->to_complen != 0 ||
+	else if ((i == 0 && comp->to_complete[0] != '/') ||
 				(comp->to_complen == 2 && comp->to_complete[i] == '/'))
 		complete = ft_strdup("");
 	else
