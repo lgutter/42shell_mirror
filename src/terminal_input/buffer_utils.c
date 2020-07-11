@@ -27,11 +27,6 @@ size_t		insert_word(t_buff *buffer, t_cursor *cursor, char *word,
 	{
 		if (insert_char(buffer, word[i]) != 0)
 			return (1);
-		if (word[i] == '\n')
-		{
-			cursor->current.x = 1;
-			cursor->new_line = 1;
-		}
 		else
 			cursor->direction = CURSOR_RIGHT;
 		change_cursor(cursor, buffer);
@@ -45,7 +40,7 @@ void		remove_buff(t_buff *buffer, t_cursor *cursor)
 	if (buffer != NULL && buffer->buff != NULL)
 	{
 		ft_memset(buffer->buff, '\0', buffer->buff_len);
-		cursor->current.x = buffer->prompt_len + 1;
+		cursor->current.x = buffer->prompt_len;
 		cursor->current.y = cursor->start.y;
 		buffer->index = 0;
 		buffer->buff_len = 0;
