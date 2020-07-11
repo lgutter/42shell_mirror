@@ -45,7 +45,7 @@ static size_t		update_to_complete(t_complete *comp)
 		return (0);
 	i = (int)comp->to_complen - 1;
 	if (comp->to_complen != 0)
-		while (comp->to_complete[i] != '/' && i > -1)
+		while (i > -1 && comp->to_complete[i] != '/')
 			i--;
 	if (comp->to_complen == 0)
 		complete = ft_strdup("");

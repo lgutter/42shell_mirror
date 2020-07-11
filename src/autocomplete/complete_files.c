@@ -23,7 +23,7 @@ static char		*resolve_complete(t_complete *comp)
 
 	i = (int)comp->to_complen - 1;
 	if (comp->to_complen != 0)
-		while (comp->to_complete[i] != '/' && i > -1)
+		while (i > -1 && comp->to_complete[i] != '/')
 			i--;
 	if (i < 0)
 		complete = ft_strdup(comp->to_complete);
@@ -44,7 +44,7 @@ static char		*resolve_path(t_complete *comp, char *curdir)
 	ft_bzero(path, PATH_MAX);
 	i = (int)comp->to_complen - 1;
 	if (comp->to_complen != 0)
-		while (comp->to_complete[i] != '/' && i > -1)
+		while (i > -1 && comp->to_complete[i] != '/')
 			i--;
 	if (comp->to_complen == 1 && comp->to_complete[0] == '.')
 		temp = ft_strdup("");
