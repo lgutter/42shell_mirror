@@ -32,7 +32,7 @@ static char		*is_op_offset(t_buff *buffer)
 	if (i >= buffer->index)
 		op = ft_strdup("");
 	else
-		op = ft_strtrim(&buffer->buff[i]);
+		op = ft_strdup(&buffer->buff[i]);
 	return (op);
 }
 
@@ -82,14 +82,20 @@ static t_opt	get_autocomp_opt(t_complete *comp)
 size_t			initialize_complete(t_complete *com, t_buff *buffer)
 {
 	char	*simple_command;
+	char	*trim;
 
 	if (com == NULL || buffer == NULL || buffer->buff == NULL)
 		return (1);
 	simple_command = is_op_offset(buffer);
 	if (simple_command == NULL)
 		return (1);
-	if (ft_strlen(simple_command) == 0)
+	trim = ft_strtrim(simple_command);
+	if (ft_strlen(trim) == 0)
+	{
+		free(simple_command);
+		free(trim);
 		return (2);
+	}
 	if (get_to_complete(com, simple_command) != 0)
 	{
 		free(simple_command);
