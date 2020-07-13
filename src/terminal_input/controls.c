@@ -30,17 +30,11 @@ int			return_key(t_buff *buffer, char c)
 void		tab_key(t_shell *shell, char c)
 {
 	int		i;
-	char	*trim;
 
 	i = 0;
 	if (c == TAB_KEY)
 	{
-		trim = ft_strtrim(shell->buffer->buff);
-		i = ft_strlen(trim);
-		free(trim);
-		if (i != 0)
-			auto_complete(shell);
-		else
+		if (auto_complete(shell) == 2)
 		{
 			i = 0;
 			while (i < 4)

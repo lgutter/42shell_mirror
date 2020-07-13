@@ -32,7 +32,7 @@ static char		*is_op_offset(t_buff *buffer)
 	if (i >= buffer->index)
 		op = ft_strdup("");
 	else
-		op = ft_strdup(&buffer->buff[i]);
+		op = ft_strtrim(&buffer->buff[i]);
 	return (op);
 }
 
@@ -88,6 +88,8 @@ size_t			initialize_complete(t_complete *com, t_buff *buffer)
 	simple_command = is_op_offset(buffer);
 	if (simple_command == NULL)
 		return (1);
+	if (ft_strlen(simple_command) == 0)
+		return (2);
 	if (get_to_complete(com, simple_command) != 0)
 	{
 		free(simple_command);
