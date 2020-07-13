@@ -17,6 +17,8 @@ t_complete_cmd			*free_complete_command(t_complete_cmd *complete_cmd)
 {
 	if (complete_cmd == NULL)
 		return (NULL);
+	free(complete_cmd->cmd_string);
+	complete_cmd->cmd_string = NULL;
 	complete_cmd->seperator_op = no_seperator_op;
 	free_pipe_sequence(complete_cmd->pipe_sequence);
 	complete_cmd->pipe_sequence = NULL;

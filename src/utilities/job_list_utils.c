@@ -64,3 +64,26 @@ void		add_job_to_list(t_shell *shell, t_job *job)
 	shell->job_control->previous = shell->job_control->current;
 	shell->job_control->current = job->id;
 }
+
+void		remove_job_from_list(t_job **start, size_t id)
+{
+	t_job	*current;
+	t_job	*prev;
+	t_job	*next;
+
+	current = *start;
+	prev = NULL;
+	while (current != NULL)
+	{
+		if (current->id == id)
+		{
+			next = current->next;
+			current = free_job(current);
+			if (prev == NULL)
+				*start = next;
+			else
+				prev->next = next;
+		}
+		current = current->next;
+	}
+}

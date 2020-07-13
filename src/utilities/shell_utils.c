@@ -82,6 +82,8 @@ int				free_shell(t_shell *shell, int ret)
 		if (shell->buffer != NULL)
 			free(shell->buffer);
 		shell->buffer = NULL;
+		free_job_control(shell->job_control);
+		shell->job_control = NULL;
 		configure_terminal(NULL, 0);
 		free_env_list(shell->env);
 		free(shell);

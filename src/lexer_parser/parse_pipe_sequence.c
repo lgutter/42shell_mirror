@@ -17,6 +17,8 @@ t_pipe_sequence			*free_pipe_sequence(t_pipe_sequence *pipe_sequence)
 {
 	if (pipe_sequence == NULL)
 		return (NULL);
+	free(pipe_sequence->cmd_string);
+	pipe_sequence->cmd_string = NULL;
 	pipe_sequence->pipe = no_pipe;
 	free_simple_command(pipe_sequence->simple_command);
 	pipe_sequence->simple_command = NULL;

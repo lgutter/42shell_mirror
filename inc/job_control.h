@@ -59,5 +59,10 @@ int						set_process_job_group(t_job *job, t_process *process);
 void					add_process_to_list(t_job *job, t_process *process,
 											t_status status);
 void					add_job_to_list(t_shell *shell, t_job *job);
+t_job_cont				*free_job_control(t_job_cont *job_control);
+t_process				*free_process_list(t_process *start);
+t_process				*free_process(t_process *process);
+t_job					*free_job_list(t_job *start);
+t_job					*free_job(t_job *job);
 
 #endif
