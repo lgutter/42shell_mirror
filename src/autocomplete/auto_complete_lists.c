@@ -11,6 +11,23 @@
 /* ************************************************************************** */
 
 #include "autocomplete.h"
+#include "input_handling.h"
+#include "prompt.h"
+
+size_t			scroll_cursor(t_cursor *cursor)
+{
+	if (cursor->current.y < cursor->max.y)
+		ft_printf("\n");
+	cursor->start.y++;
+	cursor->current.y++;
+	if (cursor->current.y > cursor->max.y)
+	{
+		send_terminal(TERM_DOWN);
+		cursor->start.y--;
+		cursor->current.y--;
+	}
+	return (0);
+}
 
 void			print_complete_list(t_shell *shell, t_complete *comp)
 {
@@ -27,17 +44,16 @@ void			print_complete_list(t_shell *shell, t_complete *comp)
 	while (list != NULL)
 	{
 		if (i >= col)
-			i = (size_t)ft_printf("\n");
+			i = scroll_cursor(&shell->cursor);
 		if (comp->options & (VAR_DBRACK | VAR_DOLLAR))
 			ft_printf("%s%-*s ", ((comp->options & VAR_DBRACK) ? "${" : "$"),
-			(comp->max_len + 3), list->match);
+			(comp->max_len), list->match);
 		else
 			ft_printf("%-*s ", comp->max_len, list->match);
 		list = list->next;
 		i++;
 	}
-	ft_printf("\n");
-	i++;
+	scroll_cursor(&shell->cursor);
 }
 
 static size_t	check_duplicate(t_clist *head, char *match)
