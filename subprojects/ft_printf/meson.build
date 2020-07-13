@@ -134,7 +134,8 @@ src_files = files([
   'libft/ft_itoa_base.c',
   'libft/ft_ulltoa_base_upp.c',
   'libft/ft_ulltoa_base_low.c',
-  'libft/ft_nbrlenbase_ull.c'
+  'libft/ft_nbrlenbase_ull.c',
+  'libft/ft_getopt.c',
 ])
 
 libftprintf = static_library(

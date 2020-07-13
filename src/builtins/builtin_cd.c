@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/05/02 19:55:06 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/10 00:10:06 by devan         ########   odam.nl         */
+/*   Updated: 2020/07/09 18:31:48 by devanando     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,22 +47,30 @@ static int	cd(t_env *env, char *new_path, char *key)
 	return (0);
 }
 
-int			builtin_cd(t_command *command, t_env *env)
+int			builtin_cd(char **argv, t_shell *shell)
 {
 	char	*key;
 	char	*temp;
 	int		ret;
+	int		argc;
+	struct s_ft_getopt opt;
 
 	ret = 0;
 	temp = NULL;
-	if (command == NULL || command->argv == NULL)
+	if (argv == NULL || argv[0] == NULL)
 		return (-1);
-	key = (command->argc == 1) ? "HOME" : "OLDPWD";
-	if (command->argc > 2)
+	argc = ft_str_arr_len(argv);
+
+
+
+
+	
+	key = (argc == 1) ? "HOME" : "OLDPWD";
+	if (argc > 4)
 		ret = handle_prefix_error(too_many_arguments, "cd");
-	else if (command->argc == 1 || ft_strcmp(command->argv[1], "-") == 0)
+	else if (argc == 1 || ft_strcmp(argv[1], "-") == 0)
 	{
-		temp = ft_getenv(env, key, VAR_TYPE);
+		temp = ft_getenv(shell->env, key, VAR_TYPE);
 		if (temp == NULL)
 			ret = handle_prefix_error_str(var_not_set, "cd", key);
 	}

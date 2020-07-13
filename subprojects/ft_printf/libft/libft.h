@@ -6,7 +6,7 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/01/10 17:29:34 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/02/04 19:18:57 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/07/09 17:56:47 by devanando     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define LIBFT_H
 
 # include <stdlib.h>
+# include <stdbool.h>
 # include <string.h>
 # include <unistd.h>
 # include "get_next_line.h"
@@ -126,6 +127,8 @@ char				*ft_ulltoa_base_low(\
 size_t				ft_nbrlenbase_ull(unsigned long long number, int base);
 char				*ft_strcharjoin(char *str, char c);
 void				ft_strcharexpand(char **source, const char addition);
+bool				ft_getopt(struct s_ft_getopt *opt, int argc, char **argv,
+					const char *optstring);
 
 /*
 **	Arguments:

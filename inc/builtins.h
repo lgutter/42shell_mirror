@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/05/02 19:55:06 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/10 00:41:52 by devan         ########   odam.nl         */
+/*   Updated: 2020/07/09 16:39:05 by devanando     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ struct				s_builtin
 
 int					is_builtin(char *exec_name);
 int					execute_builtin(t_command *command, t_env *env);
-int					builtin_cd(t_command *command, t_env *env);
-int					builtin_env(t_command *command, t_env *env);
-int					builtin_set(t_command *comm, t_env *env);
-int					builtin_unset(t_command *command, t_env *env);
-int					builtin_exit(t_command *command, t_env *env);
-int					builtin_echo(t_command *command, t_env *env);
-int					builtin_shellenv(t_command *command, t_env *env);
+int					builtin_cd(char **argv, t_shell *shell);
+int					builtin_env(char **argv, t_shell *shell);
+int					builtin_set(char **argv, t_shell *shell);
+int					builtin_unset(char **argv, t_shell *shell);
+int					builtin_exit(char **argv, t_shell *shell);
+int					builtin_echo(char **argv, t_shell *shell);
+int					builtin_shellenv(char **argv, t_shell *shell);
 
 #endif
