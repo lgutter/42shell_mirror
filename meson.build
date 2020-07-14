@@ -78,6 +78,7 @@ src_files = files([
   'src/history/get_histfile.c',
   'src/history/cut_split_history.c',
   'src/history/history_utils.c',
+  'src/job_control/check_jobs.c',
   'src/executor/find_executable.c',
   'src/executor/exec_complete_command.c',
   'src/executor/exec_pipe_sequence.c',

@@ -55,10 +55,16 @@ typedef	struct			s_process
 t_job					*init_job(size_t id, char *command, bool foreground);
 t_process				*init_process(pid_t *pgrp, char *command);
 size_t					get_new_job_id(t_shell *shell);
+t_status				get_job_status(t_job *job);
+void					check_jobs(t_job_cont *job_control);
 int						set_process_job_group(t_job *job, t_process *process);
 void					add_process_to_list(t_job *job, t_process *process,
-											t_status status);
+												t_status status);
+void					print_job_status(t_job *job,
+												size_t current, size_t prev);
 void					add_job_to_list(t_shell *shell, t_job *job);
+void					remove_job_from_list(t_job_cont *job_control,
+												size_t id);
 t_job_cont				*free_job_control(t_job_cont *job_control);
 t_process				*free_process_list(t_process *start);
 t_process				*free_process(t_process *process);

@@ -41,9 +41,9 @@ static void	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
 		waitpid(process->pid, NULL, 0);
 	}
 	else if (ret > 0 && WIFSTOPPED(stat_loc) != 0)
-		add_process_to_list(job, process, suspended);
+		process->status = suspended;
 	else
-		add_process_to_list(job, process, running);
+		process->status = running;
 }
 
 static int	execute_pipe(t_pipe_sequence *pipe_seq, t_shell *shell,
@@ -90,15 +90,14 @@ static int	execute_simple(t_pipe_sequence *pipe_seq, t_shell *shell,
 		set_process_job_group(job, process);
 		if (job->foreground == true)
 		{
-			while (ret == 0)
-				ret = waitpid(process->pid, &stat_loc, WNOHANG | WUNTRACED);
+			ret = waitpid(process->pid, &stat_loc, WUNTRACED);
 			if (ret > 0 && WIFEXITED(stat_loc) != 0)
 				ret = ft_setstatus(shell->env, (int)WEXITSTATUS(stat_loc));
 			else if (ret > 0 && WIFSTOPPED(stat_loc) != 0)
-				add_process_to_list(job, process, suspended);
+				process->status = suspended;
 		}
 		else
-			add_process_to_list(job, process, running);
+			process->status = running;
 	}
 	else
 		ret = handle_error(fork_failure);
@@ -115,6 +114,7 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	process = init_process(&(job->pgrp), pipe_seq->cmd_string);
 	if (process == NULL)
 		return (malloc_error);
+	add_process_to_list(job, process, exited);
 	if (pipe_seq == NULL || pipe_seq->simple_command == NULL ||
 		pipe_seq->simple_command->argv == NULL || shell == NULL)
 		return (parsing_error);
@@ -124,8 +124,7 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	else if (is_builtin(pipe_seq->simple_command->argv[0]) == 1)
 	{
 		ft_printf("BUILTINS DISABLED\n");
-		ret = 0; // THE NEW EXEC_BUILTIN FUNCTION SHOULD ALSO HANDLE REDIRECTIONS,
-				// AND USE FT_SETSTATUS TO STORE EXIT STATUS!
+		ret = 0; // THE NEW EXEC_BUILTIN FUNCTION SHOULD ALSO HANDLE REDIRECTIONS, AND USE FT_SETSTATUS TO STORE EXIT STATUS!
 	}
 	else
 		ret = execute_simple(pipe_seq, shell, job, process);

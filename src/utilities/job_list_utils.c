@@ -65,13 +65,13 @@ void		add_job_to_list(t_shell *shell, t_job *job)
 	shell->job_control->current = job->id;
 }
 
-void		remove_job_from_list(t_job **start, size_t id)
+void		remove_job_from_list(t_job_cont *job_control, size_t id)
 {
 	t_job	*current;
 	t_job	*prev;
 	t_job	*next;
 
-	current = *start;
+	current = job_control->job_list;
 	prev = NULL;
 	while (current != NULL)
 	{
@@ -80,10 +80,36 @@ void		remove_job_from_list(t_job **start, size_t id)
 			next = current->next;
 			current = free_job(current);
 			if (prev == NULL)
-				*start = next;
+				job_control->job_list = next;
 			else
 				prev->next = next;
+			break ;
 		}
+		prev = current;
 		current = current->next;
 	}
+	if (id == job_control->current)
+		job_control->current = job_control->previous;
+	if (job_control->current == 0 && prev != NULL)
+		job_control->current = prev->id;
+}
+
+t_status	get_job_status(t_job *job)
+{
+	t_process	*process;
+	t_status	status;
+
+	if (job == NULL || job->processes == NULL)
+		return (exited);
+	process = job->processes;
+	status = process->status;
+	while (process != NULL)
+	{
+		if (process->status == running)
+			return (running);
+		if (process->status == suspended)
+			status = process->status;
+		process = process->next;
+	}
+	return (status);
 }

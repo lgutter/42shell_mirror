@@ -55,3 +55,32 @@ int			set_process_job_group(t_job *job, t_process *process)
 	setpgid(process->pid, job->pgrp);
 	return (0);
 }
+
+void		print_job_status(t_job *job, size_t current, size_t prev)
+{
+	t_process	*process;
+	char		curprev;
+	const char	*statuses[3] = {
+		"running",
+		"suspended",
+		"exited"
+	};
+
+	if (job == NULL)
+		return ;
+	process = job->processes;
+	if (job->id == current)
+		curprev = '+';
+	else if (job->id == prev)
+		curprev = '-';
+	else
+		curprev = ' ';
+	if (process != NULL)
+		ft_printf("[%i] %c\n", job->id, curprev);
+	while (process != NULL)
+	{
+		ft_printf("\t%5lu %-10s %s\n",
+				process->pid, statuses[process->status], process->command);
+		process = process->next;
+	}
+}

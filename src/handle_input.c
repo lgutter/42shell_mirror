@@ -36,5 +36,7 @@ int		handle_input(t_shell *shell, char **buffer)
 		}
 		free_token_list(&tokens_start);
 	}
+	if (g_error_internal != 0)
+		g_error_internal = ft_setstatus(shell->env, g_error_internal);
 	return (ret);
 }

@@ -21,6 +21,7 @@ t_job		*free_job(t_job *job)
 		job->foreground = false;
 		job->id = 0;
 		job->next = NULL;
+		free_process_list(job->processes);
 		job->processes = NULL;
 		job->status = 0;
 		free(job);
@@ -66,7 +67,6 @@ t_job		*free_job_list(t_job *start)
 	while (current != NULL)
 	{
 		next = current->next;
-		free_process_list(current->processes);
 		free_job(current);
 		current = next;
 	}
