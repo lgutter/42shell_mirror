@@ -40,12 +40,42 @@ static int	cd(t_env *env, char *new_path, char *key)
 		ft_printf("%s\n", new_path);
 	if (ft_setenv(env, "OLDPWD", path, ENV_VAR) != 0)
 		return (1);
+	
 	ft_bzero(path, PATH_MAX);
 	getcwd(path, PATH_MAX);
 	if (ft_setenv(env, "PWD", path, ENV_VAR) != 0)
 		return (1);
 	return (0);
 }
+
+void		get_cd_options(char **argv, char *path)
+{
+	struct s_ft_getopt  opti = {0, 1, 1, 0, false};
+	bool				link;
+	char				*path;
+
+	link = true;
+	while (ft_getopt(&opti, ft_str_arr_len(argv), argv, "LP"))
+	{
+		if (opti.opt == 'L')
+			link = true;
+		else if (opti.opt == 'P')
+			link = false;
+	}
+	path = ft_strdup(argv[opti.index]);
+	ft_printf("\n Test ===, link(%d), %s\n", link, path);
+	if (opti.illegal)
+		ft_printf("\nerror\n");
+}
+
+// int			builtin_cd(t_shell *shell, char **argv)
+// {
+// 	long long 		options;
+// 	char			*path;
+
+// 	get_cd_options();
+
+// }
 
 int			builtin_cd(t_command *command, t_env *env)
 {
@@ -55,6 +85,7 @@ int			builtin_cd(t_command *command, t_env *env)
 
 	ret = 0;
 	temp = NULL;
+	get_cd_options(command->argv);
 	if (command == NULL || command->argv == NULL)
 		return (-1);
 	key = (command->argc == 1) ? "HOME" : "OLDPWD";
