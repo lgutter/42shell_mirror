@@ -78,7 +78,6 @@ ft_lstaddback \
 ft_lstaddnext \
 get_next_line\
 ft_free_str_array\
-ft_print_str_array\
-ft_strcharjoin \
+ft_print_str_array \
 ft_getopt \
 
