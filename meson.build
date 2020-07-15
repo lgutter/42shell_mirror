@@ -157,6 +157,7 @@ if libcriterion_deb.found()
     'src/builtins/builtin_unset.spec.c',
     'src/autocomplete/auto_complete_init.spec.c',
     'src/autocomplete/auto_complete_lists.spec.c',
+    'src/handle_input.spec.c',
   ])
 
   tester = executable('test-cetushell',
