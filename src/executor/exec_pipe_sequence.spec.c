@@ -33,14 +33,17 @@ Test(exec_pipe_sequence_unit, valid_basic_command, .init = redirect_std_out)
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
 	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
-	t_pipe_sequence	pipe_seq = {&simple_cmd, no_pipe, NULL};
+	t_pipe_sequence	pipe_seq = {&simple_cmd, "/bin/echo foo", no_pipe, NULL};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = 0;
+	t_job			job;
 
+	memset(&job, 0, sizeof(t_job));
 	memset(&shell, 0, sizeof(t_shell));
 	shell.env = dup_sys_env();
-	ret = exec_pipe_sequence(&pipe_seq, &shell);
+	job.foreground = true;
+	ret = exec_pipe_sequence(&pipe_seq, &shell, &job);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stdout);
 	cr_expect_stdout_eq_str("foo\n");
@@ -56,15 +59,18 @@ Test(exec_pipe_sequence_unit, valid_pipe_sequence_2_commands, .init = redirect_s
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
 	t_simple_cmd	simple_cmd1 = {NULL, &argument1, argv1};
 	t_simple_cmd	simple_cmd2 = {NULL, &argument_cat1, argv2};
-	t_pipe_sequence	pipe_seq2 = {&simple_cmd2, no_pipe, NULL};
-	t_pipe_sequence	pipe_seq1 = {&simple_cmd1, pipe_op, &pipe_seq2};
+	t_pipe_sequence	pipe_seq2 = {&simple_cmd2, "cat -e", no_pipe, NULL};
+	t_pipe_sequence	pipe_seq1 = {&simple_cmd1, "/bin/echo foo |", pipe_op, &pipe_seq2};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = 0;
+	t_job			job;
 
+	memset(&job, 0, sizeof(t_job));
 	memset(&shell, 0, sizeof(t_shell));
+	job.foreground = true;
 	shell.env = dup_sys_env();
-	ret = exec_pipe_sequence(&pipe_seq1, &shell);
+	ret = exec_pipe_sequence(&pipe_seq1, &shell, &job);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stdout);
 	cr_expect_stdout_eq_str("foo$\n");
@@ -76,14 +82,18 @@ Test(exec_pipe_sequence_unit, foo_valid_NULL_env, .init = redirect_std_err_out)
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
 	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
-	t_pipe_sequence	pipe_seq = {&simple_cmd, no_pipe, NULL};
+	t_pipe_sequence	pipe_seq = {&simple_cmd, "/bin/echo foo", no_pipe, NULL};
 	t_shell			shell;
 	int				ret;
-	int				exp_ret = 0;
+	int				exp_ret = env_empty_error;
 	char			buff[1024];
+	t_job			job;
 
+	memset(&job, 0, sizeof(t_job));
 	memset(&shell, 0, sizeof(t_shell));
-	ret = exec_pipe_sequence(&pipe_seq, &shell);
+	job.foreground = true;
+	job.command = strdup(pipe_seq.cmd_string);
+	ret = exec_pipe_sequence(&pipe_seq, &shell, &job);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 	fflush(stdout);
 	cr_expect_stdout_eq_str("foo\n");
@@ -95,27 +105,31 @@ Test(exec_pipe_sequence_unit, foo_valid_NULL_env, .init = redirect_std_err_out)
 Test(exec_pipe_sequence_unit, invalid_empty_simple_cmd)
 {
 	t_simple_cmd	simple_cmd = {NULL, NULL, NULL};
-	t_pipe_sequence	pipe_seq = {&simple_cmd, no_pipe, NULL};
+	t_pipe_sequence	pipe_seq = {&simple_cmd, "", no_pipe, NULL};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = parsing_error;
+	t_job			job;
 
+	memset(&job, 0, sizeof(t_job));
 	memset(&shell, 0, sizeof(t_shell));
 	shell.env = dup_sys_env();
-	ret = exec_pipe_sequence(&pipe_seq, &shell);
+	ret = exec_pipe_sequence(&pipe_seq, &shell, &job);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 }
 
 Test(exec_pipe_sequence_unit, invalid_NULL_simple_cmd_pipe)
 {
-	t_pipe_sequence	pipe_seq = {NULL, pipe_op, NULL};
+	t_pipe_sequence	pipe_seq = {NULL, "", pipe_op, NULL};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = parsing_error;
+	t_job			job;
 
+	memset(&job, 0, sizeof(t_job));
 	memset(&shell, 0, sizeof(t_shell));
 	shell.env = dup_sys_env();
-	ret = exec_pipe_sequence(&pipe_seq, &shell);
+	ret = exec_pipe_sequence(&pipe_seq, &shell, &job);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 }
 
@@ -124,9 +138,11 @@ Test(exec_pipe_sequence_unit, invalid_NULL_pipe_seq)
 	int				ret;
 	int				exp_ret = parsing_error;
 	t_shell			shell;
+	t_job			job;
 
+	memset(&job, 0, sizeof(t_job));
 	memset(&shell, 0, sizeof(t_shell));
 	shell.env = dup_sys_env();
-	ret = exec_pipe_sequence(NULL, &shell);
+	ret = exec_pipe_sequence(NULL, &shell, &job);
 	cr_expect_eq(ret, exp_ret, "expected ret %i, got %i!", exp_ret, ret);
 }

@@ -18,9 +18,9 @@
 
 typedef	enum			e_status
 {
-						running = 0,
-						suspended,
-						exited
+	running = 0,
+	suspended,
+	exited
 }						t_status;
 
 typedef	struct			s_job_cont
@@ -29,7 +29,6 @@ typedef	struct			s_job_cont
 	size_t				previous;
 	struct s_job		*job_list;
 }						t_job_cont;
-
 
 typedef	struct			s_job
 {
@@ -50,7 +49,6 @@ typedef	struct			s_process
 	char				*command;
 	struct s_process	*next;
 }						t_process;
-
 
 t_job					*init_job(t_shell *shell, char *command,
 															bool foreground);

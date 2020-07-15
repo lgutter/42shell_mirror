@@ -112,12 +112,12 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	int			ret;
 	t_process	*process;
 
-	process = init_process(job, pipe_seq->cmd_string);
-	if (process == NULL)
-		return (malloc_error);
 	if (pipe_seq == NULL || pipe_seq->simple_command == NULL ||
 		pipe_seq->simple_command->argv == NULL || shell == NULL)
 		return (parsing_error);
+	process = init_process(job, pipe_seq->cmd_string);
+	if (process == NULL)
+		return (malloc_error);
 	std_fd_backup(old_fds);
 	if (pipe_seq->pipe == pipe_op)
 		ret = execute_pipe(pipe_seq, shell, job, process);
