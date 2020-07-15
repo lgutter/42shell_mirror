@@ -13,19 +13,6 @@
 #include "builtins.h"
 #include "executor.h"
 
-struct s_builtin	g_builtins[] = {
-	{"cd", builtin_cd},
-	{"env", builtin_env},
-	{"shellenv", builtin_shellenv},
-	{"setenv", builtin_set},
-	{"unsetenv", builtin_unset},
-	{"setshell", builtin_set},
-	{"unsetshell", builtin_unset},
-	{"echo", builtin_echo},
-	{"exit", builtin_exit},
-	{NULL, NULL},
-};
-
 int					execute_builtin(t_command *command, t_env *env)
 {
 	int	i;

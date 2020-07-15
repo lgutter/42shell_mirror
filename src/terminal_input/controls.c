@@ -6,13 +6,14 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/14 11:52:43 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/06/22 22:48:24 by devanando     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cetushell.h"
 #include "prompt.h"
 #include "input_handling.h"
+#include "autocomplete.h"
 
 int			return_key(t_buff *buffer, char c)
 {
@@ -26,18 +27,23 @@ int			return_key(t_buff *buffer, char c)
 	return (0);
 }
 
-void		tab_key(t_buff *buffer, t_cursor *cursor, char c)
+void		tab_key(t_shell *shell, char c)
 {
 	int		i;
 
 	i = 0;
 	if (c == TAB_KEY)
 	{
-		while (i != 4)
+		if (auto_complete(shell) == 2)
 		{
-			insert_char(buffer, ' ');
-			cursor->current.x++;
-			i++;
+			i = 0;
+			while (i < 4)
+			{
+				insert_char(shell->buffer, ' ');
+				shell->cursor.current.x++;
+				set_cursor_pos(&shell->cursor, shell->buffer);
+				i++;
+			}
 		}
 	}
 }

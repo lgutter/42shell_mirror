@@ -59,6 +59,7 @@ typedef enum		e_error
 	dup2_fd_fail,
 	exit_shell_code,
 	not_a_dir_error,
+	readdir_error,
 	error_count,
 }					t_error;
 
