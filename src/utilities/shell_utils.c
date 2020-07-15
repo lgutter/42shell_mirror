@@ -52,7 +52,8 @@ t_shell			*init_shell(bool interactive)
 	t_shell		*shell;
 	char		*temp;
 
-	setup_signals();
+	if (interactive == true)
+		setup_signals();
 	shell = alloc_shell(interactive);
 	if (shell == NULL)
 		return (handle_error_p(malloc_error, NULL));
