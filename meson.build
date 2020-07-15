@@ -1,5 +1,5 @@
 project(
-  '21shell',
+  '42shell',
   'c',
   default_options: [
     'warning_level=3',
@@ -85,6 +85,15 @@ src_files = files([
   'src/builtins/builtin_env.c',
   'src/builtins/builtin_set.c',
   'src/builtins/builtin_unset.c',
+  'src/autocomplete/auto_complete.c',
+  'src/autocomplete/auto_complete_init.c',
+  'src/autocomplete/auto_complete_lists.c',
+  'src/autocomplete/auto_complete_insert.c',
+  'src/autocomplete/complete_var.c',
+  'src/autocomplete/complete_exec.c',
+  'src/autocomplete/complete_builtin.c',
+  'src/autocomplete/complete_files.c',
+  'src/autocomplete/complete_utils.c',
 ])
 
 main_file = files('src/main.c')
@@ -138,6 +147,8 @@ if libcriterion_deb.found()
     'src/builtins/builtin_exit.spec.c',
     'src/builtins/builtin_set.spec.c',
     'src/builtins/builtin_unset.spec.c',
+    'src/autocomplete/auto_complete_init.spec.c',
+    'src/autocomplete/auto_complete_lists.spec.c',
   ])
 
   tester = executable('test-cetushell',
