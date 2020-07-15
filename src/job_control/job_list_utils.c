@@ -12,39 +12,6 @@
 
 #include "job_control.h"
 
-size_t		get_new_job_id(t_shell *shell)
-{
-	t_job	*job;
-
-	if (shell == NULL || shell->job_control == NULL)
-		return (0);
-	job = shell->job_control->job_list;
-	if (job == NULL)
-		return (1);
-	while (job->next != NULL)
-		job = job->next;
-	return (job->id + 1);
-}
-
-void		add_process_to_list(t_job *job, t_process *process, t_status status)
-{
-	t_process *temp;
-
-	if (job == NULL || process == NULL)
-		return ;
-	job->status = status;
-	process->status = status;
-	if (job->processes == NULL)
-		job->processes = process;
-	else
-	{
-		temp = job->processes;
-		while (temp->next != NULL)
-			temp = temp->next;
-		temp->next = process;
-	}
-}
-
 void		add_job_to_list(t_shell *shell, t_job *job)
 {
 	t_job	*temp;
@@ -60,38 +27,10 @@ void		add_job_to_list(t_shell *shell, t_job *job)
 			temp = temp->next;
 		temp->next = job;
 	}
-	ft_printf("[%i] %i %s\n", job->id, job->pgrp, job->command);
 	shell->job_control->previous = shell->job_control->current;
 	shell->job_control->current = job->id;
-}
-
-void		remove_job_from_list(t_job_cont *job_control, size_t id)
-{
-	t_job	*current;
-	t_job	*prev;
-	t_job	*next;
-
-	current = job_control->job_list;
-	prev = NULL;
-	while (current != NULL)
-	{
-		if (current->id == id)
-		{
-			next = current->next;
-			current = free_job(current);
-			if (prev == NULL)
-				job_control->job_list = next;
-			else
-				prev->next = next;
-			break ;
-		}
-		prev = current;
-		current = current->next;
-	}
-	if (id == job_control->current)
-		job_control->current = job_control->previous;
-	if (job_control->current == 0 && prev != NULL)
-		job_control->current = prev->id;
+	print_job_status(job,
+					shell->job_control->current, shell->job_control->previous);
 }
 
 t_status	get_job_status(t_job *job)

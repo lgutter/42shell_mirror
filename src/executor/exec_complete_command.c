@@ -25,7 +25,7 @@ int		exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd)
 	{
 		if ((g_signal_handler & (1 << SIGINT)) != 0)
 			return (1);
-		job = init_job(get_new_job_id(shell), comp_cmd->cmd_string,
+		job = init_job(shell, comp_cmd->cmd_string,
 					(comp_cmd->seperator_op != background_op));
 		ret = word_processing(shell, comp_cmd);
 		if (ret == 0)

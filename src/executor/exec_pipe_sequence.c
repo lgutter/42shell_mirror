@@ -25,6 +25,7 @@ static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
 		tcsetpgrp(STDIN_FILENO, job->pgrp);
 	reset_signals();
 	exit(exec_simple_command(pipe_seq->simple_command, shell));
+	// ADD BUILTINS HERE ASWELL!
 }
 
 static void	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
@@ -42,7 +43,7 @@ static void	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
 	}
 	else if (ret > 0 && WIFSTOPPED(stat_loc) != 0)
 		process->status = suspended;
-	else
+	else if (ret == 0)
 		process->status = running;
 }
 
@@ -111,10 +112,9 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	int			ret;
 	t_process	*process;
 
-	process = init_process(&(job->pgrp), pipe_seq->cmd_string);
+	process = init_process(job, pipe_seq->cmd_string);
 	if (process == NULL)
 		return (malloc_error);
-	add_process_to_list(job, process, exited);
 	if (pipe_seq == NULL || pipe_seq->simple_command == NULL ||
 		pipe_seq->simple_command->argv == NULL || shell == NULL)
 		return (parsing_error);

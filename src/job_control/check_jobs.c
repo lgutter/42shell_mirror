@@ -14,25 +14,54 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
+static void	remove_job_from_list(t_job_cont *job_control, size_t id)
+{
+	t_job	*current;
+	t_job	*prev;
+	t_job	*next;
+
+	current = job_control->job_list;
+	prev = NULL;
+	while (current != NULL)
+	{
+		if (current->id == id)
+		{
+			next = current->next;
+			current = free_job(current);
+			if (prev == NULL)
+				job_control->job_list = next;
+			else
+				prev->next = next;
+			break ;
+		}
+		prev = current;
+		current = current->next;
+	}
+	if (id == job_control->current)
+		job_control->current = job_control->previous;
+	if (job_control->current == 0 && prev != NULL)
+		job_control->current = prev->id;
+}
+
 static int	update_process_status(t_job *start, pid_t pid, t_status status)
 {
-	t_process	*temp;
-	t_job		*temp_job;
+	t_process	*process;
+	t_job		*job;
 
-	temp_job = start;
-	while (temp_job != NULL)
+	job = start;
+	while (job != NULL)
 	{
-		temp = temp_job->processes;
-		while (temp != NULL)
+		process = job->processes;
+		while (process != NULL)
 		{
-			if (pid == temp->pid)
+			if (pid == process->pid)
 			{
-				temp->status = status;
+				process->status = status;
 				return (0);
 			}
-			temp = temp->next;
+			process = process->next;
 		}
-		temp_job = temp_job->next;
+		job = job->next;
 	}
 	return (1);
 }
