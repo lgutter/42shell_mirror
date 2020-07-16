@@ -142,6 +142,7 @@ if libcriterion_deb.found()
     'src/utilities/process_redirects.spec.c',
     'src/utilities/word_processing.spec.c',
     'src/history/history_utils.spec.c',
+    'src/job_control/check_jobs.spec.c',
     'src/executor/add_fd_to_list.spec.c',
     'src/executor/find_executable.spec.c',
     'src/executor/set_up_io_file.spec.c',
