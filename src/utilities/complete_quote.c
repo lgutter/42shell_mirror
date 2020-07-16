@@ -61,8 +61,7 @@ static int	get_quote_input(t_shell *shell, char **temp, int quotes)
 	buff = NULL;
 	while (quotes > 0)
 	{
-		if (quotes < 3)
-			ft_strexpand(temp, "\n");
+		ft_strexpand(temp, "\n");
 		buff = prompt_shell(shell, prompts[quotes]);
 		if (buff == NULL && shell->interactive != 1)
 			return (handle_error_str(parsing_error, "unexpected EOF"));
