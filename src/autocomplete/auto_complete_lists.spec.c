@@ -21,6 +21,7 @@ Test(auto_complete_lists, null_list)
     t_complete  comp;
 	size_t		ret;
 
+	memset(&comp, 0, sizeof(t_complete));
     comp.list = NULL;
 	ret = add_complete_list(&comp, "FIRST");
 	cr_expect_eq(ret, 1);
@@ -31,6 +32,7 @@ Test(auto_complete_lists, empty_list)
     t_complete  comp;
 	size_t		ret;
 
+	memset(&comp, 0, sizeof(t_complete));
     comp.list = ft_memalloc(sizeof(t_clist));
 	ret = add_complete_list(&comp, "FIRST");
 	cr_expect_eq(ret, 0);
@@ -48,6 +50,7 @@ Test(auto_complete_lists, check_duplicate)
     t_complete  comp;
 	size_t		ret;
 
+	memset(&comp, 0, sizeof(t_complete));
     comp.list = ft_memalloc(sizeof(t_clist));
 	ret = add_complete_list(&comp, "FIRST");
 	cr_expect_eq(ret, 0);
@@ -67,6 +70,7 @@ Test(auto_complete_lists, add_builtin_single)
     t_complete  comp;
 	size_t		ret;
 
+	memset(&comp, 0, sizeof(t_complete));
     comp.list = ft_memalloc(sizeof(t_clist));
 	comp.to_complete = ft_strdup("shell");
 	comp.to_complen = 5;
@@ -82,6 +86,7 @@ Test(auto_complete_lists, add_builtin_multi)
     t_complete  comp;
 	size_t		ret;
 
+	memset(&comp, 0, sizeof(t_complete));
     comp.list = ft_memalloc(sizeof(t_clist));
 	comp.options |= BUILTINS | EXECUTABLES;
 	comp.to_complete = ft_strdup("unse");
@@ -102,6 +107,8 @@ Test(auto_complete_lists, add_dollar_single)
 	size_t		ret;
 	t_env		*env;
 
+
+	memset(&comp, 0, sizeof(t_complete));
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	env->key = ft_strdup("TESTSHELL");
@@ -126,6 +133,8 @@ Test(auto_complete_lists, add_dollar_multi)
 	size_t		ret;
 	t_env		*env;
 
+
+	memset(&comp, 0, sizeof(t_complete));
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	env->key = ft_strdup("TESTSHELL");
@@ -150,6 +159,8 @@ Test(auto_complete_lists, add_bdollar_single)
 	size_t		ret;
 	t_env		*env;
 
+
+	memset(&comp, 0, sizeof(t_complete));
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	env->key = ft_strdup("TESTSHELL");
@@ -173,6 +184,8 @@ Test(auto_complete_lists, add_bdollar_multi)
 	size_t		ret;
 	t_env		*env;
 
+
+	memset(&comp, 0, sizeof(t_complete));
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	env->key = ft_strdup("TESTSHELL");
@@ -197,6 +210,8 @@ Test(auto_complete_lists, add_exec_single)
 	size_t		ret;
 	t_env		*env;
 
+
+	memset(&comp, 0, sizeof(t_complete));
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	env->key = ft_strdup("PATH");
@@ -220,6 +235,8 @@ Test(auto_complete_lists, add_exec_multi)
 	size_t		ret;
 	t_env		*env;
 
+
+	memset(&comp, 0, sizeof(t_complete));
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	env->key = ft_strdup("PATH");
@@ -253,6 +270,8 @@ Test(auto_complete_lists, add_dir_multi)
 	ret = open("/tmp/add_dirfiles_multi/dirfiles1", O_CREAT, O_WRONLY, O_APPEND, 0777);
 	ft_dprintf(ret, "test");
 	close(ret);
+
+	memset(&comp, 0, sizeof(t_complete));
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	comp.options |= DIRECTORIES;
@@ -289,6 +308,8 @@ Test(auto_complete_lists, add_dirfiles_multi)
 	ret = open("/tmp/add_dirfiles_multi/dirfiles1", O_CREAT, O_WRONLY, O_APPEND, 0777);
 	ft_dprintf(ret, "test");
 	close(ret);
+
+	memset(&comp, 0, sizeof(t_complete));
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	comp.options |= (DIRECTORIES | FILES);
