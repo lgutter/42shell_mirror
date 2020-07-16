@@ -50,6 +50,7 @@ typedef	struct			s_process
 	struct s_process	*next;
 }						t_process;
 
+size_t					get_new_job_id(t_job_cont *job_control);
 t_job					*init_job(t_shell *shell, char *command,
 															bool foreground);
 t_process				*init_process(t_job *job, char *command);

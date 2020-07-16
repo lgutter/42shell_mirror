@@ -14,6 +14,25 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
+static void	update_current_previous_job(t_job_cont *job_control, size_t id)
+{
+	if (id == job_control->current)
+	{
+		job_control->current = job_control->previous;
+		job_control->previous = get_new_job_id(job_control);
+		if (job_control->previous > 0)
+			job_control->previous -= 1;
+	}
+	if (id == job_control->previous)
+	{
+		job_control->previous = get_new_job_id(job_control);
+		if (job_control->previous > 0)
+			job_control->previous -= 1;
+	}
+	if (job_control->previous == job_control->current)
+		job_control->previous = 0;
+}
+
 static void	remove_job_from_list(t_job_cont *job_control, size_t id)
 {
 	t_job	*current;
@@ -37,10 +56,7 @@ static void	remove_job_from_list(t_job_cont *job_control, size_t id)
 		prev = current;
 		current = current->next;
 	}
-	if (id == job_control->current)
-		job_control->current = job_control->previous;
-	if (job_control->current == 0 && prev != NULL)
-		job_control->current = prev->id;
+	update_current_previous_job(job_control, id);
 }
 
 static int	update_process_status(t_job *start, pid_t pid, t_status status)

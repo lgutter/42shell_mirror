@@ -12,13 +12,13 @@
 
 #include "job_control.h"
 
-static size_t	get_new_job_id(t_shell *shell)
+size_t			get_new_job_id(t_job_cont *job_control)
 {
 	t_job	*job;
 
-	if (shell == NULL || shell->job_control == NULL)
+	if (job_control == NULL)
 		return (0);
-	job = shell->job_control->job_list;
+	job = job_control->job_list;
 	if (job == NULL)
 		return (1);
 	while (job->next != NULL)
@@ -31,7 +31,9 @@ t_job			*init_job(t_shell *shell, char *command, bool foreground)
 	t_job	*job;
 	size_t	id;
 
-	id = get_new_job_id(shell);
+	id = 0;
+	if (shell != NULL)
+		id = get_new_job_id(shell->job_control);
 	job = (t_job *)ft_memalloc(sizeof(t_job) * 1);
 	if (job != NULL)
 	{
