@@ -60,6 +60,7 @@ typedef enum		e_error
 	exit_shell_code,
 	not_a_dir_error,
 	readdir_error,
+	internal_error,
 	error_count,
 }					t_error;
 

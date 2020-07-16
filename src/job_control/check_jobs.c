@@ -72,8 +72,6 @@ static void	update_jobs(t_job_cont *job_control)
 	t_status	status;
 	size_t		id;
 
-	if (job_control == NULL)
-		return ;
 	job = job_control->job_list;
 	while (job != NULL)
 	{
@@ -95,6 +93,8 @@ void		check_jobs(t_job_cont *job_control)
 
 	stat_loc = 0;
 	ret = 1;
+	if (job_control == NULL)
+		return ;
 	while (ret > 0)
 	{
 		ret = waitpid(-1, &stat_loc, WNOHANG | WUNTRACED | WCONTINUED);

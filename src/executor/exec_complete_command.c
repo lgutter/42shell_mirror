@@ -21,6 +21,8 @@ int		exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd)
 	t_job	*job;
 
 	ret = 0;
+	if (shell == NULL)
+		return (handle_error_str(internal_error, "shell struct is NULL"));
 	while (comp_cmd != NULL && ret != exit_shell_code)
 	{
 		if ((g_signal_handler & (1 << SIGINT)) != 0)

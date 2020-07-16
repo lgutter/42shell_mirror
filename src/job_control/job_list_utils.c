@@ -16,7 +16,7 @@ void		add_job_to_list(t_shell *shell, t_job *job)
 {
 	t_job	*temp;
 
-	if (shell->job_control == NULL)
+	if (shell == NULL || shell->job_control == NULL)
 		return ;
 	if (shell->job_control->job_list == NULL)
 		shell->job_control->job_list = job;

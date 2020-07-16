@@ -223,16 +223,17 @@ Test(exec_complete_command_unit, invalid_basic_command_NULL_shell, .init = redir
 	t_pipe_sequence	pipe_seq = {&simple_cmd, "/bin/echo foo", no_pipe, NULL};
 	t_complete_cmd	command = {&pipe_seq, "/bin/echo foo", no_seperator_op, NULL};
 	int				ret;
-	int				exp_ret = 3;
+	int				exp_ret = internal_error;
+	char			buff[1024];
 
 	ret = exec_complete_command(NULL, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	printf("-");
-	dprintf(2, "-");
 	fflush(stdout);
 	cr_expect_stdout_eq_str("-");
 	fflush(stderr);
-	cr_expect_stderr_eq_str("-");
+	snprintf(buff, 1024, "Cetushell: %s: shell struct is NULL\n", g_error_str[internal_error]);
+	cr_expect_stderr_eq_str(buff);
 }
 
 Test(exec_complete_command_unit, invalid_empty_simple_cmd, .init = redirect_std_err)
@@ -243,8 +244,16 @@ Test(exec_complete_command_unit, invalid_empty_simple_cmd, .init = redirect_std_
 	int				ret;
 	int				exp_ret = parsing_error;
 	char			buff[1024];
+	t_shell			shell;
+	t_job_cont		job_control;
+	t_env			env = {strdup(""), strdup(""), 0, NULL};
 
-	ret = exec_complete_command(NULL, &command);
+	memset(&shell, 0, sizeof(t_shell));
+	memset(&job_control, 0, sizeof(t_job_cont));
+	shell.job_control = &job_control;
+	shell.interactive = true;
+	shell.env = &env;
+	ret = exec_complete_command(&shell, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	fflush(stderr);
 	snprintf(buff, 1024, "Cetushell: %s: no arguments\n", g_error_str[parsing_error]);
@@ -258,8 +267,16 @@ Test(exec_complete_command_unit, invalid_NULL_simple_cmd_no_pipe, .init = redire
 	int				ret;
 	int				exp_ret = parsing_error;
 	char			buff[1024];
+	t_shell			shell;
+	t_job_cont		job_control;
+	t_env			env = {strdup(""), strdup(""), 0, NULL};
 
-	ret = exec_complete_command(NULL, &command);
+	memset(&shell, 0, sizeof(t_shell));
+	memset(&job_control, 0, sizeof(t_job_cont));
+	shell.job_control = &job_control;
+	shell.interactive = true;
+	shell.env = &env;
+	ret = exec_complete_command(&shell, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	fflush(stdout);
 	snprintf(buff, 1024, "Cetushell: %s: NULL simple command\n", g_error_str[parsing_error]);
@@ -272,8 +289,16 @@ Test(exec_complete_command_unit, invalid_NULL_pipe_seq, .init = redirect_std_err
 	int				ret;
 	int				exp_ret = parsing_error;
 	char			buff[1024];
+	t_shell			shell;
+	t_job_cont		job_control;
+	t_env			env = {strdup(""), strdup(""), 0, NULL};
 
-	ret = exec_complete_command(NULL, &command);
+	memset(&shell, 0, sizeof(t_shell));
+	memset(&job_control, 0, sizeof(t_job_cont));
+	shell.job_control = &job_control;
+	shell.interactive = true;
+	shell.env = &env;
+	ret = exec_complete_command(&shell, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	fflush(stdout);
 	snprintf(buff, 1024, "Cetushell: %s: NULL pipe sequence\n", g_error_str[parsing_error]);
@@ -285,7 +310,15 @@ Test(exec_complete_command_unit, invalid_NULL_complete_command)
 {
 	int				ret;
 	int				exp_ret = 0;
+	t_shell			shell;
+	t_job_cont		job_control;
+	t_env			env = {strdup(""), strdup(""), 0, NULL};
 
-	ret = exec_complete_command(NULL, NULL);
+	memset(&shell, 0, sizeof(t_shell));
+	memset(&job_control, 0, sizeof(t_job_cont));
+	shell.job_control = &job_control;
+	shell.interactive = true;
+	shell.env = &env;
+	ret = exec_complete_command(&shell, NULL);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 }
