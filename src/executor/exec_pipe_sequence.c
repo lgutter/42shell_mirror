@@ -6,76 +6,130 @@
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/28 15:49:55 by lgutter       #+#    #+#                 */
-/*   Updated: 2020/04/28 15:49:55 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/07/08 20:32:54 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
+#include "signal_handler.h"
 #include <signal.h>
 #include <sys/types.h>
+#include <stdio.h>
 
-static int	parent_wait(int pipe_fds[2], t_pipe_sequence *pipe_seq,
-						pid_t child_pid, t_env *env)
+static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
+							t_job *job, t_process *process)
 {
-	int		ret;
-
-	ret = 0;
-	close(pipe_fds[1]);
-	if (dup2(pipe_fds[0], STDIN_FILENO) < 0)
-	{
-		ret = handle_error_int(dup2_fd_fail, STDIN_FILENO);
-	}
-	else
-	{
-		ret = exec_pipe_sequence(pipe_seq->next, env);
-		kill(child_pid, SIGKILL);
-		waitpid(child_pid, NULL, 0);
-	}
-	close(pipe_fds[0]);
-	return (ret);
+	process->pid = getpid();
+	set_process_job_group(job, process);
+	if (job->foreground == true)
+		tcsetpgrp(STDIN_FILENO, job->pgrp);
+	reset_signals();
+	exit(exec_simple_command(pipe_seq->simple_command, shell));
+	// ADD BUILTINS HERE ASWELL!
 }
 
-static int	execute_pipe(t_pipe_sequence *pipe_seq, t_env *env_list)
+static void	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
+						t_job *job, t_process *process)
 {
-	int		pipe_fds[2];
-	pid_t	child_pid;
+	int		stat_loc;
+	int		ret;
+
+	exec_pipe_sequence(pipe_seq->next, shell, job);
+	ret = waitpid(process->pid, &stat_loc, WUNTRACED | WNOHANG);
+	if (ret == 0 && job->foreground == true)
+	{
+		kill(process->pid, SIGKILL);
+		waitpid(process->pid, NULL, 0);
+	}
+	else if (ret > 0 && WIFSTOPPED(stat_loc) != 0)
+		process->status = suspended;
+	else if (ret == 0)
+		process->status = running;
+}
+
+static int	execute_pipe(t_pipe_sequence *pipe_seq, t_shell *shell,
+										t_job *job, t_process *process)
+{
+	int			pipe_fds[2];
 
 	if (pipe(pipe_fds) != 0)
 		return (handle_error(pipe_failure));
-	child_pid = fork();
-	if (child_pid == 0)
+	process->pid = fork();
+	if (process->pid == 0)
 	{
 		close(pipe_fds[0]);
 		if (dup2(pipe_fds[1], STDOUT_FILENO) < 0)
 			exit(handle_error_int(dup2_fd_fail, STDOUT_FILENO));
-		exit(exec_simple_command(pipe_seq->simple_command, env_list));
+		exec_in_child(pipe_seq, shell, job, process);
 	}
-	else if (child_pid > 0)
+	else if (process->pid > 0)
 	{
-		return (parent_wait(pipe_fds, pipe_seq, child_pid, env_list));
+		set_process_job_group(job, process);
+		close(pipe_fds[1]);
+		if (dup2(pipe_fds[0], STDIN_FILENO) < 0)
+			handle_error_int(dup2_fd_fail, STDIN_FILENO);
+		else
+			pipe_parent(pipe_seq, shell, job, process);
+		close(pipe_fds[0]);
+		return (0);
 	}
 	return (handle_error_str(fork_failure, "while setting up pipe"));
 }
 
-int			exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_env *env_list)
+static int	execute_simple(t_pipe_sequence *pipe_seq, t_shell *shell,
+										t_job *job, t_process *process)
 {
-	int		old_fds[3];
-	int		ret;
+	int			ret;
+	int			stat_loc;
 
-	if (pipe_seq == NULL || pipe_seq->simple_command == NULL)
-		return (parsing_error);
-	std_fd_backup(old_fds);
-	if (pipe_seq->pipe == pipe_op)
+	ret = 0;
+	process->pid = fork();
+	if (process->pid == 0)
+		exec_in_child(pipe_seq, shell, job, process);
+	else if (process->pid > 0)
 	{
-		ret = execute_pipe(pipe_seq, env_list);
+		set_process_job_group(job, process);
+		if (job->foreground == true)
+		{
+			ret = waitpid(process->pid, &stat_loc, WUNTRACED);
+			if (ret > 0 && WIFEXITED(stat_loc) != 0)
+				ret = ft_setstatus(shell->env, (int)WEXITSTATUS(stat_loc));
+			else if (ret > 0 && WIFSTOPPED(stat_loc) != 0)
+				process->status = suspended;
+		}
+		else
+			process->status = running;
 	}
 	else
+		ret = handle_error(fork_failure);
+	return (ret);
+}
+
+int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
+								t_shell *shell, t_job *job)
+{
+	int			old_fds[3];
+	int			ret;
+	t_process	*process;
+
+	if (pipe_seq == NULL || pipe_seq->simple_command == NULL ||
+		pipe_seq->simple_command->argv == NULL || shell == NULL)
+		return (parsing_error);
+	process = init_process(job, pipe_seq->cmd_string);
+	if (process == NULL)
+		return (malloc_error);
+	std_fd_backup(old_fds);
+	if (pipe_seq->pipe == pipe_op)
+		ret = execute_pipe(pipe_seq, shell, job, process);
+	else if (is_builtin(pipe_seq->simple_command->argv[0]) == 1)
 	{
-		ret = exec_simple_command(pipe_seq->simple_command, env_list);
-		if (pipe_seq->next != NULL)
-			ret = handle_error_str(parsing_error,
-								"no pipe operator, but more pipe sequences");
+		ft_printf("BUILTINS DISABLED\n");
+		ret = 0; // THE NEW EXEC_BUILTIN FUNCTION SHOULD ALSO HANDLE REDIRECTIONS, AND USE FT_SETSTATUS TO STORE EXIT STATUS!
 	}
+	else
+		ret = execute_simple(pipe_seq, shell, job, process);
 	std_fd_restore(old_fds);
+	if (shell->interactive == true)
+		tcsetpgrp(STDIN_FILENO, shell->pgid);
 	return (ret);
 }

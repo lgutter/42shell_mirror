@@ -52,25 +52,24 @@ static int	check_quote(char *word)
 	}
 }
 
-static int	get_quote_input(t_shell *shell, char **temp)
+static int	get_quote_input(t_shell *shell, char **temp, int quotes)
 {
 	char				*buff;
 	static const char	*prompts[] = {
 							"", PROMPT_QUOTE, PROMPT_DQUOTE, PROMPT_BACKSLASH};
-	int					quotes;
 
 	buff = NULL;
-	quotes = check_quote(*temp);
 	while (quotes > 0)
 	{
-		if (quotes < 3)
-			ft_strexpand(temp, "\n");
+		ft_strexpand(temp, "\n");
 		buff = prompt_shell(shell, prompts[quotes]);
+		if (buff == NULL && shell->interactive != 1)
+			return (handle_error_str(parsing_error, "unexpected EOF"));
 		ft_strexpand(temp, buff);
 		free(buff);
 		if (*temp == NULL)
 			return (-1);
-		if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
+		if ((g_signal_handler & (1 << SIGINT)) != 0)
 		{
 			*temp[0] = '\0';
 			return (-1);
@@ -84,6 +83,7 @@ int			complete_quote(t_shell *shell, char **word)
 {
 	char	*temp;
 	int		ret;
+	int		quotes;
 
 	ret = 0;
 	if (shell == NULL || word == NULL || *word == NULL)
@@ -91,7 +91,8 @@ int			complete_quote(t_shell *shell, char **word)
 	temp = ft_strdup(*word);
 	if (temp == NULL)
 		return (malloc_error);
-	ret = get_quote_input(shell, &temp);
+	quotes = check_quote(temp);
+	ret = get_quote_input(shell, &temp, quotes);
 	free(*word);
 	*word = temp;
 	return (ret);

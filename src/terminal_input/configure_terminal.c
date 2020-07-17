@@ -15,53 +15,55 @@
 #include "signal_handler.h"
 #include "environment.h"
 
-static int	ft_puterrchar(int c)
+static void		set_terminal_ownership(t_shell *shell)
 {
-	return (write(STDERR_FILENO, &c, 1));
+	shell->pid = getpid();
+	shell->pgid = getpgid(shell->pid);
+	while (tcgetpgrp(STDIN_FILENO) != shell->pgid)
+	{
+		kill(-1 * shell->pgid, SIGTTIN);
+		shell->pgid = getpgid(shell->pid);
+	}
+	setpgid(shell->pid, shell->pid);
+	shell->pgid = shell->pid;
+	tcsetpgrp(STDIN_FILENO, shell->pgid);
 }
 
-void		send_terminal(char *command)
+static void		set_terminal_attr(t_shell *shell, struct termios *orig)
 {
-	tputs(tgetstr(command, NULL), 1, ft_puterrchar);
-}
-
-void		configure_terminal(t_shell *shell, int activator)
-{
-	static struct termios	orig;
 	struct termios			shell_temp;
 	char					*temp;
 
-	if (activator > 0)
-	{
-		if (shell == NULL)
-			return ;
-		temp = ft_getenv(shell->env, "TERM", ENV_VAR);
-		if (temp == NULL)
-			temp = "vt100";
-		tgetent(NULL, temp);
-		free(temp);
-		if (activator == 1)
-			tcgetattr(STDIN_FILENO, &orig);
-		shell_temp = orig;
-		shell_temp.c_lflag &= ~(ECHO | ICANON);
-		shell_temp.c_cc[VMIN] = 1;
-		shell_temp.c_cc[VTIME] = 0;
-		tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_temp);
-		shell->term = shell_temp;
-	}
-	if (activator == 0)
-		tcsetattr(STDIN_FILENO, TCSADRAIN, &orig);
+	if (shell == NULL)
+		return ;
+	temp = ft_getenv(shell->env, "TERM", ENV_VAR);
+	if (temp == NULL)
+		temp = "dumb";
+	tgetent(NULL, temp);
+	free(temp);
+	shell_temp = *orig;
+	shell_temp.c_lflag &= ~(ECHO | ICANON);
+	shell_temp.c_cc[VMIN] = 1;
+	shell_temp.c_cc[VTIME] = 0;
+	tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_temp);
+	shell->term = shell_temp;
 }
 
-void		get_winsize(t_cursor *cursor, size_t len)
+void			configure_terminal(t_shell *shell, int activator)
 {
-	struct winsize winsize;
+	static struct termios	orig;
 
-	if (cursor == NULL)
-		return ;
-	get_cursor_pos(cursor, len);
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize);
-	cursor->max.x = (size_t)winsize.ws_col;
-	cursor->max.y = (size_t)winsize.ws_row;
-	g_signal_handler = 0;
+	if (activator == 1 || activator == 2)
+	{
+		tcgetattr(STDIN_FILENO, &orig);
+	}
+	if (activator > 1)
+	{
+		set_terminal_ownership(shell);
+		set_terminal_attr(shell, &orig);
+	}
+	if (activator == 0)
+	{
+		tcsetattr(STDIN_FILENO, TCSADRAIN, &orig);
+	}
 }

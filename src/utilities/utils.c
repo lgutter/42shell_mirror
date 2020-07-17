@@ -43,33 +43,16 @@ void	free_dchar_arr(char **string)
 	free(string);
 }
 
-int		free_shell(t_shell *shell, int ret)
-{
-	if (shell != NULL)
-	{
-		free_history(shell->hist);
-		shell->hist = NULL;
-		free_buffer_buffs(shell, 1);
-		if (shell->buffer != NULL)
-			free(shell->buffer);
-		shell->buffer = NULL;
-		configure_terminal(shell, 0);
-		free_env_list(shell->env);
-		free(shell);
-	}
-	return (ret);
-}
-
 int		get_here_doc(t_io_here *io_here, t_shell *shell)
 {
 	char	*temp;
 	char	*here_doc;
 
 	temp = NULL;
-	here_doc = ft_strdup("");
 	if (io_here == NULL || io_here->here_end == NULL)
 		return (handle_error(parsing_error));
-	while ((g_signal_handler & SIGINT_BUFF) != SIGINT_BUFF)
+	here_doc = ft_strdup("");
+	while ((g_signal_handler & (1 << SIGINT)) == 0)
 	{
 		temp = prompt_shell(shell, PROMPT_HEREDOC);
 		if (temp == NULL || ft_strcmp(temp, io_here->here_end) == 0)
@@ -80,7 +63,7 @@ int		get_here_doc(t_io_here *io_here, t_shell *shell)
 		if (here_doc == NULL)
 			return (handle_error(malloc_error));
 	}
-	if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
+	if ((g_signal_handler & (1 << SIGINT)) != 0)
 		here_doc[0] = '\0';
 	free(temp);
 	io_here->here_doc = here_doc;
@@ -99,4 +82,21 @@ size_t	str_arr_len(char **str_array)
 		index++;
 	}
 	return (index);
+}
+
+int		get_exit_code(t_shell *shell)
+{
+	char	*exit_code;
+	int		ret;
+
+	ret = 0;
+	exit_code = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
+	if (exit_code == NULL)
+		exit_code = ft_getenv(shell->env, "STATUS", SHELL_VAR);
+	if (exit_code != NULL)
+		ret = ft_atoi(exit_code);
+	free(exit_code);
+	if (shell->interactive == true)
+		ft_printf("exit\n");
+	return (ret);
 }

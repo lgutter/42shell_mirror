@@ -87,11 +87,10 @@ int				read_input(t_shell *shell)
 	int			ret;
 
 	c = '\0';
-	simple_sigaction(SIGINT, signal_handler_buff, NULL);
 	if (shell == NULL || shell->buffer == NULL || shell->buffer->buff == NULL)
 		return (1);
 	ret = read(STDIN_FILENO, &c, 1);
-	if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
+	if ((g_signal_handler & (1 << SIGINT)) != 0)
 	{
 		send_terminal(TERM_DOWN);
 		return (1);

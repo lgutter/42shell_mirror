@@ -62,25 +62,27 @@ Test(find_executable_unit, valid_find_cp)
 	cr_expect_str_eq(command.path, "/bin/cp");
 }
 
-Test(find_executable_unit, valid_find_builtin)
+Test(find_executable_unit, invalid_find_builtin, .init=redirect_std_err)
 {
 	t_command	command;
 	int			ret;
 	t_env		*env = (t_env *)malloc(sizeof(t_env) * 1);
+	char		buff[1024];
 
 	env->key = strdup("PATH");
-	env->value = strdup("foo:/bin/:/usr/bin");
+	env->value = strdup("foo:/bin/");
 	env->type = ENV_VAR;
 	env->next = NULL;
 
 	command.argc = 2;
-	command.argv = ft_strsplit("echo foo", ' ');
+	command.argv = ft_strsplit("cd foo", ' ');
 	command.envp = NULL;
 	command.path = NULL;
 	ret = find_executable(env, &command, command.argv[0]);
-	cr_expect_eq(ret, 0);
-	cr_assert_not_null(command.path);
-	cr_expect_str_eq(command.path, "");
+	cr_expect_eq(ret, cmd_not_found, "ret is %i, expected %i!", ret, cmd_not_found);
+	cr_expect_null(command.path);
+	fflush(stderr);
+	snprintf(buff, 1024, "Cetushell: %s\n", g_error_str[cmd_not_found]);
 }
 
 Test(find_executable_unit, valid_already_relative_path)

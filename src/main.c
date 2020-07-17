@@ -16,51 +16,26 @@
 #include "history.h"
 #include "signal_handler.h"
 
-static t_shell	*init_shell(void)
+static int		redir_file_argument(char *filename)
 {
-	t_shell		*shell;
-	char		*temp;
+	int			fd;
+	struct stat	statbuff;
 
-	shell = (t_shell *)ft_memalloc(sizeof(t_shell));
-	if (shell == NULL)
-		return (handle_error_p(malloc_error, NULL));
-	shell->buffer = (t_buff *)ft_memalloc(sizeof(t_buff) * 1);
-	shell->hist = (t_history *)ft_memalloc(sizeof(t_history) * 1);
-	shell->env = dup_sys_env();
-	temp = ft_getenv(shell->env, "HOME", VAR_TYPE);
-	ft_setenv(shell->env, "HOME", temp, SHELL_VAR);
-	free(temp);
-	configure_terminal(shell, 1);
-	if (shell->hist == NULL)
-		handle_error(malloc_error);
-	else
-		initialize_history(shell);
-	if (shell->buffer == NULL || shell->env == NULL)
-	{
-		free_shell(shell, 0);
-		if (shell->buffer == NULL)
-			handle_error(malloc_error);
-		shell = NULL;
-	}
-	return (shell);
+	if (access(filename, F_OK) != 0)
+		return (handle_error_str(no_such_file_or_dir, filename));
+	if (access(filename, R_OK) != 0)
+		return (handle_error_str(access_denied, filename));
+	stat(filename, &statbuff);
+	if (S_ISDIR(statbuff.st_mode) != 0)
+		return (handle_error_str(is_dir_error, filename));
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		return (handle_error_str(access_denied, filename));
+	dup2(fd, STDIN_FILENO);
+	return (0);
 }
 
-static int		exit_shell(t_shell *shell, int ret)
-{
-	char	*exit_code;
-
-	exit_code = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
-	if (exit_code == NULL)
-		exit_code = ft_getenv(shell->env, "STATUS", SHELL_VAR);
-	if (exit_code != NULL)
-		ret = ft_atoi(exit_code);
-	free(exit_code);
-	free_shell(shell, 1);
-	ft_printf("exit\n");
-	return (ret);
-}
-
-static int		cetushell(t_shell *shell)
+static void		cetushell(t_shell *shell)
 {
 	char		*input;
 	char		*prompt;
@@ -70,12 +45,14 @@ static int		cetushell(t_shell *shell)
 	while (ret != exit_shell_code)
 	{
 		prompt = ft_getenv(shell->env, "PS1", SHELL_VAR);
+		check_jobs(shell->job_control);
 		input = prompt_shell(shell, prompt == NULL ? PROMPT_NORMAL : prompt);
 		free(prompt);
-		if ((g_signal_handler & SIGINT_BUFF) == SIGINT_BUFF)
+		if ((g_signal_handler & (1 << SIGINT)) != 0)
 		{
 			free(input);
-			input = ft_strdup("");
+			input = shell->interactive == true ? ft_strdup("") : NULL;
+			g_signal_handler &= ~(1 << SIGINT);
 		}
 		if (input == NULL)
 			break ;
@@ -83,18 +60,29 @@ static int		cetushell(t_shell *shell)
 		update_history(shell->hist, shell->env, input);
 		free(input);
 		input = NULL;
-		g_signal_handler = 0;
 	}
-	return (exit_shell(shell, ret));
 }
 
-int				main(void)
+int				main(int argc, char **argv)
 {
 	t_shell		*shell;
+	int			interactive;
+	int			exit_code;
+	pid_t		old_term_pgrp;
 
-	shell = init_shell();
+	if (argc > 1 && argv[1] != NULL)
+	{
+		if (redir_file_argument(argv[1]) != 0)
+			return (1);
+	}
+	old_term_pgrp = tcgetpgrp(STDIN_FILENO);
+	interactive = isatty(STDIN_FILENO);
+	shell = init_shell(interactive);
 	if (shell == NULL)
 		return (1);
-	else
-		return (cetushell(shell));
+	cetushell(shell);
+	exit_code = get_exit_code(shell);
+	tcsetpgrp(STDIN_FILENO, old_term_pgrp);
+	free_shell(shell, 1);
+	return (exit_code);
 }

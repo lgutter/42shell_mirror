@@ -540,8 +540,8 @@ Test(word_processing_unit, invalid_NULL_simple_command, .init = redirect_std_err
 {
 	int				ret;
 	int				expected_ret = parsing_error;
-	t_pipe_sequence	pipe_seq = {NULL, no_pipe, NULL};
-	t_complete_cmd	compl_cmd = {&pipe_seq, no_seperator_op, NULL};
+	t_pipe_sequence	pipe_seq = {NULL, "", no_pipe, NULL};
+	t_complete_cmd	compl_cmd = {&pipe_seq, "", no_seperator_op, NULL};
 	char			buff[1024];
 
 	ret = word_processing(NULL, &compl_cmd);
@@ -555,7 +555,7 @@ Test(word_processing_unit, invalid_NULL_pipe_seq, .init = redirect_std_err)
 {
 	int				ret;
 	int				expected_ret = parsing_error;
-	t_complete_cmd	compl_cmd = {NULL, no_seperator_op, NULL};
+	t_complete_cmd	compl_cmd = {NULL, "", no_seperator_op, NULL};
 	char			buff[1024];
 
 	ret = word_processing(NULL, &compl_cmd);
@@ -572,8 +572,8 @@ Test(word_processing_unit, invalid_empty_redirect, .init = redirect_std_err)
 	t_io_redirect	redirect = {NULL, -1, NULL, NULL, NULL};
 	t_argument 		argument = {"cat", NULL};
 	t_simple_cmd	simple_cmd = {&redirect, &argument, NULL};
-	t_pipe_sequence	pipe_seq = {&simple_cmd, no_pipe, NULL};
-	t_complete_cmd  compl_cmd = {&pipe_seq, no_seperator_op, NULL};
+	t_pipe_sequence	pipe_seq = {&simple_cmd, "cat", no_pipe, NULL};
+	t_complete_cmd  compl_cmd = {&pipe_seq, "cat", no_seperator_op, NULL};
 
 	int ret = word_processing(NULL, &compl_cmd);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
@@ -587,8 +587,8 @@ Test(word_processing_unit, invalid_incomplete_pipe, .init = redirect_std_err)
 {
 	int				exp_ret = parsing_error;
 	t_simple_cmd	simple_cmd = {NULL, NULL, NULL};
-	t_pipe_sequence	pipe_seq = {&simple_cmd, pipe_op, NULL};
-	t_complete_cmd  compl_cmd = {&pipe_seq, no_seperator_op, NULL};
+	t_pipe_sequence	pipe_seq = {&simple_cmd, "", pipe_op, NULL};
+	t_complete_cmd  compl_cmd = {&pipe_seq, "", no_seperator_op, NULL};
 
 	int ret = word_processing(NULL, &compl_cmd);
 	cr_expect_eq(exp_ret, ret, "expected ret %i, got %i!", exp_ret, ret);
