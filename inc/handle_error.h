@@ -63,6 +63,7 @@ typedef enum		e_error
 	internal_error,
 	getcwd_error,
 	illegal_option,
+	no_job_control,
 	error_count,
 }					t_error;
 

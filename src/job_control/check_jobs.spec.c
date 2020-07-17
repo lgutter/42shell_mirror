@@ -61,8 +61,6 @@ Test(check_jobs_unit, basic_one_child_change)
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	close(read_fd);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "running"));
-	cr_expect_not_null(strstr(buffer, "sleep 0.4 &"));
 	close(fd);
 	fd = redirect_std_out(filename);
 	check_jobs(job_control);
@@ -113,8 +111,6 @@ Test(check_jobs_unit, basic_two_child_changes)
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	close(read_fd);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "running"));
-	cr_expect_not_null(strstr(buffer, "sleep 0.4 &"));
 	close(fd);
 	fd = redirect_std_out(filename);
 	check_jobs(job_control);
@@ -136,8 +132,6 @@ Test(check_jobs_unit, basic_two_child_changes)
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	close(read_fd);
 	cr_expect_not_null(strstr(buffer, "[2] +"));
-	cr_expect_not_null(strstr(buffer, "running"));
-	cr_expect_not_null(strstr(buffer, "sleep 1 &"));
 	close(fd);
 	fd = redirect_std_out(filename);
 	check_jobs(job_control);
@@ -204,8 +198,6 @@ Test(check_jobs_unit, basic_two_child_changes_reverse)
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	close(read_fd);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "running"));
-	cr_expect_not_null(strstr(buffer, "sleep 1 &"));
 	close(fd);
 	fd = redirect_std_out(filename);
 	check_jobs(job_control);
@@ -227,8 +219,6 @@ Test(check_jobs_unit, basic_two_child_changes_reverse)
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	close(read_fd);
 	cr_expect_not_null(strstr(buffer, "[2] +"));
-	cr_expect_not_null(strstr(buffer, "running"));
-	cr_expect_not_null(strstr(buffer, "sleep 0.4 &"));
 	close(fd);
 	fd = redirect_std_out(filename);
 	check_jobs(job_control);

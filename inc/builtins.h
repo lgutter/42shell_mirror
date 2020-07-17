@@ -51,6 +51,7 @@ int					builtin_unset(t_shell *shell, char **argv);
 int					builtin_exit(t_shell *shell, char **argv);
 int					builtin_echo(t_shell *shell, char **argv);
 int					builtin_shellenv(t_shell *shell, char **argv);
+int					builtin_jobs(char **argv, t_shell *shell);
 
 int					get_cd_options(char **argv, t_cd *cd_s);
 int					get_home_oldpw(t_cd *cd_s, t_env *env);
