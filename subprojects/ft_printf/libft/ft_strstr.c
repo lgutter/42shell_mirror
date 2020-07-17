@@ -33,7 +33,7 @@ char		*ft_strstr(const char *string, const char *word)
 	size_t index;
 
 	index = 0;
-	if (word[0] == '\0')
+	if (string == NULL || word == NULL || word[0] == '\0')
 	{
 		return ((char *)string);
 	}
