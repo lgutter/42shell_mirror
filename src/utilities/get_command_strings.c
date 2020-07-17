@@ -49,7 +49,7 @@ char		*get_pipe_seq_str(t_token *token)
 	while (temp != NULL)
 	{
 		add_word(&string, temp->value);
-		if (temp->type == PIPE)
+		if (temp->type == PIPE || is_seperator_op(temp) == 1)
 			break ;
 		temp = temp->next;
 	}
