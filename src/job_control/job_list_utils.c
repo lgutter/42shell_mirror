@@ -105,12 +105,16 @@ t_job		*update_job_status(t_job_cont *job_control, t_job *job, int opts)
 
 	if (job_control == NULL || job == NULL)
 		return (NULL);
-	status = get_job_status(job);
-	if ((opts & job_update_print) != 0 && status != job->status)
+	if ((opts & job_update_update) != 0)
+		status = get_job_status(job);
+	else
+		status = job->status;
+	if ((opts & job_update_print) != 0 ||
+		(opts != job_update_none && status != job->status))
 	{
 		job->status = status;
 		print_job_status(job, job_control->current,
-						job_control->previous, job_print_auto);
+						job_control->previous, (opts & job_print_mask));
 	}
 	job->status = status;
 	next = job->next;

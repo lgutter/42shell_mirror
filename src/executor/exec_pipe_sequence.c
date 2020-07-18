@@ -16,6 +16,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <stdio.h>
+#include "builtins.h"
 
 static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
 							t_job *job, t_process *process)
@@ -41,6 +42,7 @@ static void	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
 	ret = waitpid(process->pid, &stat_loc, WUNTRACED | WNOHANG);
 	if (ret == 0 && job->foreground == true)
 	{
+		ft_printf("KILL\n");
 		kill(process->pid, SIGKILL);
 		waitpid(process->pid, NULL, 0);
 	}

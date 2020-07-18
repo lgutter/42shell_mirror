@@ -37,7 +37,7 @@ static int	update_process_status(t_job *start, pid_t pid, t_status status)
 	return (1);
 }
 
-void		check_jobs(t_job_cont *job_control)
+void		check_jobs(t_job_cont *job_control, int update_opts)
 {
 	t_job	*job;
 	int		stat_loc;
@@ -61,7 +61,6 @@ void		check_jobs(t_job_cont *job_control)
 		}
 	}
 	job = job_control->job_list;
-	while (job != NULL)
-		job = update_job_status(job_control, job,
-										(job_update_remove | job_update_print));
+	while (update_opts != job_update_none && job != NULL)
+		job = update_job_status(job_control, job, update_opts);
 }

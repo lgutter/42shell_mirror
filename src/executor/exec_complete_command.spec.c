@@ -23,8 +23,22 @@ static void redirect_std_err()
 
 static void redirect_std_err_out()
 {
-	cr_redirect_stdout();
 	cr_redirect_stderr();
+	cr_redirect_stdout();
+}
+
+static int	redirect_std_out(char *filename)
+{
+	int fd = open(filename, O_TRUNC | O_WRONLY | O_CREAT, 0664);
+	if (fd > 0)
+	{
+		if (dup2(fd, STDOUT_FILENO) != STDOUT_FILENO)
+		{
+			close(fd);
+			return (-1);
+		}
+	}
+	return (fd);
 }
 
 Test(exec_complete_command_unit, valid_basic_command, .init = redirect_std_err_out)
@@ -97,7 +111,7 @@ Test(exec_complete_command_unit, valid_basic_piped_command, .init = redirect_std
 	cr_expect_null(shell.job_control->job_list);
 }
 
-Test(exec_complete_command_unit, valid_basic_piped_command_terminate_first, .init = redirect_std_err_out)
+Test(exec_complete_command_unit, valid_basic_piped_command_terminate_first, .init = redirect_std_err)
 {
 	char			**argv3 = ft_strsplit("wc -c", ' ');
 	char			**argv2 = ft_strsplit("head -c 1000", ' ');
@@ -122,7 +136,11 @@ Test(exec_complete_command_unit, valid_basic_piped_command_terminate_first, .ini
 	t_env			env = {strdup(""), strdup(""), 0, &env2};
 	int				ret;
 	int				exp_ret = 0;
-
+	char			*filename = "/tmp/exec_complete_command_unit_valid_basic_piped_command_terminate_first";
+	int				fd_out = redirect_std_out(filename);
+	char			buffer[1024];
+	memset(buffer, 0, 1024);
+	cr_assert_gt(fd_out, 0);
 	memset(&shell, 0, sizeof(t_shell));
 	memset(&job_control, 0, sizeof(t_job_cont));
 	shell.job_control = &job_control;
@@ -132,9 +150,13 @@ Test(exec_complete_command_unit, valid_basic_piped_command_terminate_first, .ini
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
 	cr_expect_str_eq(shell.env->key, "STATUS");
 	cr_expect_str_eq(shell.env->value, "0");
+	int	read_fd = open(filename, O_RDONLY);
+	cr_assert_gt(read_fd, 0);
+	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
+	close(read_fd);
+	cr_expect_not_null(strstr(buffer, "1000\n"));
+	close(fd_out);
 	dprintf(2, "-");
-	fflush(stdout);
-	cr_expect_stdout_eq_str("1000\n");
 	fflush(stderr);
 	cr_expect_stderr_eq_str("-");
 	cr_expect_eq(shell.job_control->current, 0);

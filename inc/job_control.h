@@ -23,21 +23,20 @@ typedef	enum			e_status
 	exited
 }						t_status;
 
-typedef	enum			e_print_opts
-{
-	job_print_auto = (1 << 0),
-	job_print_small = (1 << 1),
-	job_print_pid = (1 << 2),
-	job_print_long = (1 << 3),
-	job_print_pids = (1 << 4),
-}						t_print_opts;
-
 typedef	enum			e_update_opts
 {
 	job_update_none = 0,
 	job_update_print = (1 << 0),
-	job_update_remove = (1 << 1),
-	job_update_all = (job_update_print | job_update_remove),
+	job_update_update = (1 << 1),
+	job_update_remove = (1 << 2),
+	job_update_all = (job_update_print | job_update_remove | job_update_update),
+	job_print_auto = (1 << 3),
+	job_print_small = (1 << 4),
+	job_print_pid = (1 << 5),
+	job_print_long = (1 << 6),
+	job_print_pids = (1 << 7),
+	job_print_mask = (job_print_auto | job_print_small |
+						job_print_pid | job_print_long | job_print_pids)
 }						t_update_opts;
 
 typedef	struct			s_job_cont
@@ -72,7 +71,7 @@ t_job					*init_job(t_shell *shell, char *command,
 															bool foreground);
 t_process				*init_process(t_job *job, char *command);
 t_status				get_job_status(t_job *job);
-void					check_jobs(t_job_cont *job_control);
+void					check_jobs(t_job_cont *job_control, int update_opts);
 int						set_process_job_group(t_job *job, t_process *process);
 
 /*
