@@ -61,6 +61,8 @@ typedef enum		e_error
 	not_a_dir_error,
 	readdir_error,
 	internal_error,
+	getcwd_error,
+	illegal_option,
 	error_count,
 }					t_error;
 

@@ -13,21 +13,26 @@
 #include "builtins.h"
 #include "executor.h"
 
-int					execute_builtin(t_command *command, t_env *env)
+int					execute_builtin(t_shell *shell, char **argv)
 {
-	int	i;
-	int	ret;
+	int		i;
+	int		ret;
+	char	*temp;
 
 	i = 0;
 	ret = 0;
-	if (command == NULL || command->argv == NULL || command->argv[0] == NULL)
+	(void)argv;
+	if (shell == NULL || argv == NULL || argv[0] == NULL)
 		return (-1);
 	while (g_builtins[i].builtin_name != NULL)
 	{
-		if (ft_strcmp(command->argv[0], g_builtins[i].builtin_name) == 0)
+		if (ft_strcmp(argv[0], g_builtins[i].builtin_name) == 0)
 		{
-			ret = g_builtins[i].f(command, env);
-			ft_setstatus(env, ret);
+			ret = g_builtins[i].f(shell, argv);
+			temp = ft_getenv(shell->env, "STATUS", VAR_TYPE);
+			if (temp[0] == '0')
+				ft_setstatus(shell->env, ret);
+			free(temp);
 			return (ret);
 		}
 		i++;
@@ -49,26 +54,26 @@ int					is_builtin(char *exec_name)
 	return (0);
 }
 
-int					builtin_echo(t_command *command, t_env *env)
+int					builtin_echo(t_shell *shell, char **argv)
 {
 	int i;
 	int no_newline;
 
-	(void)env;
+	(void)shell;
 	no_newline = 0;
 	i = 1;
-	if (command == NULL || command->argv == NULL)
+	if (argv == NULL)
 		return (-1);
-	if (command->argv[1] != NULL && command->argc >= 2
-		&& ft_strcmp(command->argv[1], "-n") == 0)
+	if (argv[1] != NULL && ft_str_arr_len(argv) >= 2
+				&& ft_strcmp(argv[1], "-n") == 0)
 	{
 		no_newline++;
 		i++;
 	}
-	while (i < command->argc && command->argv[i] != NULL)
+	while (i < (int)ft_str_arr_len(argv) && argv[i] != NULL)
 	{
-		ft_printf("%s", command->argv[i]);
-		if (i < command->argc - 1)
+		ft_printf("%s", argv[i]);
+		if (i < (int)ft_str_arr_len(argv) - 1)
 			ft_printf(" ");
 		i++;
 	}

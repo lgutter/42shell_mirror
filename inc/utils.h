@@ -118,4 +118,8 @@ int			check_fds(t_shell *shell);
 */
 int			get_exit_code(t_shell *shell);
 
+size_t		ft_index_nchar(char *string, char c, size_t n);
+
+size_t		ft_countchar(char *string, char c);
+
 #endif

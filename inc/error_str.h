@@ -53,5 +53,7 @@ static const char	*g_error_str[error_count] = {
 	[not_a_dir_error] = "Not a directory",
 	[readdir_error] = "Error while readdir() call",
 	[internal_error] = "Internal error",
+	[getcwd_error] = "Error while getcwd() call",
+	[illegal_option] = "illegal option given",
 };
 #endif

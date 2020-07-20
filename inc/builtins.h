@@ -15,8 +15,16 @@
 
 # include "environment.h"
 # include "executor.h"
+# include "stdbool.h"
+# ifdef __linux__
+#  include <linux/limits.h>
+# else
+#  include <limits.h>
+# endif
 
-typedef int			t_builtin_func(t_command *command, t_env *env);
+# define USAGE	10
+
+typedef int			t_builtin_func(t_shell *shell, char **argv);
 
 struct				s_builtin
 {
@@ -24,15 +32,29 @@ struct				s_builtin
 	t_builtin_func	*f;
 };
 
+typedef struct		s_cd
+{
+	bool			to_home;
+	bool			to_oldpwd;
+	bool			link;
+	char			*input_path;
+	char			link_path[PATH_MAX];
+	char			final_path[PATH_MAX];
+}					t_cd;
+
 int					is_builtin(char *exec_name);
-int					execute_builtin(t_command *command, t_env *env);
-int					builtin_cd(t_command *command, t_env *env);
-int					builtin_env(t_command *command, t_env *env);
-int					builtin_set(t_command *comm, t_env *env);
-int					builtin_unset(t_command *command, t_env *env);
-int					builtin_exit(t_command *command, t_env *env);
-int					builtin_echo(t_command *command, t_env *env);
-int					builtin_shellenv(t_command *command, t_env *env);
+int					execute_builtin(t_shell *shell, char **argv);
+int					builtin_cd(t_shell *shell, char **argv);
+int					builtin_env(t_shell *shell, char **argv);
+int					builtin_set(t_shell *shell, char **argv);
+int					builtin_unset(t_shell *shell, char **argv);
+int					builtin_exit(t_shell *shell, char **argv);
+int					builtin_echo(t_shell *shell, char **argv);
+int					builtin_shellenv(t_shell *shell, char **argv);
+
+int					get_cd_options(char **argv, t_cd *cd_s);
+int					get_home_oldpw(t_cd *cd_s, t_env *env);
+size_t				set_old_new_pwd(t_env *env, t_cd *cd, char *old_path);
 
 static const struct s_builtin	g_builtins[] = {
 	{"cd", builtin_cd},

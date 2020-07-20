@@ -16,6 +16,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+# include <stdbool.h>
 # include "get_next_line.h"
 # include "ft_printf.h"
 
@@ -25,6 +26,15 @@ typedef struct		s_list
 	size_t			content_size;
 	struct s_list	*next;
 }					t_list;
+
+struct				s_ft_getopt
+{
+	char			*arg;
+	int				index;
+	int				group_index;
+	char			opt;
+	bool			illegal;
+};
 
 void				*ft_memset(void *target, int setvalue, size_t len);
 void				ft_bzero(void *input, size_t len);
@@ -126,6 +136,8 @@ char				*ft_ulltoa_base_low(\
 size_t				ft_nbrlenbase_ull(unsigned long long number, int base);
 char				*ft_strcharjoin(char *str, char c);
 void				ft_strcharexpand(char **source, const char addition);
+bool				ft_getopt(struct s_ft_getopt *opt, int argc, char **argv,
+					const char *optstring);
 
 /*
 **	Arguments:

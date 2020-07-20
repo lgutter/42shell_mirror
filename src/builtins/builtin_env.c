@@ -14,20 +14,36 @@
 #include "builtins.h"
 #include "executor.h"
 
-int				builtin_env(t_command *command, t_env *env)
+int				builtin_env(t_shell *shell, char **argv)
 {
-	if (env == NULL)
-		return (0);
-	if ((env->type & ENV_VAR) != 0)
-		ft_printf("%s=%s%c", env->key, env->value, '\n');
-	return (builtin_env(command, env->next));
+	t_env	*head;
+
+	(void)argv;
+	head = shell->env;
+	if (head == NULL)
+		return (1);
+	while (head != NULL)
+	{
+		if ((head->type & ENV_VAR) != 0)
+			ft_printf("%s=%s%c", head->key, head->value, '\n');
+		head = head->next;
+	}
+	return (0);
 }
 
-int				builtin_shellenv(t_command *command, t_env *env)
+int				builtin_shellenv(t_shell *shell, char **argv)
 {
-	if (env == NULL)
-		return (0);
-	if ((env->type & SHELL_VAR) != 0)
-		ft_printf("%s=%s%c", env->key, env->value, '\n');
-	return (builtin_shellenv(command, env->next));
+	t_env	*head;
+
+	(void)argv;
+	head = shell->env;
+	if (head == NULL)
+		return (1);
+	while (head != NULL)
+	{
+		if ((head->type & SHELL_VAR) != 0)
+			ft_printf("%s=%s%c", head->key, head->value, '\n');
+		head = head->next;
+	}
+	return (0);
 }

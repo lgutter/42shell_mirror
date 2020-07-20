@@ -13,18 +13,16 @@
 #include "builtins.h"
 #include "executor.h"
 
-int		builtin_exit(t_command *command, t_env *env)
+int		builtin_exit(t_shell *shell, char **argv)
 {
 	char	*temp;
 	int		final_code;
 
-	temp = ft_getenv(env, "STATUS", SHELL_VAR);
+	temp = ft_getenv(shell->env, "STATUS", SHELL_VAR);
 	configure_terminal(NULL, 0);
-	if (command != NULL && command->argc > 1 &&
-		command->argv != NULL &&
-		command->argv[0] != NULL && command->argv[1] != NULL)
+	if (argv != NULL && argv[0] != NULL && argv[1] != NULL)
 	{
-		final_code = ft_atoi(command->argv[1]);
+		final_code = ft_atoi(argv[1]);
 	}
 	else if (temp == NULL)
 		final_code = 0;
@@ -33,9 +31,9 @@ int		builtin_exit(t_command *command, t_env *env)
 	free(temp);
 	temp = ft_itoa(final_code);
 	if (temp == NULL)
-		ft_setenv(env, "EXIT_CODE", "1", SHELL_VAR | RO_VAR);
+		ft_setenv(shell->env, "EXIT_CODE", "1", SHELL_VAR | RO_VAR);
 	else
-		ft_setenv(env, "EXIT_CODE", temp, SHELL_VAR | RO_VAR);
+		ft_setenv(shell->env, "EXIT_CODE", temp, SHELL_VAR | RO_VAR);
 	free(temp);
 	return (exit_shell_code);
 }

@@ -52,7 +52,7 @@ static int	handle_unsetenv(char *arg, char *argz, t_env *env, int opts)
 	return (ret);
 }
 
-int			builtin_unset(t_command *comm, t_env *env)
+int			builtin_unset(t_shell *shell, char **argv)
 {
 	int		i;
 	int		ret;
@@ -60,20 +60,20 @@ int			builtin_unset(t_command *comm, t_env *env)
 
 	i = 1;
 	ret = 0;
-	if (comm == NULL || env == NULL ||
-		comm->argv == NULL || comm->argv[0] == NULL)
+	if (shell == NULL || shell->env == NULL ||
+		argv == NULL || argv[0] == NULL)
 		return (-1);
-	if (comm->argc == 1)
+	if (ft_str_arr_len(argv) == 1)
 	{
-		handle_prefix_error(too_few_arguments, comm->argv[0]);
+		handle_prefix_error(too_few_arguments, argv[0]);
 		return (1);
 	}
-	opts = get_unset_opts(comm->argv, &i);
+	opts = get_unset_opts(argv, &i);
 	if (opts < 0)
 		return (1);
-	while (i < comm->argc && comm->argv[i] != NULL)
+	while (i < (int)ft_str_arr_len(argv) && argv[i] != NULL)
 	{
-		if (handle_unsetenv(comm->argv[i], comm->argv[0], env, opts) != 0)
+		if (handle_unsetenv(argv[i], argv[0], shell->env, opts) != 0)
 			ret = 1;
 		i++;
 	}

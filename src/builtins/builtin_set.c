@@ -113,7 +113,7 @@ static int		get_set_opts(char **argv, int *i)
 	return (opts);
 }
 
-int				builtin_set(t_command *comm, t_env *env)
+int				builtin_set(t_shell *shell, char **argv)
 {
 	int		i;
 	int		ret;
@@ -121,21 +121,21 @@ int				builtin_set(t_command *comm, t_env *env)
 
 	i = 1;
 	ret = 0;
-	if (comm == NULL || env == NULL ||
-		comm->argv == NULL || comm->argv[0] == NULL)
+	if (shell == NULL || shell->env == NULL ||
+		argv == NULL || argv[0] == NULL)
 		return (-1);
-	if (comm->argc == 1)
+	if (argv[1] == NULL)
 	{
-		if (ft_strcmp(comm->argv[0], "setenv") == 0)
-			return (builtin_env(comm, env));
-		return (builtin_shellenv(comm, env));
+		if (ft_strcmp(argv[0], "setenv") == 0)
+			return (builtin_env(shell, argv));
+		return (builtin_shellenv(shell, argv));
 	}
-	opts = get_set_opts(comm->argv, &i);
+	opts = get_set_opts(argv, &i);
 	if (opts < 0)
 		return (1);
-	while (i < comm->argc && comm->argv[i] != NULL)
+	while (i < (int)ft_str_arr_len(argv) && argv[i] != NULL)
 	{
-		if (resolve_set_values(env, comm->argv[i], comm->argv[0], opts) != 0)
+		if (resolve_set_values(shell->env, argv[i], argv[0], opts) != 0)
 			ret = 1;
 		i++;
 	}

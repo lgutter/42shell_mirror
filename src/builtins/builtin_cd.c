@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/05/02 19:55:06 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/10 00:10:06 by devan         ########   odam.nl         */
+/*   Updated: 2020/07/09 18:31:48 by devanando     ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,61 +17,95 @@
 #else
 # include <limits.h>
 #endif
+#include "utils.h"
 
-static int	cd(t_env *env, char *new_path, char *key)
+static char	*follow_links(char *current, char **dest, size_t cur_size)
 {
-	char	path[PATH_MAX];
+	char	*path;
+	size_t	i;
 	char	*temp;
 
-	ft_bzero(path, PATH_MAX);
-	if (getcwd(path, PATH_MAX) == NULL)
+	path = ft_strdup(current);
+	i = 0;
+	while (dest[i] != NULL)
 	{
-		temp = ft_getenv(env, "PWD", ENV_VAR);
-		if (temp != NULL)
-			ft_strncpy(path, temp, PATH_MAX);
+		if (ft_strcmp(dest[i], "..") == 0)
+		{
+			temp = ft_strndup(path, ft_index_nchar(path, '/', cur_size));
+			free(path);
+			path = ft_strdup(temp);
+			free(temp);
+			cur_size--;
+		}
+		else if (ft_strcmp(dest[i], ".") != 0)
+		{
+			str_expand_triple(&path, "/", dest[i]);
+			cur_size++;
+		}
+		i++;
+	}
+	free_dchar_arr(dest);
+	return (path);
+}
+
+static int	path_start(t_cd *cd, char *old_pwd)
+{
+	char	*temp;
+
+	if (cd->input_path[0] != '/')
+	{
+		temp = follow_links(old_pwd, ft_strsplit(cd->input_path, '/')
+								, ft_countchar(old_pwd, '/'));
+		if (temp == NULL)
+			return (1);
+		ft_strncpy(cd->final_path, temp, PATH_MAX);
 		free(temp);
 	}
-	if (chdir(new_path) == -1)
-	{
-		handle_prefix_error_str(no_such_file_or_dir, "cd", new_path);
-		return (1);
-	}
-	if (key != NULL && ft_strcmp(key, "-") == 0)
-		ft_printf("%s\n", new_path);
-	if (ft_setenv(env, "OLDPWD", path, ENV_VAR) != 0)
-		return (1);
-	ft_bzero(path, PATH_MAX);
-	getcwd(path, PATH_MAX);
-	if (ft_setenv(env, "PWD", path, ENV_VAR) != 0)
-		return (1);
+	else
+		ft_strncpy(cd->final_path, cd->input_path, PATH_MAX);
 	return (0);
 }
 
-int			builtin_cd(t_command *command, t_env *env)
+static int	resolve_cd_path(t_env *env, t_cd *cd)
 {
-	char	*key;
-	char	*temp;
-	int		ret;
+	char	*old_pwd;
+	size_t	ret;
 
 	ret = 0;
-	temp = NULL;
-	if (command == NULL || command->argv == NULL)
-		return (-1);
-	key = (command->argc == 1) ? "HOME" : "OLDPWD";
-	if (command->argc > 2)
-		ret = handle_prefix_error(too_many_arguments, "cd");
-	else if (command->argc == 1 || ft_strcmp(command->argv[1], "-") == 0)
-	{
-		temp = ft_getenv(env, key, VAR_TYPE);
-		if (temp == NULL)
-			ret = handle_prefix_error_str(var_not_set, "cd", key);
-	}
+	if (cd->link == true && ft_strlen(cd->link_path) != 0)
+		old_pwd = ft_strdup(cd->link_path);
+	else if (cd->link == true)
+		old_pwd = ft_getenv(env, "PWD", VAR_TYPE);
 	else
-		temp = ft_strdup(command->argv[1]);
-	if (ret == 0 && temp == NULL)
-		ret = handle_error(malloc_error);
+		old_pwd = getcwd(NULL, 0);
+	if (old_pwd == NULL)
+		ret = 1;
 	if (ret == 0)
-		ret = cd(env, temp, command->argv[1]);
-	free(temp);
+		ret = path_start(cd, old_pwd);
+	if (ret == 0 && chdir(cd->final_path) == -1)
+		ret = handle_prefix_error_str(no_such_file_or_dir, "cd",
+										cd->final_path);
+	if (ret == 0)
+		ret = set_old_new_pwd(env, cd, old_pwd);
+	free(old_pwd);
+	return (ret);
+}
+
+int			builtin_cd(t_shell *shell, char **argv)
+{
+	int				ret;
+	static t_cd		cd_s = {false, false, true, NULL, "", ""};
+
+	if (shell == NULL || argv == NULL || shell->env == NULL)
+		return (-1);
+	ret = get_cd_options(argv, &cd_s);
+	if (ret == 0)
+		ret = get_home_oldpw(&cd_s, shell->env);
+	if (ret == 0)
+		ret = resolve_cd_path(shell->env, &cd_s);
+	ft_setstatus(shell->env, ret);
+	free(cd_s.input_path);
+	ft_bzero(cd_s.final_path, PATH_MAX);
+	cd_s = (t_cd){.to_oldpwd = false, .to_home = false, .link = true, };
 	return (ret == 0 ? 0 : 1);
 }

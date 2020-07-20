@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "executor.h"
+#include "builtins.h"
 #include "signal_handler.h"
 #include <signal.h>
 #include <sys/types.h>
@@ -24,8 +25,10 @@ static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
 	if (job->foreground == true)
 		tcsetpgrp(STDIN_FILENO, job->pgrp);
 	reset_signals();
-	exit(exec_simple_command(pipe_seq->simple_command, shell));
-	// ADD BUILTINS HERE ASWELL!
+	if (is_builtin(pipe_seq->simple_command->argv[0]) == 1)
+		exit(execute_builtin(shell, pipe_seq->simple_command->argv));
+	else
+		exit(exec_simple_command(pipe_seq->simple_command, shell));
 }
 
 static void	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
@@ -122,10 +125,7 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	if (pipe_seq->pipe == pipe_op)
 		ret = execute_pipe(pipe_seq, shell, job, process);
 	else if (is_builtin(pipe_seq->simple_command->argv[0]) == 1)
-	{
-		ft_printf("BUILTINS DISABLED\n");
-		ret = 0; // THE NEW EXEC_BUILTIN FUNCTION SHOULD ALSO HANDLE REDIRECTIONS, AND USE FT_SETSTATUS TO STORE EXIT STATUS!
-	}
+		ret = execute_builtin(shell, pipe_seq->simple_command->argv);
 	else
 		ret = execute_simple(pipe_seq, shell, job, process);
 	std_fd_restore(old_fds);
