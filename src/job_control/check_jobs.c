@@ -14,7 +14,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-static int	update_process_status(t_job *start, pid_t pid, t_status status)
+static void	update_process_status(t_job *start, pid_t pid, t_status status)
 {
 	t_process	*process;
 	t_job		*job;
@@ -28,13 +28,13 @@ static int	update_process_status(t_job *start, pid_t pid, t_status status)
 			if (pid == process->pid)
 			{
 				process->status = status;
-				return (0);
+				return ;
 			}
 			process = process->next;
 		}
 		job = job->next;
 	}
-	return (1);
+	return ;
 }
 
 void		check_jobs(t_job_cont *job_control, int update_opts)
