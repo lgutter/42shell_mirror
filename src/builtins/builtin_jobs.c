@@ -32,7 +32,7 @@ int			builtin_jobs(char **argv, t_shell *shell)
 		if (argv[1][0] == '-' && argv[1][1] == 'l')
 			opts = (job_print_long | job_update_all);
 		else if (argv[1][0] == '-' && argv[1][1] == 'p')
-			opts = (job_print_pid | job_update_print);
+			opts = (job_print_pid | job_update_process);
 	}
 	job = shell->job_control->job_list;
 	check_jobs(shell->job_control, job_update_none);

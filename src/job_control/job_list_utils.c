@@ -109,16 +109,16 @@ t_job		*update_job_status(t_job_cont *job_control, t_job *job, int opts)
 		status = get_job_status(job);
 	else
 		status = job->status;
-	if ((opts & job_update_print) != 0 ||
-		(opts != job_update_none && status != job->status))
+	next = job->next;
+	if ((opts & job_print_mask) != 0 ||
+		((opts & job_update_process) != 0 && status != job->status))
 	{
 		job->status = status;
 		print_job_status(job, job_control->current,
 						job_control->previous, (opts & job_print_mask));
+		if ((opts & job_print_pid_mask) == 0 && job->status == exited)
+			remove_job_from_list(job_control, job->id);
 	}
 	job->status = status;
-	next = job->next;
-	if ((opts & job_update_remove) != 0 && status == exited)
-		remove_job_from_list(job_control, job->id);
 	return (next);
 }

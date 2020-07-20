@@ -13,9 +13,9 @@
 #include "job_control.h"
 
 const char	*g_job_statuses[3] = {
-		[running] = "running",
-		[suspended] = "suspended",
-		[exited] = "exited"
+	[running] = "running",
+	[suspended] = "suspended",
+	[exited] = "exited"
 };
 
 static bool	job_has_single_status(t_job *job)
@@ -62,7 +62,7 @@ static void	print_job_pids(t_job *job, char prefix[9])
 	ft_printf("\n");
 }
 
-void			print_job_status(t_job *job,
+void		print_job_status(t_job *job,
 									size_t current, size_t previous, int opts)
 {
 	char		prefix[9];
@@ -77,10 +77,10 @@ void			print_job_status(t_job *job,
 	ft_snprintf(prefix, 8, "[%i] %c   ", job->id, curprev);
 	prefix[8] = '\0';
 	if ((opts & job_print_auto) != 0 || opts == 0)
-		opts |= job_has_single_status(job) ? job_print_small : job_print_long;
+		opts |= job_has_single_status(job) ? job_print_short : job_print_long;
 	if ((opts & job_print_long) != 0)
 		print_long_job_status(job, prefix);
-	else if ((opts & job_print_small) != 0)
+	else if ((opts & job_print_short) != 0)
 		ft_printf("%s%-6i %-10s %s\n",
 			prefix, job->pgrp, g_job_statuses[job->status], job->command);
 	else if ((opts & job_print_pid) != 0)
