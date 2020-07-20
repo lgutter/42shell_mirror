@@ -102,6 +102,8 @@ bool		ft_getopt(struct s_ft_getopt *opt, int argc, char **argv,
 
 	if (opt->index >= argc || argv[opt->index][0] != '-')
 		return (false);
+	if (ft_strcmp(argv[opt->index], "-") == 0)
+		return (false);
 	if (argv[opt->index][1] == '-')
 	{
 		opt->index++;

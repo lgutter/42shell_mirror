@@ -105,4 +105,8 @@ int			is_builtin(char *exec_name);
 */
 size_t		str_arr_len(char **str_array);
 
+size_t		ft_index_nchar(char *string, char c, size_t n);
+
+size_t		ft_countchar(char *string, char c);
+
 #endif

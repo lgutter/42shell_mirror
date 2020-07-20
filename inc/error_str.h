@@ -52,5 +52,7 @@ static const char	*g_error_str[error_count] = {
 	[exit_shell_code] = "exit code, this should not have been printed",
 	[not_a_dir_error] = "Not a directory",
 	[readdir_error] = "Error while readdir() call",
+	[getcwd_error] = "Error while getcwd() call",
+	[illegal_option] = "illegal option given",
 };
 #endif
