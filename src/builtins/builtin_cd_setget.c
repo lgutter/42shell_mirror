@@ -67,18 +67,19 @@ int			get_home_oldpw(t_cd *cd_s, t_env *env)
 
 size_t		set_old_new_pwd(t_env *env, t_cd *cd, char *old_path)
 {
-	ft_bzero(cd->link_path, PATH_MAX);
 	if (cd->link == true)
 	{
-		if (ft_setenv(env, "OLDPWD", (cd->link_path == NULL ?
+		if (ft_setenv(env, "OLDPWD", (ft_strlen(cd->link_path) == 0 ?
 							old_path : cd->link_path), ENV_VAR))
 			return (handle_prefix_error(malloc_error, "cd"));
+		ft_bzero(cd->link_path, PATH_MAX);
 		ft_strncpy(cd->link_path, cd->final_path, PATH_MAX);
 		if (ft_setenv(env, "PWD", cd->link_path, ENV_VAR))
 			return (handle_prefix_error(malloc_error, "cd"));
 	}
 	else
 	{
+		ft_bzero(cd->link_path, PATH_MAX);
 		if (getcwd(cd->link_path, PATH_MAX) == NULL)
 			return (handle_prefix_error(getcwd_error, "cd"));
 		if (ft_setenv(env, "OLDPWD", old_path, ENV_VAR) != 0 ||
