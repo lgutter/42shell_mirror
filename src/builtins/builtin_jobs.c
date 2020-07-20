@@ -12,10 +12,50 @@
 
 #include "builtins.h"
 
-int			builtin_jobs(char **argv, t_shell *shell)
+static bool	iterate_jobs(t_job_cont *job_control, char *job_spec, int opts)
 {
 	t_job	*job;
+	bool	job_found;
+
+
+	job_found = false;
+	job = job_control->job_list;
+	while (job != NULL)
+	{
+		if (job_spec_match(job_control, job, job_spec))
+		{
+			job_found = true;
+			job = update_job_status(job_control, job, opts);
+		}
+		else
+			job = job->next;
+	}
+	return (job_found);
+}
+
+static int	iterate_job_specs(char **args, t_job_cont *job_control, int opts)
+{
+	int		ret;
+	int		i;
+
+	i = 0;
+	ret =  0;
+	while (args[i] != NULL)
+	{
+		if (iterate_jobs(job_control, args[i], opts) == false)
+		{
+			ret = 1;
+			ft_dprintf(STDERR_FILENO, "jobs: job not found: %s\n", args[i]);
+		}
+		i++;
+	}
+	return (ret);
+}
+
+int			builtin_jobs(char **argv, t_shell *shell)
+{
 	char	**args;
+	t_job	*job;
 	int		opts;
 
 	if (shell == NULL || shell->job_control == NULL)
@@ -34,14 +74,11 @@ int			builtin_jobs(char **argv, t_shell *shell)
 		else if (argv[1][0] == '-' && argv[1][1] == 'p')
 			opts = (job_print_pid | job_update_process);
 	}
-	job = shell->job_control->job_list;
 	check_jobs(shell->job_control, job_update_none);
+	if (args != NULL && args[0] != NULL)
+		return (iterate_job_specs(args, shell->job_control, opts));
+	job = shell->job_control->job_list;
 	while (job != NULL)
-	{
-		if (args == NULL || *args == NULL || job_spec_match(shell->job_control, job, args[0]))
-			job = update_job_status(shell->job_control, job, opts);
-		else
-			job = job->next;
-	}
+		job = update_job_status(shell->job_control, job, opts);
 	return (0);
 }
