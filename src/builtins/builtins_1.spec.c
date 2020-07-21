@@ -13,10 +13,10 @@
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include <criterion/assert.h>
+#include <stdio.h>
 
 #include "builtins.h"
 #include "environment.h"
-#include "error_str.h"
 
 static void redirect_std_out()
 {
@@ -29,7 +29,7 @@ static void redirect_std_err_out()
 	cr_redirect_stderr();
 }
 
-Test(execute_builtin_unit, invalid_comm_null)
+Test(execute_builtin_unit, invalid_argv_null)
 {
 	int ret = execute_builtin(NULL, NULL);
 	cr_assert_eq(ret, -1);
@@ -37,50 +37,46 @@ Test(execute_builtin_unit, invalid_comm_null)
 
 Test(execute_builtin_unit, invalid_NULL_argv)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 1;
-	comm.argv = NULL;
-	ret = execute_builtin(&comm, NULL);
+	argv = NULL;
+	ret = execute_builtin(NULL, argv);
 	cr_expect_eq(ret, -1, "ret is %d but must be %d", ret, -1);
 }
 
 Test(execute_builtin_unit, invalid_NULL_argv_zero)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 1;
-	comm.argv = (char **)malloc(sizeof(char *) * 1);
-	comm.argv[0] = NULL;
-	ret = execute_builtin(&comm, NULL);
+	argv = (char **)malloc(sizeof(char *) * 1);
+	argv[0] = NULL;
+	ret = execute_builtin(NULL, argv);
 	cr_expect_eq(ret, -1, "ret is %d but must be %d", ret, -1);
 }
 
 Test(execute_builtin_unit, invalid_not_builtin)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 1;
-	comm.argv = (char **)malloc(sizeof(char *) * 2);
-	comm.argv[0] = ft_strdup("foo");
-	comm.argv[1] = NULL;
-	ret = execute_builtin(&comm, NULL);
+	argv = (char **)malloc(sizeof(char *) * 2);
+	argv[0] = ft_strdup("foo");
+	argv[1] = NULL;
+	ret = execute_builtin(NULL, argv);
 	cr_expect_eq(ret, -1, "ret is %d but must be %d", ret, -1);
 }
 
 Test(execute_builtin_echo_unit, valid_echo_no_arguments, .init = redirect_std_err_out)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 1;
-	comm.argv = (char **)malloc(sizeof(char *) * 3);
-	comm.argv[0] = ft_strdup("echo");
-	comm.argv[1] = NULL;
-	ret = execute_builtin(&comm, NULL);
+	argv = (char **)malloc(sizeof(char *) * 3);
+	argv[0] = ft_strdup("echo");
+	argv[1] = NULL;
+	ret = execute_builtin(NULL, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	char		buff[1024];
 	memset(buff, '\0', 1024);
@@ -88,38 +84,30 @@ Test(execute_builtin_echo_unit, valid_echo_no_arguments, .init = redirect_std_er
 	sprintf(buff, "\n");
 	cr_expect_stdout_eq_str(buff);
 	memset(buff, '\0', 1024);
+	dprintf(2, "-");
 	fflush(stderr);
-	sprintf(buff, "Cetushell: %.1000s\n", g_error_str[env_empty_error]);
-	cr_expect_stderr_eq_str(buff);
-}
-
-Test(builtin_echo_unit, invalid_comm_null)
-{
-	int ret = builtin_echo(NULL, NULL);
-	cr_assert_eq(ret, -1);
+	cr_expect_stderr_eq_str("-");
 }
 
 Test(builtin_echo_unit, invalid_NULL_argv)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 1;
-	comm.argv = NULL;
-	ret = builtin_echo(&comm, NULL);
+	argv = NULL;
+	ret = builtin_echo(NULL, argv);
 	cr_expect_eq(ret, -1, "ret is %d but must be %d", ret, -1);
 }
 
 Test(builtin_echo_unit, valid_echo_no_arguments, .init = redirect_std_out)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 1;
-	comm.argv = (char **)malloc(sizeof(char *) * 3);
-	comm.argv[0] = ft_strdup("echo");
-	comm.argv[1] = NULL;
-	ret = builtin_echo(&comm, NULL);
+	argv = (char **)malloc(sizeof(char *) * 3);
+	argv[0] = ft_strdup("echo");
+	argv[1] = NULL;
+	ret = builtin_echo(NULL, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	char		buff[1024];
 	memset(buff, '\0', 1024);
@@ -130,15 +118,14 @@ Test(builtin_echo_unit, valid_echo_no_arguments, .init = redirect_std_out)
 
 Test(builtin_echo_unit, valid_echo_only_no_newline, .init = redirect_std_out)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 2;
-	comm.argv = (char **)malloc(sizeof(char *) * 3);
-	comm.argv[0] = ft_strdup("echo");
-	comm.argv[1] = ft_strdup("-n");
-	comm.argv[2] = NULL;
-	ret = builtin_echo(&comm, NULL);
+	argv = (char **)malloc(sizeof(char *) * 3);
+	argv[0] = ft_strdup("echo");
+	argv[1] = ft_strdup("-n");
+	argv[2] = NULL;
+	ret = builtin_echo(NULL, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	char		buff[1024];
 	ft_printf("-");
@@ -150,81 +137,77 @@ Test(builtin_echo_unit, valid_echo_only_no_newline, .init = redirect_std_out)
 
 Test(builtin_echo_unit, valid_echo_one_argument, .init = redirect_std_out)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 2;
-	comm.argv = (char **)malloc(sizeof(char *) * 3);
-	comm.argv[0] = ft_strdup("echo");
-	comm.argv[1] = ft_strdup("foo");
-	comm.argv[2] = NULL;
-	ret = builtin_echo(&comm, NULL);
+	argv = (char **)malloc(sizeof(char *) * 3);
+	argv[0] = ft_strdup("echo");
+	argv[1] = ft_strdup("foo");
+	argv[2] = NULL;
+	ret = builtin_echo(NULL, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	char		buff[1024];
 	memset(buff, '\0', 1024);
 	fflush(stdout);
-	sprintf(buff, "%s\n", comm.argv[1]);
+	sprintf(buff, "%s\n", argv[1]);
 	cr_expect_stdout_eq_str(buff);
 }
 
 Test(builtin_echo_unit, valid_echo_one_argument_no_newline, .init = redirect_std_out)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 3;
-	comm.argv = (char **)malloc(sizeof(char *) * 3);
-	comm.argv[0] = ft_strdup("echo");
-	comm.argv[1] = ft_strdup("-n");
-	comm.argv[2] = ft_strdup("foo");
-	comm.argv[3] = NULL;
-	ret = builtin_echo(&comm, NULL);
+	argv = (char **)malloc(sizeof(char *) * 3);
+	argv[0] = ft_strdup("echo");
+	argv[1] = ft_strdup("-n");
+	argv[2] = ft_strdup("foo");
+	argv[3] = NULL;
+	ret = builtin_echo(NULL, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	char		buff[1024];
 	memset(buff, '\0', 1024);
 	fflush(stdout);
-	sprintf(buff, "%s", comm.argv[2]);
+	sprintf(buff, "%s", argv[2]);
 	cr_expect_stdout_eq_str(buff);
 }
 
 Test(builtin_echo_unit, valid_echo_two_arguments_no_newline, .init = redirect_std_out)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 4;
-	comm.argv = (char **)malloc(sizeof(char *) * 3);
-	comm.argv[0] = ft_strdup("echo");
-	comm.argv[1] = ft_strdup("-n");
-	comm.argv[2] = ft_strdup("foo");
-	comm.argv[3] = ft_strdup("bar");
-	comm.argv[4] = NULL;
-	ret = builtin_echo(&comm, NULL);
+	argv = (char **)malloc(sizeof(char *) * 3);
+	argv[0] = ft_strdup("echo");
+	argv[1] = ft_strdup("-n");
+	argv[2] = ft_strdup("foo");
+	argv[3] = ft_strdup("bar");
+	argv[4] = NULL;
+	ret = builtin_echo(NULL, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	char		buff[1024];
 	memset(buff, '\0', 1024);
 	fflush(stdout);
-	sprintf(buff, "%s %s", comm.argv[2], comm.argv[3]);
+	sprintf(buff, "%s %s", argv[2], argv[3]);
 	cr_expect_stdout_eq_str(buff);
 }
 
 Test(builtin_echo_unit, valid_echo_two_arguments, .init = redirect_std_out)
 {
-	t_command	comm;
+	char		**argv;
 	int			ret = 0;
 
-	comm.argc = 3;
-	comm.argv = (char **)malloc(sizeof(char *) * 3);
-	comm.argv[0] = ft_strdup("echo");
-	comm.argv[1] = ft_strdup("foo");
-	comm.argv[2] = ft_strdup("bar");
-	comm.argv[3] = NULL;
-	ret = builtin_echo(&comm, NULL);
+	argv = (char **)malloc(sizeof(char *) * 3);
+	argv[0] = ft_strdup("echo");
+	argv[1] = ft_strdup("foo");
+	argv[2] = ft_strdup("bar");
+	argv[3] = NULL;
+	ret = builtin_echo(NULL, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	char		buff[1024];
 	memset(buff, '\0', 1024);
 	fflush(stdout);
-	sprintf(buff, "%s %s\n", comm.argv[1], comm.argv[2]);
+	sprintf(buff, "%s %s\n", argv[1], argv[2]);
 	cr_expect_stdout_eq_str(buff);
 }
 
