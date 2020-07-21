@@ -15,7 +15,6 @@
 #include <criterion/redirect.h>
 #include "builtins.h"
 #include "handle_input.h"
-#include "error_str.h"
 
 // int			builtin_jobs(char **argv, t_shell *shell);
 static int	redirect_std_out(char *filename)
@@ -484,34 +483,24 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	free_job_control(job_control);
 }
 
-Test(builtin_jobs_integration, error_NULL_shell, .init = cr_redirect_stderr)
+Test(builtin_jobs_integration, error_NULL_shell)
 {
 	char	**argv = ft_strsplit("jobs", ' ');
 
 	t_shell		*shell = NULL;
-	char		buffer[1024];
 
-	memset(buffer, 0, 1024);
-	snprintf(buffer, 1024, "Cetushell: %s: %s: %s\n", "jobs", "Shell struct passed to jobs is invalid", g_error_str[internal_error]);
 	int ret = builtin_jobs(argv, shell);
-	fflush(stderr);
-	cr_expect_stderr_eq_str(buffer);
 	cr_expect_eq(ret, 1);
 }
 
-Test(builtin_jobs_integration, error_NULL_job_control, .init = cr_redirect_stderr)
+Test(builtin_jobs_integration, error_NULL_job_control)
 {
 	char	**argv = ft_strsplit("jobs", ' ');
 
 	t_job_cont	*job_control = NULL;
 	t_shell		*shell = init_shell(false);
 	shell->job_control = job_control;
-	char		buffer[1024];
 
-	memset(buffer, 0, 1024);
-	snprintf(buffer, 1024, "Cetushell: %s: %s: %s\n", "jobs", "Shell struct passed to jobs is invalid", g_error_str[internal_error]);
 	int ret = builtin_jobs(argv, shell);
-	fflush(stderr);
-	cr_expect_stderr_eq_str(buffer);
 	cr_expect_eq(ret, 1);
 }

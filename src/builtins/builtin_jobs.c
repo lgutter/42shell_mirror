@@ -59,11 +59,7 @@ int			builtin_jobs(char **argv, t_shell *shell)
 	int		opts;
 
 	if (shell == NULL || shell->job_control == NULL)
-	{
-		handle_prefix_error_str(internal_error, "jobs",
-							"Shell struct passed to jobs is invalid");
 		return (1);
-	}
 	args = NULL;
 	opts = (job_print_auto | job_update_all);
 	if (argv != NULL && argv[0] != NULL && argv[1] != NULL)
