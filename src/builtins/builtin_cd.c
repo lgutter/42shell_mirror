@@ -97,7 +97,7 @@ int			builtin_cd(t_shell *shell, char **argv)
 	static t_cd		cd_s = {false, false, true, NULL, "", ""};
 
 	if (shell == NULL || argv == NULL || shell->env == NULL)
-		return (-1);
+		return (1);
 	ret = get_cd_options(argv, &cd_s);
 	if (ret == 0)
 		ret = get_home_oldpw(&cd_s, shell->env);
@@ -107,5 +107,5 @@ int			builtin_cd(t_shell *shell, char **argv)
 	free(cd_s.input_path);
 	ft_bzero(cd_s.final_path, PATH_MAX);
 	cd_s = (t_cd){.to_oldpwd = false, .to_home = false, .link = true, };
-	return (ret == 0 ? 0 : 1);
+	return (ret);
 }
