@@ -83,7 +83,7 @@ size_t		set_old_new_pwd(t_env *env, t_cd *cd, char *old_path)
 		if (getcwd(cd->link_path, PATH_MAX) == NULL)
 			return (handle_prefix_error(getcwd_error, "cd"));
 		if (ft_setenv(env, "OLDPWD", old_path, ENV_VAR) != 0 ||
-			ft_setenv(env, "PWD", cd->final_path, ENV_VAR) != 0)
+			ft_setenv(env, "PWD", cd->link_path, ENV_VAR) != 0)
 			return (handle_prefix_error(malloc_error, "cd"));
 	}
 	if (cd->to_oldpwd)
