@@ -55,21 +55,30 @@ t_status	get_job_status(t_job *job)
 
 static void	update_current_previous_job(t_job_cont *job_control, size_t id)
 {
+	t_job	*job;
+	size_t	temp;
+
+	job = job_control->job_list;
+	temp = 0;
 	if (id == job_control->current)
 	{
 		job_control->current = job_control->previous;
-		job_control->previous = get_new_job_id(job_control);
-		if (job_control->previous > 0)
-			job_control->previous -= 1;
+		while (job != NULL && job->id != job_control->previous)
+		{
+			temp = job->id;
+			job = job->next;
+		}
+		job_control->previous = temp;
 	}
-	if (id == job_control->previous)
+	else if (id == job_control->previous)
 	{
-		job_control->previous = get_new_job_id(job_control);
-		if (job_control->previous > 0)
-			job_control->previous -= 1;
+		while (job != NULL && job->id != job_control->current)
+		{
+			temp = job->id;
+			job = job->next;
+		}
+		job_control->previous = temp;
 	}
-	if (job_control->previous == job_control->current)
-		job_control->previous = 0;
 }
 
 static void	remove_job_from_list(t_job_cont *job_control, size_t id)
