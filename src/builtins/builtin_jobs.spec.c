@@ -15,6 +15,7 @@
 #include <criterion/redirect.h>
 #include "builtins.h"
 #include "handle_input.h"
+#include "error_str.h"
 
 // int			builtin_jobs(char **argv, t_shell *shell);
 static int	redirect_std_out(char *filename)
@@ -378,8 +379,11 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
 	cr_expect_eq(read(read_fd, buffer, 1024), (ssize_t)0);
+	memset(buffer, 0, 1024);
 	fflush(stderr);
-	cr_expect_stderr_eq_str("jobs: job not found: %foo\n");
+	snprintf(buffer, 1024, "Cetushell: jobs: %%foo: %s\n", g_error_str[job_not_found]);
+	cr_expect_stderr_eq_str(buffer);
+	memset(buffer, 0, 1024);
 	cr_expect_eq(job_control->current, 2);
 	cr_expect_eq(job_control->previous, 1);
 	cr_expect_not_null(job_control->job_list);

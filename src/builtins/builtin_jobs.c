@@ -22,7 +22,7 @@ static bool	iterate_jobs(t_job_cont *job_control, char *job_spec, int opts)
 	job = job_control->job_list;
 	while (job != NULL)
 	{
-		if (job_spec_match(job_control, job, job_spec))
+		if (job_spec_match(job_control, job, job_spec) == true)
 		{
 			job_found = true;
 			job = update_job_status(job_control, job, opts);
@@ -45,7 +45,7 @@ static int	iterate_job_specs(char **args, t_job_cont *job_control, int opts)
 		if (iterate_jobs(job_control, args[i], opts) == false)
 		{
 			ret = 1;
-			ft_dprintf(STDERR_FILENO, "jobs: job not found: %s\n", args[i]);
+			handle_prefix_error_str(job_not_found, "jobs", args[i]);
 		}
 		i++;
 	}

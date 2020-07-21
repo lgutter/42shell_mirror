@@ -56,5 +56,6 @@ static const char	*g_error_str[error_count] = {
 	[getcwd_error] = "Error while getcwd() call",
 	[illegal_option] = "illegal option given",
 	[no_job_control] = "Job control not available",
+	[job_not_found] = "Job not found",
 };
 #endif
