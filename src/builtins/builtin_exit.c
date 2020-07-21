@@ -18,6 +18,8 @@ int		builtin_exit(t_shell *shell, char **argv)
 	char	*temp;
 	int		final_code;
 
+	if (shell == NULL)
+		return (exit_shell_code);
 	temp = ft_getenv(shell->env, "STATUS", SHELL_VAR);
 	configure_terminal(NULL, 0);
 	if (argv != NULL && argv[0] != NULL && argv[1] != NULL)

@@ -19,9 +19,9 @@ int				builtin_env(t_shell *shell, char **argv)
 	t_env	*head;
 
 	(void)argv;
-	head = shell->env;
-	if (head == NULL)
+	if (shell == NULL)
 		return (1);
+	head = shell->env;
 	while (head != NULL)
 	{
 		if ((head->type & ENV_VAR) != 0)
@@ -36,9 +36,9 @@ int				builtin_shellenv(t_shell *shell, char **argv)
 	t_env	*head;
 
 	(void)argv;
-	head = shell->env;
-	if (head == NULL)
+	if (shell == NULL)
 		return (1);
+	head = shell->env;
 	while (head != NULL)
 	{
 		if ((head->type & SHELL_VAR) != 0)
