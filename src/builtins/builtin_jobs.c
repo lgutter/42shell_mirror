@@ -52,7 +52,7 @@ static int	iterate_job_specs(char **args, t_job_cont *job_control, int opts)
 	return (ret);
 }
 
-int			builtin_jobs(char **argv, t_shell *shell)
+int			builtin_jobs(t_shell *shell, char **argv)
 {
 	char	**args;
 	t_job	*job;

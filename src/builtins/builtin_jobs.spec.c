@@ -56,7 +56,7 @@ Test(builtin_jobs_integration, basic_single_job_no_options, .init = cr_redirect_
 
 
 	fd = redirect_std_out(filename);
-	int ret = builtin_jobs(argv, shell);
+	int ret = builtin_jobs(shell, argv);
 	cr_expect_eq(ret, 0);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
@@ -76,7 +76,7 @@ Test(builtin_jobs_integration, basic_single_job_no_options, .init = cr_redirect_
 
 	fd = redirect_std_out(filename);
 	usleep(500000);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -122,7 +122,7 @@ Test(builtin_jobs_integration, basic_single_job_status_differ_no_options, .init 
 
 	fd = redirect_std_out(filename);
 	usleep(100000);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -141,7 +141,7 @@ Test(builtin_jobs_integration, basic_single_job_status_differ_no_options, .init 
 
 	fd = redirect_std_out(filename);
 	usleep(600000);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -185,7 +185,7 @@ Test(builtin_jobs_integration, basic_single_job_long_option, .init = cr_redirect
 
 
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -204,7 +204,7 @@ Test(builtin_jobs_integration, basic_single_job_long_option, .init = cr_redirect
 
 	fd = redirect_std_out(filename);
 	usleep(600000);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -249,7 +249,7 @@ Test(builtin_jobs_integration, basic_single_job_pid_option, .init = cr_redirect_
 
 
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -268,7 +268,7 @@ Test(builtin_jobs_integration, basic_single_job_pid_option, .init = cr_redirect_
 
 	fd = redirect_std_out(filename);
 	usleep(600000);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -286,7 +286,7 @@ Test(builtin_jobs_integration, basic_single_job_pid_option, .init = cr_redirect_
 	free(argv[1]);
 	argv[1] = NULL;
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -337,7 +337,7 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	usleep(100000);
 
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -355,7 +355,7 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	close(read_fd);
 
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv_job_spec, shell);
+	builtin_jobs(shell, argv_job_spec);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -373,7 +373,7 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	close(read_fd);
 
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv_wrong_spec, shell);
+	builtin_jobs(shell, argv_wrong_spec);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -387,7 +387,7 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	close(read_fd);
 
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv_no_op, shell);
+	builtin_jobs(shell, argv_no_op);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -407,7 +407,7 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	usleep(500000);
 
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -424,7 +424,7 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	close(read_fd);
 
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv_no_op, shell);
+	builtin_jobs(shell, argv_no_op);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -444,7 +444,7 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	usleep(1000000);
 
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv, shell);
+	builtin_jobs(shell, argv);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -461,7 +461,7 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	close(read_fd);
 
 	fd = redirect_std_out(filename);
-	builtin_jobs(argv_no_op, shell);
+	builtin_jobs(shell, argv_no_op);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -489,7 +489,7 @@ Test(builtin_jobs_integration, error_NULL_shell)
 
 	t_shell		*shell = NULL;
 
-	int ret = builtin_jobs(argv, shell);
+	int ret = builtin_jobs(shell, argv);
 	cr_expect_eq(ret, 1);
 }
 
@@ -501,6 +501,6 @@ Test(builtin_jobs_integration, error_NULL_job_control)
 	t_shell		*shell = init_shell(false);
 	shell->job_control = job_control;
 
-	int ret = builtin_jobs(argv, shell);
+	int ret = builtin_jobs(shell, argv);
 	cr_expect_eq(ret, 1);
 }
