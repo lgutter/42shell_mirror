@@ -84,7 +84,7 @@ static int	resolve_cd_path(t_env *env, t_cd *cd)
 		ret = path_start(cd, old_pwd);
 	if (ret == 0 && chdir(cd->final_path) == -1)
 		ret = handle_prefix_error_str(no_such_file_or_dir, "cd",
-										cd->final_path);
+										cd->input_path);
 	if (ret == 0)
 		ret = set_old_new_pwd(env, cd, old_pwd);
 	free(old_pwd);
@@ -103,9 +103,8 @@ int			builtin_cd(t_shell *shell, char **argv)
 		ret = get_home_oldpw(&cd_s, shell->env);
 	if (ret == 0)
 		ret = resolve_cd_path(shell->env, &cd_s);
-	ft_setstatus(shell->env, ret);
 	free(cd_s.input_path);
 	ft_bzero(cd_s.final_path, PATH_MAX);
 	cd_s = (t_cd){.to_oldpwd = false, .to_home = false, .link = true, };
-	return (ret);
+	return (ret == 0 ? 0 : 1);
 }
