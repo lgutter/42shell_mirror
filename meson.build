@@ -102,6 +102,7 @@ src_files = files([
   'src/builtins/builtin_bg.c',
   'src/builtins/builtin_fg.c',
   'src/builtins/builtin_export.c',
+  'src/builtins/builtin_type.c',
   'src/autocomplete/auto_complete.c',
   'src/autocomplete/auto_complete_init.c',
   'src/autocomplete/auto_complete_lists.c',
