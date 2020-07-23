@@ -17,11 +17,13 @@
 # include <limits.h>
 #endif
 
-int		get_cd_options(char **argv, t_cd *cd_s)
+int			get_cd_options(char **argv, t_cd *cd_s)
 {
 	struct s_ft_getopt	opt;
 	size_t				len;
 
+	if (argv == NULL || cd_s == NULL)
+		return (1);
 	len = ft_str_arr_len(argv);
 	opt = (struct s_ft_getopt){NULL, 1, 1, 0, false};
 	while (ft_getopt(&opt, len, argv, "LP"))
@@ -48,6 +50,8 @@ int			get_home_oldpw(t_cd *cd_s, t_env *env)
 {
 	char	*key;
 
+	if (cd_s == NULL || env == NULL)
+		return (1);
 	if (cd_s->to_oldpwd == true || cd_s->to_home == true)
 	{
 		key = ft_getenv(env, (cd_s->to_oldpwd ? "OLDPWD" : "HOME"), 3);
@@ -67,6 +71,8 @@ int			get_home_oldpw(t_cd *cd_s, t_env *env)
 
 size_t		set_old_new_pwd(t_env *env, t_cd *cd, char *old_path)
 {
+	if (env == NULL || cd == NULL || old_path == NULL)
+		return (1);
 	if (cd->link == true)
 	{
 		if (ft_setenv(env, "OLDPWD", (ft_strlen(cd->link_path) == 0 ?
