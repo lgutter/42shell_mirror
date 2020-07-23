@@ -12,7 +12,7 @@
 
 #include "builtins.h"
 
-int		checkopt_export(char *arg)
+static size_t	checkopt_export(char *arg)
 {
 	size_t		i;
 
@@ -29,7 +29,7 @@ int		checkopt_export(char *arg)
 	return (0);
 }
 
-static int	split_key_value(t_env *env, char *arg)
+static size_t	split_key_value(t_env *env, char *arg)
 {
 	char	**split;
 
@@ -45,7 +45,7 @@ static int	split_key_value(t_env *env, char *arg)
 	return (0);
 }
 
-static int	export_var(t_env *env, char *arg)
+static size_t	export_var(t_env *env, char *arg)
 {
 	char	*var;
 	int		equals;
@@ -72,7 +72,7 @@ static int	export_var(t_env *env, char *arg)
 	return (0);
 }
 
-int			builtin_export(t_shell *shell, char **argv)
+int				builtin_export(t_shell *shell, char **argv)
 {
 	size_t	i;
 	int		print;
