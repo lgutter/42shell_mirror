@@ -54,16 +54,19 @@ int					builtin_shellenv(t_shell *shell, char **argv);
 int					builtin_jobs(t_shell *shell, char **argv);
 int					builtin_bg(t_shell *shell, char **argv);
 int					builtin_fg(t_shell *shell, char **argv);
+int					builtin_export(t_shell *shell, char **argv);
 
 int					get_cd_options(char **argv, t_cd *cd_s);
 int					get_home_oldpw(t_cd *cd_s, t_env *env);
 size_t				set_old_new_pwd(t_env *env, t_cd *cd, char *old_path);
+int					print_export(t_shell *shell, char **argv);
 
 static const struct s_builtin	g_builtins[] = {
 	{"cd", builtin_cd},
 	{"env", builtin_env},
 	{"shellenv", builtin_shellenv},
 	{"setenv", builtin_set},
+	{"export", builtin_export},
 	{"unsetenv", builtin_unset},
 	{"setshell", builtin_set},
 	{"unsetshell", builtin_unset},
