@@ -13,6 +13,7 @@
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include <criterion/assert.h>
+#include <unistd.h>
 
 #include "builtins.h"
 #include "environment.h"
@@ -211,3 +212,243 @@ Test(builtin_cd_unit, invalid_NULL_argv)
 	cr_expect_eq(1, ret, "ret is %d but must be %d", ret, 1);
 }
 
+Test(builtin_cd_unit, valid_cd_single_link)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		buff[1024];
+	char		*dir = "/tmp/valid_cd_link/foo";
+#ifdef __linux__
+	char		*expected_dir = "/tmp/valid_cd_link/bar";
+#else
+	char		*expected_dir = "/private/tmp/valid_cd_link/bar";
+#endif
+	char		olddir[1024];
+
+	getcwd(olddir, 1024);
+	mkdir("/tmp/valid_cd_link", 0777);
+	mkdir(expected_dir, 0777);
+	symlink(expected_dir, dir);
+	chmod(dir, 0777);
+	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = dir;
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), olddir);
+	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), "/tmp/valid_cd_link/foo");
+	getcwd(buff, 1024);
+	cr_expect_str_eq(expected_dir, buff, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
+	unlink("/tmp/valid_cd_link/foo");
+	rmdir("/tmp/valid_cd_link/bar");
+}
+
+Test(builtin_cd_unit, valid_cd_multi_link)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		buff[1024];
+	char		*dir = "/tmp/cd_multi_link/foo/baz";
+#ifdef __linux__
+	char		*expected_dir = "/tmp/cd_multi_link/bar";
+#else
+	char		*expected_dir = "/private/tmp/cd_multi_link/bar";
+#endif
+	char		olddir[1024];
+
+	getcwd(olddir, 1024);
+	mkdir("/tmp/cd_multi_link", 0777);
+	mkdir(expected_dir, 0777);
+	symlink(expected_dir, "/tmp/cd_multi_link/foo");
+	chmod("/tmp/cd_multi_link/foo", 0777);
+	symlink(expected_dir, "/tmp/cd_multi_link/bar/baz");
+	chmod("/tmp/cd_multi_link/bar/baz", 0777);
+	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = "/tmp/cd_multi_link/foo";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	free(argv);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = "baz";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), "/tmp/cd_multi_link/foo");
+	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), dir);
+	getcwd(buff, 1024);
+	cr_expect_str_eq(expected_dir, buff, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
+	unlink("/tmp/cd_multi_link/baz");
+	unlink("/tmp/cd_multi_link/foo");
+	rmdir("/tmp/cd_multi_link/bar");
+}
+
+Test(builtin_cd_unit, valid_cd_multi_link_remove_link)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		buff[1024];
+	char		*dir = "/tmp/cd_remove_link/foo/baz";
+#ifdef __linux__
+	char		*expected_dir = "/tmp/cd_remove_link/bar";
+#else
+	char		*expected_dir = "/private/tmp/cd_remove_link/bar";
+#endif
+	char		olddir[1024];
+
+	getcwd(olddir, 1024);
+	mkdir("/tmp/cd_remove_link", 0777);
+	mkdir(expected_dir, 0777);
+	symlink(expected_dir, "/tmp/cd_remove_link/foo");
+	chmod("/tmp/cd_remove_link/foo", 0777);
+	symlink(expected_dir, "/tmp/cd_remove_link/bar/baz");
+	chmod("/tmp/cd_remove_link/bar/baz", 0777);
+	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = "/tmp/cd_remove_link/foo";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	free(argv);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = "baz";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), "/tmp/cd_remove_link/foo");
+	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), dir);
+	free(argv);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = "../";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), "/tmp/cd_remove_link/foo/baz");
+	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), "/tmp/cd_remove_link/foo");
+	getcwd(buff, 1024);
+	cr_expect_str_eq(expected_dir, buff, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
+	unlink("/tmp/cd_remove_link/baz");
+	unlink("/tmp/cd_remove_link/foo");
+	rmdir("/tmp/cd_remove_link/bar");
+}
+
+Test(builtin_cd_unit, valid_cd_multi_link_P_option)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		buff[1024];
+#ifdef __linux__
+	char		*expected_dir = "/tmp/multi_link_P/bar";
+#else
+	char		*expected_dir = "/private/tmp/multi_link_P/bar";
+#endif
+	char		olddir[1024];
+
+	getcwd(olddir, 1024);
+	mkdir("/tmp/multi_link_P", 0777);
+	mkdir(expected_dir, 0777);
+	symlink(expected_dir, "/tmp/multi_link_P/foo");
+	chmod("/tmp/multi_link_P/foo", 0777);
+	symlink(expected_dir, "/tmp/multi_link_P/bar/baz");
+	chmod("/tmp/multi_link_P/foo", 0777);
+	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = "/tmp/multi_link_P/foo";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	free(argv);
+	argv = (char **)ft_memalloc(sizeof(char *) * 4);
+	argv[0] = "cd";
+	argv[1] = "-P";
+	argv[2] = "baz";
+	argv[3] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), "/tmp/multi_link_P/bar");
+	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), expected_dir);
+	getcwd(buff, 1024);
+	cr_expect_str_eq(expected_dir, buff, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
+	unlink("/tmp/multi_link_P/bar/baz");
+	unlink("/tmp/multi_link_P/foo");
+	rmdir("/tmp/multi_link_P/bar");
+}
+
+Test(builtin_cd_unit, cd_invalid_option)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		*dir = "/tmp";
+
+	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
+	argv = (char **)ft_memalloc(sizeof(char *) * 4);
+	argv[0] = "cd";
+	argv[1] = "-PLKPLP";
+	argv[2] = dir;
+	argv[3] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
+}
+
+Test(builtin_cd_unit, valid_cd_multi_link_multi_option)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		buff[1024];
+#ifdef __linux__
+	char		*expected_dir = "/tmp/multi_option/bar";
+#else
+	char		*expected_dir = "/private/tmp/multi_option/bar";
+#endif
+	char		olddir[1024];
+
+	getcwd(olddir, 1024);
+	mkdir("/tmp/multi_option", 0777);
+	mkdir(expected_dir, 0777);
+	symlink(expected_dir, "/tmp/multi_option/foo");
+	chmod("/tmp/multi_option/foo", 0777);
+	symlink(expected_dir, "/tmp/multi_option/bar/baz");
+	chmod("/tmp/multi_option/foo", 0777);
+	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = "/tmp/multi_option/foo";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	free(argv);
+	argv = (char **)ft_memalloc(sizeof(char *) * 8);
+	argv[0] = "cd";
+	argv[1] = "-P";
+	argv[1] = "-L";
+	argv[1] = "-P";
+	argv[1] = "-L";
+	argv[1] = "-L";
+	argv[1] = "-P";
+	argv[2] = "baz";
+	argv[3] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), "/tmp/multi_option/bar");
+	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), expected_dir);
+	getcwd(buff, 1024);
+	cr_expect_str_eq(expected_dir, buff, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
+	unlink("/tmp/multi_option/bar/baz");
+	unlink("/tmp/multi_option/foo");
+	rmdir("/tmp/multi_option/bar");
+}
