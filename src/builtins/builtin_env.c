@@ -48,13 +48,13 @@ int				builtin_shellenv(t_shell *shell, char **argv)
 	return (0);
 }
 
-int				print_export(t_shell *shell, char **argv)
+void				print_export(t_shell *shell, char **argv)
 {
 	t_env	*head;
 
 	(void)argv;
 	if (shell == NULL)
-		return (1);
+		return ;
 	head = shell->env;
 	while (head != NULL)
 	{
@@ -67,5 +67,4 @@ int				print_export(t_shell *shell, char **argv)
 		}
 		head = head->next;
 	}
-	return (0);
 }

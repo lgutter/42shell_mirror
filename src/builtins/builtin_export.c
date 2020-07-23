@@ -12,14 +12,19 @@
 
 #include "builtins.h"
 
-int		checkopt_export(char **argv, int i)
+int		checkopt_export(char *arg)
 {
-	if (argv[i][0] == '-')
+	size_t		i;
+
+	i = 1;
+	if (arg[0] == '-')
 	{
-		if (argv[i][0] == '-' && argv[i][1] != 'p')
-			return (-1);
-		if (argv[i][0] == '-' && argv[i][1] == 'p')
-			return (1);
+		while (arg[i] != '\0')
+		{
+			if (arg[0] == '-' && arg[i] != 'p')
+				return (1);
+			i++;
+		}
 	}
 	return (0);
 }
@@ -60,7 +65,10 @@ static int	export_var(t_env *env, char *arg)
 				return (1);
 	}
 	else if (equals > 1)
-		return (handle_error(invalid_option));
+	{
+		ft_printf("Invalid Option : Usage: export [-p] name[=word]...\n");
+		return (1);
+	}
 	return (0);
 }
 
@@ -75,12 +83,12 @@ int			builtin_export(t_shell *shell, char **argv)
 	print = 1;
 	while (argv[i] != NULL)
 	{
-		if (argv[i][0] == '-')
+		if (checkopt_export(argv[i]) != 0)
 		{
-			if (argv[i][1] != 'p')
-				return (invalid_option);
+			ft_printf("Invalid Option : Usage: export [-p] name[=word]...\n");
+			return (1);
 		}
-		else
+		if (argv[i][0] != '-')
 		{
 			print = 0;
 			if (export_var(shell->env, argv[i]) != 0)
