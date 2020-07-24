@@ -119,8 +119,7 @@ int				exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd);
 int				exec_pipe_sequence(t_pipe_sequence *pipe_seq, t_shell *shell,
 									t_job *job);
 int				exec_simple_command(t_simple_cmd *simple_cmd, t_shell *shell);
-int				find_executable(t_env *env_list, t_command *command,
-								char *arg_zero);
+int				find_executable(t_env *env_list, char **path, char *arg_zero);
 int				execute_command(t_command *command, t_shell *shell);
 
 #endif

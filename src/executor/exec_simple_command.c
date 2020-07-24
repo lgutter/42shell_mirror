@@ -60,9 +60,13 @@ static int	init_cmd(t_command *command, t_simple_cmd *simple_cmd, t_env *env)
 	command->envp = convert_env_to_envp(env);
 	if (command->envp == NULL)
 		return (malloc_error);
-	ret = find_executable(env, command, command->argv[0]);
+	ret = find_executable(env, &(command->path), command->argv[0]);
 	if (ret != 0)
+	{
+		if (ret == cmd_not_found)
+			handle_error_str(ret, command->argv[0]);
 		free_command(command);
+	}
 	return (ret);
 }
 
