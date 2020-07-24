@@ -84,6 +84,14 @@ int					ft_setenv(t_env *env, const char *key, const char *value,
 int					ft_setstatus(t_env *env, int error_code);
 
 /*
+**	Takes env as argument.
+**	retrieves the value of the shell variable STATUS, converts it to an int,
+**	after which it returns the result.
+**	Returns the current status.
+*/
+int					ft_getstatus(t_env *env);
+
+/*
 **	takes env and a key as argument and removes it from our environment.
 **	returns the following:
 **	0 on succes, an errid error code on failure.
