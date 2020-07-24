@@ -56,6 +56,7 @@ int					builtin_jobs(t_shell *shell, char **argv);
 int					builtin_bg(t_shell *shell, char **argv);
 int					builtin_fg(t_shell *shell, char **argv);
 int					builtin_export(t_shell *shell, char **argv);
+int					builtin_shellenv(t_shell *shell, char **argv);
 int					builtin_type(t_shell *shell, char **argv);
 
 int					get_cd_options(char **argv, t_cd *cd_s);
