@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   builtin_env.spec.c                                 :+:    :+:            */
+/*   builtin_set.spec.c                                 :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
@@ -105,13 +105,14 @@ Test(builtin_env_unit, valid_env_no_arguments_NULL_command, .init = redirect_std
 Test(builtin_shellenv_unit, valid_shell_no_arguments_NULL_command, .init = redirect_std_out)
 {
 	t_shell		*shell = init_shell(false);
+	char		*argv[2] = {"setshell", NULL};
 	t_env		shell_var = {"baz", "blah", (SHELL_VAR | RO_VAR), NULL};
 	t_env		env = {"foo", "bar", ENV_VAR, &shell_var};
 	t_env		*start = &env;
 	int			ret = 0;
 	shell->env = start;
 
-	ret = builtin_set(shell, NULL);
+	ret = builtin_setvar(shell, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	char		buff[1024];
 	memset(buff, '\0', 1024);
