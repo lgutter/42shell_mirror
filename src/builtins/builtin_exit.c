@@ -20,12 +20,15 @@ int		builtin_exit(t_shell *shell, char **argv)
 
 	if (shell == NULL)
 		return (exit_shell_code);
+	if (shell->job_control != NULL && shell->job_control->job_list != NULL)
+	{
+		ft_dprintf(STDERR_FILENO, "Cetushell: you have unfinished jobs.\n");
+		return (0);
+	}
 	temp = ft_getenv(shell->env, "STATUS", SHELL_VAR);
 	configure_terminal(NULL, 0);
 	if (argv != NULL && argv[0] != NULL && argv[1] != NULL)
-	{
 		final_code = ft_atoi(argv[1]);
-	}
 	else if (temp == NULL)
 		final_code = 0;
 	else
@@ -34,8 +37,7 @@ int		builtin_exit(t_shell *shell, char **argv)
 	temp = ft_itoa(final_code);
 	if (temp == NULL)
 		ft_setenv(shell->env, "EXIT_CODE", "1", SHELL_VAR | RO_VAR);
-	else
-		ft_setenv(shell->env, "EXIT_CODE", temp, SHELL_VAR | RO_VAR);
+	ft_setenv(shell->env, "EXIT_CODE", temp, SHELL_VAR | RO_VAR);
 	free(temp);
 	return (exit_shell_code);
 }
