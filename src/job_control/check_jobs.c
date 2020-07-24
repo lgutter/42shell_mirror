@@ -14,12 +14,14 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-static void	update_process_status(t_job *start, pid_t pid, t_status status)
+static void	update_process_status(t_job *start, pid_t pid, int stat_loc)
 {
 	t_process	*process;
 	t_job		*job;
+	t_status	status;
 
 	job = start;
+	status = get_status_from_stat_loc(stat_loc);
 	while (job != NULL)
 	{
 		process = job->processes;
@@ -34,7 +36,6 @@ static void	update_process_status(t_job *start, pid_t pid, t_status status)
 		}
 		job = job->next;
 	}
-	return ;
 }
 
 void		check_jobs(t_job_cont *job_control, int update_opts)
@@ -52,12 +53,7 @@ void		check_jobs(t_job_cont *job_control, int update_opts)
 		ret = waitpid(-1, &stat_loc, WNOHANG | WUNTRACED | WCONTINUED);
 		if (ret > 0)
 		{
-			if (WIFSTOPPED(stat_loc) != 0)
-				update_process_status(job_control->job_list, ret, suspended);
-			else if (WIFCONTINUED(stat_loc) != 0)
-				update_process_status(job_control->job_list, ret, running);
-			else
-				update_process_status(job_control->job_list, ret, exited);
+			update_process_status(job_control->job_list, ret, stat_loc);
 		}
 	}
 	job = job_control->job_list;

@@ -11,19 +11,24 @@
 /* ************************************************************************** */
 
 #include "job_control.h"
+#include <signal.h>
+#include <sys/wait.h>
 
-size_t			get_new_job_id(t_job_cont *job_control)
+t_status		get_status_from_stat_loc(int stat_loc)
 {
-	t_job	*job;
-
-	if (job_control == NULL)
-		return (0);
-	job = job_control->job_list;
-	if (job == NULL)
-		return (1);
-	while (job->next != NULL)
-		job = job->next;
-	return (job->id + 1);
+	if (WIFSTOPPED(stat_loc) == true)
+		return (suspended);
+	else if (WIFSIGNALED(stat_loc) == true)
+	{
+		if (WTERMSIG(stat_loc) == SIGPIPE)
+			return (broken_pipe);
+		else
+			return (exited);
+	}
+	else if (WIFCONTINUED(stat_loc) == true)
+		return (running);
+	else
+		return (exited);
 }
 
 t_job			*init_job(t_shell *shell, char *command, bool foreground)

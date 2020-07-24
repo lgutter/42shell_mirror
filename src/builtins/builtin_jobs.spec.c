@@ -129,8 +129,8 @@ Test(builtin_jobs_integration, basic_single_job_status_differ_no_options, .init 
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "exited     /bin/echo foo |\n"));
-	cr_expect_not_null(strstr(buffer, "running    sleep 0.6 &\n"));
+	cr_expect_not_null(strstr(buffer, "exited       /bin/echo foo |\n"));
+	cr_expect_not_null(strstr(buffer, "running      sleep 0.6 &\n"));
 	cr_expect_eq(job_control->current, 1);
 	cr_expect_eq(job_control->previous, 0);
 	cr_assert_not_null(job_control->job_list);
@@ -148,7 +148,7 @@ Test(builtin_jobs_integration, basic_single_job_status_differ_no_options, .init 
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "exited     /bin/echo foo | sleep 0.6 &"));
+	cr_expect_not_null(strstr(buffer, "exited       /bin/echo foo | sleep 0.6 &"));
 	cr_expect_not_null(strstr(buffer, pgrp_str));
 	cr_expect_eq(job_control->current, 0);
 	cr_expect_eq(job_control->previous, 0);
@@ -192,8 +192,8 @@ Test(builtin_jobs_integration, basic_single_job_long_option, .init = cr_redirect
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "running    sleep 0.4 |\n"));
-	cr_expect_not_null(strstr(buffer, "running    sleep 0.5 &\n"));
+	cr_expect_not_null(strstr(buffer, "running      sleep 0.4 |\n"));
+	cr_expect_not_null(strstr(buffer, "running      sleep 0.5 &\n"));
 	cr_expect_eq(job_control->current, 1);
 	cr_expect_eq(job_control->previous, 0);
 	cr_assert_not_null(job_control->job_list);
@@ -211,8 +211,8 @@ Test(builtin_jobs_integration, basic_single_job_long_option, .init = cr_redirect
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "exited     sleep 0.4 |\n"));
-	cr_expect_not_null(strstr(buffer, "exited     sleep 0.5 &\n"));
+	cr_expect_not_null(strstr(buffer, "exited       sleep 0.4 |\n"));
+	cr_expect_not_null(strstr(buffer, "exited       sleep 0.5 &\n"));
 	cr_expect_not_null(strstr(buffer, pgrp_str));
 	cr_expect_eq(job_control->current, 0);
 	cr_expect_eq(job_control->previous, 0);
@@ -293,7 +293,7 @@ Test(builtin_jobs_integration, basic_single_job_pid_option, .init = cr_redirect_
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "exited     sleep 0.4 | sleep 0.5 &"));
+	cr_expect_not_null(strstr(buffer, "exited       sleep 0.4 | sleep 0.5 &"));
 	cr_expect_not_null(strstr(buffer, pgrp_str));
 	cr_expect_eq(job_control->current, 0);
 	cr_expect_eq(job_control->previous, 0);
@@ -362,8 +362,8 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	cr_expect_not_null(strstr(buffer, "[1] -"));
-	cr_expect_not_null(strstr(buffer, "exited     /bin/echo |\n"));
-	cr_expect_not_null(strstr(buffer, "running    sleep 1.5 &\n"));
+	cr_expect_not_null(strstr(buffer, "exited       /bin/echo |\n"));
+	cr_expect_not_null(strstr(buffer, "running      sleep 1.5 &\n"));
 	cr_expect_null(strstr(buffer, "[2]"));
 	cr_expect_null(strstr(buffer, "sleep 0.4"));
 	cr_expect_eq(job_control->current, 2);
@@ -397,10 +397,10 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	cr_expect_not_null(strstr(buffer, "[1] -"));
-	cr_expect_not_null(strstr(buffer, "exited     /bin/echo |\n"));
-	cr_expect_not_null(strstr(buffer, "running    sleep 1.5 &\n"));
+	cr_expect_not_null(strstr(buffer, "exited       /bin/echo |\n"));
+	cr_expect_not_null(strstr(buffer, "running      sleep 1.5 &\n"));
 	cr_expect_not_null(strstr(buffer, "[2] +"));
-	cr_expect_not_null(strstr(buffer, "running    sleep 0.4 | sleep 0.5 &\n"));
+	cr_expect_not_null(strstr(buffer, "running      sleep 0.4 | sleep 0.5 &\n"));
 	cr_expect_eq(job_control->current, 2);
 	cr_expect_eq(job_control->previous, 1);
 	cr_expect_not_null(job_control->job_list);
@@ -434,10 +434,10 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	cr_expect_not_null(strstr(buffer, "[1] -"));
-	cr_expect_not_null(strstr(buffer, "exited     /bin/echo |\n"));
-	cr_expect_not_null(strstr(buffer, "running    sleep 1.5 &\n"));
+	cr_expect_not_null(strstr(buffer, "exited       /bin/echo |\n"));
+	cr_expect_not_null(strstr(buffer, "running      sleep 1.5 &\n"));
 	cr_expect_not_null(strstr(buffer, "[2] +"));
-	cr_expect_not_null(strstr(buffer, "exited     sleep 0.4 | sleep 0.5 &\n"));
+	cr_expect_not_null(strstr(buffer, "exited       sleep 0.4 | sleep 0.5 &\n"));
 	cr_expect_not_null(strstr(buffer, pgrp_str));
 	cr_expect_eq(job_control->current, 1);
 	cr_expect_eq(job_control->previous, 0);
@@ -473,7 +473,7 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	cr_expect_null(strstr(buffer, "[2]"));
 	cr_expect_null(strstr(buffer, "sleep 0.4"));
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "exited     /bin/echo | sleep 1.5 &\n"));
+	cr_expect_not_null(strstr(buffer, "exited       /bin/echo | sleep 1.5 &\n"));
 	cr_expect_not_null(strstr(buffer, pgrp_str));
 	cr_expect_eq(job_control->current, 0);
 	cr_expect_eq(job_control->previous, 0);

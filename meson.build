@@ -82,6 +82,7 @@ src_files = files([
   'src/job_control/job_list_utils.c',
   'src/job_control/job_spec_match.c',
   'src/job_control/print_job_status.c',
+  'src/job_control/update_job_status.c',
   'src/executor/find_executable.c',
   'src/executor/exec_complete_command.c',
   'src/executor/exec_pipe_sequence.c',

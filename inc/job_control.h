@@ -20,9 +20,9 @@ typedef	enum			e_status
 {
 	running = 0,
 	suspended,
+	broken_pipe,
 	exited
 }						t_status;
-
 
 /*
 **	options for updating and printing job statuses.
@@ -32,19 +32,19 @@ typedef	enum			e_status
 **	job_update_update:	job status will be updated according to process statuses
 **	job_update_process:	if status changed, job info will be printed and if
 **						status was printed (depending on print options) the job
-						will also be removed from the job list.
-	job_print_auto:		if all process have the same status, job_print_short is
-						used, otherwise job_print_long is used.
-	job_print_short:	The job id, +/-(current/provious), group pid, status
-						and command string are printed on 1 line.
-	job_print_long:		All info for the job is printed, 1 line per process.
-	job_print_pid:		only the job's group pid is printed (script friendly)
-	job_print_pids:		The job id, +/- and all pid's are printed on 1 line.
-	job_print_pid_mask:	used to check if any info about the job will be printed,
-						to be sure we only remove a job if status was printed.
-	job_print_mask:		used to isolate only the printing options. If any of
-						the printing options are enabled, info for the job is
-						always printed.
+**						will also be removed from the job list.
+**	job_print_auto:		if all process have the same status, job_print_short is
+**						used, otherwise job_print_long is used.
+**	job_print_short:	The job id, +/-(current/provious), group pid, status
+**						and command string are printed on 1 line.
+**	job_print_long:		All info for the job is printed, 1 line per process.
+**	job_print_pid:		only the job's group pid is printed (script friendly)
+**	job_print_pids:		The job id, +/- and all pid's are printed on 1 line.
+**	job_print_pid_mask:	used to check if any info about the job will be printed,
+**						to be sure we only remove a job if status was printed.
+**	job_print_mask:		used to isolate only the printing options. If any of
+**						the printing options are enabled, info for the job is
+**						always printed.
 */
 typedef	enum			e_update_opts
 {
@@ -94,6 +94,7 @@ t_job					*init_job(t_shell *shell, char *command,
 															bool foreground);
 t_process				*init_process(t_job *job, char *command);
 t_status				get_job_status(t_job *job);
+t_status				get_status_from_stat_loc(int stat_loc);
 void					check_jobs(t_job_cont *job_control, int update_opts);
 int						set_process_job_group(t_job *job, t_process *process);
 
@@ -117,10 +118,10 @@ t_job					*update_job_status(t_job_cont *job_control,
 **	Print information about the given job, in a format depending on the options
 **	provided in opts using job_print_* enums from t_update_opts.
 **	args:
-		job:		The job for which info should be printed.
-		current:	id for the current job, to determine if + should be printed
-		previous:	id for the previous job, to determine if - should be printed
-		opts:		options for printing, if 0, job_print_auto is assumed.
+**		job:		The job for which info should be printed.
+**		current:	id for the current job, to determine if + should be printed
+**		previous:	id for the previous job, to determine if - should be printed
+**		opts:		options for printing, if 0, job_print_auto is assumed.
 */
 void					print_job_status(t_job *job,
 									size_t current, size_t previous, int opts);

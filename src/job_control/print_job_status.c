@@ -12,9 +12,10 @@
 
 #include "job_control.h"
 
-const char	*g_job_statuses[3] = {
+const char	*g_job_statuses[4] = {
 	[running] = "running",
 	[suspended] = "suspended",
+	[broken_pipe] = "broken pipe",
 	[exited] = "exited"
 };
 
@@ -39,7 +40,7 @@ static void	print_long_job_status(t_job *job, char prefix[9])
 	process = job->processes;
 	while (process != NULL)
 	{
-		ft_printf("%s%-6i %-10s %s\n", prefix,
+		ft_printf("%s%-6i %-11s  %s\n", prefix,
 			process->pid, g_job_statuses[process->status], process->command);
 		process = process->next;
 		ft_snprintf(prefix, 8, "        ");
@@ -81,7 +82,7 @@ void		print_job_status(t_job *job,
 	if ((opts & job_print_long) != 0)
 		print_long_job_status(job, prefix);
 	else if ((opts & job_print_short) != 0)
-		ft_printf("%s%-6i %-10s %s\n",
+		ft_printf("%s%-6i %-11s  %s\n",
 			prefix, job->pgrp, g_job_statuses[job->status], job->command);
 	else if ((opts & job_print_pid) != 0)
 		ft_printf("%i\n", job->pgrp);

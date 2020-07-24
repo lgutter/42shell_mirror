@@ -32,19 +32,19 @@ static int	check_access(char *path)
 
 	if (access(path, F_OK) != 0)
 	{
-		return (handle_error_str(no_such_file_or_dir, path));
+		exit(handle_error_str(no_such_file_or_dir, path));
 	}
 	if (access(path, X_OK) != 0)
 	{
-		return (handle_error_str(access_denied, path));
+		exit(handle_error_str(access_denied, path));
 	}
 	if (stat(path, &statbuf) != 0)
 	{
-		return (handle_error_str(access_denied, path));
+		exit(handle_error_str(access_denied, path));
 	}
 	if (S_ISDIR(statbuf.st_mode) != 0)
 	{
-		return (handle_error_str(is_dir_error, path));
+		exit(handle_error_str(is_dir_error, path));
 	}
 	return (0);
 }
@@ -66,6 +66,13 @@ static int	init_cmd(t_command *command, t_simple_cmd *simple_cmd, t_env *env)
 	return (ret);
 }
 
+void		execve_command(t_command command)
+{
+	check_access(command.path);
+	execve(command.path, command.argv, command.envp);
+	exit(handle_error(execve_failure));
+}
+
 int			exec_simple_command(t_simple_cmd *simple_cmd, t_shell *shell)
 {
 	t_command		command;
@@ -76,20 +83,21 @@ int			exec_simple_command(t_simple_cmd *simple_cmd, t_shell *shell)
 		return (parsing_error);
 	ret = init_cmd(&command, simple_cmd, shell->env);
 	if (ret != 0)
-		exit(ret);
+		return (ret);
 	else
 	{
 		redir_info = set_up_redirections(simple_cmd->redirects);
 		if (redir_info == NULL)
-			exit(ret);
-		ret = check_access(command.path);
-		if (ret == 0)
-		{
-			execve(command.path, command.argv, command.envp);
-			exit(handle_error(execve_failure));
-		}
+			return (ret);
+		if (is_builtin(simple_cmd->argv[0]) == 1)
+			ret = execute_builtin(shell, command.argv);
+		else if (getpid() == shell->pid)
+			return (handle_error_str(internal_error,
+											"did not fork for non-builtin"));
+		else
+			execve_command(command);
 	}
 	reset_redirections(&redir_info);
 	free_command(&command);
-	exit(ret);
+	return (ret);
 }

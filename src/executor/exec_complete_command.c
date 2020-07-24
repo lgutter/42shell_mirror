@@ -33,7 +33,7 @@ int		exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd)
 		if (ret == 0)
 			ret = exec_pipe_sequence(comp_cmd->pipe_sequence, shell, job);
 		job->status = get_job_status(job);
-		if (job->status != exited)
+		if (job->status != exited && job->status != broken_pipe)
 			add_job_to_list(shell, job);
 		else
 			free_job(job);

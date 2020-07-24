@@ -13,7 +13,6 @@
 #include "executor.h"
 #include "builtins.h"
 #include "signal_handler.h"
-#include <signal.h>
 #include <sys/types.h>
 #include <stdio.h>
 #include "builtins.h"
@@ -24,12 +23,12 @@ static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
 	process->pid = getpid();
 	set_process_job_group(job, process);
 	if (job->foreground == true)
+	{
 		tcsetpgrp(STDIN_FILENO, job->pgrp);
+		configure_terminal(NULL, 0);
+	}
 	reset_signals();
-	if (is_builtin(pipe_seq->simple_command->argv[0]) == 1)
-		exit(execute_builtin(shell, pipe_seq->simple_command->argv));
-	else
-		exit(exec_simple_command(pipe_seq->simple_command, shell));
+	exit(exec_simple_command(pipe_seq->simple_command, shell));
 }
 
 static void	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
@@ -39,16 +38,16 @@ static void	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
 	int		ret;
 
 	exec_pipe_sequence(pipe_seq->next, shell, job);
-	ret = waitpid(process->pid, &stat_loc, WUNTRACED | WNOHANG);
-	if (ret == 0 && job->foreground == true)
+	close(STDIN_FILENO);
+	if (job->foreground == true)
 	{
-		ft_printf("KILL\n");
-		kill(process->pid, SIGKILL);
-		waitpid(process->pid, NULL, 0);
+		ret = waitpid(process->pid, &stat_loc, WUNTRACED | WCONTINUED);
+		if (ret > 0)
+			process->status = get_status_from_stat_loc(stat_loc);
+		else if (ret != 0)
+			process->status = exited;
 	}
-	else if (ret > 0 && WIFSTOPPED(stat_loc) != 0)
-		process->status = suspended;
-	else if (ret == 0)
+	else
 		process->status = running;
 }
 
@@ -70,12 +69,12 @@ static int	execute_pipe(t_pipe_sequence *pipe_seq, t_shell *shell,
 	else if (process->pid > 0)
 	{
 		set_process_job_group(job, process);
+		process->status = running;
 		close(pipe_fds[1]);
 		if (dup2(pipe_fds[0], STDIN_FILENO) < 0)
-			handle_error_int(dup2_fd_fail, STDIN_FILENO);
-		else
-			pipe_parent(pipe_seq, shell, job, process);
+			return (handle_error_int(dup2_fd_fail, STDIN_FILENO));
 		close(pipe_fds[0]);
+		pipe_parent(pipe_seq, shell, job, process);
 		return (0);
 	}
 	return (handle_error_str(fork_failure, "while setting up pipe"));
@@ -97,17 +96,17 @@ static int	execute_simple(t_pipe_sequence *pipe_seq, t_shell *shell,
 		if (job->foreground == true)
 		{
 			ret = waitpid(process->pid, &stat_loc, WUNTRACED);
+			process->status = exited;
 			if (ret > 0 && WIFEXITED(stat_loc) != 0)
 				ret = ft_setstatus(shell->env, (int)WEXITSTATUS(stat_loc));
-			else if (ret > 0 && WIFSTOPPED(stat_loc) != 0)
-				process->status = suspended;
+			if (ret > 0)
+				process->status = get_status_from_stat_loc(stat_loc);
 		}
 		else
 			process->status = running;
+		return (ret);
 	}
-	else
-		ret = handle_error(fork_failure);
-	return (ret);
+	return (handle_error(fork_failure));
 }
 
 int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
@@ -126,8 +125,9 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	std_fd_backup(old_fds);
 	if (pipe_seq->pipe == pipe_op)
 		ret = execute_pipe(pipe_seq, shell, job, process);
-	else if (is_builtin(pipe_seq->simple_command->argv[0]) == 1)
-		ret = execute_builtin(shell, pipe_seq->simple_command->argv);
+	else if (is_builtin(pipe_seq->simple_command->argv[0]) == 1 &&
+			job->foreground == true)
+		ret = exec_simple_command(pipe_seq->simple_command, shell);
 	else
 		ret = execute_simple(pipe_seq, shell, job, process);
 	std_fd_restore(old_fds);
