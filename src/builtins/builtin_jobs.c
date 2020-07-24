@@ -17,7 +17,6 @@ static bool	iterate_jobs(t_job_cont *job_control, char *job_spec, int opts)
 	t_job	*job;
 	bool	job_found;
 
-
 	job_found = false;
 	job = job_control->job_list;
 	while (job != NULL)
@@ -39,7 +38,7 @@ static int	iterate_job_specs(char **args, t_job_cont *job_control, int opts)
 	int		i;
 
 	i = 0;
-	ret =  0;
+	ret = 0;
 	while (args[i] != NULL)
 	{
 		if (iterate_jobs(job_control, args[i], opts) == false)
