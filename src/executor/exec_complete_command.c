@@ -15,10 +15,51 @@
 #include "processing.h"
 #include "job_control.h"
 
-int		exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd)
+static t_complete_cmd	*skip_and_or_list(t_shell *shell, t_complete_cmd *cmd)
+{
+	t_complete_cmd *temp;
+
+	if (cmd->seperator_op == and_op && ft_getstatus(shell->env) == 0)
+	{
+		return (cmd);
+	}
+	if (cmd->seperator_op == or_op && ft_getstatus(shell->env) != 0)
+	{
+		return (cmd);
+	}
+	temp = cmd;
+	while (temp->next != NULL &&
+			(temp->seperator_op == and_op || temp->seperator_op == or_op))
+	{
+		temp = temp->next;
+	}
+	return (temp);
+}
+
+static int				handle_command(t_shell *shell, t_complete_cmd *comp_cmd)
+{
+	t_job	*job;
+	int		ret;
+
+	job = init_job(shell, comp_cmd->cmd_string,
+				(comp_cmd->seperator_op != background_op));
+	if (job == NULL)
+		return (malloc_error);
+	ret = word_processing(shell, comp_cmd);
+	if (ret == 0)
+		ret = exec_pipe_sequence(comp_cmd->pipe_sequence, shell, job);
+	job->status = get_job_status(job);
+	if (job->status != exited && job->status != broken_pipe)
+		add_job_to_list(shell, job);
+	else
+		free_job(job);
+	return (ret);
+}
+
+int						exec_complete_command(t_shell *shell,
+													t_complete_cmd *comp_cmd)
 {
 	int		ret;
-	t_job	*job;
 
 	ret = 0;
 	if (shell == NULL)
@@ -27,16 +68,8 @@ int		exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd)
 	{
 		if ((g_signal_handler & (1 << SIGINT)) != 0)
 			return (1);
-		job = init_job(shell, comp_cmd->cmd_string,
-					(comp_cmd->seperator_op != background_op));
-		ret = word_processing(shell, comp_cmd);
-		if (ret == 0)
-			ret = exec_pipe_sequence(comp_cmd->pipe_sequence, shell, job);
-		job->status = get_job_status(job);
-		if (job->status != exited && job->status != broken_pipe)
-			add_job_to_list(shell, job);
-		else
-			free_job(job);
+		ret = handle_command(shell, comp_cmd);
+		comp_cmd = skip_and_or_list(shell, comp_cmd);
 		comp_cmd = comp_cmd->next;
 	}
 	return (ret);
