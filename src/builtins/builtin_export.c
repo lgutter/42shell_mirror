@@ -32,17 +32,19 @@ static size_t	checkopt_export(char *arg)
 static size_t	split_key_value(t_env *env, char *arg)
 {
 	char	**split;
+	int		ret;
 
 	split = ft_strsplit(arg, '=');
 	if (split == NULL || split[0] == NULL)
 		return (handle_error(malloc_error));
-	if (ft_setenv(env, split[0], split[1], ENV_VAR) != 0)
-	{
-		free_dchar_arr(split);
-		return (1);
-	}
+	if (split[1] != NULL)
+		ret = ft_setenv(env, split[0], split[1], ENV_VAR);
+	else
+		ret = ft_setenv(env, split[0], "", ENV_VAR);
+	if (ret != 0)
+		ret = 1;
 	free_dchar_arr(split);
-	return (0);
+	return (ret);
 }
 
 static size_t	export_var(t_env *env, char *arg)
