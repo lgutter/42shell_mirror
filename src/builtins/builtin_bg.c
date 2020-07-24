@@ -29,7 +29,11 @@ static bool	iterate_jobs(t_job_cont *job_control, char *job_spec)
 			if (job->foreground == true)
 			{
 				job->foreground = false;
-				ft_strexpand(&(job->command), " &");
+				if ((job->command)[ft_strlen(job->command) - 1] == '\n' ||
+					(job->command)[ft_strlen(job->command) - 1] == ';')
+					(job->command)[ft_strlen(job->command) - 1] = '&';
+				else if ((job->command)[ft_strlen(job->command) - 1] != '&')
+					ft_strexpand(&(job->command), " &");
 			}
 		}
 		job = job->next;
