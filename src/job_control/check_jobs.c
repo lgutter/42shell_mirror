@@ -14,57 +14,14 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-static void	update_current_previous_job(t_job_cont *job_control, size_t id)
-{
-	if (id == job_control->current)
-	{
-		job_control->current = job_control->previous;
-		job_control->previous = get_new_job_id(job_control);
-		if (job_control->previous > 0)
-			job_control->previous -= 1;
-	}
-	if (id == job_control->previous)
-	{
-		job_control->previous = get_new_job_id(job_control);
-		if (job_control->previous > 0)
-			job_control->previous -= 1;
-	}
-	if (job_control->previous == job_control->current)
-		job_control->previous = 0;
-}
-
-static void	remove_job_from_list(t_job_cont *job_control, size_t id)
-{
-	t_job	*current;
-	t_job	*prev;
-	t_job	*next;
-
-	current = job_control->job_list;
-	prev = NULL;
-	while (current != NULL)
-	{
-		if (current->id == id)
-		{
-			next = current->next;
-			current = free_job(current);
-			if (prev == NULL)
-				job_control->job_list = next;
-			else
-				prev->next = next;
-			break ;
-		}
-		prev = current;
-		current = current->next;
-	}
-	update_current_previous_job(job_control, id);
-}
-
-static int	update_process_status(t_job *start, pid_t pid, t_status status)
+static void	update_process_status(t_job *start, pid_t pid, int stat_loc)
 {
 	t_process	*process;
 	t_job		*job;
+	t_status	status;
 
 	job = start;
+	status = get_status_from_stat_loc(stat_loc);
 	while (job != NULL)
 	{
 		process = job->processes;
@@ -73,39 +30,19 @@ static int	update_process_status(t_job *start, pid_t pid, t_status status)
 			if (pid == process->pid)
 			{
 				process->status = status;
-				return (0);
+				return ;
 			}
 			process = process->next;
 		}
 		job = job->next;
 	}
-	return (1);
 }
 
-static void	update_jobs(t_job_cont *job_control)
+void		check_jobs(t_job_cont *job_control, int update_opts)
 {
-	t_job		*job;
-	t_status	status;
-	size_t		id;
-
-	job = job_control->job_list;
-	while (job != NULL)
-	{
-		status = get_job_status(job);
-		if (status != job->status)
-			print_job_status(job, job_control->current, job_control->previous);
-		job->status = status;
-		id = job->id;
-		job = job->next;
-		if (status == exited)
-			remove_job_from_list(job_control, id);
-	}
-}
-
-void		check_jobs(t_job_cont *job_control)
-{
-	int	stat_loc;
-	int	ret;
+	t_job	*job;
+	int		stat_loc;
+	int		ret;
 
 	stat_loc = 0;
 	ret = 1;
@@ -116,13 +53,10 @@ void		check_jobs(t_job_cont *job_control)
 		ret = waitpid(-1, &stat_loc, WNOHANG | WUNTRACED | WCONTINUED);
 		if (ret > 0)
 		{
-			if (WIFSTOPPED(stat_loc) != 0)
-				update_process_status(job_control->job_list, ret, suspended);
-			else if (WIFCONTINUED(stat_loc) != 0)
-				update_process_status(job_control->job_list, ret, running);
-			else
-				update_process_status(job_control->job_list, ret, exited);
+			update_process_status(job_control->job_list, ret, stat_loc);
 		}
 	}
-	update_jobs(job_control);
+	job = job_control->job_list;
+	while (update_opts != job_update_none && job != NULL)
+		job = update_job_status(job_control, job, update_opts);
 }

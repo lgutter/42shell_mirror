@@ -34,44 +34,44 @@ static int	find_exec_in_dir(char *dirname, char *exec_name)
 	return (-1);
 }
 
-static int	traverse_paths(char **paths, t_command *command, char *arg_zero)
+static int	traverse_paths(char **paths, char **path, char *arg_zero)
 {
 	size_t	index;
 
 	index = 0;
 	while (paths[index] != NULL)
 	{
-		command->path = NULL;
 		if (find_exec_in_dir(paths[index], arg_zero) == 0)
 		{
 			if (paths[index][ft_strlen(paths[index]) - 1] != '/')
 				ft_strexpand(&(paths[index]), "/");
-			command->path = ft_strjoin(paths[index], arg_zero);
-			if (command->path == NULL)
+			*path = ft_strjoin(paths[index], arg_zero);
+			if (*path == NULL)
 				return (handle_error(malloc_error));
-			else if (access(command->path, X_OK) == 0)
+			else if (access(*path, X_OK) == 0)
 				return (0);
 			else
-				free(command->path);
+				free(*path);
 		}
 		index++;
 	}
-	command->path = NULL;
-	return (handle_error_str(cmd_not_found, arg_zero));
+	*path = NULL;
+	return (cmd_not_found);
 }
 
-int			find_executable(t_env *env_list, t_command *command, char *arg_zero)
+int		find_executable(t_env *env_list, char **path, char *arg_zero)
 {
 	char	*env_path;
 	char	**paths;
 	int		ret;
 
 	ret = 0;
-	if (command == NULL || arg_zero == NULL)
+	if (arg_zero == NULL || path == NULL)
 		return (parsing_error);
-	command->path = NULL;
-	if (ft_strchr(arg_zero, '/') != NULL)
-		command->path = ft_strdup(arg_zero);
+	if (is_builtin(arg_zero) == 1)
+		*path = ft_strdup("");
+	else if (ft_strchr(arg_zero, '/') != NULL)
+		*path = ft_strdup(arg_zero);
 	else
 	{
 		env_path = ft_getenv(env_list, "PATH", VAR_TYPE);
@@ -81,7 +81,7 @@ int			find_executable(t_env *env_list, t_command *command, char *arg_zero)
 		free(env_path);
 		if (paths == NULL)
 			return (handle_error(malloc_error));
-		ret = traverse_paths(paths, command, arg_zero);
+		ret = traverse_paths(paths, path, arg_zero);
 		free_dchar_arr(paths);
 	}
 	return (ret);

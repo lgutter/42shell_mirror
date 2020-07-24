@@ -51,6 +51,9 @@ int					builtin_unset(t_shell *shell, char **argv);
 int					builtin_exit(t_shell *shell, char **argv);
 int					builtin_echo(t_shell *shell, char **argv);
 int					builtin_shellenv(t_shell *shell, char **argv);
+int					builtin_jobs(t_shell *shell, char **argv);
+int					builtin_bg(t_shell *shell, char **argv);
+int					builtin_fg(t_shell *shell, char **argv);
 
 int					get_cd_options(char **argv, t_cd *cd_s);
 int					get_home_oldpw(t_cd *cd_s, t_env *env);
@@ -66,6 +69,9 @@ static const struct s_builtin	g_builtins[] = {
 	{"unsetshell", builtin_unset},
 	{"echo", builtin_echo},
 	{"exit", builtin_exit},
+	{"jobs", builtin_jobs},
+	{"bg", builtin_bg},
+	{"fg", builtin_fg},
 	{NULL, NULL},
 };
 

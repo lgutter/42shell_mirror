@@ -11,19 +11,24 @@
 /* ************************************************************************** */
 
 #include "job_control.h"
+#include <signal.h>
+#include <sys/wait.h>
 
-size_t			get_new_job_id(t_job_cont *job_control)
+t_status		get_status_from_stat_loc(int stat_loc)
 {
-	t_job	*job;
-
-	if (job_control == NULL)
-		return (0);
-	job = job_control->job_list;
-	if (job == NULL)
-		return (1);
-	while (job->next != NULL)
-		job = job->next;
-	return (job->id + 1);
+	if (WIFSTOPPED(stat_loc) == true)
+		return (suspended);
+	else if (WIFSIGNALED(stat_loc) == true)
+	{
+		if (WTERMSIG(stat_loc) == SIGPIPE)
+			return (broken_pipe);
+		else
+			return (exited);
+	}
+	else if (WIFCONTINUED(stat_loc) == true)
+		return (running);
+	else
+		return (exited);
 }
 
 t_job			*init_job(t_shell *shell, char *command, bool foreground)
@@ -84,33 +89,4 @@ int				set_process_job_group(t_job *job, t_process *process)
 		job->pgrp = process->pid;
 	setpgid(process->pid, job->pgrp);
 	return (0);
-}
-
-void			print_job_status(t_job *job, size_t current, size_t prev)
-{
-	t_process	*process;
-	char		curprev;
-	const char	*statuses[3] = {
-		"running",
-		"suspended",
-		"exited"
-	};
-
-	if (job == NULL)
-		return ;
-	process = job->processes;
-	if (job->id == current)
-		curprev = '+';
-	else if (job->id == prev)
-		curprev = '-';
-	else
-		curprev = ' ';
-	if (process != NULL)
-		ft_printf("[%i] %c\n", job->id, curprev);
-	while (process != NULL)
-	{
-		ft_printf("\t%5lu %-10s %s\n",
-				process->pid, statuses[process->status], process->command);
-		process = process->next;
-	}
 }

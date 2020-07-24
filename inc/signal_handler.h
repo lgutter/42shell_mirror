@@ -19,7 +19,7 @@
 
 volatile int g_signal_handler;
 void	simple_sigaction(int sig, void handler(int), struct sigaction *old_act);
-void	signal_handler_buff(int sig);
+void	signal_handler(int sig);
 void	setup_signals(void);
 void	reset_signals(void);
 

@@ -11,6 +11,18 @@ gcc-test:
   before_script:
     - meson --version
     - ninja --version
+    - meson build
+  script:
+    - ninja test -C build --verbose
+
+gcc-coverage:
+  image: lgutter/codam_ci:latest
+  stage: test
+  variables:
+    COVERAGE_ENABLED: "true"
+  before_script:
+    - meson --version
+    - ninja --version
     - meson build -Db_coverage=true
   script:
     - ninja test -C build --verbose

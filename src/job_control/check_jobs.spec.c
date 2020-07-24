@@ -36,11 +36,18 @@ Test(check_jobs_unit, basic_no_children)
 {
 	t_job_cont	*job_control = (t_job_cont *)ft_memalloc(sizeof(t_job_cont));
 
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	cr_expect_eq(job_control->current, 0);
 	cr_expect_eq(job_control->previous, 0);
 	cr_expect_null(job_control->job_list);
 	free_job_control(job_control);
+}
+
+Test(check_jobs_unit, error_NULL_job_control)
+{
+	t_job_cont	*job_control = NULL;
+
+	check_jobs(job_control, job_update_all);
 }
 
 Test(check_jobs_unit, basic_one_child_change)
@@ -56,16 +63,16 @@ Test(check_jobs_unit, basic_one_child_change)
 	memset(buffer, 0, 1024);
 	cr_assert_gt(fd, 0);
 	handle_input(shell, &input);
+
+
 	int	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	close(read_fd);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "running"));
-	cr_expect_not_null(strstr(buffer, "sleep 0.4 &"));
 	close(fd);
 	fd = redirect_std_out(filename);
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -75,9 +82,11 @@ Test(check_jobs_unit, basic_one_child_change)
 	cr_expect_not_null(job_control->job_list);
 	close(read_fd);
 	close(fd);
+
+
 	fd = redirect_std_out(filename);
 	usleep(500000);
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -108,16 +117,16 @@ Test(check_jobs_unit, basic_two_child_changes)
 	memset(buffer, 0, 1024);
 	cr_assert_gt(fd, 0);
 	handle_input(shell, &input);
+
+
 	int	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	close(read_fd);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "running"));
-	cr_expect_not_null(strstr(buffer, "sleep 0.4 &"));
 	close(fd);
 	fd = redirect_std_out(filename);
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -127,6 +136,8 @@ Test(check_jobs_unit, basic_two_child_changes)
 	cr_expect_not_null(job_control->job_list);
 	close(read_fd);
 	close(fd);
+
+
 	fd = redirect_std_out(filename);
 	memset(buffer, 0, 1024);
 	cr_assert_gt(fd, 0);
@@ -136,11 +147,9 @@ Test(check_jobs_unit, basic_two_child_changes)
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	close(read_fd);
 	cr_expect_not_null(strstr(buffer, "[2] +"));
-	cr_expect_not_null(strstr(buffer, "running"));
-	cr_expect_not_null(strstr(buffer, "sleep 1 &"));
 	close(fd);
 	fd = redirect_std_out(filename);
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -150,10 +159,12 @@ Test(check_jobs_unit, basic_two_child_changes)
 	cr_expect_not_null(job_control->job_list);
 	close(read_fd);
 	close(fd);
+
+
 	usleep(500000);
 	fd = redirect_std_out(filename);
 	cr_assert_gt(fd, 0);
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -166,9 +177,11 @@ Test(check_jobs_unit, basic_two_child_changes)
 	cr_expect_not_null(job_control->job_list);
 	close(fd);
 	close(read_fd);
+
+
 	fd = redirect_std_out(filename);
 	usleep(600000);
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -199,16 +212,16 @@ Test(check_jobs_unit, basic_two_child_changes_reverse)
 	memset(buffer, 0, 1024);
 	cr_assert_gt(fd, 0);
 	handle_input(shell, &input);
+
+
 	int	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	close(read_fd);
 	cr_expect_not_null(strstr(buffer, "[1] +"));
-	cr_expect_not_null(strstr(buffer, "running"));
-	cr_expect_not_null(strstr(buffer, "sleep 1 &"));
 	close(fd);
 	fd = redirect_std_out(filename);
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -218,6 +231,8 @@ Test(check_jobs_unit, basic_two_child_changes_reverse)
 	cr_expect_not_null(job_control->job_list);
 	close(read_fd);
 	close(fd);
+
+
 	fd = redirect_std_out(filename);
 	memset(buffer, 0, 1024);
 	cr_assert_gt(fd, 0);
@@ -227,11 +242,9 @@ Test(check_jobs_unit, basic_two_child_changes_reverse)
 	cr_expect_gt(read(read_fd, buffer, 1024), (ssize_t)0);
 	close(read_fd);
 	cr_expect_not_null(strstr(buffer, "[2] +"));
-	cr_expect_not_null(strstr(buffer, "running"));
-	cr_expect_not_null(strstr(buffer, "sleep 0.4 &"));
 	close(fd);
 	fd = redirect_std_out(filename);
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -241,10 +254,12 @@ Test(check_jobs_unit, basic_two_child_changes_reverse)
 	cr_expect_not_null(job_control->job_list);
 	close(read_fd);
 	close(fd);
+
+
 	usleep(500000);
 	fd = redirect_std_out(filename);
 	cr_assert_gt(fd, 0);
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);
@@ -257,9 +272,11 @@ Test(check_jobs_unit, basic_two_child_changes_reverse)
 	cr_expect_not_null(job_control->job_list);
 	close(fd);
 	close(read_fd);
+
+	
 	usleep(600000);
 	fd = redirect_std_out(filename);
-	check_jobs(job_control);
+	check_jobs(job_control, job_update_all);
 	memset(buffer, 0, 1024);
 	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);

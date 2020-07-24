@@ -45,7 +45,7 @@ static void		cetushell(t_shell *shell)
 	while (ret != exit_shell_code)
 	{
 		prompt = ft_getenv(shell->env, "PS1", SHELL_VAR);
-		check_jobs(shell->job_control);
+		check_jobs(shell->job_control, job_update_all);
 		input = prompt_shell(shell, prompt == NULL ? PROMPT_NORMAL : prompt);
 		free(prompt);
 		if ((g_signal_handler & (1 << SIGINT)) != 0)

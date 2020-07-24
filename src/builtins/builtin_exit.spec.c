@@ -105,6 +105,27 @@ Test(unit_builtin_exit, basic_mandatory_error_NULL_argv)
 	cr_expect_str_eq(temp, "0", "expected exit code var %s, got %s!", "0", temp);
 }
 
+Test(unit_builtin_exit, basic_mandatory_error_running_jobs, .init = cr_redirect_stderr)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	t_job		*job = init_job(shell, "sleep 42 &", false);
+	t_job_cont	job_control;
+	job_control.job_list = job;
+	shell->job_control = &job_control;
+	char		*temp;
+	int			ret;
+
+
+	argv = ft_strsplit("exit", ' ');
+	ret = builtin_exit(shell, argv);
+	cr_expect_eq(ret, 0, "expected ret %i, got %i!", 0, ret);
+	temp = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
+	cr_expect_null(temp);
+	fflush(stderr);
+	cr_expect_stderr_eq_str("Cetushell: you have unfinished jobs.\n");
+}
+
 Test(unit_builtin_exit, undefined_error_nothing_defined, .init = redirect_std_err)
 {
 	t_shell		*shell = init_shell(false);
