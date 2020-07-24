@@ -12,6 +12,26 @@
 
 #include "builtins.h"
 
+static bool		env_is_valid_key(char *key)
+{
+	size_t	key_len;
+	size_t	i;
+	int		is_valid;
+
+	key_len = ft_strlen(key);
+	i = 0;
+	while (i < key_len)
+	{
+		is_valid = (ft_isalnum(key[i]) || key[i] == '_');
+		if (i == 0 && ft_isdigit(key[i]))
+			is_valid = 0;
+		if (is_valid == 0)
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
 static size_t	checkopt_export(char *arg)
 {
 	size_t		i;
@@ -22,7 +42,12 @@ static size_t	checkopt_export(char *arg)
 		while (arg[i] != '\0')
 		{
 			if (arg[0] == '-' && arg[i] != 'p')
+			{
+				handle_prefix_error_str(invalid_option, "export", arg);
+				ft_dprintf(STDERR_FILENO,
+										"Usage: export [-p] name[=word]...\n");
 				return (1);
+			}
 			i++;
 		}
 	}
@@ -37,7 +62,9 @@ static size_t	split_key_value(t_env *env, char *arg)
 	split = ft_strsplit(arg, '=');
 	if (split == NULL || split[0] == NULL)
 		return (handle_error(malloc_error));
-	if (split[1] != NULL)
+	if (env_is_valid_key(split[0]) == false)
+		ret = handle_prefix_error_str(error_inv_format, "export", split[0]);
+	else if (split[1] != NULL)
 		ret = ft_setenv(env, split[0], split[1], ENV_VAR);
 	else
 		ret = ft_setenv(env, split[0], "", ENV_VAR);
@@ -65,10 +92,11 @@ static size_t	export_var(t_env *env, char *arg)
 		if (var == NULL)
 			if (ft_setenv(env, arg, "", ENV_VAR) != 0)
 				return (1);
+		free(var);
 	}
 	else if (equals > 1)
 	{
-		ft_printf("Invalid Option : Usage: export [-p] name[=word]...\n");
+		handle_prefix_error_str(error_inv_format, "export", arg);
 		return (1);
 	}
 	return (0);
@@ -87,7 +115,6 @@ int				builtin_export(t_shell *shell, char **argv)
 	{
 		if (checkopt_export(argv[i]) != 0)
 		{
-			ft_printf("Invalid Option : Usage: export [-p] name[=word]...\n");
 			return (1);
 		}
 		if (argv[i][0] != '-')
