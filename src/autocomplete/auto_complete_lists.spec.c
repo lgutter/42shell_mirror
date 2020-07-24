@@ -72,12 +72,12 @@ Test(auto_complete_lists, add_builtin_single)
 
 	memset(&comp, 0, sizeof(t_complete));
     comp.list = ft_memalloc(sizeof(t_clist));
-	comp.to_complete = ft_strdup("shell");
-	comp.to_complen = 5;
+	comp.to_complete = ft_strdup("ex");
+	comp.to_complen = 2;
 	ret = complete_builtin(&comp);
 	cr_expect_eq(ret, 0);
-	cr_expect_eq(comp.list->length, 8);
-    cr_expect_str_eq(comp.list->match, "shellenv");
+	cr_expect_eq(comp.list->length, 4);
+    cr_expect_str_eq(comp.list->match, "exit");
 	cr_expect_null(comp.list->next);
 }
 
@@ -95,10 +95,12 @@ Test(auto_complete_lists, add_builtin_multi)
 	cr_expect_eq(ret, 0);
 	cr_expect_eq(comp.list->length, 8);
     cr_expect_str_eq(comp.list->match, "unsetenv");
-	cr_expect_eq(comp.list->next->length, 10);
-    cr_expect_str_eq(comp.list->next->match, "unsetshell");
+	cr_expect_eq(comp.list->next->length, 5);
+    cr_expect_str_eq(comp.list->next->match, "unset");
+	cr_expect_eq(comp.list->next->next->length, 10);
+    cr_expect_str_eq(comp.list->next->next->match, "unsetshell");
 	cr_expect_eq(comp.max_len, 10);
-	cr_expect_null(comp.list->next->next);
+	cr_expect_null(comp.list->next->next->next);
 }
 
 Test(auto_complete_lists, add_dollar_single)

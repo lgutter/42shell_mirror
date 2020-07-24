@@ -231,11 +231,6 @@ Test(is_builtin_unit, valid_setenv_builtin)
 	cr_expect_eq(is_builtin("setenv"), 1);
 }
 
-Test(is_builtin_unit, valid_env_builtin)
-{
-	cr_expect_eq(is_builtin("env"), 1);
-}
-
 Test(is_builtin_unit, valid_unsetenv_builtin)
 {
 	cr_expect_eq(is_builtin("unsetenv"), 1);
@@ -248,7 +243,7 @@ Test(is_builtin_unit, valid_setshell_builtin)
 
 Test(is_builtin_unit, valid_shellenv_builtin)
 {
-	cr_expect_eq(is_builtin("shellenv"), 1);
+	cr_expect_eq(is_builtin("set"), 1);
 }
 
 Test(is_builtin_unit, valid_unsetshell_builtin)

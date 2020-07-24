@@ -46,11 +46,12 @@ int					is_builtin(char *exec_name);
 int					execute_builtin(t_shell *shell, char **argv);
 int					builtin_cd(t_shell *shell, char **argv);
 int					builtin_env(t_shell *shell, char **argv);
+int					builtin_setvar(t_shell *shell, char **argv);
+int					builtin_unsetvar(t_shell *shell, char **argv);
 int					builtin_set(t_shell *shell, char **argv);
 int					builtin_unset(t_shell *shell, char **argv);
 int					builtin_exit(t_shell *shell, char **argv);
 int					builtin_echo(t_shell *shell, char **argv);
-int					builtin_shellenv(t_shell *shell, char **argv);
 int					builtin_jobs(t_shell *shell, char **argv);
 int					builtin_bg(t_shell *shell, char **argv);
 int					builtin_fg(t_shell *shell, char **argv);
@@ -63,13 +64,13 @@ void				print_export(t_shell *shell, char **argv);
 
 static const struct s_builtin	g_builtins[] = {
 	{"cd", builtin_cd},
-	{"env", builtin_env},
-	{"shellenv", builtin_shellenv},
-	{"setenv", builtin_set},
+	{"set", builtin_set},
+	{"setenv", builtin_setvar},
 	{"export", builtin_export},
-	{"unsetenv", builtin_unset},
-	{"setshell", builtin_set},
-	{"unsetshell", builtin_unset},
+	{"unsetenv", builtin_unsetvar},
+	{"unset", builtin_unset},
+	{"setshell", builtin_setvar},
+	{"unsetshell", builtin_unsetvar},
 	{"echo", builtin_echo},
 	{"exit", builtin_exit},
 	{"jobs", builtin_jobs},

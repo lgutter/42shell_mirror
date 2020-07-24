@@ -52,7 +52,7 @@ static int	handle_unsetenv(char *arg, char *argz, t_env *env, int opts)
 	return (ret);
 }
 
-int			builtin_unset(t_shell *shell, char **argv)
+int			builtin_unsetvar(t_shell *shell, char **argv)
 {
 	int		i;
 	int		ret;
@@ -78,4 +78,22 @@ int			builtin_unset(t_shell *shell, char **argv)
 		i++;
 	}
 	return (ret == 0 ? 0 : 1);
+}
+
+int			builtin_unset(t_shell *shell, char **argv)
+{
+	size_t		i;
+
+	i = 1;
+	if (shell == NULL || shell->env == NULL ||
+		argv == NULL || argv[0] == NULL)
+		return (1);
+	while (argv[i] != NULL)
+	{
+		if (handle_unsetenv(argv[i], argv[0], shell->env, ENV_VAR) != 0 ||
+				handle_unsetenv(argv[i], argv[0], shell->env, SHELL_VAR) != 0)
+			return (1);
+		i++;
+	}
+	return (0);
 }
