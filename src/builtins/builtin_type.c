@@ -24,15 +24,13 @@ int			builtin_type(t_shell *shell, char **argv)
 			ft_printf("%s is a shell builtin\n", argv[i]);
 		else
 		{
-			if (find_executable(shell->env, &check, argv[i]) != 0)
-			{
-				if (access(check, X_OK) == 0)
-					ft_printf("%s is %s\n", argv[i], argv[i]);
-				else
-					ft_printf("%s not found\n", argv[i]);
-			}
-			else
+			if (find_executable(shell->env, &check, argv[i]) != 0
+				&& access(check, X_OK) == 0)
+				ft_printf("%s is %s\n", argv[i], argv[i]);
+			else if (access(check, X_OK) == 0)
 				ft_printf("%s is %s\n", argv[i], check);
+			else
+				ft_printf("%s not found\n", argv[i]);
 			free(check);
 		}
 		i++;
