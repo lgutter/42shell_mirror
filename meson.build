@@ -163,6 +163,7 @@ if libcriterion_deb.found()
     'src/builtins/builtin_cd.spec.c',
     'src/builtins/builtins_1.spec.c',
     'src/builtins/builtin_env.spec.c',
+    'src/builtins/builtin_export.spec.c',
     'src/builtins/builtin_exit.spec.c',
     'src/builtins/builtin_set.spec.c',
     'src/builtins/builtin_unset.spec.c',
