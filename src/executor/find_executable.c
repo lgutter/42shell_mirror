@@ -68,7 +68,7 @@ int		find_executable(t_env *env_list, char **path, char *arg_zero)
 	ret = 0;
 	if (arg_zero == NULL || path == NULL)
 		return (parsing_error);
-	if (is_builtin(arg_zero) == 1)
+	if (is_builtin(arg_zero) == true)
 		*path = ft_strdup("");
 	else if (ft_strchr(arg_zero, '/') != NULL)
 		*path = ft_strdup(arg_zero);

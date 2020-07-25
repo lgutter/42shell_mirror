@@ -125,7 +125,7 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	std_fd_backup(old_fds);
 	if (pipe_seq->pipe == pipe_op)
 		ret = execute_pipe(pipe_seq, shell, job, process);
-	else if (is_builtin(pipe_seq->simple_command->argv[0]) == 1 &&
+	else if (is_builtin(pipe_seq->simple_command->argv[0]) == true &&
 			job->foreground == true)
 		ret = exec_simple_command(pipe_seq->simple_command, shell);
 	else

@@ -66,10 +66,10 @@ int					is_builtin(char *exec_name)
 	while (g_builtins[i].builtin_name != NULL)
 	{
 		if (ft_strcmp(g_builtins[i].builtin_name, exec_name) == 0)
-			return (1);
+			return (true);
 		i++;
 	}
-	return (0);
+	return (false);
 }
 
 int					builtin_echo(t_shell *shell, char **argv)
