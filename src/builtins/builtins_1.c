@@ -14,32 +14,6 @@
 #include "executor.h"
 #include "utils.h"
 
-char			**update_argv(char **argv)
-{
-	size_t	i;
-	char	**new_argv;
-	size_t	len;
-
-	len = ft_str_arr_len(argv) + 1;
-	i = 1;
-	new_argv = (char **)ft_memalloc(sizeof(char *) * (len + 1));
-	if (new_argv == NULL)
-		return (NULL);
-	new_argv[len] = NULL;
-	new_argv[0] = ft_strdup("setshell");
-	while (i < len)
-	{
-		new_argv[i] = ft_strdup(argv[i - 1]);
-		if (new_argv[i] == NULL)
-		{
-			free_dchar_arr(new_argv);
-			return (NULL);
-		}
-		i++;
-	}
-	return (new_argv);
-}
-
 int					execute_builtin(t_shell *shell, char **argv)
 {
 	int		ret;
