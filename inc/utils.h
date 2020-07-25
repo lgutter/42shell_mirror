@@ -95,8 +95,8 @@ void		std_fd_restore(int old[3]);
 /*
 **	determines if the given command name is a builtin or not.
 **	returns:
-**		1: if the name referes to a builtin.
-**		0: if the name does not refer to a builtin.
+**		true: if the name referes to a builtin.
+**		false: if the name does not refer to a builtin.
 */
 int			is_builtin(char *exec_name);
 

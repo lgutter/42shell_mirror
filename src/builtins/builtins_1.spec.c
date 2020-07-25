@@ -213,45 +213,45 @@ Test(builtin_echo_unit, valid_echo_two_arguments, .init = redirect_std_out)
 
 Test(is_builtin_unit, valid_cd_builtin)
 {
-	cr_expect_eq(is_builtin("cd"), 1);
+	cr_expect_eq(is_builtin("cd"), true);
 }
 
 Test(is_builtin_unit, valid_echo_builtin)
 {
-	cr_expect_eq(is_builtin("echo"), 1);
+	cr_expect_eq(is_builtin("echo"), true);
 }
 
 Test(is_builtin_unit, valid_exit_builtin)
 {
-	cr_expect_eq(is_builtin("exit"), 1);
+	cr_expect_eq(is_builtin("exit"), true);
 }
 
 Test(is_builtin_unit, valid_setenv_builtin)
 {
-	cr_expect_eq(is_builtin("setenv"), 1);
+	cr_expect_eq(is_builtin("setenv"), true);
 }
 
 Test(is_builtin_unit, valid_unsetenv_builtin)
 {
-	cr_expect_eq(is_builtin("unsetenv"), 1);
+	cr_expect_eq(is_builtin("unsetenv"), true);
 }
 
 Test(is_builtin_unit, valid_setshell_builtin)
 {
-	cr_expect_eq(is_builtin("setshell"), 1);
+	cr_expect_eq(is_builtin("setshell"), true);
 }
 
 Test(is_builtin_unit, valid_shellenv_builtin)
 {
-	cr_expect_eq(is_builtin("set"), 1);
+	cr_expect_eq(is_builtin("set"), true);
 }
 
 Test(is_builtin_unit, valid_unsetshell_builtin)
 {
-	cr_expect_eq(is_builtin("unsetshell"), 1);
+	cr_expect_eq(is_builtin("unsetshell"), true);
 }
 
 Test(is_builtin_unit, invalid_foo)
 {
-	cr_expect_eq(is_builtin("foo"), 0);
+	cr_expect_eq(is_builtin("foo"), false);
 }

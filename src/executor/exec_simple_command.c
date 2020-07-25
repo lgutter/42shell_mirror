@@ -93,7 +93,7 @@ int			exec_simple_command(t_simple_cmd *simple_cmd, t_shell *shell)
 		redir_info = set_up_redirections(simple_cmd->redirects);
 		if (redir_info == NULL)
 			return (ret);
-		if (is_builtin(simple_cmd->argv[0]) == 1)
+		if (is_builtin(simple_cmd->argv[0]) == true)
 			ret = execute_builtin(shell, command.argv);
 		else if (getpid() == shell->pid)
 			return (handle_error_str(internal_error,
