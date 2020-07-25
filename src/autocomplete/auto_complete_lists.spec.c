@@ -72,8 +72,8 @@ Test(auto_complete_lists, add_builtin_single)
 
 	memset(&comp, 0, sizeof(t_complete));
     comp.list = ft_memalloc(sizeof(t_clist));
-	comp.to_complete = ft_strdup("ex");
-	comp.to_complen = 2;
+	comp.to_complete = ft_strdup("exi");
+	comp.to_complen = 3;
 	ret = complete_builtin(&comp);
 	cr_expect_eq(ret, 0);
 	cr_expect_eq(comp.list->length, 4);
