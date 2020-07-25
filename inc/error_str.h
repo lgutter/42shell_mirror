@@ -58,5 +58,6 @@ static const char	*g_error_str[error_count] = {
 	[no_job_control] = "Job control not available",
 	[job_not_found] = "Job not found",
 	[ambig_job_spec] = "Ambiguous job_spec",
+	[bad_subst_err] = "Bad substitution",
 };
 #endif
