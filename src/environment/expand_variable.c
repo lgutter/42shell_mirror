@@ -17,6 +17,8 @@ static size_t	env_str_len(char *string)
 	size_t	index;
 
 	index = 0;
+	if (string[index] == '?')
+		return (1);
 	while (string[index] == '_' ||
 			(string[index] >= 'A' && string[index] <= 'Z') ||
 			(string[index] >= 'a' && string[index] <= 'z') ||
