@@ -19,10 +19,8 @@ int				builtin_set(t_shell *shell, char **argv)
 	t_env	*head;
 
 	(void)argv;
-	if (shell == NULL || argv == NULL || argv[0] == NULL)
+	if (shell == NULL)
 		return (1);
-	if (ft_str_arr_len(argv) > 1)
-		ft_printf("set: no arguments needed, arguments ignored\n\n");
 	head = shell->env;
 	while (head != NULL)
 	{
