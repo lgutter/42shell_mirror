@@ -18,6 +18,7 @@
 #include "prompt.h"
 #include "signal_handler.h"
 #include "job_control.h"
+#include "hashtable.h"
 
 static t_shell	*alloc_shell(bool interactive)
 {
@@ -70,6 +71,7 @@ t_shell			*init_shell(bool interactive)
 	configure_terminal(shell, interactive == 1 ? 2 : 1);
 	if (shell->hist != NULL)
 		initialize_history(shell);
+	init_hashtable(shell);
 	return (shell);
 }
 
