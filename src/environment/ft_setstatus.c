@@ -31,7 +31,7 @@ int		ft_getstatus(t_env *env)
 	char	*temp;
 	int		ret;
 
-	temp = ft_getenv(env, "STATUS", SHELL_VAR);
+	temp = ft_getenv(env, "?", SHELL_VAR);
 	if (temp == NULL)
 		return (0);
 	ret = ft_atoi(temp);
