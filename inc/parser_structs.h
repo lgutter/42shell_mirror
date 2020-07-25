@@ -23,7 +23,9 @@ typedef enum					e_seperator_op
 	no_seperator_op = 0,
 	background_op = AMP,
 	semicolon_op = SEMI,
-	newline_op = NEWLINE
+	newline_op = NEWLINE,
+	and_op = ANDAND,
+	or_op = OROR
 }								t_seperator_op;
 
 /*

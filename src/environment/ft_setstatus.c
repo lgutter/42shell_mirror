@@ -25,3 +25,16 @@ int		ft_setstatus(t_env *env, int error_code)
 	free(new);
 	return (ret);
 }
+
+int		ft_getstatus(t_env *env)
+{
+	char	*temp;
+	int		ret;
+
+	temp = ft_getenv(env, "STATUS", SHELL_VAR);
+	if (temp == NULL)
+		return (0);
+	ret = ft_atoi(temp);
+	free(temp);
+	return (ret);
+}

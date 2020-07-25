@@ -51,6 +51,91 @@ Test(handle_input_integration, basic_run_pipe_command, .init = cr_redirect_stdou
 	cr_expect_stdout_eq_str(expected_output);
 }
 
+Test(handle_input_integration, basic_run_and_commands_success, .init = cr_redirect_stdout)
+{
+	char		*input = "echo foo && echo bar";
+	char		*expected_output = "foo\nbar\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_run_or_commands_success, .init = cr_redirect_stdout)
+{
+	char		*input = "echo foo || echo bar";
+	char		*expected_output = "foo\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_run_and_commands_fail, .init = cr_redirect_stdout)
+{
+	char		*input = "echo foo && false && echo bar";
+	char		*expected_output = "foo\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_run_or_commands_fail, .init = cr_redirect_stdout)
+{
+	char		*input = "false || echo bar";
+	char		*expected_output = "bar\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_run_and_or_commands_fail, .init = cr_redirect_stdout)
+{
+	char		*input = "echo foo && false || echo bar";
+	char		*expected_output = "foo\nbar\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
 Test(handle_input_integration, basic_run_pipe_command_background, .init = cr_redirect_stdout)
 {
 	char		*input = "/bin/echo foo | cat -e &";

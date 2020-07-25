@@ -74,7 +74,8 @@ int	is_seperator_op(t_token *token)
 	{
 		return (0);
 	}
-	if (token->type == AMP || token->type == SEMI || token->type == NEWLINE)
+	if (token->type == AMP || token->type == SEMI || token->type == NEWLINE ||
+		token->type == ANDAND || token->type == OROR)
 	{
 		return (1);
 	}
