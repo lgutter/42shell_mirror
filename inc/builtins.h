@@ -58,6 +58,7 @@ int					builtin_fg(t_shell *shell, char **argv);
 int					builtin_export(t_shell *shell, char **argv);
 int					builtin_shellenv(t_shell *shell, char **argv);
 int					builtin_type(t_shell *shell, char **argv);
+int					builtin_hash(t_shell *shell, char **argv);
 
 int					get_cd_options(char **argv, t_cd *cd_s);
 int					get_home_oldpw(t_cd *cd_s, t_env *env);
@@ -76,6 +77,7 @@ static const struct s_builtin	g_builtins[] = {
 	{"echo", builtin_echo},
 	{"exit", builtin_exit},
 	{"jobs", builtin_jobs},
+	{"hash", builtin_hash},
 	{"bg", builtin_bg},
 	{"fg", builtin_fg},
 	{"type", builtin_type},

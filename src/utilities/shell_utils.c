@@ -71,7 +71,8 @@ t_shell			*init_shell(bool interactive)
 	configure_terminal(shell, interactive == 1 ? 2 : 1);
 	if (shell->hist != NULL)
 		initialize_history(shell);
-	init_hashtable(shell);
+	if (init_hashtable(shell) != 0)
+		free_hashtable(shell);
 	return (shell);
 }
 
@@ -80,6 +81,7 @@ int				free_shell(t_shell *shell, int ret)
 	if (shell != NULL)
 	{
 		free_history(shell->hist);
+		free_hashtable(shell);
 		shell->hist = NULL;
 		free_buffer_buffs(shell, 1);
 		if (shell->buffer != NULL)
