@@ -85,12 +85,12 @@ size_t				add_to_hash(t_shell *shell, char *path, char *exec)
 	size_t			ret;
 
 	ret = 0;
-	if (shell->hash == NULL || exec == NULL || path == NULL)
+	if (shell == NULL || shell->hash == NULL || exec == NULL || path == NULL)
 		return (1);
 	if (is_executable(path) != 0)
-		return (handle_error_str(cmd_not_found, path));
+		return (handle_prefix_error_str(cmd_not_found, "hash", path));
 	if (ft_strstr(path, exec) == NULL)
-		return (handle_error_str(cmd_not_found, exec));
+		return (handle_prefix_error_str(cmd_not_found, "hash", exec));
 	head = shell->hash->hl;
 	if (hash_duplicate(exec, shell->hash) == 0)
 		ret = add_to_hlist(head, exec, path);

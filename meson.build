@@ -177,6 +177,7 @@ if libcriterion_deb.found()
     'src/builtins/builtin_bg.spec.c',
     'src/builtins/builtin_fg.spec.c',
     'src/builtins/builtin_type.spec.c',
+    'src/builtins/builtin_hash.spec.c',
     'src/autocomplete/auto_complete_init.spec.c',
     'src/autocomplete/auto_complete_lists.spec.c',
     'src/handle_input.spec.c',
