@@ -98,9 +98,11 @@ size_t			set_hash(t_shell *shell, t_pipe_sequence *pipe)
 
 	path = NULL;
 	argz = pipe->simple_command->argv[0];
+	if (shell == NULL || shell->env == NULL || argz == NULL
+		|| ft_strlen(path) == 0)
+		return (1);
 	hash = create_hash(argz, HT_SIZE);
-	if (shell == NULL || shell->env == NULL || argz == NULL ||
-		find_executable(shell->env, &path, argz) != 0 || ft_strlen(path) == 0)
+	if (find_executable(shell->env, &path, argz) != 0)
 		return (1);
 	if (shell->hash->ht[hash] == NULL)
 	{
