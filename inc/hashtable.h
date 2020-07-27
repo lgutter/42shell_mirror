@@ -23,6 +23,7 @@ typedef struct		s_hentry
 {
 	char			*key;
 	char			*value;
+	unsigned long	hit;
 	struct s_hentry *next_col;
 	struct s_hentry	*next;
 }					t_hentry;
@@ -31,7 +32,6 @@ typedef struct		s_hashtable
 {
 	t_hentry		**ht;
 	t_hentry		*hl;
-	unsigned long	*hit;
 	size_t			exec_len;
 }					t_hashtable;
 
@@ -43,7 +43,7 @@ unsigned long	create_hash(char *key, size_t size);
 size_t			find_hashexec(t_hashtable *table, char **path, char *exec);
 void			print_hashtable(t_hashtable *hash);
 size_t			hash_duplicate(char *key, t_hashtable *table);
-void			set_hashhit(t_shell *shell, t_pipe_sequence *pipe);
+void			set_hash(t_shell *shell, t_pipe_sequence *pipe);
 void			initialize_hashes(t_shell *shell);
 
 #endif

@@ -74,6 +74,7 @@ int				init_hashtable(t_shell *shell)
 	if (shell == NULL)
 		return (1);
 	shell->hash = ft_memalloc(sizeof(t_hashtable));
+	shell->hash->exec_len = 14;
 	if (shell->hash == NULL)
 		return (1);
 	shell->hash->hl = ft_memalloc(sizeof(t_hentry));
@@ -82,27 +83,37 @@ int				init_hashtable(t_shell *shell)
 	shell->hash->ht = ft_memalloc(sizeof(t_hentry *) * HT_SIZE);
 	if (shell->hash->ht == NULL)
 		return (1);
-	shell->hash->hit = ft_memalloc(sizeof(size_t) * HT_SIZE);
-	if (shell->hash->hit == NULL)
-		return (1);
 	return (0);
 }
 
-void	set_hashhit(t_shell *shell, t_pipe_sequence *pipe)
+void	set_hash(t_shell *shell, t_pipe_sequence *pipe)
 {
 	unsigned long	hash;
-	t_pipe_sequence *head;
+	t_hentry		*entry;
+	char			*argz;
+	char			*path;
 
-	head = pipe;
-	if (shell->hash == NULL || shell->hash->hit == NULL)
+	path = NULL;
+	argz = pipe->simple_command->argv[0];
+	hash = create_hash(argz, HT_SIZE);
+	if (find_executable(shell->env, &path, argz) != 0 || ft_strlen(path) == 0)
 		return ;
-	while (head != NULL)
+	if (shell->hash->ht[hash] == NULL)
 	{
-		hash = create_hash(pipe->simple_command->argv[0], HT_SIZE);
-		if (shell->hash != NULL && shell->hash->hit != NULL)
-		{
-			shell->hash->hit[hash] = shell->hash->hit[hash] + 1;
-		}
-		head = head->next;
+		add_to_hash(shell, path, argz);
+		shell->hash->ht[hash]->hit++;
 	}
+	else if (ft_strcmp(shell->hash->ht[hash]->key, argz) != 0)
+	{
+		entry = shell->hash->ht[hash];
+		while (entry->next_col != NULL && ft_strcmp(entry->next_col->key, argz) != 0)
+			entry = entry->next_col;
+		if (entry->next_col == NULL)
+			add_to_hash(shell, path, argz);
+		else
+			entry->next_col->hit++;
+	}
+	else
+		shell->hash->ht[hash]->hit++;
 }
+

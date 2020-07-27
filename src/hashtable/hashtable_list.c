@@ -36,19 +36,15 @@ static size_t		add_to_hlist(t_hentry *hl, char *exec, char *path)
 	return (0);
 }
 
-static size_t		update_hentry(t_hashtable *hash,
-									t_hentry *entry, char *value)
+static size_t		update_hentry(t_hentry *entry, char *value)
 {
-	unsigned long index;
-
 	if (ft_strcmp(entry->value, value) != 0)
 	{
 		free(entry->value);
-		index = create_hash(entry->key, HT_SIZE);
-		hash->hit[index] = 0;
 		entry->value = ft_strdup(value);
 		if (entry->value == NULL)
 			return (malloc_error);
+		entry->hit = 0;
 	}
 	return (0);
 }
@@ -66,16 +62,18 @@ static size_t		add_to_htable(t_hashtable *table, t_hentry *entry,
 		table->ht[hash] = entry;
 	else if (ft_strcmp(table->ht[hash]->key, entry->key) != 0)
 	{
-		collision = table->ht[hash]->next_col;
-		while (collision != NULL && ft_strcmp(collision->key, entry->key) != 0)
+		collision = table->ht[hash];
+		while (collision->next_col != NULL &&
+				ft_strcmp(collision->next_col->key, entry->key) != 0)
 			collision = collision->next_col;
-		if (collision != NULL && ft_strcmp(collision->key, entry->key) == 0)
-			return (update_hentry(table, collision, entry->value));
+		if (collision->next_col != NULL &&
+			ft_strcmp(collision->next_col->key, entry->key) == 0)
+			return (update_hentry(collision->next_col, entry->value));
 		else
-			collision = entry;
+			collision->next_col = entry;
 	}
 	else
-		return (update_hentry(table, table->ht[hash], path));
+		return (update_hentry(table->ht[hash], path));
 	return (0);
 }
 

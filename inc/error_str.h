@@ -59,5 +59,6 @@ static const char	*g_error_str[error_count] = {
 	[job_not_found] = "Job not found",
 	[ambig_job_spec] = "Ambiguous job_spec",
 	[bad_subst_err] = "Bad substitution",
+	[empty_hash] = "Hashtable is empty",
 };
 #endif
