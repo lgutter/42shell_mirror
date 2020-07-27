@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "hashtable.h"
+#include "builtins.h"
 
 static size_t		add_to_hlist(t_hentry *hl, char *exec, char *path)
 {

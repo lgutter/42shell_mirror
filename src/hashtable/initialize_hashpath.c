@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "hashtable.h"
+#include "builtins.h"
 
 static void	open_dirs(t_shell *shell, char *path)
 {
