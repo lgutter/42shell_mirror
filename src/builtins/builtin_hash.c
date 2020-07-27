@@ -31,6 +31,8 @@ size_t			iterate_hash_args(t_shell *shell, char **argv, size_t i)
 			path = ft_strdup(split[1]);
 		else
 			return (handle_error_str(cmd_not_found, argv[i]));
+		if (ret != 0)
+			return (handle_error_str(cmd_not_found, split[0]));
 		if (ret == 0 && path != NULL)
 			ret = add_to_hash(shell, path, split[0]);
 		free(path);

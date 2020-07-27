@@ -43,7 +43,7 @@ unsigned long	create_hash(char *key, size_t size);
 size_t			find_hashexec(t_hashtable *table, char **path, char *exec);
 void			print_hashtable(t_hashtable *hash);
 size_t			hash_duplicate(char *key, t_hashtable *table);
-void			set_hash(t_shell *shell, t_pipe_sequence *pipe);
+size_t			set_hash(t_shell *shell, t_pipe_sequence *pipe);
 void			initialize_hashes(t_shell *shell);
 
 #endif
