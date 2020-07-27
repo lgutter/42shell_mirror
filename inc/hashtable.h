@@ -32,7 +32,7 @@ typedef struct		s_hashtable
 	t_hentry		**ht;
 	t_hentry		*hl;
 	unsigned long	*hit;
-	int				size_max;
+	size_t			exec_len;
 }					t_hashtable;
 
 int				init_hashtable(t_shell *shell);
@@ -44,5 +44,6 @@ size_t			find_hashexec(t_hashtable *table, char **path, char *exec);
 void			print_hashtable(t_hashtable *hash);
 size_t			hash_duplicate(char *key, t_hashtable *table);
 void			set_hashhit(t_shell *shell, t_pipe_sequence *pipe);
+void			initialize_hashes(t_shell *shell);
 
 #endif

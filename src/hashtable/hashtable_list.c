@@ -61,7 +61,7 @@ static size_t		add_to_htable(t_hashtable *table, t_hentry *entry,
 
 	while (entry->next != NULL && ft_strcmp(entry->key, exec) != 0)
 		entry = entry->next;
-	hash = create_hash(entry->key, table->size_max);
+	hash = create_hash(entry->key, HT_SIZE);
 	if (table->ht[hash] == NULL)
 		table->ht[hash] = entry;
 	else if (ft_strcmp(table->ht[hash]->key, entry->key) != 0)
@@ -92,6 +92,8 @@ size_t				add_to_hash(t_shell *shell, char *path, char *exec)
 	if (ft_strstr(path, exec) == NULL)
 		return (handle_prefix_error_str(cmd_not_found, "hash", exec));
 	head = shell->hash->hl;
+	if (shell->hash->exec_len < ft_strlen(exec))
+		shell->hash->exec_len = ft_strlen(exec);
 	if (hash_duplicate(exec, shell->hash) == 0)
 		ret = add_to_hlist(head, exec, path);
 	if (ret == 0)

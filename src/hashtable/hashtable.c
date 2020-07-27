@@ -53,7 +53,7 @@ size_t			find_hashexec(t_hashtable *table, char **path, char *exec)
 	if (table == NULL || exec == NULL || table->ht == NULL || table->hl == NULL
 		|| path == NULL)
 		return (1);
-	hash = create_hash(exec, table->size_max);
+	hash = create_hash(exec, HT_SIZE);
 	if (table->ht[hash] != NULL &&
 			ft_strcmp(table->ht[hash]->key, exec) == 0)
 	{
@@ -76,7 +76,6 @@ int				init_hashtable(t_shell *shell)
 	shell->hash = ft_memalloc(sizeof(t_hashtable));
 	if (shell->hash == NULL)
 		return (1);
-	shell->hash->size_max = HT_SIZE;
 	shell->hash->hl = ft_memalloc(sizeof(t_hentry));
 	if (shell->hash->hl == NULL)
 		return (1);

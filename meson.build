@@ -106,6 +106,7 @@ src_files = files([
   'src/hashtable/hashtable_list.c',
   'src/hashtable/hash_utils.c',
   'src/hashtable/hashtable.c',
+  'src/hashtable/initialize_hashpath.c',
   'src/autocomplete/auto_complete.c',
   'src/autocomplete/auto_complete_init.c',
   'src/autocomplete/auto_complete_lists.c',
