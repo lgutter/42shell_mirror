@@ -91,28 +91,32 @@ static size_t	add_hash_col(t_shell *shell, t_hentry *col, char *argz)
 size_t			set_hash(t_shell *shell, t_pipe_sequence *pipe)
 {
 	unsigned long	hash;
-	char			*argz;
+	char			*arg;
 	char			*path;
 	size_t			ret;
 
 	path = NULL;
 	ret = 0;
-	argz = pipe->simple_command->argv[0];
-	if (shell == NULL || shell->env == NULL || argz == NULL
-		|| ft_strlen(path) == 0)
+	arg = pipe->simple_command->argv[0];
+	if (shell == NULL || shell->env == NULL || arg == NULL)
 		return (1);
-	hash = create_hash(argz, HT_SIZE);
+	if (is_builtin(arg) == true)
+		return (0);
+	hash = create_hash(arg, HT_SIZE);
 	if (shell->hash->ht[hash] == NULL)
 	{
-		if (find_executable(shell->env, &path, argz) != 0)
-			ret = add_to_hash(shell, path, argz);
-		shell->hash->ht[hash]->hit++;
+		ret = find_executable(shell->env, &path, arg);
+		if (ret == 0)
+		{
+			ret = add_to_hash(shell, path, arg);
+			shell->hash->ht[hash]->hit++;
+		}
 		free(path);
 	}
-	else if (ft_strcmp(argz, shell->hash->ht[hash]->key) == 0)
+	else if (ft_strcmp(arg, shell->hash->ht[hash]->key) == 0)
 		shell->hash->ht[hash]->hit++;
 	else
-		ret = add_hash_col(shell, shell->hash->ht[hash], argz);
+		ret = add_hash_col(shell, shell->hash->ht[hash], arg);
 	return (ret);
 }
 

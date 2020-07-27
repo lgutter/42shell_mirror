@@ -27,13 +27,14 @@ static void	open_dirs(t_shell *shell, char *path)
 	while (files != NULL && temp != NULL)
 	{
 		str_expand_triple(&temp, "/", files->d_name);
-		if (temp != NULL && is_executable(temp) == 0 &&
+		if (temp != NULL && is_executable(temp) != 0 &&
 				hash_duplicate(files->d_name, shell->hash) == 0)
 			add_to_hash(shell, temp, files->d_name);
 		free(temp);
 		temp = ft_strdup(path);
 		files = readdir(directory);
 	}
+	free(temp);
 	closedir(directory);
 }
 

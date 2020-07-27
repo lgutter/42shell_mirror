@@ -53,16 +53,20 @@ int				builtin_hash(t_shell *shell, char **argv)
 		return (1);
 	i = 1;
 	if (argv[i] == NULL)
+	{
 		print_hashtable(shell->hash);
+		return (0);
+	}
+	else if (ft_strcmp(argv[i], "-i") == 0)
+		initialize_hashes(shell);
 	else if (ft_strcmp(argv[i], "-r") == 0)
 	{
 		free_hashtable(shell);
 		init_hashtable(shell);
 		i++;
 	}
-	else if (ft_strcmp(argv[i], "-i") == 0)
-		initialize_hashes(shell);
-	if (iterate_hash_args(shell, argv, i) != 0)
-		return (1);
+	if (ft_strcmp(argv[1], "-i") != 0)
+		if (iterate_hash_args(shell, argv, i) != 0)
+			return (1);
 	return (0);
 }
