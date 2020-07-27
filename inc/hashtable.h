@@ -37,7 +37,6 @@ typedef struct		s_hashtable
 
 int				init_hashtable(t_shell *shell);
 size_t			add_to_hash(t_shell *shell, char *path, char *exec);
-size_t			is_executable(char *path);
 void			free_hashtable(t_shell *shell);
 unsigned long	create_hash(char *key, size_t size);
 size_t			find_hashexec(t_hashtable *table, char **path, char *exec);
