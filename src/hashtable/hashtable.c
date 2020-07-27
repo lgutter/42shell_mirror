@@ -16,19 +16,6 @@
 #include "hashtable.h"
 #include "executor.h"
 
-size_t			is_executable(char *path)
-{
-	struct stat		statbuff;
-
-	if (path == NULL)
-		return (1);
-	if (lstat(path, &statbuff) == -1)
-		return (1);
-	if ((statbuff.st_mode & S_IXUSR))
-		return (0);
-	return (1);
-}
-
 static size_t	find_hashcol(t_hentry *entry, char **path, char *exec)
 {
 	t_hentry		*head;
@@ -86,34 +73,47 @@ int				init_hashtable(t_shell *shell)
 	return (0);
 }
 
-void	set_hash(t_shell *shell, t_pipe_sequence *pipe)
+static size_t	add_hash_col(t_shell *shell, t_hentry *col, char *path,
+								char *argz)
+{
+	t_hentry *entry;
+
+	entry = col;
+	while (entry->next_col != NULL &&
+			ft_strcmp(entry->next_col->key, argz) != 0)
+		entry = entry->next_col;
+	if (entry->next_col == NULL)
+		if (add_to_hash(shell, path, argz) != 0)
+			return (1);
+	if (entry->next_col != NULL)
+		entry->next_col->hit++;
+	return (0);
+}
+
+size_t			set_hash(t_shell *shell, t_pipe_sequence *pipe)
 {
 	unsigned long	hash;
-	t_hentry		*entry;
 	char			*argz;
 	char			*path;
 
 	path = NULL;
 	argz = pipe->simple_command->argv[0];
 	hash = create_hash(argz, HT_SIZE);
-	if (find_executable(shell->env, &path, argz) != 0 || ft_strlen(path) == 0)
-		return ;
+	if (shell == NULL || shell->env == NULL || argz == NULL ||
+		find_executable(shell->env, &path, argz) != 0 || ft_strlen(path) == 0)
+		return (1);
 	if (shell->hash->ht[hash] == NULL)
 	{
-		add_to_hash(shell, path, argz);
-		shell->hash->ht[hash]->hit++;
+		if (add_to_hash(shell, path, argz) != 0)
+			return (1);
 	}
 	else if (ft_strcmp(shell->hash->ht[hash]->key, argz) != 0)
 	{
-		entry = shell->hash->ht[hash];
-		while (entry->next_col != NULL && ft_strcmp(entry->next_col->key, argz) != 0)
-			entry = entry->next_col;
-		if (entry->next_col == NULL)
-			add_to_hash(shell, path, argz);
-		else
-			entry->next_col->hit++;
+		if (add_hash_col(shell, shell->hash->ht[hash], path, argz) != 0)
+			return (1);
+		return (0);
 	}
-	else
-		shell->hash->ht[hash]->hit++;
+	shell->hash->ht[hash]->hit++;
+	return (0);
 }
 

@@ -87,3 +87,16 @@ void		free_hashtable(t_shell *shell)
 	free(shell->hash);
 	shell->hash = NULL;
 }
+
+size_t			is_executable(char *path)
+{
+	struct stat		statbuff;
+
+	if (path == NULL)
+		return (1);
+	if (lstat(path, &statbuff) == -1)
+		return (1);
+	if ((statbuff.st_mode & S_IXUSR))
+		return (0);
+	return (1);
+}

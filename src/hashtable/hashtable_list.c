@@ -87,7 +87,7 @@ size_t				add_to_hash(t_shell *shell, char *path, char *exec)
 		return (1);
 	if (is_executable(path) != 0)
 		return (handle_prefix_error_str(cmd_not_found, "hash", path));
-	if (ft_strstr(path, exec) == NULL)
+	else if (ft_strstr(path, exec) == NULL)
 		return (handle_prefix_error_str(cmd_not_found, "hash", exec));
 	head = shell->hash->hl;
 	if (shell->hash->exec_len < ft_strlen(exec))
