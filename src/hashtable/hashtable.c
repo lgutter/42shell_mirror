@@ -29,7 +29,7 @@ static void		find_hash_col_exec(t_hentry *entry, char **path, char *exec)
 	}
 }
 
-size_t			find_hash_exec(t_hashtable *table, char **path, char *exec)
+void			find_hash_exec(t_hashtable *table, char **path, char *exec)
 {
 	unsigned long	hash;
 
@@ -42,7 +42,7 @@ size_t			find_hash_exec(t_hashtable *table, char **path, char *exec)
 		*path = ft_strdup(table->ht[hash]->value);
 	else if (table->ht[hash] != NULL
 			&& table->ht[hash]->next_col != NULL)
-		find_hashcol(table->ht[hash], path, exec);
+		find_hash_col_exec(table->ht[hash], path, exec);
 }
 
 int				init_hashtable(t_shell *shell)
@@ -62,21 +62,30 @@ int				init_hashtable(t_shell *shell)
 	return (0);
 }
 
-static size_t	add_hash_col(t_shell *shell, t_hentry *col, char *path,
-								char *argz)
+static size_t	add_hash_col(t_shell *shell, t_hentry *col, char *argz)
 {
-	t_hentry *entry;
+	t_hentry	*entry;
+	char		*path;
+	size_t		ret;
 
-	entry = col;
-	while (entry->next_col != NULL &&
-			ft_strcmp(entry->next_col->key, argz) != 0)
-		entry = entry->next_col;
-	if (entry->next_col == NULL)
-		if (add_to_hash(shell, path, argz) != 0)
-			return (1);
-	if (entry->next_col != NULL)
-		entry->next_col->hit++;
-	return (0);
+	path = NULL;
+	ret = 0;
+	if (ft_strcmp(col->key, argz) != 0)
+	{
+		entry = col;
+		while (entry->next_col != NULL &&
+				ft_strcmp(entry->next_col->key, argz) != 0)
+			entry = entry->next_col;
+		if (entry->next_col != NULL)
+			entry->next_col->hit++;
+		else
+		{
+			if (find_executable(shell->env, &path, argz) != 0)
+				ret = add_to_hash(shell, path, argz);
+			free(path);
+		}
+	}
+	return (ret);
 }
 
 size_t			set_hash(t_shell *shell, t_pipe_sequence *pipe)
@@ -84,27 +93,26 @@ size_t			set_hash(t_shell *shell, t_pipe_sequence *pipe)
 	unsigned long	hash;
 	char			*argz;
 	char			*path;
+	size_t			ret;
 
 	path = NULL;
+	ret = 0;
 	argz = pipe->simple_command->argv[0];
 	if (shell == NULL || shell->env == NULL || argz == NULL
 		|| ft_strlen(path) == 0)
 		return (1);
 	hash = create_hash(argz, HT_SIZE);
-	if (find_executable(shell->env, &path, argz) != 0)
-		return (1);
 	if (shell->hash->ht[hash] == NULL)
 	{
-		if (add_to_hash(shell, path, argz) != 0)
-			return (1);
+		if (find_executable(shell->env, &path, argz) != 0)
+			ret = add_to_hash(shell, path, argz);
+		shell->hash->ht[hash]->hit++;
+		free(path);
 	}
-	else if (ft_strcmp(shell->hash->ht[hash]->key, argz) != 0)
-	{
-		if (add_hash_col(shell, shell->hash->ht[hash], path, argz) != 0)
-			return (1);
-		return (0);
-	}
-	shell->hash->ht[hash]->hit++;
-	return (0);
+	else if (ft_strcmp(argz, shell->hash->ht[hash]->key) == 0)
+		shell->hash->ht[hash]->hit++;
+	else
+		ret = add_hash_col(shell, shell->hash->ht[hash], argz);
+	return (ret);
 }
 
