@@ -63,8 +63,8 @@ static int	init_cmd(t_command *command, t_simple_cmd *simple_cmd,
 	if (command->envp == NULL)
 		return (malloc_error);
 	if (shell->hash != NULL)
-		ret = find_hashexec(shell->hash, &(command->path), command->argv[0]);
-	if (ret != 0 || command->path == NULL)
+		find_hash_exec(shell->hash, &(command->path), command->argv[0]);
+	if (command->path == NULL)
 		ret = find_executable(shell->env, &(command->path), command->argv[0]);
 	if (ret != 0)
 	{

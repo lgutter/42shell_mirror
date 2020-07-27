@@ -16,7 +16,7 @@
 #include "hashtable.h"
 #include "executor.h"
 
-static size_t	find_hashcol(t_hentry *entry, char **path, char *exec)
+static void		find_hash_col_exec(t_hentry *entry, char **path, char *exec)
 {
 	t_hentry		*head;
 
@@ -24,36 +24,25 @@ static size_t	find_hashcol(t_hentry *entry, char **path, char *exec)
 	while (head != NULL)
 	{
 		if (ft_strcmp(head->key, exec) == 0)
-		{
 			*path = ft_strdup(head->value);
-			return (0);
-		}
 		head = head->next_col;
 	}
-	return (0);
 }
 
-size_t			find_hashexec(t_hashtable *table, char **path, char *exec)
+size_t			find_hash_exec(t_hashtable *table, char **path, char *exec)
 {
 	unsigned long	hash;
 
 	if (table == NULL || exec == NULL || table->ht == NULL || table->hl == NULL
 		|| path == NULL)
-		return (1);
+		return ;
 	hash = create_hash(exec, HT_SIZE);
 	if (table->ht[hash] != NULL &&
 			ft_strcmp(table->ht[hash]->key, exec) == 0)
-	{
 		*path = ft_strdup(table->ht[hash]->value);
-		return (0);
-	}
 	else if (table->ht[hash] != NULL
 			&& table->ht[hash]->next_col != NULL)
-	{
-		if (find_hashcol(table->ht[hash], path, exec) != 0)
-			return (0);
-	}
-	return (1);
+		find_hashcol(table->ht[hash], path, exec);
 }
 
 int				init_hashtable(t_shell *shell)
