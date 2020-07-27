@@ -27,7 +27,8 @@ void			print_hashtable(t_hashtable *hash)
 	while (head != NULL)
 	{
 		index = create_hash(head->key, HT_SIZE);
-		ft_printf(" %d\t%s\t\t%s\n", hash->hit[index], head->key, head->value);
+		ft_printf(" %d\t%-*s %s\n", hash->hit[index], hash->exec_len,
+					head->key, head->value);
 		head = head->next;
 	}
 }

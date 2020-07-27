@@ -58,6 +58,8 @@ int				builtin_hash(t_shell *shell, char **argv)
 		init_hashtable(shell);
 		i++;
 	}
+	else if (ft_strcmp(argv[i], "-i") == 0)
+		initialize_hashes(shell);
 	if (iterate_hash_args(shell, argv, i) != 0)
 		return (1);
 	return (0);
