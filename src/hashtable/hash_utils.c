@@ -15,19 +15,17 @@
 void			print_hashtable(t_hashtable *hash)
 {
 	t_hentry		*head;
-	unsigned long	index;
 
-	if (hash == NULL || hash->hl->key == NULL)
+	if (hash == NULL || hash->hl == NULL || hash->hl->key == NULL)
 	{
-		ft_printf("hash: hash table is emtpy\n");
+		handle_prefix_error(empty_hash, "hash");
 		return ;
 	}
 	head = hash->hl;
-	ft_printf("Hit:\tCommand:\tPath:\n");
+	ft_printf("Hit:\t%-*sPath:\n", hash->exec_len, "Command:");
 	while (head != NULL)
 	{
-		index = create_hash(head->key, HT_SIZE);
-		ft_printf(" %d\t%-*s %s\n", hash->hit[index], hash->exec_len,
+		ft_printf(" %d\t%-*s%s\n", head->hit, hash->exec_len,
 					head->key, head->value);
 		head = head->next;
 	}
@@ -61,7 +59,7 @@ unsigned long	create_hash(char *key, size_t size)
 		hash = ((hash << 5) + hash) + ((unsigned long)*key);
 		key++;
 	}
-	hash = hash % (unsigned long)size;
+	hash = hash & (HT_SIZE - 1);
 	return (hash);
 }
 
@@ -84,8 +82,6 @@ void		free_hashtable(t_shell *shell)
 			entry = temp;
 		}
 	}
-	if (shell->hash->hit != NULL)
-		free(shell->hash->hit);
 	if (shell->hash->ht != NULL)
 		free(shell->hash->ht);
 	free(shell->hash);

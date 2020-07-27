@@ -31,7 +31,6 @@ int		exec_complete_command(t_shell *shell, t_complete_cmd *comp_cmd)
 		job = init_job(shell, comp_cmd->cmd_string,
 					(comp_cmd->seperator_op != background_op));
 		ret = word_processing(shell, comp_cmd);
-		set_hashhit(shell, comp_cmd->pipe_sequence);
 		if (ret == 0)
 			ret = exec_pipe_sequence(comp_cmd->pipe_sequence, shell, job);
 		job->status = get_job_status(job);
