@@ -113,7 +113,7 @@ size_t		str_arr_len(char **str_array);
 int			check_fds(t_shell *shell);
 
 /*
-**	retrieves the correct exit code from EXIT_CODE or STATUS.
+**	retrieves the correct exit code from EXIT_CODE or $?.
 **	if neither is present in the env/shell variables, returns 0.
 */
 int			get_exit_code(t_shell *shell);

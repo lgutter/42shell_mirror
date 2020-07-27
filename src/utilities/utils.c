@@ -92,7 +92,7 @@ int		get_exit_code(t_shell *shell)
 	ret = 0;
 	exit_code = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
 	if (exit_code == NULL)
-		exit_code = ft_getenv(shell->env, "STATUS", SHELL_VAR);
+		exit_code = ft_getenv(shell->env, "?", SHELL_VAR);
 	if (exit_code != NULL)
 		ret = ft_atoi(exit_code);
 	free(exit_code);

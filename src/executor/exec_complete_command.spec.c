@@ -62,7 +62,7 @@ Test(exec_complete_command_unit, valid_basic_command, .init = redirect_std_err_o
 	shell.env = &env;
 	ret = exec_complete_command(&shell, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
-	cr_expect_str_eq(shell.env->key, "STATUS");
+	cr_expect_str_eq(shell.env->key, "?");
 	cr_expect_str_eq(shell.env->value, "0");
 	dprintf(2, "-");
 	fflush(stdout);
@@ -99,7 +99,7 @@ Test(exec_complete_command_unit, valid_basic_piped_command, .init = redirect_std
 	shell.env = &env;
 	ret = exec_complete_command(&shell, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
-	cr_expect_str_eq(shell.env->key, "STATUS");
+	cr_expect_str_eq(shell.env->key, "?");
 	cr_expect_str_eq(shell.env->value, "0");
 	dprintf(2, "-");
 	fflush(stdout);
@@ -148,7 +148,7 @@ Test(exec_complete_command_unit, valid_basic_piped_command_terminate_first, .ini
 	shell.env = &env;
 	ret = exec_complete_command(&shell, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
-	cr_expect_str_eq(shell.env->key, "STATUS");
+	cr_expect_str_eq(shell.env->key, "?");
 	cr_expect_str_eq(shell.env->value, "0");
 	int	read_fd = open(filename, O_RDONLY);
 	cr_assert_gt(read_fd, 0);

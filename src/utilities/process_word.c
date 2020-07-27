@@ -60,12 +60,12 @@ int				process_word(t_shell *shell, char **word, t_q_table table)
 		if (rules.add_char == Q_REMOVE_BS || rules.add_char == Q_REMOVE_SKIP)
 			write--;
 		if (rules.add_char == Q_ADD_CHAR || rules.add_char == Q_REMOVE_BS)
-		{
 			(*word)[write] = (*word)[read];
+		if (rules.add_char == Q_ADD_CHAR || rules.add_char == Q_REMOVE_BS)
 			write++;
-		}
-		else if (rules.add_char == Q_EXPAND_VAR)
-			expand_variable(shell, word, &read, &write);
+		else if (rules.add_char == Q_EXPAND_VAR &&
+		expand_variable(shell, word, &read, &write) == bad_subst_err)
+			return (-1);
 		read++;
 		state = rules.next_state;
 	}

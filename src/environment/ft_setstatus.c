@@ -21,7 +21,7 @@ int		ft_setstatus(t_env *env, int error_code)
 	new = ft_itoa(error_code);
 	if (new == NULL)
 		return (malloc_error);
-	ret = ft_setenv(env, "STATUS", new, (SHELL_VAR | FORCE_VAR | RO_VAR));
+	ret = ft_setenv(env, "?", new, (SHELL_VAR | FORCE_VAR | RO_VAR));
 	free(new);
 	return (ret);
 }
@@ -31,7 +31,7 @@ int		ft_getstatus(t_env *env)
 	char	*temp;
 	int		ret;
 
-	temp = ft_getenv(env, "STATUS", SHELL_VAR);
+	temp = ft_getenv(env, "?", SHELL_VAR);
 	if (temp == NULL)
 		return (0);
 	ret = ft_atoi(temp);

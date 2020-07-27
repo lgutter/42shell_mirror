@@ -29,7 +29,7 @@ Test(unit_builtin_exit, basic_mandatory_exit_status_code_42)
 	int			ret;
 	char		*temp;
 
-	ft_setenv(shell->env, "STATUS", "42", SHELL_VAR);
+	ft_setenv(shell->env, "?", "42", SHELL_VAR);
 	argv = ft_strsplit("exit", ' ');
 	ret = builtin_exit(shell, argv);
 	cr_expect_eq(ret, exit_shell_code, "expected ret %i, got %i!", exit_shell_code, ret);

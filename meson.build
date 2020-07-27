@@ -64,6 +64,7 @@ src_files = files([
   'src/utilities/count_utils.c',
   'src/environment/convert_env_to_envp.c',
   'src/environment/dup_sys_env.c',
+  'src/environment/expand_home.c',
   'src/environment/expand_variable.c',
   'src/environment/ft_getenv.c',
   'src/environment/ft_setenv.c',

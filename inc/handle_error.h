@@ -66,6 +66,7 @@ typedef enum		e_error
 	no_job_control,
 	job_not_found,
 	ambig_job_spec,
+	bad_subst_err,
 	error_count,
 }					t_error;
 

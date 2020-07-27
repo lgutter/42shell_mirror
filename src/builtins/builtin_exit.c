@@ -25,7 +25,7 @@ int		builtin_exit(t_shell *shell, char **argv)
 		ft_dprintf(STDERR_FILENO, "Cetushell: you have unfinished jobs.\n");
 		return (0);
 	}
-	temp = ft_getenv(shell->env, "STATUS", SHELL_VAR);
+	temp = ft_getenv(shell->env, "?", SHELL_VAR);
 	configure_terminal(NULL, 0);
 	if (argv != NULL && argv[0] != NULL && argv[1] != NULL)
 		final_code = ft_atoi(argv[1]);

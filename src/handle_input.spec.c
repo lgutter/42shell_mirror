@@ -34,6 +34,24 @@ Test(handle_input_integration, basic_run_simple_command, .init = cr_redirect_std
 	cr_expect_stdout_eq_str(expected_output);
 }
 
+Test(handle_input_integration, basic_expand_param, .init = cr_redirect_stdout)
+{
+	char		*input = "echo ${FOO}";
+	char		*expected_output = "SUCCESS\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	ft_setenv(shell->env, "FOO", "SUCCESS", ENV_VAR);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
 Test(handle_input_integration, basic_run_pipe_command, .init = cr_redirect_stdout)
 {
 	char		*input = "/bin/echo foo | cat -e";
@@ -293,6 +311,22 @@ Test(handle_input_integration, invalid_incomplete_squote, .init = cr_redirect_st
 	cr_expect_str_eq(buffer, temp);
 	memset(temp, 0, 1024);
 	snprintf(temp, 1024, "Cetushell: %s: unexpected EOF\n", g_error_str[parsing_error]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}
+
+Test(handle_input_integration, invalid_bad_substitution, .init = cr_redirect_stderr)
+{
+	char		*input = "echo ${FOO\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "Cetushell: %s: ${FOO\n", g_error_str[bad_subst_err]);
 	fflush(stderr);
 	cr_expect_stderr_eq_str(temp);
 }

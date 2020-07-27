@@ -12,11 +12,15 @@
 
 #include "environment.h"
 
-static size_t	env_str_len(char *string)
+static ssize_t	env_str_len(char *string)
 {
 	size_t	index;
 
 	index = 0;
+	if (string[index] == '{')
+		index++;
+	if (string[index] == '?')
+		index++;
 	while (string[index] == '_' ||
 			(string[index] >= 'A' && string[index] <= 'Z') ||
 			(string[index] >= 'a' && string[index] <= 'z') ||
@@ -24,10 +28,15 @@ static size_t	env_str_len(char *string)
 	{
 		index++;
 	}
+	if (string[0] == '{' && string[index] == '}')
+		index++;
+	else if (string[0] == '{')
+		return (-1);
 	return (index);
 }
 
-static int		abort_dollar(char *key, char **string, size_t *write)
+static int		abort_dollar(char *key, char **string,
+													size_t *write, ssize_t len)
 {
 	int ret;
 
@@ -37,10 +46,33 @@ static int		abort_dollar(char *key, char **string, size_t *write)
 		(*string)[*write] = '$';
 		(*write)++;
 	}
-	else
+	else if (len >= 0)
 		ret = malloc_error;
+	else
+		ret = bad_subst_err;
 	free(key);
 	return (ret);
+}
+
+static char		*get_variable_key(char *string, size_t read, ssize_t len)
+{
+	char *temp;
+
+	if (len < 0)
+	{
+		len = env_str_len(&(string[read + 2]));
+		temp = ft_strndup(&(string[read]), 2 + len);
+		handle_error_str(bad_subst_err, temp);
+		free(temp);
+		return (NULL);
+	}
+	temp = string + read + 1;
+	if (temp[0] == '{')
+	{
+		temp++;
+		len -= 2;
+	}
+	return (ft_strndup(temp, len));
 }
 
 static int		expand_dollar(t_env *env_list, char **string,
@@ -49,12 +81,12 @@ static int		expand_dollar(t_env *env_list, char **string,
 	char	*key;
 	char	*ret;
 	char	*value;
-	size_t	len;
+	ssize_t	len;
 
 	len = env_str_len(&((*string)[*read + 1]));
-	key = ft_strndup(&((*string)[*read + 1]), len);
-	if (key == NULL || len == 0)
-		return (abort_dollar(key, string, write));
+	key = get_variable_key(*string, *read, len);
+	if (key == NULL || len <= 0)
+		return (abort_dollar(key, string, write, len));
 	ret = ft_strndup(*string, (*write));
 	if (ret == NULL)
 		return (malloc_error);
@@ -69,35 +101,6 @@ static int		expand_dollar(t_env *env_list, char **string,
 	free(value);
 	free(*string);
 	*string = ret;
-	return (0);
-}
-
-int				expand_home(t_env *env_list, char **string,
-													size_t *read, size_t *write)
-{
-	char	*temp;
-	char	*value;
-
-	if (string == NULL || *string == NULL || read == NULL || write == NULL)
-		return (-1);
-	temp = *string;
-	if (temp[0] == '~' && (temp[1] == '\0' || temp[1] == '/'))
-	{
-		value = ft_getenv(env_list, "HOME", VAR_TYPE);
-		if (value == NULL)
-			return (0);
-		temp = ft_strjoin(value, (temp + 1));
-		if (temp == NULL)
-		{
-			free(value);
-			return (-1);
-		}
-		*write += ft_strlen(value);
-		*read = *write;
-		free(value);
-		free(*string);
-		*string = temp;
-	}
 	return (0);
 }
 
