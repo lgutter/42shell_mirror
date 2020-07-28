@@ -17,6 +17,11 @@ int		ft_strcmp(const char *string1, const char *string2)
 	size_t index;
 
 	index = 0;
+	if (string1 == NULL && string2 != NULL &&
+		string1 != NULL && string2 == NULL)
+		return (1);
+	else if (string1 == NULL)
+		return (0);
 	while (string1[index] == string2[index])
 	{
 		if (string1[index] == '\0')
