@@ -71,6 +71,7 @@ typedef struct			s_shell
 	struct s_history	*hist;
 	struct s_job_cont	*job_control;
 	struct s_env		*env;
+	struct s_hashtable	*hash;
 }						t_shell;
 
 t_shell					*init_shell(bool interactive);

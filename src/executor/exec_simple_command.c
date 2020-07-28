@@ -12,6 +12,7 @@
 
 #include "executor.h"
 #include "builtins.h"
+#include "hashtable.h"
 #include "signal_handler.h"
 #include <sys/types.h>
 #include <unistd.h>
@@ -49,7 +50,8 @@ static int	check_access(char *path)
 	return (0);
 }
 
-static int	init_cmd(t_command *command, t_simple_cmd *simple_cmd, t_env *env)
+static int	init_cmd(t_command *command, t_simple_cmd *simple_cmd,
+						t_shell *shell)
 {
 	int ret;
 
@@ -57,10 +59,13 @@ static int	init_cmd(t_command *command, t_simple_cmd *simple_cmd, t_env *env)
 	ft_bzero(command, sizeof(command));
 	command->argc = str_arr_len(simple_cmd->argv);
 	command->argv = simple_cmd->argv;
-	command->envp = convert_env_to_envp(env);
+	command->envp = convert_env_to_envp(shell->env);
 	if (command->envp == NULL)
 		return (malloc_error);
-	ret = find_executable(env, &(command->path), command->argv[0]);
+	if (shell->hash != NULL)
+		find_hash_exec(shell->hash, &(command->path), command->argv[0]);
+	if (command->path == NULL)
+		ret = find_executable(shell->env, &(command->path), command->argv[0]);
 	if (ret != 0)
 	{
 		if (ret == cmd_not_found)
@@ -85,7 +90,7 @@ int			exec_simple_command(t_simple_cmd *simple_cmd, t_shell *shell)
 
 	if (simple_cmd == NULL || simple_cmd->argv == NULL || shell == NULL)
 		return (parsing_error);
-	ret = init_cmd(&command, simple_cmd, shell->env);
+	ret = init_cmd(&command, simple_cmd, shell);
 	if (ret != 0)
 		return (ret);
 	else

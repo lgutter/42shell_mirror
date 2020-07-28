@@ -15,7 +15,7 @@
 #include "signal_handler.h"
 #include <sys/types.h>
 #include <stdio.h>
-#include "builtins.h"
+#include "hashtable.h"
 
 static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
 							t_job *job, t_process *process)
@@ -119,6 +119,7 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	if (pipe_seq == NULL || pipe_seq->simple_command == NULL ||
 		pipe_seq->simple_command->argv == NULL || shell == NULL)
 		return (parsing_error);
+	set_hash(shell, pipe_seq->simple_command->argv[0]);
 	process = init_process(job, pipe_seq->cmd_string);
 	if (process == NULL)
 		return (malloc_error);

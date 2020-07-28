@@ -12,10 +12,12 @@
 
 #include "builtins.h"
 
-static bool	is_executable(char *path)
+bool	is_executable(char *path)
 {
 	struct stat statbuff;
 
+	if (path == NULL)
+		return (false);
 	if (stat(path, &statbuff) != 0)
 		return (false);
 	if (access(path, X_OK) != 0)

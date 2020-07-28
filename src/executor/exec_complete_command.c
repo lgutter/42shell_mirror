@@ -14,6 +14,7 @@
 #include "signal_handler.h"
 #include "processing.h"
 #include "job_control.h"
+#include "hashtable.h"
 
 static t_complete_cmd	*skip_and_or_list(t_shell *shell, t_complete_cmd *cmd)
 {
