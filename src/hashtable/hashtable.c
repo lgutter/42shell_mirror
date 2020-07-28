@@ -72,14 +72,13 @@ static size_t	add_hash_col(t_shell *shell, t_hentry *col, char *argz)
 		while (entry->next_col != NULL &&
 				ft_strcmp(entry->next_col->key, argz) != 0)
 			entry = entry->next_col;
-		if (entry->next_col != NULL)
-			entry->next_col->hit++;
-		else
+		if (entry->next_col == NULL)
 		{
-			if (find_executable(shell->env, &path, argz) != 0)
+			if (find_executable(shell->env, &path, argz) == 0)
 				ret = add_to_hash(shell, path, argz);
 			free(path);
 		}
+		entry->next_col->hit++;
 	}
 	return (ret);
 }

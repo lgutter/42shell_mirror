@@ -288,3 +288,84 @@ Test(unit_builtin_hash, hash_insert_clear_list_find_path)
 	free_hashtable(shell);
 	cr_expect_null(shell->hash);
 }
+
+Test(unit_builtin_hash, add_to_hash_empty_table_coll)
+{
+	t_shell		*shell;
+	char		*path1 = "/usr/bin/more";
+	char		*exec1 = "more";
+	char		*path2 = "/usr/bin/gcc-9";
+	char		*exec2 = "gcc-9";
+	size_t		ret = 0;
+
+	if (HT_SIZE != 512)
+		cr_assert_fail("Warning: HT_SIZE is not 512 and will cause create_hash to be different");
+	shell = init_shell(false);
+	ret = add_to_hash(shell, path1, exec1);
+	cr_expect_eq(ret, 0);
+	cr_expect_str_eq(shell->hash->hl->key, exec1);
+	cr_expect_str_eq(shell->hash->hl->value, path1);
+	unsigned long hashindex = create_hash(exec1, HT_SIZE);
+	cr_expect_str_eq(shell->hash->ht[hashindex]->key, exec1);
+	cr_expect_str_eq(shell->hash->ht[hashindex]->value, path1);
+	ret = add_to_hash(shell, path2, exec2);
+	cr_expect_eq(ret, 0);
+	cr_expect_str_eq(shell->hash->hl->next->key, exec2);
+	cr_expect_str_eq(shell->hash->hl->next->value, path2);
+	hashindex = create_hash(exec2, HT_SIZE);
+	cr_expect_str_eq(shell->hash->ht[hashindex]->next_col->key, exec2);
+	cr_expect_str_eq(shell->hash->ht[hashindex]->next_col->value, path2);
+	free_hashtable(shell);
+	cr_expect_null(shell->hash);
+}
+
+Test(unit_builtin_hash, hash_hit_coll_check)
+{
+	t_shell		*shell;
+
+	if (HT_SIZE != 512)
+		cr_assert_fail("Warning: HT_SIZE is not 512 and will cause create_hash to be different");
+	shell = init_shell(false);
+	set_hash(shell, "ls");
+	set_hash(shell, "ls");
+	unsigned long hash = create_hash("ls", 512);
+	t_hentry *coll = shell->hash->ht[hash];
+	while (coll != NULL && ft_strcmp(coll->key, "ls") != 0)
+		coll = coll->next_col;
+	cr_expect_eq(coll->hit, 2);
+	set_hash(shell, "more");
+	hash = create_hash("more", 512);
+	coll = shell->hash->ht[hash];
+	while (coll != NULL && ft_strcmp(coll->key, "more") != 0)
+		coll = coll->next_col;
+	cr_expect_eq(coll->hit, 1);
+	set_hash(shell, "gcc-9");
+	hash = create_hash("gcc-9", 512);
+	coll = shell->hash->ht[hash];
+	while (coll != NULL && ft_strcmp(coll->key, "gcc-9") != 0)
+		coll = coll->next_col;
+	cr_assert_not_null(coll);
+	cr_expect_eq(coll->hit, 1);
+	free_hashtable(shell);
+	cr_expect_null(shell->hash);
+}
+
+Test(unit_builtin_hash, hash_find_exec_check)
+{
+	t_shell		*shell;
+	char		*argv[3] = {"hash", "-i", NULL};
+	char		*path;
+	size_t		ret = 0;
+
+	if (HT_SIZE != 512)
+		cr_assert_fail("Warning: HT_SIZE is not 512 and will cause create_hash to be different");
+	shell = init_shell(false);
+	ret = builtin_hash(shell,argv);
+	cr_expect_eq(ret, 0);
+	find_hash_exec(shell->hash, &path, "ls");
+	cr_expect_str_eq(path, "/usr/bin/ls");
+	find_hash_exec(shell->hash, &path, "gcc-9");
+	cr_expect_str_eq(path, "/usr/bin/gcc-9");
+	free_hashtable(shell);
+	cr_expect_null(shell->hash);
+}
