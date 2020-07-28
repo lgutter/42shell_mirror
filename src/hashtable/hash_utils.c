@@ -31,7 +31,7 @@ void			print_hashtable(t_hashtable *hash)
 	}
 }
 
-size_t		hash_duplicate(char *key, t_hashtable *table)
+size_t			hash_duplicate(char *key, t_hashtable *table)
 {
 	t_hentry	*entry;
 
@@ -63,7 +63,7 @@ unsigned long	create_hash(char *key, size_t size)
 	return (hash);
 }
 
-void		free_hashtable(t_shell *shell)
+void			free_hashtable(t_shell *shell)
 {
 	t_hentry	*entry;
 	t_hentry	*temp;
