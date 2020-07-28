@@ -112,23 +112,25 @@ static int	execute_simple(t_pipe_sequence *pipe_seq, t_shell *shell,
 int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 								t_shell *shell, t_job *job)
 {
-	int			old_fds[3];
-	int			ret;
-	t_process	*process;
+	int				old_fds[3];
+	int				ret;
+	t_process		*process;
+	t_simple_cmd	*simple_cmd;
 
-	if (pipe_seq == NULL || pipe_seq->simple_command == NULL ||
-		pipe_seq->simple_command->argv == NULL || shell == NULL)
+	if (pipe_seq == NULL || shell == NULL || pipe_seq->simple_command == NULL)
 		return (parsing_error);
-	set_hash(shell, pipe_seq->simple_command->argv[0]);
+	simple_cmd = pipe_seq->simple_command;
 	process = init_process(job, pipe_seq->cmd_string);
 	if (process == NULL)
 		return (malloc_error);
+	set_hash(shell, simple_cmd->argv == NULL ? NULL : simple_cmd->argv[0]);
 	std_fd_backup(old_fds);
 	if (pipe_seq->pipe == pipe_op)
 		ret = execute_pipe(pipe_seq, shell, job, process);
-	else if (is_builtin(pipe_seq->simple_command->argv[0]) == true &&
-			job->foreground == true)
-		ret = exec_simple_command(pipe_seq->simple_command, shell);
+	else if ((simple_cmd->argv != NULL && job->foreground == true &&
+	is_builtin(simple_cmd->argv[0]) == true) ||
+	(simple_cmd->argv == NULL && simple_cmd->assignments != NULL))
+		ret = exec_simple_command(simple_cmd, shell);
 	else
 		ret = execute_simple(pipe_seq, shell, job, process);
 	std_fd_restore(old_fds);

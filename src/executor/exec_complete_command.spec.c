@@ -46,7 +46,7 @@ Test(exec_complete_command_unit, valid_basic_command, .init = redirect_std_err_o
 	char			**argv = ft_strsplit("/bin/echo foo", ' ');
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, argv};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, "/bin/echo foo ;", no_pipe, NULL};
 	t_complete_cmd	command = {&pipe_seq, "/bin/echo foo ;", semicolon_op, NULL};
 	t_shell			shell;
@@ -81,8 +81,8 @@ Test(exec_complete_command_unit, valid_basic_piped_command, .init = redirect_std
 	t_argument		argument21 = {strdup("/bin/cat"), NULL};
 	t_argument		argument12 = {strdup("foo"), NULL};
 	t_argument		argument11 = {strdup("/bin/echo"), &argument12};
-	t_simple_cmd	simple_cmd2 = {NULL, &argument21, argv2};
-	t_simple_cmd	simple_cmd = {NULL, &argument11, argv};
+	t_simple_cmd	simple_cmd2 = {NULL, NULL, &argument21, argv2};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument11, argv};
 	t_pipe_sequence	pipe_seq2 = {&simple_cmd2, "/bin/cat", no_pipe, NULL};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, "/bin/echo foo |", pipe_op, &pipe_seq2};
 	t_complete_cmd	command = {&pipe_seq, "/bin/echo foo | cat", semicolon_op, NULL};
@@ -123,9 +123,9 @@ Test(exec_complete_command_unit, valid_basic_piped_command_terminate_first, .ini
 	t_argument		argument21 = {strdup("head"), &argument22};
 	t_argument		argument12 = {strdup("/dev/urandom"), NULL};
 	t_argument		argument11 = {strdup("base64"), &argument12};
-	t_simple_cmd	simple_cmd3 = {NULL, &argument31, argv3};
-	t_simple_cmd	simple_cmd2 = {NULL, &argument21, argv2};
-	t_simple_cmd	simple_cmd = {NULL, &argument11, argv};
+	t_simple_cmd	simple_cmd3 = {NULL, NULL, &argument31, argv3};
+	t_simple_cmd	simple_cmd2 = {NULL, NULL, &argument21, argv2};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument11, argv};
 	t_pipe_sequence	pipe_seq3 = {&simple_cmd3, "wc -c", no_pipe, NULL};
 	t_pipe_sequence	pipe_seq2 = {&simple_cmd2, "head -c 1000 |", pipe_op, &pipe_seq3};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, "base64 /dev/urandom |", pipe_op, &pipe_seq2};
@@ -171,8 +171,8 @@ Test(exec_complete_command_unit, valid_basic_piped_command_background, .init = r
 	t_argument		argument21 = {strdup("/bin/cat"), NULL};
 	t_argument		argument12 = {strdup("foo"), NULL};
 	t_argument		argument11 = {strdup("/bin/echo"), &argument12};
-	t_simple_cmd	simple_cmd2 = {NULL, &argument21, argv2};
-	t_simple_cmd	simple_cmd = {NULL, &argument11, argv};
+	t_simple_cmd	simple_cmd2 = {NULL, NULL, &argument21, argv2};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument11, argv};
 	t_pipe_sequence	pipe_seq2 = {&simple_cmd2, "/bin/cat", no_pipe, NULL};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, "/bin/echo foo |", pipe_op, &pipe_seq2};
 	t_complete_cmd	command = {&pipe_seq, "/bin/echo foo | cat &", background_op, NULL};
@@ -207,7 +207,7 @@ Test(exec_complete_command_unit, valid_basic_command_background, .init = redirec
 	char			**argv = ft_strsplit("/bin/echo foo", ' ');
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, argv};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, "/bin/echo foo", no_pipe, NULL};
 	t_complete_cmd	command = {&pipe_seq, "/bin/echo foo &", background_op, NULL};
 	t_shell			shell;
@@ -241,7 +241,7 @@ Test(exec_complete_command_unit, invalid_basic_command_NULL_shell, .init = redir
 	char			**argv = ft_strsplit("/bin/echo foo", ' ');
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, argv};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, "/bin/echo foo", no_pipe, NULL};
 	t_complete_cmd	command = {&pipe_seq, "/bin/echo foo", no_seperator_op, NULL};
 	int				ret;
@@ -260,7 +260,7 @@ Test(exec_complete_command_unit, invalid_basic_command_NULL_shell, .init = redir
 
 Test(exec_complete_command_unit, invalid_empty_simple_cmd, .init = redirect_std_err)
 {
-	t_simple_cmd	simple_cmd = {NULL, NULL, NULL};
+	t_simple_cmd	simple_cmd = {NULL, NULL, NULL, NULL};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, "", no_pipe, NULL};
 	t_complete_cmd	command = {&pipe_seq, "", semicolon_op, NULL};
 	int				ret;

@@ -14,6 +14,7 @@
 #include "builtins.h"
 #include "hashtable.h"
 #include "signal_handler.h"
+#include "processing.h"
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -50,21 +51,25 @@ static int	check_access(char *path)
 	return (0);
 }
 
-static int	init_cmd(t_command *command, t_simple_cmd *simple_cmd,
-						t_shell *shell)
+static int	init_cmd(t_command *command,
+									t_simple_cmd *simple_cmd, t_shell *shell)
 {
 	int ret;
 
 	ret = 0;
 	ft_bzero(command, sizeof(command));
+	if (simple_cmd->argv == NULL && simple_cmd->assignments == NULL)
+		return (parsing_error);
 	command->argc = str_arr_len(simple_cmd->argv);
 	command->argv = simple_cmd->argv;
 	command->envp = convert_env_to_envp(shell->env);
+	if (process_assignments(shell, simple_cmd) != 0)
+		return (internal_error);
 	if (command->envp == NULL)
 		return (malloc_error);
-	if (shell->hash != NULL)
+	if (simple_cmd->argv != NULL && shell->hash != NULL)
 		find_hash_exec(shell->hash, &(command->path), command->argv[0]);
-	if (command->path == NULL)
+	if (simple_cmd->argv != NULL && command->path == NULL)
 		ret = find_executable(shell->env, &(command->path), command->argv[0]);
 	if (ret != 0)
 	{
@@ -88,12 +93,12 @@ int			exec_simple_command(t_simple_cmd *simple_cmd, t_shell *shell)
 	int				ret;
 	t_redir_info	*redir_info;
 
-	if (simple_cmd == NULL || simple_cmd->argv == NULL || shell == NULL)
+	if (simple_cmd == NULL || shell == NULL)
 		return (parsing_error);
 	ret = init_cmd(&command, simple_cmd, shell);
 	if (ret != 0)
 		return (ret);
-	else
+	else if (simple_cmd->argv != NULL)
 	{
 		redir_info = set_up_redirections(simple_cmd->redirects);
 		if (redir_info == NULL)
@@ -101,12 +106,12 @@ int			exec_simple_command(t_simple_cmd *simple_cmd, t_shell *shell)
 		if (is_builtin(simple_cmd->argv[0]) == true)
 			ret = execute_builtin(shell, command.argv);
 		else if (getpid() == shell->pid)
-			return (handle_error_str(internal_error,
-											"did not fork for non-builtin"));
+			ret = handle_error_str(internal_error, "not forked for executable");
 		else
 			execve_command(command);
+		reset_redirections(&redir_info);
 	}
-	reset_redirections(&redir_info);
+	restore_assignments(shell, simple_cmd);
 	free_command(&command);
 	return (ret);
 }

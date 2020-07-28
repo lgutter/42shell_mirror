@@ -571,7 +571,7 @@ Test(word_processing_unit, invalid_empty_redirect, .init = redirect_std_err)
 	int				exp_ret = -1;
 	t_io_redirect	redirect = {NULL, -1, NULL, NULL, NULL};
 	t_argument 		argument = {"cat", NULL};
-	t_simple_cmd	simple_cmd = {&redirect, &argument, NULL};
+	t_simple_cmd	simple_cmd = {NULL, &redirect, &argument, NULL};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, "cat", no_pipe, NULL};
 	t_complete_cmd  compl_cmd = {&pipe_seq, "cat", no_seperator_op, NULL};
 
@@ -586,7 +586,7 @@ Test(word_processing_unit, invalid_empty_redirect, .init = redirect_std_err)
 Test(word_processing_unit, invalid_incomplete_pipe, .init = redirect_std_err)
 {
 	int				exp_ret = parsing_error;
-	t_simple_cmd	simple_cmd = {NULL, NULL, NULL};
+	t_simple_cmd	simple_cmd = {NULL, NULL, NULL, NULL};
 	t_pipe_sequence	pipe_seq = {&simple_cmd, "", pipe_op, NULL};
 	t_complete_cmd  compl_cmd = {&pipe_seq, "", no_seperator_op, NULL};
 

@@ -60,7 +60,8 @@ static int		process_simple_cmd(t_shell *shell, t_simple_cmd *simple_command)
 		return (handle_error_str(parsing_error, "NULL simple command"));
 	if (process_redirects(shell, simple_command->redirects) != 0)
 		return (-1);
-	if (simple_command->arguments == NULL)
+	if (simple_command->arguments == NULL &&
+		simple_command->assignments == NULL)
 		return (handle_error_str(parsing_error, "no arguments"));
 	cur_arg = simple_command->arguments;
 	while (cur_arg != NULL)
@@ -73,7 +74,8 @@ static int		process_simple_cmd(t_shell *shell, t_simple_cmd *simple_command)
 		}
 		cur_arg = cur_arg->next;
 	}
-	simple_command->argv = convert_arguments(simple_command->arguments);
+	if (simple_command->arguments != NULL)
+		simple_command->argv = convert_arguments(simple_command->arguments);
 	return (0);
 }
 
@@ -91,7 +93,8 @@ int				word_processing(t_shell *shell, t_complete_cmd *complete_cmd)
 	{
 		if (pipe_seq->pipe == pipe_op &&
 			(pipe_seq->next == NULL || pipe_seq->next->simple_command == NULL ||
-			pipe_seq->next->simple_command->arguments == NULL))
+			(pipe_seq->next->simple_command->arguments == NULL &&
+			pipe_seq->next->simple_command->assignments == NULL)))
 			return (handle_error_str(parsing_error, "incomplete pipe"));
 		ret = process_simple_cmd(shell, pipe_seq->simple_command);
 		if (ret != 0)
