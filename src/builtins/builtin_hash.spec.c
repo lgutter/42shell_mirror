@@ -17,8 +17,20 @@
 #include "hashtable.h"
 #include <unistd.h>
 
+
+static void redirect_std_out()
+{
+	cr_redirect_stdout();
+}
+
 static void redirect_std_err()
 {
+	cr_redirect_stderr();
+}
+
+static void redirect_std_errout()
+{
+	redirect_std_out();
 	cr_redirect_stderr();
 }
 
@@ -118,7 +130,7 @@ Test(unit_builtin_hash, add_to_hash_invalid_path)
 	cr_expect_null(shell->hash);
 }
 
-Test(unit_builtin_hash, add_to_hash_invalid_exec)
+Test(unit_builtin_hash, add_to_hash_invalid_exec, .init = redirect_std_err)
 {
 	t_shell		*shell;
 	char		*path = "/usr/bin/ls";
@@ -126,7 +138,6 @@ Test(unit_builtin_hash, add_to_hash_invalid_exec)
 	size_t		ret = 0;
 	char		buff[2048];
 
-	redirect_std_err();
 	shell = init_shell(false);
 	ret = add_to_hash(shell, path, exec);
 	cr_expect_eq(ret, 14);
@@ -366,6 +377,36 @@ Test(unit_builtin_hash, hash_find_exec_check)
 	cr_expect_str_eq(path, "/usr/bin/ls");
 	find_hash_exec(shell->hash, &path, "gcc-9");
 	cr_expect_str_eq(path, "/usr/bin/gcc-9");
+	free_hashtable(shell);
+	cr_expect_null(shell->hash);
+}
+
+Test(unit_builtin_hash, hash_print, .init = redirect_std_errout)
+{
+	t_shell		*shell;
+	char		*argv[3] = {"hash", "ls", NULL};
+	char		*argv1[2] = {"hash", NULL};
+	char		*path;
+	size_t		ret = 0;
+
+	if (HT_SIZE != 512)
+		cr_assert_fail("Warning: HT_SIZE is not 512 and will cause create_hash to be different");
+	shell = init_shell(false);
+	fflush(stderr);
+	ret = builtin_hash(shell, argv1);
+	char buf[1024];
+	sprintf(buf, "Cetushell: hash: Hashtable is empty\n");
+	cr_expect_stderr_eq_str(buf);
+	ret = builtin_hash(shell,argv);
+	cr_expect_eq(ret, 0);
+	set_hash(NULL, "ls");
+	set_hash(shell, "ls");
+	find_hash_exec(shell->hash, &path, "ls");
+	cr_expect_str_eq(path, "/usr/bin/ls");
+	ret = builtin_hash(shell, argv1);
+	ft_bzero(buf, 1024);
+	sprintf(buf, "Hit:\t%-*sPath:\n 1\t%-*s/usr/bin/ls\n", (int)shell->hash->exec_len, "Command:", (int)shell->hash->exec_len, "ls");
+	cr_expect_stdout_eq_str(buf);
 	free_hashtable(shell);
 	cr_expect_null(shell->hash);
 }
