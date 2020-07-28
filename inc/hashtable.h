@@ -17,7 +17,10 @@
 # include "executor.h"
 # include "ft_printf.h"
 
-# define HT_SIZE 400
+/*
+** HT_size must be a power of 2
+*/
+# define HT_SIZE 512
 
 typedef struct		s_hentry
 {
@@ -42,7 +45,7 @@ unsigned long	create_hash(char *key, size_t size);
 void			find_hash_exec(t_hashtable *table, char **path, char *exec);
 void			print_hashtable(t_hashtable *hash);
 size_t			hash_duplicate(char *key, t_hashtable *table);
-size_t			set_hash(t_shell *shell, t_pipe_sequence *pipe);
+void			set_hash(t_shell *shell, char *argz);
 void			initialize_hashes(t_shell *shell);
 
 #endif

@@ -69,7 +69,7 @@ static size_t		add_to_htable(t_hashtable *table, t_hentry *entry,
 			collision = collision->next_col;
 		if (collision->next_col != NULL &&
 			ft_strcmp(collision->next_col->key, entry->key) == 0)
-			return (update_hentry(collision->next_col, entry->value));
+			return (update_hentry(collision->next_col, path));
 		else
 			collision->next_col = entry;
 	}

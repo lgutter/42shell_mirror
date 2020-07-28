@@ -119,8 +119,7 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	if (pipe_seq == NULL || pipe_seq->simple_command == NULL ||
 		pipe_seq->simple_command->argv == NULL || shell == NULL)
 		return (parsing_error);
-	if (set_hash(shell, pipe_seq) != 0)
-		return (1);
+	set_hash(shell, pipe_seq->simple_command->argv[0]);
 	process = init_process(job, pipe_seq->cmd_string);
 	if (process == NULL)
 		return (malloc_error);

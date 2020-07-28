@@ -16,21 +16,9 @@
 #include "hashtable.h"
 #include "executor.h"
 
-static void		find_hash_col_exec(t_hentry *entry, char **path, char *exec)
-{
-	t_hentry		*head;
-
-	head = entry->next_col;
-	while (head != NULL)
-	{
-		if (ft_strcmp(head->key, exec) == 0)
-			*path = ft_strdup(head->value);
-		head = head->next_col;
-	}
-}
-
 void			find_hash_exec(t_hashtable *table, char **path, char *exec)
 {
+	t_hentry		*head;
 	unsigned long	hash;
 
 	if (table == NULL || exec == NULL || table->ht == NULL || table->hl == NULL
@@ -42,7 +30,15 @@ void			find_hash_exec(t_hashtable *table, char **path, char *exec)
 		*path = ft_strdup(table->ht[hash]->value);
 	else if (table->ht[hash] != NULL
 			&& table->ht[hash]->next_col != NULL)
-		find_hash_col_exec(table->ht[hash], path, exec);
+	{
+		head = table->ht[hash]->next_col;
+		while (head != NULL)
+		{
+			if (ft_strcmp(head->key, exec) == 0)
+				*path = ft_strdup(head->value);
+			head = head->next_col;
+		}
+	}
 }
 
 int				init_hashtable(t_shell *shell)
@@ -88,35 +84,28 @@ static size_t	add_hash_col(t_shell *shell, t_hentry *col, char *argz)
 	return (ret);
 }
 
-size_t			set_hash(t_shell *shell, t_pipe_sequence *pipe)
+void			set_hash(t_shell *shell, char *argz)
 {
 	unsigned long	hash;
-	char			*arg;
 	char			*path;
-	size_t			ret;
 
 	path = NULL;
-	ret = 0;
-	arg = pipe->simple_command->argv[0];
-	if (shell == NULL || shell->env == NULL || arg == NULL)
-		return (1);
-	if (is_builtin(arg) == true)
-		return (0);
-	hash = create_hash(arg, HT_SIZE);
+	if (shell == NULL || shell->env == NULL || argz == NULL ||
+		shell->hash == NULL || is_builtin(argz) == true)
+		return ;
+	hash = create_hash(argz, HT_SIZE);
 	if (shell->hash->ht[hash] == NULL)
 	{
-		ret = find_executable(shell->env, &path, arg);
-		if (ret == 0)
+		if (find_executable(shell->env, &path, argz) == 0)
 		{
-			ret = add_to_hash(shell, path, arg);
+			add_to_hash(shell, path, argz);
 			shell->hash->ht[hash]->hit++;
 		}
 		free(path);
 	}
-	else if (ft_strcmp(arg, shell->hash->ht[hash]->key) == 0)
+	else if (ft_strcmp(argz, shell->hash->ht[hash]->key) == 0)
 		shell->hash->ht[hash]->hit++;
 	else
-		ret = add_hash_col(shell, shell->hash->ht[hash], arg);
-	return (ret);
+		add_hash_col(shell, shell->hash->ht[hash], argz);
 }
 
