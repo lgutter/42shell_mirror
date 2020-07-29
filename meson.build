@@ -144,6 +144,7 @@ if libcriterion_deb.found()
     'src/lexer_parser/parse_complete_command.spec.c',
     'src/lexer_parser/parse_pipe_sequence.spec.c',
     'src/lexer_parser/parse_simple_command.spec.c',
+    'src/lexer_parser/parse_assignments.spec.c',
     'src/lexer_parser/parse_arguments.spec.c',
     'src/lexer_parser/parse_io_redirect.spec.c',
     'src/lexer_parser/parse_io_here.spec.c',
