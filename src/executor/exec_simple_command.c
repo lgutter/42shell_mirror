@@ -62,9 +62,9 @@ static int	init_cmd(t_command *command,
 		return (parsing_error);
 	command->argc = str_arr_len(simple_cmd->argv);
 	command->argv = simple_cmd->argv;
-	command->envp = convert_env_to_envp(shell->env);
 	if (process_assignments(shell, simple_cmd) != 0)
 		return (internal_error);
+	command->envp = convert_env_to_envp(shell->env);
 	if (command->envp == NULL)
 		return (malloc_error);
 	if (simple_cmd->argv != NULL && shell->hash != NULL)
