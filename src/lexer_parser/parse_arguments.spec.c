@@ -15,6 +15,7 @@
 #include <criterion/redirect.h>
 #include "tokenizer.h"
 #include "parser.h"
+#include "error_str.h"
 
 static void redirect_std_err(void)
 {
@@ -83,6 +84,11 @@ Test(parse_arguments_unit, invalid_null_token, .init = redirect_std_err)
 
 	arguments = parse_arguments(&token);
 	cr_assert_eq(NULL, arguments);
+	char buffer[1024];
+	memset(buffer, 0, 1024);
+	snprintf(buffer, 1024, "Cetushell: %s\n", g_error_str[invalid_token]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(buffer);
 }
 
 Test(parse_arguments_unit, invalid_null_token_pointer, .init = redirect_std_err)
@@ -91,6 +97,26 @@ Test(parse_arguments_unit, invalid_null_token_pointer, .init = redirect_std_err)
 
 	arguments = parse_arguments(NULL);
 	cr_assert_eq(NULL, arguments);
+	char buffer[1024];
+	memset(buffer, 0, 1024);
+	snprintf(buffer, 1024, "Cetushell: %s\n", g_error_str[invalid_token]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(buffer);
+}
+
+Test(parse_arguments_unit, invalid_token_not_WORD, .init = redirect_std_err)
+{
+	t_argument *arguments;
+	t_token		token = {IO_NUMBER, "42", NULL, NULL};
+	t_token		*token_pointer = &token;
+
+	arguments = parse_arguments(&token_pointer);
+	cr_assert_eq(NULL, arguments);
+	char buffer[1024];
+	memset(buffer, 0, 1024);
+	snprintf(buffer, 1024, "Cetushell: %s: 42\n", g_error_str[parsing_error]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(buffer);
 }
 
 Test(free_argument_unit, valid_free_two_arguments)
