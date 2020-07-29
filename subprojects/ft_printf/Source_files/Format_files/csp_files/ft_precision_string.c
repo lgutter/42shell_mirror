@@ -20,7 +20,7 @@ size_t	ft_precision_string(t_info *info, char **string)
 	}
 	else if (info->precision < 1)
 	{
-		*string = ft_strdup("");
+		**string = '\0';
 		return (0);
 	}
 	else if (ft_strlen(*string) > info->precision)
