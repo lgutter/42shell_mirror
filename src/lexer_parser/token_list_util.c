@@ -43,9 +43,7 @@ t_token			*free_token_list_empty_buff(t_token **start, char *buff)
 static t_token	*init_token(t_token **start)
 {
 	t_token *temp;
-	t_token *previous;
 
-	previous = NULL;
 	if (*start == NULL)
 	{
 		*start = (t_token *)ft_memalloc(sizeof(t_token) * 1);
@@ -57,11 +55,8 @@ static t_token	*init_token(t_token **start)
 		while (temp->next != NULL)
 			temp = temp->next;
 		temp->next = (t_token *)ft_memalloc(sizeof(t_token) * 1);
-		previous = temp;
 		temp = temp->next;
 	}
-	if (temp != NULL)
-		temp->prev = previous;
 	return (temp);
 }
 
