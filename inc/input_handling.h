@@ -224,7 +224,7 @@ int			cut_copy_paste(t_buff *buffer, t_cursor *cursor, char c);
 
 void		remove_word(t_buff *buffer, t_cursor *cursor);
 
-int			ctrl_d_key(char c, t_buff *buffer);
+int			ctrl_d_key(char c, t_shell *shell);
 
 void		handle_cntrl_arrows(t_buff *buffer, t_cursor *cursor, char *seq);
 #endif

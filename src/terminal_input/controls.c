@@ -73,15 +73,21 @@ void		backspace_key(t_buff *buffer, t_cursor *cursor, char c)
 	}
 }
 
-int			ctrl_d_key(char c, t_buff *buffer)
+int			ctrl_d_key(char c, t_shell *shell)
 {
-	if (c == CNTRL_D && buffer->buff_len == 0 &&
-		(ft_strcmp(buffer->prompt, PROMPT_NORMAL) == 0 ||
-		ft_strcmp(buffer->prompt, PROMPT_NORMAL_COLOUR) == 0 ||
-		ft_strcmp(buffer->prompt, PROMPT_HEREDOC) == 0))
+	char	*PS1;
+
+	if (shell == NULL || shell->buffer == NULL)
+		return (0);
+	PS1 = ft_getenv(shell->env, "PS1", SHELL_VAR);
+	if (c == CNTRL_D && shell->buffer->buff_len == 0 &&
+		(ft_strcmp(shell->buffer->prompt, PS1) == 0 ||
+		ft_strcmp(shell->buffer->prompt, PROMPT_HEREDOC) == 0))
 	{
+		free(PS1);
 		send_terminal(TERM_DOWN);
 		return (1);
 	}
+	free(PS1);
 	return (0);
 }
