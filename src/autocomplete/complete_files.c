@@ -44,7 +44,13 @@ static char		*resolve_path(t_env *env, t_complete *comp, size_t complen)
 	curdir = get_shell_cwd(env);
 	if (curdir == NULL)
 		return (NULL);
-	follow_links(&curdir, ft_strsplit(comp->to_complete,
+	if (comp->to_complete != NULL && comp->to_complete[0] == '/')
+	{
+		free(curdir);
+		curdir = ft_strdup(comp->to_complete);
+	}
+	else
+		follow_links(&curdir, ft_strsplit(comp->to_complete,
 			'/'), ft_countchar(curdir, '/'));
 	if (curdir == NULL)
 		return (NULL);

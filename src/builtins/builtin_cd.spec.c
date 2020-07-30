@@ -387,7 +387,7 @@ Test(builtin_cd_unit, valid_cd_multi_link_P_option)
 	rmdir("/tmp/multi_link_P/bar");
 }
 
-Test(builtin_cd_unit, cd_invalid_option)
+Test(builtin_cd_unit, cd_invalid_option, .init = redirect_std_err)
 {
 	char		**argv;
 	t_shell		*shell = init_shell(false);
@@ -400,6 +400,7 @@ Test(builtin_cd_unit, cd_invalid_option)
 	argv[1] = "-PLKPLP";
 	argv[2] = dir;
 	argv[3] = NULL;
+	fflush(stderr);
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 }
