@@ -35,33 +35,26 @@ static char		*resolve_complete(t_complete *comp)
 	return (complete);
 }
 
-static char		*resolve_path(t_complete *comp, char *curdir)
+static char		*resolve_path(t_env *env, t_complete *comp, size_t complen)
 {
-	char			*temp;
-	char			path[PATH_MAX];
-	int				i;
+	int		i;
+	char	*path;
+	char	*curdir;
 
-	ft_bzero(path, PATH_MAX);
-	i = (int)comp->to_complen - 1;
-	if (comp->to_complen != 0)
-		while (i > -1 && comp->to_complete[i] != '/')
-			i--;
-	if (comp->to_complen == 1 && comp->to_complete[0] == '.')
-		temp = ft_strdup("");
-	else if ((int)comp->to_complen - 1 == i)
-		temp = ft_strdup(comp->to_complete);
-	else
-		temp = ft_strndup(comp->to_complete,
-				(comp->to_complen - (comp->to_complen - (i + 1))));
-	if (temp == NULL)
+	curdir = get_shell_cwd(env);
+	if (curdir == NULL)
 		return (NULL);
-	if (comp->to_complen > 0 && comp->to_complete[0] == '/')
-		ft_strncpy(path, temp, PATH_MAX);
-	else if (curdir != NULL)
-		ft_snprintf(path, PATH_MAX, "%s/%s", curdir, temp);
-	free(temp);
-	temp = ft_strdup(path);
-	return (temp);
+	follow_links(&curdir, ft_strsplit(comp->to_complete,
+			'/'), ft_countchar(curdir, '/'));
+	if (curdir == NULL)
+		return (NULL);
+	i = ft_strlen(curdir) - 1;
+	if (complen != 0)
+		while (i > -1 && curdir[i] != '/')
+			i--;
+	path = ft_strndup(curdir, i + 1);
+	free(curdir);
+	return (path);
 }
 
 static size_t	filter_files(t_complete *comp, char *file, char *path)
@@ -109,22 +102,20 @@ static size_t	add_file_match(t_complete *comp, char *path, char *complete)
 size_t			complete_files(t_env *env, t_complete *comp)
 {
 	char			*path;
-	char			*curdir;
 	char			*complete;
+	size_t			ret;
 
 	if (comp == NULL || comp->to_complete == NULL || env == NULL)
 		return (1);
-	curdir = get_shell_cwd(env);
-	if (curdir == NULL)
-		return (1);
 	complete = resolve_complete(comp);
-	path = resolve_path(comp, curdir);
-	free(curdir);
-	if (path == NULL || complete == NULL)
+	if (complete == NULL)
 		return (1);
-	if (add_file_match(comp, path, complete) != 0)
-		return (1);
+	path = resolve_path(env, comp, ft_strlen(complete));
+	if (path == NULL)
+		ret = 1;
+	if (ret != 0 || add_file_match(comp, path, complete) != 0)
+		ret = 1;
 	free(path);
 	free(complete);
-	return (0);
+	return (ret);
 }

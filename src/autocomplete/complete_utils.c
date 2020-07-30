@@ -25,7 +25,7 @@ size_t		is_directory(char *file, char *path)
 	ft_snprintf(complete_path, PATH_MAX, "%s/%s", path, file);
 	if (lstat(complete_path, &statbuff) == -1)
 		return (1);
-	if (S_ISDIR(statbuff.st_mode))
+	if (S_ISDIR(statbuff.st_mode) || S_ISLNK(statbuff.st_mode))
 		return (0);
 	return (1);
 }
@@ -38,9 +38,12 @@ char		*get_shell_cwd(t_env *env)
 	if (env == NULL)
 		return (NULL);
 	ft_bzero(curdir, PATH_MAX);
-	if (getcwd(curdir, PATH_MAX) == NULL)
-		temp = ft_getenv(env, "PWD", ENV_VAR);
-	else
+	temp = ft_getenv(env, "PWD", ENV_VAR);
+	if (temp == NULL)
+	{
+		if (getcwd(curdir, PATH_MAX) == NULL)
+			return (NULL);
 		temp = ft_strdup(curdir);
+	}
 	return (temp);
 }

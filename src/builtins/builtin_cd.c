@@ -19,42 +19,42 @@
 #endif
 #include "utils.h"
 
-static char	*follow_links(char *current, char **dest, size_t cur_size)
+void	follow_links(char **curr, char **input, size_t cur_size)
 {
-	char	*path;
 	size_t	i;
 	char	*temp;
 
-	path = ft_strdup(current);
 	i = 0;
-	while (dest[i] != NULL)
+	if (input == NULL || cur_size == 0)
+		return ;
+	while (input[i] != NULL && *curr != NULL)
 	{
-		if (ft_strcmp(dest[i], "..") == 0)
+		if (ft_strcmp(input[i], "..") == 0)
 		{
-			temp = ft_strndup(path, ft_index_nchar(path, '/', cur_size));
-			free(path);
-			path = ft_strdup(temp);
+			temp = ft_strndup(*curr, ft_index_nchar(*curr, '/', cur_size));
+			free(*curr);
+			*curr = ft_strdup(temp);
 			free(temp);
 			cur_size--;
 		}
-		else if (ft_strcmp(dest[i], ".") != 0)
+		else if (ft_strcmp(input[i], ".") != 0)
 		{
-			str_expand_triple(&path, "/", dest[i]);
+			str_expand_triple(&*curr, "/", input[i]);
 			cur_size++;
 		}
 		i++;
 	}
-	free_dchar_arr(dest);
-	return (path);
+	free_dchar_arr(input);
 }
 
 static int	path_start(t_cd *cd, char *old_pwd)
 {
 	char	*temp;
 
-	if (cd->input_path[0] != '/')
+	temp = ft_strdup(old_pwd);
+	if (cd->input_path[0] != '/' && temp != NULL)
 	{
-		temp = follow_links(old_pwd, ft_strsplit(cd->input_path, '/')
+		follow_links(&temp, ft_strsplit(cd->input_path, '/')
 								, ft_countchar(old_pwd, '/'));
 		if (temp == NULL)
 			return (1);

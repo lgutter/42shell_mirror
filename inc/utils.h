@@ -122,4 +122,13 @@ size_t		ft_index_nchar(char *string, char c, size_t n);
 
 size_t		ft_countchar(char *string, char c);
 
+/*
+** This function will take in a pointer to a string (curr) and a double
+** char array (dest) with its size. it will then add or remove paths
+** depending on given dest[i] which can be "." ".." or an actual path.
+** it will update the string curr or set it so NULL when failing.
+** this function will also free the given double char array.
+*/
+void		follow_links(char **curr, char **dest, size_t cur_size);
+
 #endif
