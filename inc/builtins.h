@@ -43,6 +43,8 @@ typedef struct		s_cd
 }					t_cd;
 
 int					is_builtin(char *exec_name);
+int					setenv_key_value(t_env *env, char *arg,
+														char *argz, int opts);
 int					execute_builtin(t_shell *shell, char **argv);
 int					builtin_cd(t_shell *shell, char **argv);
 int					builtin_env(t_shell *shell, char **argv);

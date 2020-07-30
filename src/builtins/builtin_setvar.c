@@ -14,76 +14,6 @@
 #include "builtins.h"
 #include "executor.h"
 
-static int		env_is_valid_key(char *key)
-{
-	size_t	key_len;
-	size_t	i;
-	int		is_valid;
-
-	key_len = ft_strlen(key);
-	i = 0;
-	while (i < key_len)
-	{
-		is_valid = (ft_isalnum(key[i]) || key[i] == '_');
-		if (i == 0 && ft_isdigit(key[i]))
-			is_valid = 0;
-		if (is_valid == 0)
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-static char		**get_key_value(char *arg)
-{
-	char	**key_value;
-	char	**temp;
-
-	key_value = ft_strsplit(arg, '=');
-	if (key_value == NULL || key_value[0] == NULL)
-	{
-		free_dchar_arr(key_value);
-		return (NULL);
-	}
-	if (key_value[1] == NULL)
-	{
-		temp = ft_memalloc(sizeof(char *) * 3);
-		if (temp == NULL)
-			return (NULL);
-		temp[0] = key_value[0];
-		temp[1] = ft_strdup("");
-		free(key_value);
-		key_value = temp;
-	}
-	return (key_value);
-}
-
-static int		resolve_set_values(t_env *env, char *arg, char *argz, int opts)
-{
-	char	**key_value;
-	int		ret;
-
-	ret = 0;
-	key_value = get_key_value(arg);
-	if (key_value == NULL)
-		ret = malloc_error;
-	else if (key_value[2] == NULL)
-	{
-		if (env_is_valid_key(key_value[0]) == 0)
-			ret = handle_prefix_error_str(error_inv_format, argz, key_value[0]);
-		else
-		{
-			ret = ft_setenv(env, key_value[0], key_value[1], opts);
-			if (ret != 0)
-				handle_prefix_error_str(ret, argz, key_value[0]);
-		}
-	}
-	else
-		ret = handle_prefix_error_str(error_inv_format, argz, arg);
-	free_dchar_arr(key_value);
-	return (ret);
-}
-
 static int		get_set_opts(char **argv, int *i)
 {
 	int		opts;
@@ -135,7 +65,7 @@ int				builtin_setvar(t_shell *shell, char **argv)
 		return (1);
 	while (i < (int)ft_str_arr_len(argv) && argv[i] != NULL)
 	{
-		if (resolve_set_values(shell->env, argv[i], argv[0], opts) != 0)
+		if (setenv_key_value(shell->env, argv[i], argv[0], opts) != 0)
 			ret = 1;
 		i++;
 	}

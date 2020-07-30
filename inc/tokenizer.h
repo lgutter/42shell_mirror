@@ -31,14 +31,12 @@
 **			enums are defined in token_trans_table.h
 **	value:	a string with the characters from the input that the token contains.
 **	next:	pointer to the next token in the list.
-**	prev:	pointer to the previous token in the list.
 */
 typedef struct			s_token
 {
 	t_type				type;
 	char				*value;
 	struct s_token		*next;
-	struct s_token		*prev;
 }						t_token;
 
 /*

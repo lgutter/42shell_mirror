@@ -100,6 +100,7 @@ src_files = files([
   'src/builtins/builtin_exit.c',
   'src/builtins/builtin_set.c',
   'src/builtins/builtin_setvar.c',
+  'src/builtins/setenv_key_value.c',
   'src/builtins/builtin_unset.c',
   'src/builtins/builtin_jobs.c',
   'src/builtins/builtin_bg.c',

@@ -73,7 +73,7 @@ static int		handle_control_char(t_shell *shell, char c)
 		send_terminal("cl");
 	}
 	if (cut_copy_paste(shell->buffer, &shell->cursor, c) != 0 ||
-		ctrl_d_key(c, shell->buffer) == 1)
+		ctrl_d_key(c, shell) == 1)
 		return (1);
 	tab_key(shell, c);
 	backspace_key(shell->buffer, &shell->cursor, c);
