@@ -12,7 +12,7 @@
 
 #include "builtins.h"
 
-bool	is_executable(char *path)
+bool		is_executable(char *path)
 {
 	struct stat statbuff;
 

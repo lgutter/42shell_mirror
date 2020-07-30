@@ -50,7 +50,7 @@ int				process_word(t_shell *shell, char **word, t_q_table table_type);
 **	0 on succes.
 **	-1 on failure.
 */
-int		process_assignments(t_shell *shell, t_simple_cmd *simple_cmd);
+int				process_assignments(t_shell *shell, t_simple_cmd *simple_cmd);
 
 /*
 **	restores any assignments to their original state. If the variable did not
@@ -60,7 +60,7 @@ int		process_assignments(t_shell *shell, t_simple_cmd *simple_cmd);
 **	shell:		a pointer to the shell struct.
 **	simple_cmd:	a pointer to the simple command struct.
 */
-void		restore_assignments(t_shell *shell, t_simple_cmd *simple_cmd);
+void			restore_assignments(t_shell *shell, t_simple_cmd *simple_cmd);
 
 /*
 **	performs environment expansions and quote removal on all

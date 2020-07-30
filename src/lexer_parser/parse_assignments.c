@@ -14,7 +14,7 @@
 #include "parser.h"
 #include "utils.h"
 
-t_assignment			*free_assignments(t_assignment *assignment)
+t_assignment		*free_assignments(t_assignment *assignment)
 {
 	if (assignment == NULL)
 		return (NULL);
@@ -51,7 +51,7 @@ static t_assignment	*init_assignment(char *word)
 	return (assignment);
 }
 
-t_assignment			*parse_assignments(t_token **token)
+t_assignment		*parse_assignments(t_token **token)
 {
 	t_assignment	*assignment;
 

@@ -59,7 +59,7 @@ static int	traverse_paths(char **paths, char **path, char *arg_zero)
 	return (cmd_not_found);
 }
 
-int		find_executable(t_env *env_list, char **path, char *arg_zero)
+int			find_executable(t_env *env_list, char **path, char *arg_zero)
 {
 	char	*env_path;
 	char	**paths;
