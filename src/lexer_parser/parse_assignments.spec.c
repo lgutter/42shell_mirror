@@ -110,7 +110,7 @@ Test(parse_assignments_unit, invalid_null_token_pointer, .init = redirect_std_er
 Test(parse_assignments_unit, invalid_token_not_WORD, .init = redirect_std_err)
 {
 	t_assignment *assignments;
-	t_token		token = {IO_NUMBER, "42", NULL, NULL};
+	t_token		token = {IO_NUMBER, "42", NULL};
 	t_token		*token_pointer = &token;
 
 	assignments = parse_assignments(&token_pointer);

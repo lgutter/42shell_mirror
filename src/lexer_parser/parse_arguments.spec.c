@@ -107,7 +107,7 @@ Test(parse_arguments_unit, invalid_null_token_pointer, .init = redirect_std_err)
 Test(parse_arguments_unit, invalid_token_not_WORD, .init = redirect_std_err)
 {
 	t_argument *arguments;
-	t_token		token = {IO_NUMBER, "42", NULL, NULL};
+	t_token		token = {IO_NUMBER, "42", NULL};
 	t_token		*token_pointer = &token;
 
 	arguments = parse_arguments(&token_pointer);
