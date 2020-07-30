@@ -12,6 +12,7 @@
 
 #include "tokenizer.h"
 #include "parser.h"
+#include "utils.h"
 
 t_simple_cmd	*free_simple_command(t_simple_cmd *simple_command)
 {
@@ -19,6 +20,8 @@ t_simple_cmd	*free_simple_command(t_simple_cmd *simple_command)
 	{
 		simple_command->redirects = free_io_redirect(simple_command->redirects);
 		simple_command->arguments = free_arguments(simple_command->arguments);
+		free_assignments(simple_command->assignments);
+		simple_command->assignments = NULL;
 		free_dchar_arr(simple_command->argv);
 		simple_command->argv = NULL;
 		free(simple_command);
@@ -70,6 +73,17 @@ static int		init_redirects(t_simple_cmd *simple_command, t_token **token)
 	return (0);
 }
 
+static int		init_assignments(t_simple_cmd *simple_command, t_token **token)
+{
+	if (is_assignment((*token)->value) == true)
+	{
+		simple_command->assignments = parse_assignments(token);
+		if (simple_command->assignments == NULL)
+			return (-1);
+	}
+	return (0);
+}
+
 t_simple_cmd	*parse_simple_command(t_token **token)
 {
 	t_simple_cmd	*simple_command;
@@ -84,6 +98,8 @@ t_simple_cmd	*parse_simple_command(t_token **token)
 	simple_command = (t_simple_cmd *)ft_memalloc(sizeof(t_simple_cmd) * 1);
 	if (simple_command == NULL)
 		return (handle_error_p(malloc_error, NULL));
+	if (init_assignments(simple_command, token) == -1)
+		return (free_simple_command(simple_command));
 	while (is_start_of_cmd(*token) == 1)
 	{
 		if ((*token)->type == WORD)

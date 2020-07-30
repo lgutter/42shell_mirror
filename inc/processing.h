@@ -38,6 +38,31 @@ typedef enum	e_q_table
 int				process_word(t_shell *shell, char **word, t_q_table table_type);
 
 /*
+**	performs environment expansions and quote removal on the value of every
+**	assignment, after which it sets each assignment as either SHELL_VAR (if
+**	there are no arguments), or ENV_VAR for the command, in which case it also
+**	checks if there was already a value for it, and stores that in
+**	assignment->original, so it can be restored after execution.
+**	arguments:
+**	shell:		a pointer to the shell struct.
+**	simple_cmd:	a pointer to the simple command struct.
+**	returns:
+**	0 on succes.
+**	-1 on failure.
+*/
+int		process_assignments(t_shell *shell, t_simple_cmd *simple_cmd);
+
+/*
+**	restores any assignments to their original state. If the variable did not
+**	exist previously, it will be unset, and if it did exist,
+**	its original value will be restored.
+**	arguments:
+**	shell:		a pointer to the shell struct.
+**	simple_cmd:	a pointer to the simple command struct.
+*/
+void		restore_assignments(t_shell *shell, t_simple_cmd *simple_cmd);
+
+/*
 **	performs environment expansions and quote removal on all
 **	relevant elements in the redirections.
 **	arguments:

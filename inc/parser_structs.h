@@ -102,6 +102,9 @@ typedef struct					s_pipe_sequence
 /*
 **	Struct to hold the information for a simple command.
 **	fields:
+**	assignments:[optional] list of all assignments for the command, which will
+				either become internal variables (if there is no command),
+				or temporary environment variables for the command.
 **	redirects:	[optional] list of all redirections to be performed for this
 **				command. these will be performed in order, so redirections
 **				to/from the same fd mean that only the last one is active.
@@ -110,6 +113,7 @@ typedef struct					s_pipe_sequence
 */
 typedef struct					s_simple_command
 {
+	struct s_assignment			*assignments;
 	struct s_io_redirect		*redirects;
 	struct s_argument			*arguments;
 	char						**argv;
@@ -126,6 +130,21 @@ typedef struct					s_argument
 	char						*argument;
 	struct s_argument			*next;
 }								t_argument;
+
+/*
+**	Struct for every node in the assignments list.
+**	fields:
+**	key:		the key of the assignment.
+**	value:		the value of the assignment.
+**	next:		the next node in the list.
+*/
+typedef struct					s_assignment
+{
+	char						*key;
+	char						*value;
+	char						*original;
+	struct s_assignment			*next;
+}								t_assignment;
 
 /*
 **	Struct for every node in the redirections list.

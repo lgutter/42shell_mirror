@@ -70,4 +70,12 @@ char	*get_pipe_seq_str(t_token *token);
 **		NULL on failure (malloc failure)
 */
 char	*get_command_str(t_token *token);
+
+/*
+**	checks if the given string is a valid assignment word, meaing it contains
+**	an equals sign (=), and the part before the equals sign does not contain
+**	any quoting characters.
+*/
+bool	is_assignment(char *word);
+
 #endif

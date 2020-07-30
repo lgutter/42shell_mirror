@@ -16,6 +16,13 @@
 #include "handle_input.h"
 #include "cetushell.h"
 #include "error_str.h"
+#include "environment.h"
+
+static void redirect_stdout_err(void)
+{
+	cr_redirect_stderr();
+	cr_redirect_stdout();
+}
 
 Test(handle_input_integration, basic_run_simple_command, .init = cr_redirect_stdout)
 {
@@ -166,6 +173,94 @@ Test(handle_input_integration, basic_run_pipe_command_background, .init = cr_red
 	handle_input(shell, &input);
 	cr_expect_str_eq(buffer, input);
 	usleep(50000);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_assignment_word_new_shell_var, .init = cr_redirect_stdout)
+{
+	char		*input = "basic_assignment_word_new_shell_var=='$PWD';echo $basic_assignment_word_new_shell_var";
+	char		*expected_output = "=$PWD\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_assignment_word_two_new_shell_vars, .init = cr_redirect_stdout)
+{
+	char		*input = "basic_assignment_word_two_new_shell_vars2=\"foo bar\" basic_assignment_word_two_new_shell_vars1=='$PWD';echo $basic_assignment_word_two_new_shell_vars1 $basic_assignment_word_two_new_shell_vars2";
+	char		*expected_output = "=$PWD foo bar\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_assignment_word_two_vars_restore, .init = redirect_stdout_err)
+{
+	char		*input = "basic_assignment_word_two_vars_restore=\"foo bar\" OLDPWD==BAR cd -;echo $basic_assignment_word_two_vars_restore $OLDPWD";
+	char		*expected_output = " FOO\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	char		*key = "OLDPWD";
+	char		*value = "FOO";
+	ft_setenv(shell->env, key, value, ENV_VAR);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+	char	errbuff[1024];
+	memset(errbuff, 0, 1024);
+	snprintf(errbuff, 1024, "Cetushell: cd: =BAR: %s\n", g_error_str[no_such_file_or_dir]);
+	cr_expect_stderr_eq_str(errbuff);
+}
+
+Test(handle_input_integration, basic_assignment_word_replace_shell_var, .init = cr_redirect_stdout)
+{
+	char		*input = "echo $basic_assignment_word_replace_shell_var;basic_assignment_word_replace_shell_var=='$PWD';echo $basic_assignment_word_replace_shell_var";
+	char		*expected_output = "FOO\n=$PWD\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	char		*key = "basic_assignment_word_replace_shell_var";
+	char		*value = "FOO";
+	ft_setenv(shell->env, key, value, SHELL_VAR);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_assignment_word_replace_var, .init = cr_redirect_stdout)
+{
+	char		*input = "basic_assignment_word_replace_var=BAR env | grep basic_assignment_word_replace_var;echo $basic_assignment_word_replace_var";
+	char		*expected_output = "basic_assignment_word_replace_var=BAR\nFOO\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	char		*key = "basic_assignment_word_replace_var";
+	char		*value = "FOO";
+	ft_setenv(shell->env, key, value, ENV_VAR);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
 	fflush(stdout);
 	cr_expect_stdout_eq_str(expected_output);
 }

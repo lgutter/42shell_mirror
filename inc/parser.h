@@ -28,6 +28,7 @@
 t_complete_cmd	*parse_complete_command(t_token **token);
 t_pipe_sequence	*parse_pipe_sequence(t_token **token);
 t_simple_cmd	*parse_simple_command(t_token **token);
+t_assignment	*parse_assignments(t_token **token);
 t_argument		*parse_arguments(t_token **token);
 t_io_redirect	*parse_io_redirect(t_token **token);
 t_io_here		*parse_io_here(t_token **token);
@@ -43,6 +44,7 @@ t_io_file		*parse_io_file(t_token **token);
 t_complete_cmd	*free_complete_command(t_complete_cmd *complete_cmd);
 t_pipe_sequence	*free_pipe_sequence(t_pipe_sequence *pipe_sequence);
 t_simple_cmd	*free_simple_command(t_simple_cmd *simple_command);
+t_assignment	*free_assignments(t_assignment *assignment);
 t_argument		*free_arguments(t_argument *arguments);
 t_io_redirect	*free_io_redirect(t_io_redirect *io_redirect);
 t_io_here		*free_io_here(t_io_here *io_here);

@@ -38,7 +38,7 @@ Test(exec_simple_command_unit, valid_basic_command, .init = redirect_std_out)
 	char			**argv = ft_strsplit("/bin/echo foo", ' ');
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, argv};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = 0;
@@ -68,7 +68,7 @@ Test(exec_simple_command_unit, valid_basic_builtin, .init = redirect_std_out)
 	char			**argv = ft_strsplit("echo foo", ' ');
 	t_argument		argument2 = {strdup(argv[1]), NULL};
 	t_argument		argument1 = {strdup(argv[0]), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, argv};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = 0;
@@ -98,7 +98,7 @@ Test(exec_simple_command_unit, invalid_is_dir, .init = redirect_std_err)
 	char			**argv = ft_strsplit("/tmp foo", ' ');
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/tmp"), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, argv};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = is_dir_error;
@@ -130,7 +130,7 @@ Test(exec_simple_command_unit, invalid_does_not_exist, .init = redirect_std_err)
 	char			**argv = ft_strsplit("/tmp/thisfiledoesnotexist foo", ' ');
 	t_argument		argument2 = {strdup(argv[1]), NULL};
 	t_argument		argument1 = {strdup(argv[0]), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, argv};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = no_such_file_or_dir;
@@ -162,7 +162,7 @@ Test(exec_simple_command_unit, invalid_no_exec_perm, .init = redirect_std_err)
 	char			**argv = ft_strsplit("/tmp/no_exec_perm foo", ' ');
 	t_argument		argument2 = {strdup(argv[1]), NULL};
 	t_argument		argument1 = {strdup(argv[0]), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, argv};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = access_denied;
@@ -198,7 +198,7 @@ Test(exec_simple_command_unit, valid_NULL_env, .init = redirect_std_err_out)
 	char			**argv = ft_strsplit("/bin/echo foo", ' ');
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, argv};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = 0;
@@ -232,7 +232,7 @@ Test(exec_simple_command_unit, invalid_NULL_argv)
 	char			**argv = NULL;
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, argv};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, argv};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = parsing_error;
@@ -260,7 +260,7 @@ Test(exec_simple_command_unit, invalid_NULL_argv_zero)
 	char			*argv_zero = NULL;
 	t_argument		argument2 = {strdup("foo"), NULL};
 	t_argument		argument1 = {strdup("/bin/echo"), &argument2};
-	t_simple_cmd	simple_cmd = {NULL, &argument1, &argv_zero};
+	t_simple_cmd	simple_cmd = {NULL, NULL, &argument1, &argv_zero};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = parsing_error;
@@ -285,7 +285,7 @@ Test(exec_simple_command_unit, invalid_NULL_argv_zero)
 
 Test(exec_simple_command_unit, invalid_empty_simple_cmd)
 {
-	t_simple_cmd	simple_cmd = {NULL, NULL, NULL};
+	t_simple_cmd	simple_cmd = {NULL, NULL, NULL, NULL};
 	t_shell			shell;
 	int				ret;
 	int				exp_ret = parsing_error;

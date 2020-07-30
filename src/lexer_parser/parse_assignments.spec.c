@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   parse_arguments.spec.c                             :+:    :+:            */
+/*   parse_assignments.spec.c                             :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
@@ -38,52 +38,55 @@ static t_token	*init_token(t_type type, const char *value, t_token *next)
 	return (token);
 }
 
-Test(parse_arguments_unit, valid_single_argument)
+Test(parse_assignments_unit, valid_single_assignment)
 {
-	t_argument *argument;
+	t_assignment *assignment;
 
 
-	t_token	*token1 = init_token(WORD, "foo", NULL);
-	cr_assert_neq(NULL, token1, "malloc failed!");
+	t_token	*token1 = init_token(WORD, "foo=bar", NULL);
+	cr_assert_not_null(token1, "malloc failed!");
 	t_token *tokens = token1;
 
-	argument = parse_arguments(&tokens);
+	assignment = parse_assignments(&tokens);
 	cr_expect_eq(tokens, NULL);
-	cr_assert_neq(NULL, argument);
-	cr_expect_eq(argument->next, NULL);
-	cr_assert_neq(argument->argument, NULL);
-	cr_expect_str_eq(argument->argument, "foo");
+	cr_assert_not_null(assignment);
+	cr_expect_eq(assignment->next, NULL);
+	cr_assert_not_null(assignment->key);
+	cr_expect_str_eq(assignment->key, "foo");
+	cr_expect_str_eq(assignment->value, "bar");
 }
 
-Test(parse_arguments_unit, valid_two_arguments)
+Test(parse_assignments_unit, valid_two_assignments)
 {
-	t_argument *argument;
+	t_assignment *assignment;
 
-	t_token	*token2 = init_token(WORD, "bar", NULL);
-	cr_assert_neq(NULL, token2, "malloc failed!");
-	t_token	*token1 = init_token(WORD, "foo", token2);
-	cr_assert_neq(NULL, token1, "malloc failed!");
+	t_token	*token2 = init_token(WORD, "bar=foo", NULL);
+	cr_assert_not_null(token2, "malloc failed!");
+	t_token	*token1 = init_token(WORD, "foo=bar", token2);
+	cr_assert_not_null(token1, "malloc failed!");
 	t_token *tokens = token1;
 
-	argument = parse_arguments(&tokens);
+	assignment = parse_assignments(&tokens);
 	cr_expect_eq(tokens, NULL);
-	cr_assert_neq(NULL, argument);
-	cr_assert_neq(argument->argument, NULL);
-	cr_expect_str_eq(argument->argument, "foo");
-	cr_assert_neq(argument->next, NULL);
-	argument = argument->next;
-	cr_assert_neq(argument->argument, NULL);
-	cr_expect_str_eq(argument->argument, "bar");
-	cr_expect_eq(argument->next, NULL);
+	cr_assert_not_null(assignment);
+	cr_assert_not_null(assignment->key);
+	cr_expect_str_eq(assignment->key, "foo");
+	cr_expect_str_eq(assignment->value, "bar");
+	cr_assert_neq(assignment->next, NULL);
+	assignment = assignment->next;
+	cr_assert_not_null(assignment->key);
+	cr_expect_str_eq(assignment->key, "bar");
+	cr_expect_str_eq(assignment->value, "foo");
+	cr_expect_eq(assignment->next, NULL);
 }
 
-Test(parse_arguments_unit, invalid_null_token, .init = redirect_std_err)
+Test(parse_assignments_unit, invalid_null_token, .init = redirect_std_err)
 {
-	t_argument *arguments;
+	t_assignment *assignments;
 	t_token			*token = NULL;
 
-	arguments = parse_arguments(&token);
-	cr_assert_eq(NULL, arguments);
+	assignments = parse_assignments(&token);
+	cr_assert_eq(NULL, assignments);
 	char buffer[1024];
 	memset(buffer, 0, 1024);
 	snprintf(buffer, 1024, "Cetushell: %s\n", g_error_str[invalid_token]);
@@ -91,12 +94,12 @@ Test(parse_arguments_unit, invalid_null_token, .init = redirect_std_err)
 	cr_expect_stderr_eq_str(buffer);
 }
 
-Test(parse_arguments_unit, invalid_null_token_pointer, .init = redirect_std_err)
+Test(parse_assignments_unit, invalid_null_token_pointer, .init = redirect_std_err)
 {
-	t_argument *arguments;
+	t_assignment *assignments;
 
-	arguments = parse_arguments(NULL);
-	cr_assert_eq(NULL, arguments);
+	assignments = parse_assignments(NULL);
+	cr_assert_eq(NULL, assignments);
 	char buffer[1024];
 	memset(buffer, 0, 1024);
 	snprintf(buffer, 1024, "Cetushell: %s\n", g_error_str[invalid_token]);
@@ -104,14 +107,14 @@ Test(parse_arguments_unit, invalid_null_token_pointer, .init = redirect_std_err)
 	cr_expect_stderr_eq_str(buffer);
 }
 
-Test(parse_arguments_unit, invalid_token_not_WORD, .init = redirect_std_err)
+Test(parse_assignments_unit, invalid_token_not_WORD, .init = redirect_std_err)
 {
-	t_argument *arguments;
+	t_assignment *assignments;
 	t_token		token = {IO_NUMBER, "42", NULL, NULL};
 	t_token		*token_pointer = &token;
 
-	arguments = parse_arguments(&token_pointer);
-	cr_assert_eq(NULL, arguments);
+	assignments = parse_assignments(&token_pointer);
+	cr_assert_eq(NULL, assignments);
 	char buffer[1024];
 	memset(buffer, 0, 1024);
 	snprintf(buffer, 1024, "Cetushell: %s: 42\n", g_error_str[parsing_error]);
@@ -119,19 +122,19 @@ Test(parse_arguments_unit, invalid_token_not_WORD, .init = redirect_std_err)
 	cr_expect_stderr_eq_str(buffer);
 }
 
-Test(free_argument_unit, valid_free_two_arguments)
+Test(free_assignment_unit, valid_free_two_assignments)
 {
-	t_argument *argument;
+	t_assignment *assignment;
 
-	t_token	*token2 = init_token(WORD, "foo", NULL);
-	cr_assert_neq(NULL, token2, "malloc failed!");
-	t_token	*token1 = init_token(WORD, "bar", token2);
-	cr_assert_neq(NULL, token1, "malloc failed!");
+	t_token	*token2 = init_token(WORD, "foo=bar", NULL);
+	cr_assert_not_null(token2, "malloc failed!");
+	t_token	*token1 = init_token(WORD, "bar=foo", token2);
+	cr_assert_not_null(token1, "malloc failed!");
 	t_token *tokens = token1;
 
-	argument = parse_arguments(&tokens);
+	assignment = parse_assignments(&tokens);
 	cr_expect_eq(tokens, NULL);
-	cr_assert_neq(NULL, argument);
+	cr_assert_not_null(assignment);
 
-	free_arguments(argument);
+	free_assignments(assignment);
 }

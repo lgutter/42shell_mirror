@@ -12,7 +12,7 @@
 
 #include "parser_utils.h"
 
-int	is_redirect_op(t_token *token)
+int		is_redirect_op(t_token *token)
 {
 	if (token == NULL)
 	{
@@ -29,7 +29,7 @@ int	is_redirect_op(t_token *token)
 	return (0);
 }
 
-int	is_start_of_redirect(t_token *token)
+int		is_start_of_redirect(t_token *token)
 {
 	if (token == NULL)
 	{
@@ -48,7 +48,7 @@ int	is_start_of_redirect(t_token *token)
 	return (0);
 }
 
-int	is_start_of_cmd(t_token *token)
+int		is_start_of_cmd(t_token *token)
 {
 	if (token == NULL)
 	{
@@ -68,7 +68,7 @@ int	is_start_of_cmd(t_token *token)
 	return (0);
 }
 
-int	is_seperator_op(t_token *token)
+int		is_seperator_op(t_token *token)
 {
 	if (token == NULL)
 	{
@@ -80,4 +80,20 @@ int	is_seperator_op(t_token *token)
 		return (1);
 	}
 	return (0);
+}
+
+bool	is_assignment(char *word)
+{
+	size_t i;
+
+	i = 0;
+	while (word[i] != '\0')
+	{
+		if (word[i] == '"' || word[i] == '\'' || word[i] == '\\')
+			return (false);
+		if (word[i] == '=')
+			return (true);
+		i++;
+	}
+	return (false);
 }
