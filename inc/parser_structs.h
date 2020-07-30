@@ -103,8 +103,8 @@ typedef struct					s_pipe_sequence
 **	Struct to hold the information for a simple command.
 **	fields:
 **	assignments:[optional] list of all assignments for the command, which will
-				either become internal variables (if there is no command),
-				or temporary environment variables for the command.
+**				either become internal variables (if there is no command),
+**				or temporary environment variables for the command.
 **	redirects:	[optional] list of all redirections to be performed for this
 **				command. these will be performed in order, so redirections
 **				to/from the same fd mean that only the last one is active.

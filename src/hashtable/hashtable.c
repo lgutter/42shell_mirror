@@ -107,4 +107,3 @@ void			set_hash(t_shell *shell, char *argz)
 	else
 		add_hash_col(shell, shell->hash->ht[hash], argz);
 }
-
