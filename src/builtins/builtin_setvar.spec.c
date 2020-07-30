@@ -46,23 +46,6 @@ Test(builtin_set_env_unit, invalid_key_bad_format, .init = redirect_std_err)
 	cr_expect_stderr_eq_str(buff);
 }
 
-Test(builtin_set_env_unit, invalid_too_many_equals_signs, .init = redirect_std_err)
-{
-	char		**argv;
-	t_shell		*shell = init_shell(false);
-	int			ret = 0;
-	char		buff[1024];
-
-	argv = (char **)malloc(sizeof(char *) * 3);
-	argv[0] = ft_strdup("setenv");
-	argv[1] = ft_strdup("test=foo=bar");
-	argv[2] = NULL;
-	ret = builtin_setvar(shell, argv);
-	cr_assert_eq(ret, 1, "ret is %d but must be %d", ret, 1);
-	fflush(stderr);
-	sprintf(buff, "Cetushell: %s: test=foo=bar: %s\n", argv[0], g_error_str[error_inv_format]);
-	cr_expect_stderr_eq_str(buff);
-}
 
 Test(builtin_set_env_unit, invalid_spaces_in_key, .init = redirect_std_err)
 {
@@ -101,6 +84,22 @@ Test(builtin_set_env_unit, invalid_deny_read_only_overwrite, .init = redirect_st
 	sprintf(buff, "Cetushell: %s: READONLY: %s\n", argv[0], g_error_str[error_ronly]);
 	cr_expect_stderr_eq_str(buff);
 	cr_expect_str_eq(ft_getenv(shell->env, "READONLY", ENV_VAR), "ORIGINAL");
+}
+
+Test(builtin_set_env_unit, valid_normal_overwrite_more_equals_signs)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+
+	ft_setenv(shell->env, "NORMALVAR", "ORIGINAL", ENV_VAR);
+	argv = (char **)malloc(sizeof(char *) * 3);
+	argv[0] = ft_strdup("setenv");
+	argv[1] = ft_strdup("NORMALVAR=OVER=WRITTEN");
+	argv[2] = NULL;
+	ret = builtin_setvar(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	cr_expect_str_eq(ft_getenv(shell->env, "NORMALVAR", ENV_VAR), "OVER=WRITTEN");
 }
 
 Test(builtin_set_env_unit, valid_force_read_only_overwrite)

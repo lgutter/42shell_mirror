@@ -12,26 +12,6 @@
 
 #include "builtins.h"
 
-static bool		env_is_valid_key(char *key)
-{
-	size_t	key_len;
-	size_t	i;
-	int		is_valid;
-
-	key_len = ft_strlen(key);
-	i = 0;
-	while (i < key_len)
-	{
-		is_valid = (ft_isalnum(key[i]) || key[i] == '_');
-		if (i == 0 && ft_isdigit(key[i]))
-			is_valid = 0;
-		if (is_valid == 0)
-			return (false);
-		i++;
-	}
-	return (true);
-}
-
 static size_t	checkopt_export(char *arg)
 {
 	size_t		i;
@@ -54,36 +34,16 @@ static size_t	checkopt_export(char *arg)
 	return (0);
 }
 
-static size_t	split_key_value(t_env *env, char *arg)
-{
-	char	**split;
-	int		ret;
-
-	split = ft_strsplit(arg, '=');
-	if (split == NULL || split[0] == NULL)
-		return (handle_error(malloc_error));
-	if (env_is_valid_key(split[0]) == false)
-		ret = handle_prefix_error_str(error_inv_format, "export", split[0]);
-	else if (split[1] != NULL)
-		ret = ft_setenv(env, split[0], split[1], ENV_VAR);
-	else
-		ret = ft_setenv(env, split[0], "", ENV_VAR);
-	if (ret != 0)
-		ret = 1;
-	free_dchar_arr(split);
-	return (ret);
-}
-
-static size_t	export_var(t_env *env, char *arg)
+static size_t	export_var(t_env *env, char *arg, char *argz)
 {
 	char	*var;
-	int		equals;
 
-	equals = ft_countchar(arg, '=');
-	if (equals == 1)
-		if (split_key_value(env, arg) != 0)
+	if (ft_strchr(arg, '=') != NULL)
+	{
+		if (setenv_key_value(env, arg, argz, ENV_VAR) != 0)
 			return (1);
-	if (equals == 0)
+	}
+	else
 	{
 		var = ft_getenv(env, arg, SHELL_VAR);
 		if (var != NULL)
@@ -93,11 +53,6 @@ static size_t	export_var(t_env *env, char *arg)
 			if (ft_setenv(env, arg, "", ENV_VAR) != 0)
 				return (1);
 		free(var);
-	}
-	else if (equals > 1)
-	{
-		handle_prefix_error_str(error_inv_format, "export", arg);
-		return (1);
 	}
 	return (0);
 }
@@ -120,7 +75,7 @@ int				builtin_export(t_shell *shell, char **argv)
 		if (argv[i][0] != '-')
 		{
 			print = 0;
-			if (export_var(shell->env, argv[i]) != 0)
+			if (export_var(shell->env, argv[i], argv[0]) != 0)
 				return (1);
 		}
 		i++;
