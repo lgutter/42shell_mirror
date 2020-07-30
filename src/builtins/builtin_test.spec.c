@@ -269,7 +269,7 @@ Test(built_test_unit, valid_regular_file_exists_e_negate)
 
 Test(built_test_unit, valid_block_file_exists)
 {
-	if (getenv("COVERAGE_ENABLED") != NULL)
+	if (getenv("CI_ENVIRONMENT") != NULL)
 		cr_skip("no block files in CI environment, so test diabled!");
 	char	*input = "[ -b /dev/loop0 ]";
 	int		expected_ret = 0;
