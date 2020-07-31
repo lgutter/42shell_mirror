@@ -34,7 +34,8 @@ void		restore_assignments(t_shell *shell, t_simple_cmd *simple_cmd)
 static int	process_assignment(t_shell *shell, t_assignment *assignment,
 																	int opts)
 {
-	char *temp;
+	char	*temp;
+	int		ret;
 
 	if (assignment->value != NULL)
 	{
@@ -43,13 +44,16 @@ static int	process_assignment(t_shell *shell, t_assignment *assignment,
 	}
 	temp = ft_getenv(shell->env, assignment->key, opts);
 	assignment->original = temp;
-	ft_setenv(shell->env, assignment->key, assignment->value, opts);
-	return (0);
+	ret = ft_setenv(shell->env, assignment->key, assignment->value, opts);
+	if (ret == error_ronly)
+		handle_error_str(ret, assignment->key);
+	return (ret);
 }
 
 int			process_assignments(t_shell *shell, t_simple_cmd *simple_cmd)
 {
 	int				opts;
+	int				ret;
 	t_assignment	*assignment;
 
 	if (simple_cmd == NULL ||
@@ -61,8 +65,9 @@ int			process_assignments(t_shell *shell, t_simple_cmd *simple_cmd)
 	assignment = simple_cmd->assignments;
 	while (assignment != NULL)
 	{
-		if (process_assignment(shell, assignment, opts) != 0)
-			return (-1);
+		ret = process_assignment(shell, assignment, opts);
+		if (ret != 0)
+			return (ret);
 		assignment = assignment->next;
 	}
 	return (0);
