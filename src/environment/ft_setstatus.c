@@ -23,7 +23,10 @@ int		ft_setstatus(t_env *env, int error_code)
 		return (malloc_error);
 	ret = ft_setenv(env, "?", new, (SHELL_VAR | FORCE_VAR | RO_VAR));
 	free(new);
-	return (ret);
+	if (ret != 0)
+		return (ret);
+	else
+		return (error_code);
 }
 
 int		ft_getstatus(t_env *env)
