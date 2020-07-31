@@ -42,5 +42,6 @@ typedef enum	e_unary_op {
 }				t_unary_op;
 
 int		unary_expression(char **expr, char *argz);
+int		binary_expression(char **expr, char *argz);
 
 #endif

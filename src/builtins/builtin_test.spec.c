@@ -95,10 +95,10 @@ Test(built_test_unit, error_invalid_unary_op_not_op, .init = cr_redirect_stderr)
 	cr_expect_stderr_eq_str(expected_error);
 }
 
-Test(built_test_unit, valid_single_arg_true)
+Test(built_test_unit, valid_unary_single_arg_true)
 {
 	char	*input = "test foo";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 
 	char **argv = ft_strsplit(input, ' ');
@@ -109,10 +109,10 @@ Test(built_test_unit, valid_single_arg_true)
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 }
 
-Test(built_test_unit, valid_single_arg_true_negate)
+Test(built_test_unit, valid_unary_single_arg_true_negate)
 {
 	char	*input = "test ! foo";
-	int		expected_ret = 1;
+	int		expected_ret = UNIX_FALSE;
 
 
 	char **argv = ft_strsplit(input, ' ');
@@ -123,10 +123,10 @@ Test(built_test_unit, valid_single_arg_true_negate)
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 }
 
-Test(built_test_unit, valid_single_arg_false)
+Test(built_test_unit, valid_unary_single_arg_false)
 {
 	char	*input = "test";
-	int		expected_ret = 1;
+	int		expected_ret = UNIX_FALSE;
 
 
 	char **argv = ft_strsplit(input, ' ');
@@ -137,10 +137,10 @@ Test(built_test_unit, valid_single_arg_false)
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 }
 
-Test(built_test_unit, valid_single_arg_false_negate)
+Test(built_test_unit, valid_unary_single_arg_false_negate)
 {
 	char	*input = "test !";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 
 	char **argv = ft_strsplit(input, ' ');
@@ -154,7 +154,7 @@ Test(built_test_unit, valid_single_arg_false_negate)
 Test(built_test_unit, valid_unary_non_zero_str_true)
 {
 	char	*input = "[ -n foo ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 
 	char **argv = ft_strsplit(input, ' ');
@@ -168,7 +168,7 @@ Test(built_test_unit, valid_unary_non_zero_str_true)
 Test(built_test_unit, valid_unary_non_zero_str_true_negate)
 {
 	char	*input = "[ ! -n foo ]";
-	int		expected_ret = 1;
+	int		expected_ret = UNIX_FALSE;
 
 
 	char **argv = ft_strsplit(input, ' ');
@@ -182,7 +182,7 @@ Test(built_test_unit, valid_unary_non_zero_str_true_negate)
 Test(built_test_unit, valid_unary_non_zero_str_false)
 {
 	char	*input = "[ -z foo ]";
-	int		expected_ret = 1;
+	int		expected_ret = UNIX_FALSE;
 
 
 	char **argv = ft_strsplit(input, ' ');
@@ -196,7 +196,7 @@ Test(built_test_unit, valid_unary_non_zero_str_false)
 Test(built_test_unit, valid_unary_zero_str_false_negate)
 {
 	char	*input = "[ ! -z foo ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 
 	char **argv = ft_strsplit(input, ' ');
@@ -207,11 +207,11 @@ Test(built_test_unit, valid_unary_zero_str_false_negate)
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 }
 
-Test(built_test_unit, valid_regular_file_exists_a)
+Test(built_test_unit, valid_unary_regular_file_exists_a)
 {
 	char	*filename = "/tmp/valid_regular_file_exists_a";
 	char	*input = "[ -a /tmp/valid_regular_file_exists_a ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 	remove(filename);
 	int ret = open(filename, (O_CREAT | O_RDWR), 0664);
@@ -227,11 +227,11 @@ Test(built_test_unit, valid_regular_file_exists_a)
 	remove(filename);
 }
 
-Test(built_test_unit, valid_regular_file)
+Test(built_test_unit, valid_unary_regular_file)
 {
 	char	*filename = "/tmp/valid_regular_file";
 	char	*input = "[ -f /tmp/valid_regular_file ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 	remove(filename);
 	int ret = open(filename, (O_CREAT | O_RDWR), 0664);
@@ -247,11 +247,11 @@ Test(built_test_unit, valid_regular_file)
 	remove(filename);
 }
 
-Test(built_test_unit, valid_regular_file_exists_e_negate)
+Test(built_test_unit, valid_unary_regular_file_exists_e_negate)
 {
 	char	*filename = "/tmp/valid_regular_file_exists_e";
 	char	*input = "[ ! -e /tmp/valid_regular_file_exists_e ]";
-	int		expected_ret = 1;
+	int		expected_ret = UNIX_FALSE;
 
 	remove(filename);
 	int ret = open(filename, (O_CREAT | O_RDWR), 0664);
@@ -267,12 +267,12 @@ Test(built_test_unit, valid_regular_file_exists_e_negate)
 	remove(filename);
 }
 
-Test(built_test_unit, valid_block_file_exists)
+Test(built_test_unit, valid_unary_block_file_exists)
 {
 	if (getenv("CI_ENVIRONMENT") != NULL)
 		cr_skip("no block files in CI environment, so test diabled!");
 	char	*input = "[ -b /dev/loop0 ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 	char **argv = ft_strsplit(input, ' ');
 	t_shell *shell = init_shell(false);
@@ -282,10 +282,10 @@ Test(built_test_unit, valid_block_file_exists)
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 }
 
-Test(built_test_unit, valid_char_file_exists)
+Test(built_test_unit, valid_unary_char_file_exists)
 {
 	char	*input = "[ -c /dev/null ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 	char **argv = ft_strsplit(input, ' ');
 	t_shell *shell = init_shell(false);
@@ -295,10 +295,10 @@ Test(built_test_unit, valid_char_file_exists)
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 }
 
-Test(built_test_unit, valid_dir_exists_negate)
+Test(built_test_unit, valid_unary_dir_exists_negate)
 {
 	char	*input = "test ! -d /dev";
-	int		expected_ret = 1;
+	int		expected_ret = UNIX_FALSE;
 
 	char **argv = ft_strsplit(input, ' ');
 	t_shell *shell = init_shell(false);
@@ -308,11 +308,11 @@ Test(built_test_unit, valid_dir_exists_negate)
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 }
 
-Test(built_test_unit, valid_group_id_set)
+Test(built_test_unit, valid_unary_group_id_set)
 {
 	char	*filename = "/tmp/valid_group_id_set";
 	char	*input = "[ -g /tmp/valid_group_id_set ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 	remove(filename);
 	int ret = open(filename, (O_CREAT | O_RDWR), 02664);
@@ -329,11 +329,11 @@ Test(built_test_unit, valid_group_id_set)
 	remove(filename);
 }
 
-Test(built_test_unit, valid_user_id_set_negate)
+Test(built_test_unit, valid_unary_user_id_set_negate)
 {
 	char	*filename = "/tmp/valid_user_id_set";
 	char	*input = "test ! -u /tmp/valid_user_id_set";
-	int		expected_ret = 1;
+	int		expected_ret = UNIX_FALSE;
 
 	remove(filename);
 	int ret = open(filename, (O_CREAT | O_RDWR), 04664);
@@ -349,11 +349,11 @@ Test(built_test_unit, valid_user_id_set_negate)
 	remove(filename);
 }
 
-Test(built_test_unit, valid_read_permission_negate)
+Test(built_test_unit, valid_unary_read_permission_negate)
 {
 	char	*filename = "/tmp/valid_read_permissions";
 	char	*input = "test ! -r /tmp/valid_read_permissions";
-	int		expected_ret = 1;
+	int		expected_ret = UNIX_FALSE;
 
 	remove(filename);
 	int ret = open(filename, (O_CREAT | O_RDWR), 0444);
@@ -369,11 +369,11 @@ Test(built_test_unit, valid_read_permission_negate)
 	remove(filename);
 }
 
-Test(built_test_unit, valid_write_permission)
+Test(built_test_unit, valid_unary_write_permission)
 {
 	char	*filename = "/tmp/valid_write_permissions";
 	char	*input = "[ -w /tmp/valid_write_permissions ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 	remove(filename);
 	int ret = open(filename, (O_CREAT | O_RDWR), 0222);
@@ -389,11 +389,11 @@ Test(built_test_unit, valid_write_permission)
 	remove(filename);
 }
 
-Test(built_test_unit, valid_exec_permission)
+Test(built_test_unit, valid_unary_exec_permission)
 {
 	char	*filename = "/tmp/valid_execute_permissions";
 	char	*input = "[ -x /tmp/valid_execute_permissions ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 	remove(filename);
 	int ret = open(filename, (O_CREAT | O_RDWR), 0111);
@@ -409,11 +409,11 @@ Test(built_test_unit, valid_exec_permission)
 	remove(filename);
 }
 
-Test(built_test_unit, valid_fifo_file)
+Test(built_test_unit, valid_unary_fifo_file)
 {
 	char	*filename = "/tmp/valid_fifo_file";
 	char	*input = "[ -p /tmp/valid_fifo_file ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 	remove(filename);
 	int ret = mkfifo(filename, 0111);
@@ -429,11 +429,11 @@ Test(built_test_unit, valid_fifo_file)
 	remove(filename);
 }
 
-Test(built_test_unit, valid_non_zero_file_size_negate)
+Test(built_test_unit, valid_unary_non_zero_file_size_negate)
 {
 	char	*filename = "/tmp/valid_non_zero_file_size";
 	char	*input = "[ ! -s /tmp/valid_non_zero_file_size ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 	remove(filename);
 	int ret = open(filename, (O_CREAT | O_RDWR), 0666);
@@ -449,11 +449,11 @@ Test(built_test_unit, valid_non_zero_file_size_negate)
 	remove(filename);
 }
 
-Test(built_test_unit, valid_socket_file)
+Test(built_test_unit, valid_unary_socket_file)
 {
 	char	*filename = "/tmp/valid_socket_file";
 	char	*input = "[ -S /tmp/valid_socket_file ]";
-	int		expected_ret = 0;
+	int		expected_ret = UNIX_TRUE;
 
 	remove(filename);
 	struct sockaddr_un namesock;
@@ -474,13 +474,13 @@ Test(built_test_unit, valid_socket_file)
 
 
 
-Test(built_test_unit, valid_symlink_combination)
+Test(built_test_unit, valid_unary_symlink_combination)
 {
 	char	*filename = "/tmp/valid_symlink";
 	char	*linkname = "/tmp/link_to_valid_symlink";
 	char	*input1 = "test ! -L /tmp/link_to_valid_symlink";
 	char	*input2 = "test -h /tmp/link_to_valid_symlink";
-	int		expected_ret = 1;
+	int		expected_ret = UNIX_FALSE;
 
 	remove(filename);
 	remove(linkname);
@@ -500,9 +500,236 @@ Test(built_test_unit, valid_symlink_combination)
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 	argv = ft_strsplit(input2, ' ');
 	cr_assert_not_null(argv, "SECOND SETUP FAILED");
-	expected_ret = 0;
+	expected_ret = UNIX_TRUE;
 	ret = builtin_test(shell, argv);
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 	remove(filename);
 	remove(linkname);
 }
+
+Test(built_test_unit, error_invalid_binary_op_other_op, .init = cr_redirect_stderr)
+{
+	char	*input = "[ bar -e foo ]";
+	int		expected_ret = 2;
+	char	expected_error[1024];
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+	snprintf(expected_error, 1024, "Cetushell: %s: %s: binary operator expected\n", argv[0], argv[2]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(expected_error);
+}
+
+Test(built_test_unit, error_invalid_binary_op_not_op, .init = cr_redirect_stderr)
+{
+	char	*input = "[ foo foo foo ]";
+	int		expected_ret = 2;
+	char	expected_error[1024];
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+	snprintf(expected_error, 1024, "Cetushell: %s: %s: binary operator expected\n", argv[0], argv[2]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(expected_error);
+}
+
+Test(built_test_unit, error_invalid_binary_inv_int_left, .init = cr_redirect_stderr)
+{
+	char	*input = "[ foo -eq 42 ]";
+	int		expected_ret = 2;
+	char	expected_error[1024];
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+	snprintf(expected_error, 1024, "Cetushell: %s: %s: integer expression expected\n", argv[0], argv[1]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(expected_error);
+}
+
+Test(built_test_unit, error_invalid_binary_inv_int_right, .init = cr_redirect_stderr)
+{
+	char	*input = "test -42 -gt bar";
+	int		expected_ret = 2;
+	char	expected_error[1024];
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+	snprintf(expected_error, 1024, "Cetushell: %s: %s: integer expression expected\n", argv[0], argv[3]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(expected_error);
+}
+
+Test(built_test_unit, valid_binary_string_equals_true)
+{
+	char	*input = "test foo = foo";
+	int		expected_ret = UNIX_TRUE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_string_double_equals_false)
+{
+	char	*input = "test bar == foo";
+	int		expected_ret = UNIX_FALSE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_string_not_equals_true_negate)
+{
+	char	*input = "[ ! bar != foo ]";
+	int		expected_ret = UNIX_FALSE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_integer_equals_true_negate)
+{
+	char	*input = "test ! -42 -eq -42";
+	int		expected_ret = UNIX_FALSE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_integer_equals_false_negate)
+{
+	char	*input = "test ! -42 -eq 42";
+	int		expected_ret = UNIX_TRUE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_integer_not_equals_false_negate)
+{
+	char	*input = "test ! 42 -ne 42";
+	int		expected_ret = UNIX_TRUE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_integer_greater_equals_false)
+{
+	char	*input = "test 41 -ge 42";
+	int		expected_ret = UNIX_FALSE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_integer_greater_equals_true_negate)
+{
+	char	*input = "test ! 42 -ge 42";
+	int		expected_ret = UNIX_FALSE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_integer_greater_than_true)
+{
+	char	*input = "test 42 -gt 21";
+	int		expected_ret = UNIX_TRUE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_integer_less_than_true_negate)
+{
+	char	*input = "test ! -42 -lt 21";
+	int		expected_ret = UNIX_FALSE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_integer_less_equal_true)
+{
+	char	*input = "test -42 -le 21";
+	int		expected_ret = UNIX_TRUE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+

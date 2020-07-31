@@ -13,14 +13,6 @@
 #include "builtins.h"
 #include "test_expressions.h"
 
-static int	binary_expression(char **expr, char *argz)
-{
-	(void)expr;
-	(void)argz;
-	ft_dprintf(STDERR_FILENO, "BINARY EXPRESSIONS NOT AVAILABLE YET!\n");
-	return (2);
-}
-
 static int	handle_test_expression(char **expr, size_t argc, char *argz)
 {
 	int ret;

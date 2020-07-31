@@ -110,6 +110,7 @@ src_files = files([
   'src/builtins/builtin_hash.c',
   'src/builtins/builtin_test.c',
   'src/builtins/unary_expression.c',
+  'src/builtins/binary_expression.c',
   'src/hashtable/hashtable_list.c',
   'src/hashtable/hash_utils.c',
   'src/hashtable/hashtable.c',
