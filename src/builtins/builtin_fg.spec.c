@@ -25,6 +25,7 @@ Test(builtin_fg_unit, error_null_argv_zero, .init =cr_redirect_stdout)
 	char	**argv = ft_strsplit("", ' ');
 	t_job_cont	*job_control = (t_job_cont *)ft_memalloc(sizeof(t_job_cont));
 	t_shell		*shell = init_shell(false);
+	shell->interactive = true;
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
 
@@ -37,6 +38,7 @@ Test(builtin_fg_unit, error_null_argv, .init =cr_redirect_stdout)
 	char	**argv = NULL;
 	t_job_cont	*job_control = (t_job_cont *)ft_memalloc(sizeof(t_job_cont));
 	t_shell		*shell = init_shell(false);
+	shell->interactive = true;
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
 
@@ -49,6 +51,7 @@ Test(builtin_fg_unit, error_null_job_control, .init =cr_redirect_stdout)
 	char	**argv = ft_strsplit("jobs", ' ');
 	t_job_cont	*job_control = NULL;
 	t_shell		*shell = init_shell(false);
+	shell->interactive = true;
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
 
@@ -70,6 +73,7 @@ Test(builtin_fg_unit, error_job_id_no_job, .init =cr_redirect_stderr)
 	char	**argv = ft_strsplit("fg %1", ' ');
 	t_job_cont	*job_control = (t_job_cont *)ft_memalloc(sizeof(t_job_cont));
 	t_shell		*shell = init_shell(false);
+	shell->interactive = true;
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
 
@@ -84,6 +88,7 @@ Test(builtin_fg_unit, error_ambig_job, .init =cr_redirect_stderr)
 {
 	char	**argv = ft_strsplit("fg %sle", ' ');
 	t_shell		*shell = init_shell(false);
+	shell->interactive = true;
 	cr_assert_not_null(shell);
 	t_job		*job2 = init_job(shell, "sleep 42", false);
 	cr_assert_not_null(job2);

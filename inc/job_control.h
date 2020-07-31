@@ -67,6 +67,7 @@ typedef	struct			s_job_cont
 	size_t				current;
 	size_t				previous;
 	struct s_job		*job_list;
+	bool				job_debug;
 }						t_job_cont;
 
 typedef	struct			s_job

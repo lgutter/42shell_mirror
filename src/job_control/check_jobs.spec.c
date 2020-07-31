@@ -56,6 +56,7 @@ Test(check_jobs_unit, basic_one_child_change)
 	t_shell		*shell = init_shell(false);
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
+	shell->job_control->job_debug = true;
 	char		*input = strdup("sleep 0.4 &");
 	char		*filename = "/tmp/check_jobs_unit_basic_one_child_change";
 	int			fd = redirect_std_out(filename);
@@ -109,6 +110,7 @@ Test(check_jobs_unit, basic_two_child_changes)
 	t_shell		*shell = init_shell(false);
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
+	shell->job_control->job_debug = true;
 	char		*input2 = strdup("sleep 1 &");
 	char		*input = strdup("sleep 0.4 &");
 	char		*filename = "/tmp/check_jobs_unit_basic_two_child_changes";
@@ -204,6 +206,7 @@ Test(check_jobs_unit, basic_two_child_changes_reverse)
 	t_shell		*shell = init_shell(false);
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
+	shell->job_control->job_debug = true;
 	char		*input2 = strdup("sleep 0.4 &");
 	char		*input = strdup("sleep 1 &");
 	char		*filename = "/tmp/check_jobs_unit_basic_two_child_changes_reverse";
@@ -273,7 +276,7 @@ Test(check_jobs_unit, basic_two_child_changes_reverse)
 	close(fd);
 	close(read_fd);
 
-	
+
 	usleep(600000);
 	fd = redirect_std_out(filename);
 	check_jobs(job_control, job_update_all);

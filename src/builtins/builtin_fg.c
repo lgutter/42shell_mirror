@@ -41,19 +41,10 @@ static t_job	*get_matchingjob(t_job_cont *job_control, char *job_spec)
 	return (match);
 }
 
-int				builtin_fg(t_shell *shell, char **argv)
+static void		continue_job(t_shell *shell, t_job *job)
 {
-	t_job		*job;
 	t_status	status;
 
-	if (shell == NULL || argv == NULL || argv[0] == NULL)
-		return (1);
-	job = get_matchingjob(shell->job_control, argv[1] == NULL ? "%+" : argv[1]);
-	if (job == NULL)
-		return (1);
-	job->foreground = true;
-	print_job_status(job, shell->job_control->current,
-								shell->job_control->previous, job_print_short);
 	job->status = running;
 	status = job->status;
 	tcsetpgrp(STDIN_FILENO, job->pgrp);
@@ -67,5 +58,22 @@ int				builtin_fg(t_shell *shell, char **argv)
 	check_jobs(shell->job_control, job_update_all);
 	tcsetpgrp(STDIN_FILENO, shell->pgid);
 	configure_terminal(shell, 3);
+}
+
+int				builtin_fg(t_shell *shell, char **argv)
+{
+	t_job		*job;
+
+	if (shell == NULL || argv == NULL || argv[0] == NULL)
+		return (1);
+	if (shell->interactive == false)
+		return (handle_error(no_job_control) != 0);
+	job = get_matchingjob(shell->job_control, argv[1] == NULL ? "%+" : argv[1]);
+	if (job == NULL)
+		return (1);
+	job->foreground = true;
+	print_job_status(job, shell->job_control->current,
+								shell->job_control->previous, job_print_short);
+	continue_job(shell, job);
 	return (0);
 }

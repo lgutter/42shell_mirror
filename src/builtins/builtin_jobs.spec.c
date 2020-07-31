@@ -40,6 +40,7 @@ Test(builtin_jobs_integration, basic_single_job_no_options, .init = cr_redirect_
 	t_shell		*shell = init_shell(false);
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
+	shell->job_control->job_debug = true;
 	char		*input = strdup("sleep 0.4 | sleep 0.4&");
 	char		*filename = "/tmp/builtin_jobs_integration_basic_single_job_no_options";
 	int			fd = redirect_std_out(filename);
@@ -105,6 +106,7 @@ Test(builtin_jobs_integration, basic_single_job_status_differ_no_options, .init 
 	t_shell		*shell = init_shell(false);
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
+	shell->job_control->job_debug = true;
 	char		*input = strdup("/bin/echo foo  | sleep 0.6&");
 	char		*filename = "/tmp/builtin_jobs_integration_basic_single_job_status_differ_no_options";
 	int			fd = redirect_std_out(filename);
@@ -169,6 +171,7 @@ Test(builtin_jobs_integration, basic_single_job_long_option, .init = cr_redirect
 	t_shell		*shell = init_shell(false);
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
+	shell->job_control->job_debug = true;
 	char		*input = strdup("sleep 0.4 | sleep 0.5&");
 	char		*filename = "/tmp/builtin_jobs_integration_basic_single_job_long_option";
 	int			fd = redirect_std_out(filename);
@@ -233,6 +236,7 @@ Test(builtin_jobs_integration, basic_single_job_pid_option, .init = cr_redirect_
 	t_shell		*shell = init_shell(false);
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
+	shell->job_control->job_debug = true;
 	char		*input = strdup("sleep 0.4 | sleep 0.5&");
 	char		*filename = "/tmp/builtin_jobs_integration_basic_single_job_pid_option";
 	int			fd = redirect_std_out(filename);
@@ -317,6 +321,7 @@ Test(builtin_jobs_integration, basic_two_jobs_pid_option, .init = cr_redirect_st
 	t_shell		*shell = init_shell(false);
 	cr_assert_not_null(shell);
 	shell->job_control = job_control;
+	shell->job_control->job_debug = true;
 	char		*input = strdup("/bin/echo| sleep 1.5&");
 	char		*input1 = strdup("sleep 0.4 | sleep 0.5&");
 	char		*filename = "/tmp/builtin_jobs_integration_basic_two_jobs_pid_option";

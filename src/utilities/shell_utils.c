@@ -34,10 +34,10 @@ static t_shell	*alloc_shell(bool interactive)
 		shell->hist = (t_history *)ft_memalloc(sizeof(t_history) * 1);
 		if (shell->hist == NULL)
 			handle_error_str(malloc_error, "when creating history");
-		shell->job_control = (t_job_cont *)ft_memalloc(sizeof(t_job_cont) * 1);
-		if (shell->job_control == NULL)
-			handle_error_str(malloc_error, "when creating job control");
 	}
+	shell->job_control = (t_job_cont *)ft_memalloc(sizeof(t_job_cont) * 1);
+	if (shell->job_control == NULL)
+		handle_error_str(malloc_error, "when creating job control");
 	shell->buffer = (t_buff *)ft_memalloc(sizeof(t_buff) * 1);
 	if (shell->buffer == NULL)
 	{
