@@ -38,7 +38,7 @@ int			setenv_key_value(t_env *env, char *arg, char *argz, int opts)
 	char	*value;
 	int		ret;
 
-	if (arg == NULL)
+	if (arg == NULL || ft_strchr(arg, '=') == NULL)
 		return (-1);
 	key = ft_strndup(arg, (ft_strchr(arg, '=') - arg));
 	value = ft_strdup(ft_strchr(arg, '=') + 1);
@@ -47,13 +47,11 @@ int			setenv_key_value(t_env *env, char *arg, char *argz, int opts)
 	else
 	{
 		if (env_is_valid_key(key) == false)
-			ret = handle_prefix_error_str(error_inv_format, argz, key);
+			ret = error_inv_format;
 		else
-		{
 			ret = ft_setenv(env, key, value, opts);
-			if (ret != 0)
-				handle_prefix_error_str(ret, argz, key);
-		}
+		if (ret != 0)
+			handle_prefix_error_str(ret, argz, key);
 	}
 	free(key);
 	free(value);
