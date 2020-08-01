@@ -32,24 +32,34 @@ static bool	env_is_valid_key(char *key)
 	return (true);
 }
 
+static int	handle_setting(t_env *env, char *key, char *value, int opts)
+{
+	if (env_is_valid_key(key) == false)
+		return (error_inv_format);
+	else
+		return (ft_setenv(env, key, value, opts));
+}
+
 int			setenv_key_value(t_env *env, char *arg, char *argz, int opts)
 {
 	char	*key;
 	char	*value;
 	int		ret;
 
-	if (arg == NULL || ft_strchr(arg, '=') == NULL)
+	if (arg == NULL)
 		return (-1);
+	if (ft_strchr(arg, '=') == NULL)
+	{
+		handle_prefix_error_str(error_inv_format, argz, arg);
+		return (error_inv_format);
+	}
 	key = ft_strndup(arg, (ft_strchr(arg, '=') - arg));
 	value = ft_strdup(ft_strchr(arg, '=') + 1);
 	if (key == NULL || value == NULL)
 		ret = handle_error(malloc_error);
 	else
 	{
-		if (env_is_valid_key(key) == false)
-			ret = error_inv_format;
-		else
-			ret = ft_setenv(env, key, value, opts);
+		ret = handle_setting(env, key, value, opts);
 		if (ret != 0)
 			handle_prefix_error_str(ret, argz, key);
 	}
