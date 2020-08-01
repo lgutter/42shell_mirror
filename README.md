@@ -45,9 +45,10 @@ To start the shell, run `./cetushell`.
 This shell currently has the following features:
 - Command execution based on `PATH`
 - hashing of executable names in hashtable, with corresponding `hash` builtin
+- non-interactive mode through redirection of input OR a file as argument (BONUS)
 - Internal shell + environment variables, including assignment through assignment words, expansion (using `$KEY` or `${KEY}`) and support for read-only
 - Changing the shell prompt by modifying the shell variable `PS1`
-- Pipes
+- Pipes (including completion of pipes(BONUS))
 - Redirections (>, <, >>, <<, >&, <&)
 - Command history using `arrow up` and `arrow down` (using `$HISTFILE` & `$HISTSIZE`, supports newlines(BONUS))
 - Contextual `tab` completion with support for files, directories, executables, and shell/environment variables.
