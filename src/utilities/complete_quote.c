@@ -45,6 +45,8 @@ static int	check_quote(char *word)
 			return (2);
 		if (rules.next_state == unt_backslash)
 			return (3);
+		if (rules.next_state == unt_pipe)
+			return (4);
 		else if (rules.next_state == eof)
 			return (0);
 		state = rules.next_state;
@@ -56,12 +58,13 @@ static int	get_quote_input(t_shell *shell, char **temp, int quotes)
 {
 	char				*buff;
 	static const char	*prompts[] = {
-							"", PROMPT_QUOTE, PROMPT_DQUOTE, PROMPT_BACKSLASH};
+			"", PROMPT_QUOTE, PROMPT_DQUOTE, PROMPT_BACKSLASH, PROMPT_PIPE};
 
 	buff = NULL;
 	while (quotes > 0)
 	{
-		ft_strexpand(temp, "\n");
+		if (quotes < 4)
+			ft_strexpand(temp, "\n");
 		buff = prompt_shell(shell, prompts[quotes]);
 		if (buff == NULL && shell->interactive != 1)
 			return (handle_error_str(parsing_error, "unexpected EOF"));
