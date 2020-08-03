@@ -70,6 +70,9 @@ static int		init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
 	buffer->buff = (char *)ft_memalloc(sizeof(char) * (INP_BUFF_SIZE + 1));
 	if (buffer->copy == NULL)
 		buffer->copy = (char *)ft_memalloc(sizeof(char) * (INP_BUFF_SIZE + 1));
+	ft_memset(cursor, 0, sizeof(t_cursor));
+	ft_memset(&cursor->max, 40, sizeof(t_point));
+	ft_memset(&cursor->start, 1, sizeof(t_point));
 	ft_memset(cursor->cur_buff, '\0', CUR_BUFF_SIZE);
 	if (buffer->buff == NULL || buffer->copy == NULL)
 		return (1);
