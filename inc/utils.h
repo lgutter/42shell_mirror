@@ -15,6 +15,12 @@
 
 # include "cetushell.h"
 # include "parser_structs.h"
+# include "stdbool.h"
+# ifdef __linux__
+#  include <linux/limits.h>
+# else
+#  include <limits.h>
+# endif
 
 /*
 ** ft_swap_rv requires as input a pointer to a t_buff struct and a string seq.
@@ -130,5 +136,19 @@ size_t		ft_countchar(char *string, char c);
 ** this function will also free the given double char array.
 */
 void		follow_links(char **curr, char **dest, size_t cur_size);
+
+/*
+** This function will take in a char array Path and will check if the path
+** is an executable file. It will return true when the file mentioned by
+** path is an executable.
+*/
+bool		is_executable(char *path);
+
+/*
+** This function will take in a char array file and path and will check if
+** the path/file is a directory. if file == NULL it will check if path is an
+** directory. It will return true when the specified path is a directory.
+*/
+bool		is_directory(char *file, char *path);
 
 #endif

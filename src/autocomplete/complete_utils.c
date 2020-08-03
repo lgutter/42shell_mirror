@@ -10,25 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/stat.h>
-#include <sys/types.h>
 #include "autocomplete.h"
 #include "environment.h"
-
-size_t		is_directory(char *file, char *path)
-{
-	struct stat		statbuff;
-	char			complete_path[PATH_MAX];
-
-	if (file == NULL || path == NULL)
-		return (1);
-	ft_snprintf(complete_path, PATH_MAX, "%s/%s", path, file);
-	if (stat(complete_path, &statbuff) == -1)
-		return (1);
-	if (S_ISDIR(statbuff.st_mode) || S_ISLNK(statbuff.st_mode))
-		return (0);
-	return (1);
-}
 
 char		*get_shell_cwd(t_env *env)
 {

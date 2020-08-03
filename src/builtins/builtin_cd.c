@@ -12,6 +12,7 @@
 
 #include "builtins.h"
 #include "executor.h"
+#include "autocomplete.h"
 #ifdef __linux__
 # include <linux/limits.h>
 #else
@@ -19,7 +20,7 @@
 #endif
 #include "utils.h"
 
-void	follow_links(char **curr, char **input, size_t cur_size)
+void		follow_links(char **curr, char **input, size_t cur_size)
 {
 	size_t	i;
 	char	*temp;
@@ -82,6 +83,10 @@ static int	resolve_cd_path(t_env *env, t_cd *cd)
 		ret = 1;
 	if (ret == 0)
 		ret = path_start(cd, old_pwd);
+	if (ret == 0 && is_directory(NULL, cd->final_path) != 0)
+		ret = handle_prefix_error_str(not_a_dir_error, "cd", cd->final_path);
+	if (ret == 0 && access(cd->final_path, R_OK) != 0)
+		ret = handle_error_str(access_denied, cd->final_path);
 	if (ret == 0 && chdir(cd->final_path) == -1)
 		ret = handle_prefix_error_str(no_such_file_or_dir, "cd",
 										cd->input_path);
