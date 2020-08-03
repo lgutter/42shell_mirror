@@ -20,13 +20,13 @@
 int			get_cd_options(char **argv, t_cd *cd_s)
 {
 	struct s_ft_getopt	opt;
-	size_t				len;
+	int					len;
 
 	if (argv == NULL || cd_s == NULL)
 		return (1);
-	len = ft_str_arr_len(argv);
+	len = (int)ft_str_arr_len(argv) - 1;
 	opt = (struct s_ft_getopt){NULL, 1, 1, 0, false};
-	while (ft_getopt(&opt, len, argv, "LP"))
+	while (ft_getopt(&opt, len + 1, argv, "LP"))
 	{
 		if (opt.opt == 'L')
 			cd_s->link = true;
@@ -39,7 +39,7 @@ int			get_cd_options(char **argv, t_cd *cd_s)
 		cd_s->to_home = true;
 	else
 		cd_s->input_path = ft_strdup(argv[opt.index]);
-	if (argv[opt.index + 1] != NULL && cd_s->to_home != true)
+	if (opt.index < len && argv[opt.index + 1] != NULL && cd_s->to_home != 1)
 		return (handle_prefix_error(too_many_arguments, "cd"));
 	if (cd_s->input_path != NULL && ft_strcmp(cd_s->input_path, "-") == 0)
 		cd_s->to_oldpwd = true;
