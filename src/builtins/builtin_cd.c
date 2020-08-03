@@ -83,8 +83,8 @@ static int	resolve_cd_path(t_env *env, t_cd *cd)
 		ret = 1;
 	if (ret == 0)
 		ret = path_start(cd, old_pwd);
-	if (ret == 0 && is_directory(NULL, cd->final_path) != 0)
-		ret = handle_prefix_error_str(not_a_dir_error, "cd", cd->final_path);
+	if (ret == 0 && is_directory(NULL, cd->final_path) == false)
+		ret = handle_prefix_error_str(not_a_dir_error, "cd", cd->input_path);
 	if (ret == 0 && access(cd->final_path, R_OK) != 0)
 		ret = handle_error_str(access_denied, cd->final_path);
 	if (ret == 0 && chdir(cd->final_path) == -1)

@@ -154,7 +154,6 @@ Test(builtin_cd_unit, invalid_cd_no_such_file, .init = redirect_std_err)
 	int			ret = 0;
 	char		buff[1024];
 
-
 	argv = (char **)ft_memalloc(sizeof(char *) * 3);
 	argv[0] = "cd";
 	argv[1] = "foobar";
@@ -162,7 +161,7 @@ Test(builtin_cd_unit, invalid_cd_no_such_file, .init = redirect_std_err)
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
-	sprintf(buff, "Cetushell: cd: foobar: %s\n", g_error_str[no_such_file_or_dir]);
+	sprintf(buff, "Cetushell: cd: foobar: %s\n", g_error_str[not_a_dir_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 

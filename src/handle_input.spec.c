@@ -242,7 +242,7 @@ Test(handle_input_integration, basic_assignment_word_two_vars_restore, .init = r
 	cr_expect_stdout_eq_str(expected_output);
 	char	errbuff[1024];
 	memset(errbuff, 0, 1024);
-	snprintf(errbuff, 1024, "Cetushell: cd: =BAR: %s\n", g_error_str[no_such_file_or_dir]);
+	snprintf(errbuff, 1024, "Cetushell: cd: =BAR: %s\n", g_error_str[not_a_dir_error]);
 	cr_expect_stderr_eq_str(errbuff);
 }
 

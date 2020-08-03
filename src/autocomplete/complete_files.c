@@ -67,7 +67,7 @@ static size_t	filter_files(t_complete *comp, char *file, char *path)
 {
 	if ((comp->options & FILES) == 0)
 	{
-		if (is_directory(file, path) != 0)
+		if (is_directory(file, path) == false)
 			return (1);
 	}
 	if ((ft_strlen(file) == 1 && file[0] == '.') || (ft_strlen(file) == 2
@@ -91,9 +91,9 @@ static size_t	add_file_match(t_complete *comp, char *path, char *complete)
 		if (strncmp(complete, files->d_name, ft_strlen(complete)) == 0)
 		{
 			if (filter_files(comp, files->d_name, path) == 0 &&
-					is_directory(files->d_name, path) != 0)
+					is_directory(files->d_name, path) == false)
 				add_complete_list(comp, files->d_name);
-			else if (is_directory(files->d_name, path) == 0)
+			else if (is_directory(files->d_name, path) == true)
 			{
 				temp = ft_strjoin(files->d_name, "/");
 				add_complete_list(comp, temp);
