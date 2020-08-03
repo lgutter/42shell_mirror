@@ -23,7 +23,7 @@ size_t		is_directory(char *file, char *path)
 	if (file == NULL || path == NULL)
 		return (1);
 	ft_snprintf(complete_path, PATH_MAX, "%s/%s", path, file);
-	if (lstat(complete_path, &statbuff) == -1)
+	if (stat(complete_path, &statbuff) == -1)
 		return (1);
 	if (S_ISDIR(statbuff.st_mode) || S_ISLNK(statbuff.st_mode))
 		return (0);
