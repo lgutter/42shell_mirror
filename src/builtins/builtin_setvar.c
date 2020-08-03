@@ -63,11 +63,11 @@ int				builtin_setvar(t_shell *shell, char **argv)
 	opts = get_set_opts(argv, &i);
 	if (opts < 0)
 		return (1);
-	while (i < (int)ft_str_arr_len(argv) && argv[i] != NULL)
+	while (argv[i] != NULL)
 	{
 		if (setenv_key_value(shell->env, argv[i], argv[0], opts) != 0)
 			ret = 1;
 		i++;
 	}
-	return (ret == 0 ? 0 : 1);
+	return (ret);
 }
