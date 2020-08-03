@@ -14,31 +14,43 @@
 #include "hashtable.h"
 #include "executor.h"
 
-size_t			hash_args(t_shell *shell, char **argv, size_t i)
+static size_t	hash_path(t_shell *shell, char **path, char **split, char *arg)
 {
-	char		**split;
+	if (split == NULL || split[0] == NULL)
+		return (handle_error(malloc_error));
+	if (is_builtin(split[0]) == true)
+		return (handle_prefix_error(isbuiltin, split[0]));
+	if (split[1] == NULL && ft_strchr(arg, '=') != NULL)
+		return (handle_prefix_error(cmd_not_found, arg));
+	if (ft_strchr(split[0], '/') != NULL)
+		return (handle_prefix_error(cmd_not_found, split[0]));
+	if (split[1] == NULL)
+	{
+		if (find_executable(shell->env, path, arg) != 0)
+			return (handle_error_str(cmd_not_found, split[0]));
+	}
+	else
+		*path = ft_strdup(split[1]);
+	if (path == NULL)
+		return (handle_error(malloc_error));
+	return (0);
+}
+
+static size_t	hash_args(t_shell *shell, char **argv, size_t i)
+{
 	char		*path;
+	char		**split;
 	size_t		ret;
 
 	path = NULL;
 	ret = 0;
 	split = ft_strsplit(argv[i], '=');
-	if (split[1] == NULL && ft_strchr(argv[i], '=') == NULL)
-		ret = find_executable(shell->env, &path, argv[i]);
-	else if (split[1] != NULL)
-		path = ft_strdup(split[1]);
-	else
-		return (handle_error_str(cmd_not_found, argv[i]));
-	if (ret != 0)
-		return (handle_error_str(cmd_not_found, split[0]));
+	ret = hash_path(shell, &path, split, argv[i]);
 	if (ret == 0 && path != NULL)
 		ret = add_to_hash(shell, path, split[0]);
 	free(path);
 	free_dchar_arr(split);
-	path = NULL;
-	if (ret != 0)
-		return (ret);
-	return (0);
+	return (ret);
 }
 
 int				builtin_hash(t_shell *shell, char **argv)
