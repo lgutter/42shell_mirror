@@ -48,10 +48,62 @@ static t_shell	*alloc_shell(bool interactive)
 	return (shell);
 }
 
+static char		*check_passwd_entry(char *entry, uid_t user, bool interactive)
+{
+	char	**fields;
+	char	*ret;
+
+	ret = NULL;
+	fields = ft_strsplit(entry, ':');
+	if (fields != NULL && ft_str_arr_len(fields) == 7 &&
+		user == (unsigned int)ft_atoi(fields[2]))
+	{
+		ret = ft_strdup(fields[5]);
+		if (interactive == true)
+		{
+			ft_dprintf(STDERR_FILENO, "Cetushell: HOME not found, so assumed ");
+			ft_dprintf(STDERR_FILENO, "\"%s\" from \"/etc/passwd\".\n", ret);
+		}
+	}
+	ft_free_str_array(fields);
+	return (ret);
+}
+
+/*
+**	check if we inherited a HOME, and if not, fetch the user's home from
+**	/etc/passwd. this could be done easier with getpwuid(3), but since that is
+**	a section 3 function, we are not allowed to use it. if the shell is
+**	interactive, we also print a warning that we assumed the user's home.
+*/
+static void 	init_home_var(t_shell *shell)
+{
+	char	*temp;
+	char	*line;
+	int		fd;
+	uid_t	user;
+
+	temp = ft_getenv(shell->env, "HOME", ENV_VAR);
+	if (temp == NULL)
+	{
+		fd = open("/etc/passwd", O_RDONLY);
+		if (fd >= 0)
+		{
+			user = getuid();
+			while (temp == NULL && get_next_line(fd, &line) > 0)
+			{
+				temp = check_passwd_entry(line, user, shell->interactive);
+				free(line);
+			}
+			close(fd);
+		}
+		ft_setenv(shell->env, "HOME", temp, ENV_VAR);
+	}
+	free(temp);
+}
+
 t_shell			*init_shell(bool interactive)
 {
 	t_shell		*shell;
-	char		*temp;
 
 	if (interactive == true)
 		setup_signals();
@@ -64,10 +116,8 @@ t_shell			*init_shell(bool interactive)
 		free_shell(shell, 0);
 		return (handle_error_p(malloc_error, NULL));
 	}
-	temp = ft_getenv(shell->env, "HOME", VAR_TYPE);
-	ft_setenv(shell->env, "HOME", temp, SHELL_VAR);
-	free(temp);
 	shell->interactive = interactive;
+	init_home_var(shell);
 	configure_terminal(shell, interactive == 1 ? 2 : 1);
 	if (shell->hist != NULL)
 		initialize_history(shell);
