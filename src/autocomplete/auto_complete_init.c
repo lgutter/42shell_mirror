@@ -96,7 +96,8 @@ size_t			initialize_complete(t_complete *com, t_buff *buffer)
 		ret = 2;
 	if (ret == 0 && get_to_complete(com, simple_command) != 0)
 		ret = 1;
-	com->options = get_autocomp_opt(com);
+	if (ret == 0)
+		com->options = get_autocomp_opt(com);
 	free(trim);
 	free(simple_command);
 	return (ret);
