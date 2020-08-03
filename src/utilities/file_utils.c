@@ -41,5 +41,5 @@ bool		is_directory(char *file, char *path)
 		ft_strcpy(complete_path, path);
 	if (stat(complete_path, &statbuff) == -1)
 		return (false);
-	return (S_ISDIR(statbuff.st_mode) || S_ISLNK(statbuff.st_mode));
+	return (S_ISDIR(statbuff.st_mode));
 }
