@@ -6,7 +6,7 @@
 /*   By: dkroeke <dkroeke@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/04/14 11:52:43 by dkroeke       #+#    #+#                 */
-/*   Updated: 2020/04/14 11:52:43 by lgutter       ########   odam.nl         */
+/*   Updated: 2020/08/04 17:05:26 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ static int		init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
 	buffer->buff = (char *)ft_memalloc(sizeof(char) * (INP_BUFF_SIZE + 1));
 	if (buffer->copy == NULL)
 		buffer->copy = (char *)ft_memalloc(sizeof(char) * (INP_BUFF_SIZE + 1));
+	cursor->max = (t_point){40, 40};
+	cursor->start = (t_point){1, 1};
 	ft_memset(cursor->cur_buff, '\0', CUR_BUFF_SIZE);
 	if (buffer->buff == NULL || buffer->copy == NULL)
 		return (1);

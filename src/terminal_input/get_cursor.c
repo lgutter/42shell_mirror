@@ -22,9 +22,9 @@ static void	parse_cursor_pos(t_cursor *cursor, char *pos, size_t prompt_len
 	temp = ft_atoi(&pos[2]);
 	if (temp != 0)
 		cursor->start.y = temp;
-	while (ft_isdigit(pos[ret]) == 0)
+	while (ret != 0 && ft_isdigit(pos[ret]) == 0)
 		ret = ret - 1;
-	while (ft_isdigit(pos[ret - 1]) == 1)
+	while (ret != 0 && ft_isdigit(pos[ret - 1]) == 1)
 		ret = ret - 1;
 	cursor->current.x = ft_atoi(&pos[ret]);
 	if (cursor->current.x > 1)
