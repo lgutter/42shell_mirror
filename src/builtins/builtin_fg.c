@@ -56,7 +56,7 @@ int				builtin_fg(t_shell *shell, char **argv)
 								shell->job_control->previous, job_print_short);
 	job->status = running;
 	status = job->status;
-	tcsetpgrp(STDIN_FILENO, job->pgrp);
+	tcsetpgrp(STDERR_FILENO, job->pgrp);
 	configure_terminal(NULL, 0);
 	kill(-(job->pgrp), SIGCONT);
 	while (status == job->status)
@@ -65,7 +65,7 @@ int				builtin_fg(t_shell *shell, char **argv)
 		status = get_job_status(job);
 	}
 	check_jobs(shell->job_control, job_update_all);
-	tcsetpgrp(STDIN_FILENO, shell->pgid);
+	tcsetpgrp(STDERR_FILENO, shell->pgid);
 	configure_terminal(shell, 3);
 	return (0);
 }

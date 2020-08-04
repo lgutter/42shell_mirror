@@ -32,7 +32,7 @@ void		get_winsize(t_cursor *cursor, size_t len)
 	if (cursor == NULL)
 		return ;
 	get_cursor_pos(cursor, len);
-	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &winsize) == 0)
+	if (ioctl(STDERR_FILENO, TIOCGWINSZ, &winsize) == 0)
 	{
 		cursor->max.x = (size_t)winsize.ws_col;
 		cursor->max.y = (size_t)winsize.ws_row;

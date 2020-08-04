@@ -19,14 +19,14 @@ static void		set_terminal_ownership(t_shell *shell)
 {
 	shell->pid = getpid();
 	shell->pgid = getpgid(shell->pid);
-	while (tcgetpgrp(STDIN_FILENO) != shell->pgid)
+	while (tcgetpgrp(STDERR_FILENO) != shell->pgid)
 	{
 		kill(-1 * shell->pgid, SIGTTIN);
 		shell->pgid = getpgid(shell->pid);
 	}
 	setpgid(shell->pid, shell->pid);
 	shell->pgid = shell->pid;
-	tcsetpgrp(STDIN_FILENO, shell->pgid);
+	tcsetpgrp(STDERR_FILENO, shell->pgid);
 }
 
 static void		set_terminal_attr(t_shell *shell, struct termios *orig)
@@ -45,7 +45,7 @@ static void		set_terminal_attr(t_shell *shell, struct termios *orig)
 	shell_temp.c_lflag &= ~(ECHO | ICANON);
 	shell_temp.c_cc[VMIN] = 1;
 	shell_temp.c_cc[VTIME] = 0;
-	tcsetattr(STDIN_FILENO, TCSADRAIN, &shell_temp);
+	tcsetattr(STDERR_FILENO, TCSADRAIN, &shell_temp);
 	shell->term = shell_temp;
 }
 
@@ -55,7 +55,7 @@ void			configure_terminal(t_shell *shell, int activator)
 
 	if (activator == 1 || activator == 2)
 	{
-		tcgetattr(STDIN_FILENO, &orig);
+		tcgetattr(STDERR_FILENO, &orig);
 	}
 	if (activator > 1)
 	{
@@ -64,6 +64,6 @@ void			configure_terminal(t_shell *shell, int activator)
 	}
 	if (activator == 0)
 	{
-		tcsetattr(STDIN_FILENO, TCSADRAIN, &orig);
+		tcsetattr(STDERR_FILENO, TCSADRAIN, &orig);
 	}
 }
