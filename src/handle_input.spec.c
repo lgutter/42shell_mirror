@@ -306,7 +306,7 @@ Test(handle_input_integration, basic_complete_pipe, .init = cr_redirect_stdout)
 	close(pipe_fd[0]);
 	char temp[1024];
 	memset(temp, 0, 1024);
-	snprintf(temp, 1024, "%s%s", input, extra_input);
+	snprintf(temp, 1024, "%s\n%s", input, extra_input);
 	cr_expect_str_eq(buffer, temp);
 	fflush(stdout);
 	cr_expect_stdout_eq_str(expected_output);
