@@ -41,6 +41,23 @@ Test(handle_input_integration, basic_run_simple_command, .init = cr_redirect_std
 	cr_expect_stdout_eq_str(expected_output);
 }
 
+Test(handle_input_integration, basic_run_simple_command_comment, .init = cr_redirect_stdout)
+{
+	char		*input = "echo foo #COMMENT";
+	char		*expected_output = "foo\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
 Test(handle_input_integration, basic_expand_param, .init = cr_redirect_stdout)
 {
 	char		*input = "echo ${FOO}";
@@ -287,9 +304,56 @@ Test(handle_input_integration, basic_complete_heredoc, .init = cr_redirect_stdou
 	cr_expect_stdout_eq_str(expected_output);
 }
 
+Test(handle_input_integration, basic_complete_heredoc_comment, .init = cr_redirect_stdout)
+{
+	char		*input = "cat <<EOF #COMMENT";
+	char		*extra_input = "foo\nbar\nEOF\n";
+	char		*expected_output = "foo\nbar\n";
+
+	int			pipe_fd[2];
+	cr_assert_eq(0, pipe(pipe_fd), "pipe failed in setup");
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	cr_assert_eq((ssize_t)strlen(extra_input), write(pipe_fd[1], extra_input, strlen(extra_input)));
+	cr_assert_eq(STDIN_FILENO, dup2(pipe_fd[0], STDIN_FILENO), "dup2 failed in setup");
+	close(pipe_fd[1]);
+	handle_input(shell, &buffer);
+	close(pipe_fd[0]);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
 Test(handle_input_integration, basic_complete_pipe, .init = cr_redirect_stdout)
 {
 	char		*input = "echo foo |";
+	char		*extra_input = "cat -e";
+	char		*expected_output = "foo$\n";
+
+	int			pipe_fd[2];
+	cr_assert_eq(0, pipe(pipe_fd), "pipe failed in setup");
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	cr_assert_eq((ssize_t)strlen(extra_input), write(pipe_fd[1], extra_input, strlen(extra_input)));
+	cr_assert_eq(STDIN_FILENO, dup2(pipe_fd[0], STDIN_FILENO), "dup2 failed in setup");
+	close(pipe_fd[1]);
+	handle_input(shell, &buffer);
+	close(pipe_fd[0]);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "%s\n%s", input, extra_input);
+	cr_expect_str_eq(buffer, temp);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_complete_pipe_comment, .init = cr_redirect_stdout)
+{
+	char		*input = "echo foo |#COMMENT";
 	char		*extra_input = "cat -e";
 	char		*expected_output = "foo$\n";
 

@@ -75,7 +75,9 @@ typedef enum		e_state
 	unt_dquote,
 	backslash,
 	unt_backslash,
-	dq_backslash
+	dq_backslash,
+	comment,
+	pipe_comment,
 }					t_state;
 
 /*
@@ -128,6 +130,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, undetermined, SKIP_CHAR},
 			[' ']		= {blank, undetermined, SKIP_CHAR},
 			['\t']		= {blank, undetermined, SKIP_CHAR},
+			['#']		= {comment, undetermined, SKIP_CHAR},
 			['\n']		= {state_newline, undetermined, ADD_CHAR_POST},
 			['0']		= {number, undetermined, ADD_CHAR_POST},
 			['1']		= {number, undetermined, ADD_CHAR_POST},
@@ -155,6 +158,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, WORD, SKIP_CHAR},
 			[' ']		= {blank, WORD, SKIP_CHAR},
 			['\t']		= {blank, WORD, SKIP_CHAR},
+			['#']		= {comment, WORD, SKIP_CHAR},
 			['\n']		= {state_newline, WORD, ADD_CHAR_POST},
 			['<']		= {less, WORD, ADD_CHAR_POST},
 			['>']		= {great, WORD, ADD_CHAR_POST},
@@ -173,6 +177,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, WORD, SKIP_CHAR},
 			[' ']		= {blank, WORD, SKIP_CHAR},
 			['\t']		= {blank, WORD, SKIP_CHAR},
+			['#']		= {comment, WORD, SKIP_CHAR},
 			['\n']		= {state_newline, WORD, ADD_CHAR_POST},
 			['0']		= {number, undetermined, ADD_CHAR_POST},
 			['1']		= {number, undetermined, ADD_CHAR_POST},
@@ -201,6 +206,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, LESS, SKIP_CHAR},
 			[' ']		= {blank, LESS, SKIP_CHAR},
 			['\t']		= {blank, LESS, SKIP_CHAR},
+			['#']		= {comment, LESS, SKIP_CHAR},
 			['\n']		= {state_newline, LESS, ADD_CHAR_POST},
 			['0']		= {number, LESS, ADD_CHAR_POST},
 			['1']		= {number, LESS, ADD_CHAR_POST},
@@ -229,6 +235,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, GREAT, SKIP_CHAR},
 			[' ']		= {blank, GREAT, SKIP_CHAR},
 			['\t']		= {blank, GREAT, SKIP_CHAR},
+			['#']		= {comment, GREAT, SKIP_CHAR},
 			['\n']		= {state_newline, GREAT, ADD_CHAR_POST},
 			['0']		= {number, GREAT, ADD_CHAR_POST},
 			['1']		= {number, GREAT, ADD_CHAR_POST},
@@ -257,6 +264,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {pre_unt_pipe, PIPE, SKIP_CHAR},
 			[' ']		= {pipe_blank, PIPE, SKIP_CHAR},
 			['\t']		= {pipe_blank, PIPE, SKIP_CHAR},
+			['#']		= {pipe_comment, PIPE, SKIP_CHAR},
 			['\n']		= {pipe_blank, PIPE, SKIP_CHAR},
 			['0']		= {number, PIPE, ADD_CHAR_POST},
 			['1']		= {number, PIPE, ADD_CHAR_POST},
@@ -285,6 +293,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {unt_pipe, undetermined, SKIP_CHAR},
 			[' ']		= {pipe_blank, undetermined, SKIP_CHAR},
 			['\t']		= {pipe_blank, undetermined, SKIP_CHAR},
+			['#']		= {pipe_comment, undetermined, SKIP_CHAR},
 			['\n']		= {pipe_blank, undetermined, SKIP_CHAR},
 			['0']		= {number, undetermined, ADD_CHAR_POST},
 			['1']		= {number, undetermined, ADD_CHAR_POST},
@@ -321,6 +330,7 @@ static const t_trans g_token_trans[] = {
 			[' ']		= {pipe_blank, undetermined, SKIP_CHAR},
 			['\t']		= {pipe_blank, undetermined, SKIP_CHAR},
 			['\n']		= {pipe_blank, undetermined, SKIP_CHAR},
+			['#']		= {pipe_comment, undetermined, SKIP_CHAR},
 			['0']		= {number, undetermined, ADD_CHAR_POST},
 			['1']		= {number, undetermined, ADD_CHAR_POST},
 			['2']		= {number, undetermined, ADD_CHAR_POST},
@@ -348,6 +358,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, AMP, SKIP_CHAR},
 			[' ']		= {blank, AMP, SKIP_CHAR},
 			['\t']		= {blank, AMP, SKIP_CHAR},
+			['#']		= {comment, AMP, SKIP_CHAR},
 			['\n']		= {state_newline, AMP, ADD_CHAR_POST},
 			['0']		= {number, AMP, ADD_CHAR_POST},
 			['1']		= {number, AMP, ADD_CHAR_POST},
@@ -376,6 +387,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, NEWLINE, SKIP_CHAR},
 			[' ']		= {blank, NEWLINE, SKIP_CHAR},
 			['\t']		= {blank, NEWLINE, SKIP_CHAR},
+			['#']		= {comment, NEWLINE, SKIP_CHAR},
 			['\n']		= {state_newline, NEWLINE, ADD_CHAR_POST},
 			['0']		= {number, NEWLINE, ADD_CHAR_POST},
 			['1']		= {number, NEWLINE, ADD_CHAR_POST},
@@ -404,6 +416,7 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {eof, SEMI, SKIP_CHAR},
 			[' ']		= {blank, SEMI, SKIP_CHAR},
 			['\t']		= {blank, SEMI, SKIP_CHAR},
+			['#']		= {comment, SEMI, SKIP_CHAR},
 			['\n']		= {state_newline, SEMI, ADD_CHAR_POST},
 			['0']		= {number, SEMI, ADD_CHAR_POST},
 			['1']		= {number, SEMI, ADD_CHAR_POST},
@@ -480,7 +493,23 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {unt_dquote, undetermined, ADD_CHAR_POST},
 		},
 		.catch_state	= {dquote, undetermined, ADD_CHAR_POST}
-	}
+	},
+	[comment] =
+	{
+		.rules = {
+			['\0']		= {eof, undetermined, SKIP_CHAR},
+			['\n']		= {state_newline, undetermined, SKIP_CHAR}
+		},
+		.catch_state	= {comment, undetermined, SKIP_CHAR}
+	},
+	[pipe_comment] =
+	{
+		.rules = {
+			['\0']		= {unt_pipe, undetermined, SKIP_CHAR},
+			['\n']		= {pipe_blank, undetermined, SKIP_CHAR}
+		},
+		.catch_state	= {pipe_comment, undetermined, SKIP_CHAR}
+	},
 };
 
 #endif
