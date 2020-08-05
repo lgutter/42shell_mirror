@@ -30,6 +30,7 @@
 typedef struct			s_buff
 {
 	char				*buff;
+	char				*read_buff;
 	char				*copy;
 	char				*prompt;
 	size_t				prompt_len;
@@ -38,6 +39,7 @@ typedef struct			s_buff
 	size_t				buff_size;
 	size_t				buff_len;
 	size_t				index;
+	size_t				read_index;
 	size_t				rv_start;
 	size_t				rv_end;
 }						t_buff;

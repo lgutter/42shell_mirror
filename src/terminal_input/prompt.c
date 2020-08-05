@@ -104,6 +104,7 @@ static char		*interactive_prompt_shell(t_shell *shell, const char *prompt)
 		}
 		shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
 	}
+	update_read_buff(shell);
 	shell->buffer->state = INPUT_STATE;
 	temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);
 	free_buffer_buffs(shell, 0);
