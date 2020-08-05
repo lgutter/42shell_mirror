@@ -22,7 +22,7 @@ static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
 {
 	process->pid = getpid();
 	set_process_job_group(job, process);
-	if (job->foreground == true)
+	if (job->foreground == true && shell->interactive == true)
 	{
 		tcsetpgrp(STDERR_FILENO, job->pgrp);
 		configure_terminal(NULL, 0);
