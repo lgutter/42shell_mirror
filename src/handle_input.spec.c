@@ -410,6 +410,22 @@ Test(handle_input_integration, invalid_incomplete_squote, .init = cr_redirect_st
 	cr_expect_stderr_eq_str(temp);
 }
 
+Test(handle_input_integration, invalid_invalid_assignment, .init = cr_redirect_stderr)
+{
+	char		*input = "9FOO=BAR";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "Cetushell: %s: %s\n", g_error_str[cmd_not_found], input);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}
+
 Test(handle_input_integration, invalid_bad_substitution, .init = cr_redirect_stderr)
 {
 	char		*input = "echo ${FOO\n";
