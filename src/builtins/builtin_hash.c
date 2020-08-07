@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/28 13:01:57 by devan         #+#    #+#                 */
-/*   Updated: 2020/07/28 13:01:57 by devan         ########   odam.nl         */
+/*   Updated: 2020/08/07 15:42:28 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static size_t	hash_path(t_shell *shell, char **path, char **split, char *arg)
 	}
 	else
 		*path = ft_strdup(split[1]);
-	if (path == NULL)
+	if (*path == NULL)
 		return (handle_error(malloc_error));
 	return (0);
 }
