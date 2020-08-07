@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/24 18:43:31 by devan         #+#    #+#                 */
-/*   Updated: 2020/07/24 18:43:31 by devan         ########   odam.nl         */
+/*   Updated: 2020/08/07 16:56:26 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,6 @@ size_t				add_to_hash(t_shell *shell, char *path, char *exec)
 	ret = 0;
 	if (shell == NULL || shell->hash == NULL || exec == NULL || path == NULL)
 		return (1);
-	if (is_executable(path) == 0)
-		return (handle_prefix_error_str(cmd_not_found, "hash", path));
-	else if (ft_strstr(path, exec) == NULL)
-		return (handle_prefix_error_str(cmd_not_found, "hash", exec));
 	head = shell->hash->hl;
 	if (shell->hash->exec_len < ft_strlen(exec))
 		shell->hash->exec_len = ft_strlen(exec);

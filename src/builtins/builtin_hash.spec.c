@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/26 23:41:44 by devan         #+#    #+#                 */
-/*   Updated: 2020/08/04 17:30:06 by dkroeke       ########   odam.nl         */
+/*   Updated: 2020/08/07 16:53:21 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ static void redirect_std_out()
 	cr_redirect_stdout();
 }
 
-static void redirect_std_err()
-{
-	cr_redirect_stderr();
-}
+// static void redirect_std_err()
+// {
+// 	cr_redirect_stderr();
+// }
 
 static void redirect_std_errout()
 {
@@ -117,43 +117,6 @@ Test(unit_builtin_hash, add_to_hash_null_check)
 	cr_expect_null(shell->hash);
 }
 
-Test(unit_builtin_hash, add_to_hash_invalid_path)
-{
-	t_shell		*shell;
-	char		*path = "/usr/bin/blabla";
-	char		*exec = "ls";
-	size_t		ret = 0;
-	char		buff[2048];
-
-	redirect_std_err();
-	shell = init_shell(false);
-	ret = add_to_hash(shell, path, exec);
-	cr_expect_eq(ret, 14);
-	fflush(stderr);
-	sprintf(buff, "Cetushell: hash: %s: Command not found\n", path);
-	cr_expect_stderr_eq_str(buff);
-	free_hashtable(shell);
-	cr_expect_null(shell->hash);
-}
-
-Test(unit_builtin_hash, add_to_hash_invalid_exec)
-{
-	t_shell		*shell;
-	char		*path = "/usr/bin/ls";
-	char		*exec = "lkaasdkads";
-	size_t		ret = 0;
-	char		buff[2048];
-
-	shell = init_shell(false);
-	ret = add_to_hash(shell, path, exec);
-	cr_expect_eq(ret, 14);
-	// fflush(stderr);
-	sprintf(buff, "Cetushell: hash: %s: Command not found\n", "lkaasdkads=/usr/bin/ls");
-	// cr_expect_stderr_eq_str(buff);
-	free_hashtable(shell);
-	cr_expect_null(shell->hash);
-}
-
 Test(unit_builtin_hash, add_to_hash_empty_table_duplicate)
 {
 	t_shell		*shell;
@@ -165,6 +128,8 @@ Test(unit_builtin_hash, add_to_hash_empty_table_duplicate)
 
 
 	shell = init_shell(false);
+	mkdir("/tmp/add_to_hash_empty_table_dupliate", 0777);
+	creat(path1, 0777);
 	ft_setenv(shell->env, "Path", "/tmp/add_to_hash_empty_table_dupliate", VAR_TYPE);
 	ret = add_to_hash(shell, path1, exec1);
 	cr_expect_eq(ret, 0);
@@ -177,6 +142,8 @@ Test(unit_builtin_hash, add_to_hash_empty_table_duplicate)
 	cr_expect_eq(ret, 0);
 	cr_expect_eq(shell->hash->hl->next, NULL);
 	free_hashtable(shell);
+	remove(path1);
+	remove("/tmp/add_to_hash_empty_table_dupliate");
 	cr_expect_null(shell->hash);
 }
 
