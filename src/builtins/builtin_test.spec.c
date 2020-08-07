@@ -27,7 +27,7 @@
 Test(built_test_unit, error_unmatched_bracket, .init = cr_redirect_stderr)
 {
 	char	*input = "[ -z foo";
-	int		expected_ret = 2;
+	int		expected_ret = SYNTAX_ERROR;
 	char	*expected_error = "Cetushell: [: ']' expected\n";
 
 
@@ -44,7 +44,7 @@ Test(built_test_unit, error_unmatched_bracket, .init = cr_redirect_stderr)
 Test(built_test_unit, error_too_many_args, .init = cr_redirect_stderr)
 {
 	char	*input = "test -z foo bar baz";
-	int		expected_ret = 2;
+	int		expected_ret = SYNTAX_ERROR;
 	char	expected_error[1024];
 
 
@@ -62,7 +62,7 @@ Test(built_test_unit, error_too_many_args, .init = cr_redirect_stderr)
 Test(built_test_unit, error_invalid_unary_op_other_op, .init = cr_redirect_stderr)
 {
 	char	*input = "[ -eq foo ]";
-	int		expected_ret = 2;
+	int		expected_ret = SYNTAX_ERROR;
 	char	expected_error[1024];
 
 
@@ -80,7 +80,7 @@ Test(built_test_unit, error_invalid_unary_op_other_op, .init = cr_redirect_stder
 Test(built_test_unit, error_invalid_unary_op_not_op, .init = cr_redirect_stderr)
 {
 	char	*input = "[ foo foo ]";
-	int		expected_ret = 2;
+	int		expected_ret = SYNTAX_ERROR;
 	char	expected_error[1024];
 
 
@@ -510,7 +510,7 @@ Test(built_test_unit, valid_unary_symlink_combination)
 Test(built_test_unit, error_invalid_binary_op_other_op, .init = cr_redirect_stderr)
 {
 	char	*input = "[ bar -e foo ]";
-	int		expected_ret = 2;
+	int		expected_ret = SYNTAX_ERROR;
 	char	expected_error[1024];
 
 
@@ -528,7 +528,7 @@ Test(built_test_unit, error_invalid_binary_op_other_op, .init = cr_redirect_stde
 Test(built_test_unit, error_invalid_binary_op_not_op, .init = cr_redirect_stderr)
 {
 	char	*input = "[ foo foo foo ]";
-	int		expected_ret = 2;
+	int		expected_ret = SYNTAX_ERROR;
 	char	expected_error[1024];
 
 
@@ -546,7 +546,7 @@ Test(built_test_unit, error_invalid_binary_op_not_op, .init = cr_redirect_stderr
 Test(built_test_unit, error_invalid_binary_inv_int_left, .init = cr_redirect_stderr)
 {
 	char	*input = "[ foo -eq 42 ]";
-	int		expected_ret = 2;
+	int		expected_ret = SYNTAX_ERROR;
 	char	expected_error[1024];
 
 
@@ -564,7 +564,43 @@ Test(built_test_unit, error_invalid_binary_inv_int_left, .init = cr_redirect_std
 Test(built_test_unit, error_invalid_binary_inv_int_right, .init = cr_redirect_stderr)
 {
 	char	*input = "test -42 -gt bar";
-	int		expected_ret = 2;
+	int		expected_ret = SYNTAX_ERROR;
+	char	expected_error[1024];
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+	snprintf(expected_error, 1024, "Cetushell: %s: %s: integer expression expected\n", argv[0], argv[3]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(expected_error);
+}
+
+Test(built_test_unit, error_invalid_binary_inv_int_right_too_large, .init = cr_redirect_stderr)
+{
+	char	*input = "test -42 -gt 9223372036854775817";
+	int		expected_ret = SYNTAX_ERROR;
+	char	expected_error[1024];
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+	snprintf(expected_error, 1024, "Cetushell: %s: %s: integer expression expected\n", argv[0], argv[3]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(expected_error);
+}
+
+Test(built_test_unit, error_invalid_binary_inv_int_right_some_letters, .init = cr_redirect_stderr)
+{
+	char	*input = "test -42 -gt 9223372036854775foo";
+	int		expected_ret = SYNTAX_ERROR;
 	char	expected_error[1024];
 
 
@@ -681,6 +717,20 @@ Test(built_test_unit, valid_binary_integer_greater_equals_true_negate)
 {
 	char	*input = "test ! 42 -ge 42";
 	int		expected_ret = UNIX_FALSE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_binary_integer_greater_equals_true_long_max)
+{
+	char	*input = "test 9223372036854775807 -ge 9223372036854775807";
+	int		expected_ret = UNIX_TRUE;
 
 
 	char **argv = ft_strsplit(input, ' ');

@@ -18,7 +18,7 @@
 static int	file_type_check(t_unary_op operator, struct stat statbuf)
 {
 	if (operator == is_sym_link_f || operator == h_is_sym_link_f)
-		return (S_ISLNK(statbuf.st_mode) == true? UNIX_TRUE : UNIX_FALSE);
+		return (S_ISLNK(statbuf.st_mode) == true ? UNIX_TRUE : UNIX_FALSE);
 	else if (operator == is_block_f)
 		return (S_ISBLK(statbuf.st_mode) == true ? UNIX_TRUE : UNIX_FALSE);
 	else if (operator == is_char_f)
@@ -32,7 +32,7 @@ static int	file_type_check(t_unary_op operator, struct stat statbuf)
 	else if (operator == is_socket_f)
 		return (S_ISSOCK(statbuf.st_mode) == true ? UNIX_TRUE : UNIX_FALSE);
 	else
-		return (0);
+		return (UNIX_TRUE);
 }
 
 static int	file_expression(t_unary_op operator, char *operand)
@@ -46,7 +46,7 @@ static int	file_expression(t_unary_op operator, char *operand)
 	else
 		ret = stat(operand, &statbuf);
 	if (ret != 0)
-		return (1);
+		return (UNIX_FALSE);
 	else if (operator == group_id_set_f)
 		return ((S_ISGID & statbuf.st_mode) == 0 ? UNIX_FALSE : UNIX_TRUE);
 	else if (operator == user_id_set_f)
@@ -63,18 +63,18 @@ static int	file_expression(t_unary_op operator, char *operand)
 		return (file_type_check(operator, statbuf));
 }
 
-int		unary_expression(char **expr, char *argz)
+int			unary_expression(char **expr, char *argz)
 {
 	t_unary_op	operator;
 
 	if (expr == NULL || expr[0] == NULL || expr[1] == NULL)
-		return (2);
+		return (SYNTAX_ERROR);
 	if (expr[0][0] != '-' || expr[0][1] == '\0' || expr[0][2] != '\0' ||
 		ft_strchr(UNARY_OP_STR, expr[0][1]) == NULL)
 	{
 		ft_dprintf(STDERR_FILENO,
 			"Cetushell: %s: %s: unary operator expected\n", argz, expr[0]);
-		return (2);
+		return (SYNTAX_ERROR);
 	}
 	operator = (ft_strlenc(UNARY_OP_STR, expr[0][1], unary_op_count));
 	if (operator == is_zero_s || operator == is_non_zero_s)

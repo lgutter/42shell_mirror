@@ -11,11 +11,14 @@
 /* ************************************************************************** */
 
 #ifndef TEST_EXPRESSIONS_H
-#define TEST_EXPRESSIONS_H
+# define TEST_EXPRESSIONS_H
 
 # define UNARY_OP_STR "abcdefghLprSsuwxzn"
 # define UNIX_TRUE 0
 # define UNIX_FALSE 1
+# define SYNTAX_ERROR 2
+# define INTEGER_ERROR 3
+
 /*
 ** abcdefghLprSsuwxzn
 */
