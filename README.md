@@ -46,6 +46,7 @@ This shell currently has the following features:
 - Command execution based on `PATH`
 - hashing of executable names in hashtable, with corresponding `hash` builtin
 - non-interactive mode through redirection of input OR a file as argument (BONUS)
+- support for comments using `#`. Aything after a `#` until the next newline is ignored. (BONUS)
 - Internal shell + environment variables, including assignment through assignment words, expansion (using `$KEY` or `${KEY}`) and support for read-only
 - Changing the shell prompt by modifying the shell variable `PS1`
 - Pipes (including completion of pipes(BONUS))

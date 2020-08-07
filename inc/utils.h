@@ -56,12 +56,12 @@ char		*ft_strcdup(const char *string, char delim);
 size_t		ft_strlenc(const char *string, int delim, size_t size);
 
 /*
-**	completes an unterminated quote in word with character delim.
+**	completes an unterminated quote, backslash, or pipe in word.
 **	returns:
 **	-1: on failure.
 **	 0:	on succes.
 */
-int			complete_quote(t_shell *shell, char **word);
+int			complete_unterminated(t_shell *shell, char **word);
 
 /*
 **	asks the user for more input for the heredoc.

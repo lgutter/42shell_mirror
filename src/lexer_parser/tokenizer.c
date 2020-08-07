@@ -84,24 +84,19 @@ static int		handle_token(t_rules state_rules, t_token **start,
 static int		check_unquoted(t_shell *shell, t_rules *rules,
 								char **input, size_t *i)
 {
-	if (rules->next_state == unt_dquote)
+	if (rules->next_state == pre_unt_pipe && *i > 0)
+		(*i)--;
+	if (rules->next_state == unt_dquote ||
+		rules->next_state == unt_squote ||
+		rules->next_state == unt_backslash ||
+		rules->next_state == unt_pipe)
 	{
-		if (complete_quote(shell, input) != 0)
+		if (complete_unterminated(shell, input) != 0)
 			return (-1);
-		*rules = init_state(dquote, (*input)[*i]);
 	}
-	else if (rules->next_state == unt_squote)
-	{
-		if (complete_quote(shell, input) != 0)
-			return (-1);
-		*rules = init_state(squote, (*input)[*i]);
-	}
-	else if (rules->next_state == unt_backslash)
-	{
-		if (complete_quote(shell, input) != 0)
-			return (-1);
-		*rules = init_state(backslash, (*input)[*i]);
-	}
+	else
+		return (0);
+	*rules = init_state(rules->next_state, (*input)[*i]);
 	return (0);
 }
 

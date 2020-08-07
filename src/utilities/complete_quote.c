@@ -16,9 +16,10 @@
 #include "signal_handler.h"
 
 /*
-**	checks if the given string contains invalid single or double quotes,
+**	checks if the given string contains invalid pipes, single or double quotes,
 **	or if it end with a backslash (unterminated backslash).
 **	returns:
+**	4:	if the string contains an unterminated pipe.
 **	3:	if the string contains an unterminated backslash.
 **	2:	if the string contains an unterminated double quote.
 **	1:	if the string contains an unterminated single quote.
@@ -26,7 +27,7 @@
 **	-1:	on error.
 */
 
-static int	check_quote(char *word)
+static int	check_type(char *word)
 {
 	t_rules		rules;
 	t_state		state;
@@ -45,24 +46,26 @@ static int	check_quote(char *word)
 			return (2);
 		if (rules.next_state == unt_backslash)
 			return (3);
-		else if (rules.next_state == eof)
+		if (rules.next_state == unt_pipe)
+			return (4);
+		if (rules.next_state == eof)
 			return (0);
 		state = rules.next_state;
 		word++;
 	}
 }
 
-static int	get_quote_input(t_shell *shell, char **temp, int quotes)
+static int	get_extra_input(t_shell *shell, char **temp, int type)
 {
 	char				*buff;
 	static const char	*prompts[] = {
-							"", PROMPT_QUOTE, PROMPT_DQUOTE, PROMPT_BACKSLASH};
+			"", PROMPT_QUOTE, PROMPT_DQUOTE, PROMPT_BACKSLASH, PROMPT_PIPE};
 
 	buff = NULL;
-	while (quotes > 0)
+	while (type > 0)
 	{
 		ft_strexpand(temp, "\n");
-		buff = prompt_shell(shell, prompts[quotes]);
+		buff = prompt_shell(shell, prompts[type]);
 		if (buff == NULL && shell->interactive != 1)
 			return (handle_error_str(parsing_error, "unexpected EOF"));
 		ft_strexpand(temp, buff);
@@ -74,16 +77,16 @@ static int	get_quote_input(t_shell *shell, char **temp, int quotes)
 			*temp[0] = '\0';
 			return (-1);
 		}
-		quotes = check_quote(*temp);
+		type = check_type(*temp);
 	}
 	return (0);
 }
 
-int			complete_quote(t_shell *shell, char **word)
+int			complete_unterminated(t_shell *shell, char **word)
 {
 	char	*temp;
 	int		ret;
-	int		quotes;
+	int		type;
 
 	ret = 0;
 	if (shell == NULL || word == NULL || *word == NULL)
@@ -91,8 +94,8 @@ int			complete_quote(t_shell *shell, char **word)
 	temp = ft_strdup(*word);
 	if (temp == NULL)
 		return (malloc_error);
-	quotes = check_quote(temp);
-	ret = get_quote_input(shell, &temp, quotes);
+	type = check_type(temp);
+	ret = get_extra_input(shell, &temp, type);
 	free(*word);
 	*word = temp;
 	return (ret);
