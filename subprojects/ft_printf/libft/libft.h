@@ -62,6 +62,7 @@ int					ft_strcmp(const char *string1, const char *string2);
 int					ft_strncmp(const char *string1, const char *string2,
 								size_t len);
 int					ft_atoi(const char *string);
+long long			ft_atoll(const char *string);
 int					ft_intlen(int n);
 int					ft_isalpha(int character);
 int					ft_isdigit(int character);

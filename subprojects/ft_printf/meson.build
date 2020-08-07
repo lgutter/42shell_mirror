@@ -71,6 +71,7 @@ src_files = files([
   'libft/ft_strcmp.c',
   'libft/ft_strncmp.c',
   'libft/ft_atoi.c',
+  'libft/ft_atoll.c',
   'libft/ft_intlen.c',
   'libft/ft_isalpha.c',
   'libft/ft_isdigit.c',
