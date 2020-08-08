@@ -83,18 +83,21 @@ static int		handle_control_char(t_shell *shell, char c)
 
 static int		get_next_char(t_buff *buffer, char *c)
 {
+	int	ret;
+
 	if (buffer->read_buff == NULL ||
 		buffer->read_buff[buffer->read_index] == '\0')
 	{
-		read(STDIN_FILENO, c, 1);
+		ret = read(STDIN_FILENO, c, 1);
 		free_read_buff(buffer);
 	}
 	else
 	{
+		ret = 1;
 		*c = buffer->read_buff[buffer->read_index];
 		buffer->read_index++;
 	}
-	return (1);
+	return (ret);
 }
 
 int				read_input(t_shell *shell)

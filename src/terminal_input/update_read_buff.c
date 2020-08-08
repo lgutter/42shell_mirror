@@ -33,7 +33,7 @@ void	update_read_buff(t_shell *shell)
 	ft_memset(temp, '\0', INP_BUFF_SIZE);
 	if (shell->interactive)
 		tcsetattr(STDERR_FILENO, TCSADRAIN, &shell_temp);
-	while (read(STDIN_FILENO, temp, INP_BUFF_SIZE) > 0)
+	while (read(STDIN_FILENO, temp, INP_BUFF_SIZE - 1) > 0)
 	{
 		ft_strexpand(&(shell->buffer->read_buff), temp);
 		ft_memset(temp, '\0', INP_BUFF_SIZE);
