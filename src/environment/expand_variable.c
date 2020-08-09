@@ -21,12 +21,12 @@ static ssize_t	env_str_len(char *string)
 		index++;
 	if (string[index] == '?')
 		index++;
-	while (string[index] == '_' ||
-			(string[index] >= 'A' && string[index] <= 'Z') ||
-			(string[index] >= 'a' && string[index] <= 'z') ||
-			(string[index] >= '0' && string[index] <= '9'))
+	else
 	{
-		index++;
+		while (string[index] == '_' || ft_isalnum(string[index]) == true)
+		{
+			index++;
+		}
 	}
 	if (string[0] == '{' && string[index] == '}')
 		index++;

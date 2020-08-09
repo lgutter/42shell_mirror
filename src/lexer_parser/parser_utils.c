@@ -87,12 +87,17 @@ bool	is_assignment(char *word)
 	size_t i;
 
 	i = 0;
+	if (word == NULL || ft_isdigit(word[0]) == true)
+		return (false);
 	while (word[i] != '\0')
 	{
-		if (word[i] == '"' || word[i] == '\'' || word[i] == '\\')
-			return (false);
-		if (word[i] == '=')
-			return (true);
+		if (ft_isalnum(word[i]) == false)
+		{
+			if (word[i] == '=')
+				return (true);
+			else if (word[i] != '_')
+				return (false);
+		}
 		i++;
 	}
 	return (false);
