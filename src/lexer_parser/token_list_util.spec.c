@@ -57,18 +57,19 @@ Test(free_token_list_test, invalid_NULL_list_p)
 Test(add_token_tests, add_single_token)
 {
 	t_token *start = NULL;
-	char *buffer;
+	t_vecstr buffer;
 	int ret;
 
-	buffer = strdup("foobarbaz");
-	cr_assert_neq(NULL, buffer, "malloc failed!");
+	buffer = new_vecstr("foobarbaz");
+	cr_assert_not_null(buffer.string, "malloc failed!");
 	ret = add_token(&start, WORD, &buffer);
 	cr_expect_eq(ret, 0);
 	cr_assert_neq(NULL, start);
 	cr_expect_eq(NULL, start->next);
 	cr_expect_str_eq(start->value, "foobarbaz");
-	cr_assert_neq(NULL, buffer);
-	cr_expect_str_empty(buffer);
+	cr_assert_null(buffer.string);
+	cr_assert_eq(buffer.len, 0);
+	cr_assert_eq(buffer.cap, 0);
 }
 
 Test(add_token_tests, add_three_tokens_to_empty_list)
@@ -79,60 +80,49 @@ Test(add_token_tests, add_three_tokens_to_empty_list)
 		"bar",
 		"baz"
 	};
-	char *buffer;
+	t_vecstr buffer;
 	int ret;
 	int i = 0;
 
 	while (i < 3)
 	{
-		buffer = strdup(strings[i]);
-		cr_assert_neq(NULL, buffer, "malloc failed!");
+		buffer = new_vecstr(strings[i]);
+		cr_assert_not_null(buffer.string, "malloc failed!");
 		ret = add_token(&start, WORD, &buffer);
 		cr_expect_eq(ret, 0);
-		cr_assert_neq(NULL, buffer);
-		cr_expect_str_empty(buffer);
-		free(buffer);
+		cr_assert_null(buffer.string);
+		cr_assert_eq(buffer.len, 0);
+		cr_assert_eq(buffer.cap, 0);
 		i++;
 	}
-		cr_assert_neq(NULL, start);
-		cr_expect_str_eq(start->value, strings[0]);
-		cr_assert_neq(NULL, start->next);
-		start = start->next;
-		cr_assert_neq(NULL, start);
-		cr_expect_str_eq(start->value, strings[1]);
-		cr_assert_neq(NULL, start->next);
-		start = start->next;
-		cr_assert_neq(NULL, start);
-		cr_expect_str_eq(start->value, strings[2]);
-		cr_expect_eq(NULL, start->next);
+	cr_assert_neq(NULL, start);
+	cr_expect_str_eq(start->value, strings[0]);
+	cr_assert_neq(NULL, start->next);
+	start = start->next;
+	cr_assert_neq(NULL, start);
+	cr_expect_str_eq(start->value, strings[1]);
+	cr_assert_neq(NULL, start->next);
+	start = start->next;
+	cr_assert_neq(NULL, start);
+	cr_expect_str_eq(start->value, strings[2]);
+	cr_expect_eq(NULL, start->next);
 }
 
 Test(add_token_tests, invalid_NULL_start)
 {
-	char *buffer;
+	t_vecstr buffer;
 	int ret;
 
-	buffer = strdup("foobarbaz");
-	cr_assert_neq(NULL, buffer, "malloc failed!");
+	buffer = new_vecstr("foobarbaz");
+	cr_assert_not_null(buffer.string, "malloc failed!");
 	ret = add_token(NULL, WORD, &buffer);
 	cr_expect_eq(ret, -1);
-	cr_assert_neq(NULL, buffer);
-	cr_expect_str_eq(buffer, "foobarbaz");
+	cr_assert_str_eq(buffer.string, "foobarbaz");
+	cr_assert_eq(buffer.len, 9);
+	cr_assert(buffer.cap > 9);
 }
 
 Test(add_token_tests, invalid_NULL_buffer)
-{
-	t_token *start = NULL;
-	char *buffer = NULL;
-	int ret;
-
-	ret = add_token(&start, WORD, &buffer);
-	cr_expect_eq(ret, -1);
-	cr_expect_eq(start, NULL);
-	cr_assert_eq(NULL, buffer);
-}
-
-Test(add_token_tests, invalid_NULL_buffer_p)
 {
 	t_token *start = NULL;
 	int ret;
