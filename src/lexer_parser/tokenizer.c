@@ -10,9 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <assert.h>
 #include "tokenizer.h"
 #include "utils.h"
 #include "vecstr.h"
+#include "substitution.h"
 
 static t_rules	init_state(t_state cur_state, char next)
 {
@@ -43,6 +45,26 @@ static int		handle_token(t_rules state_rules, t_token **start,
 	return (ret);
 }
 
+static int		handle_substitution(t_vecstr *buff, t_rules *rules, size_t *i,
+					const char *input)
+{
+	int len;
+
+	if (rules->next_state == substitution ||
+		rules->next_state == dq_substitution)
+	{
+		len = subst_length(input + *i);
+		if (len == -1)
+			return (handle_error(bad_subst_err));
+		if (vecstr_add(buff, input + *i, len))
+			return (handle_error(malloc_error));
+		*i += len;
+		*rules = init_state(
+			rules->next_state == substitution ? state_word : dquote, input[*i]);
+	}
+	return (no_error);
+}
+
 static int		check_unquoted(t_shell *shell, t_rules *rules,
 								char **input, size_t *i)
 {
@@ -68,7 +90,7 @@ t_token			*tokenizer(t_shell *shell, char **input)
 	t_token			*start;
 	t_state			cur_state;
 	static t_vecstr	buff;
-	size_t		i;
+	size_t			i;
 
 	if (input == NULL || *input == NULL)
 		return (NULL);
@@ -78,6 +100,8 @@ t_token			*tokenizer(t_shell *shell, char **input)
 	while (1)
 	{
 		state_rules = init_state(cur_state, (*input)[i]);
+		if (handle_substitution(&buff, &state_rules, &i, *input) != 0)
+			return (free_token_list_empty_buff(&start, &buff));
 		if (check_unquoted(shell, &state_rules, input, &i) != 0)
 			return (free_token_list_empty_buff(&start, &buff));
 		if (handle_token(state_rules, &start, &buff, (*input)[i]) != 0)
