@@ -109,6 +109,37 @@ Test(built_test_unit, valid_unary_single_arg_true)
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 }
 
+Test(built_test_unit, valid_no_argument_false)
+{
+	char	*input = "test";
+	int		expected_ret = UNIX_FALSE;
+
+
+	char **argv = ft_strsplit(input, ' ');
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
+Test(built_test_unit, valid_single_argument_false)
+{
+	char	*input = "test";
+	int		expected_ret = UNIX_FALSE;
+
+
+	char **argv = ft_memalloc(sizeof(char *) * 3);
+	argv[0] = input;
+	argv[1] = ft_strdup("");
+	argv[2] = NULL;
+	t_shell *shell = init_shell(false);
+	cr_assert_not_null(argv, "SETUP FAILED");
+	cr_assert_not_null(shell, "SETUP FAILED");
+	int ret = builtin_test(shell, argv);
+	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
+}
+
 Test(built_test_unit, valid_unary_single_arg_true_negate)
 {
 	char	*input = "test ! foo";

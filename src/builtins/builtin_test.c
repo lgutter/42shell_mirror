@@ -23,7 +23,7 @@ static int	handle_test_expression(char **expr, char *argz, bool negate)
 	if (argc == 0)
 		ret = UNIX_FALSE;
 	else if (argc == 1)
-		ret = UNIX_TRUE;
+		ret = expr[0][0] == '\0' ? UNIX_FALSE : UNIX_TRUE;
 	else if (argc == 2)
 		ret = unary_expression(expr, argz);
 	else if (argc == 3)
