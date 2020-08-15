@@ -111,6 +111,7 @@ size_t			complete_files(t_env *env, t_complete *comp)
 	char			*complete;
 	size_t			ret;
 
+	ret = 0;
 	if (comp == NULL || comp->to_complete == NULL || env == NULL)
 		return (1);
 	complete = resolve_complete(comp);
