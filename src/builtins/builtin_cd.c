@@ -76,7 +76,7 @@ static int	check_change_path(char *path, char *input)
 		ret = no_such_file_or_dir;
 	if (ret == 0 && is_directory(NULL, path) == 0)
 		ret = not_a_dir_error;
-	if (ret == 0 && access(path, R_OK) != 0)
+	if (ret == 0 && access(path, X_OK) != 0)
 		ret = access_denied;
 	if (ret == 0 && chdir(path) == -1)
 		ret = chdir_error;
