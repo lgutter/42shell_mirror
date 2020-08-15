@@ -337,7 +337,12 @@ Test(unit_builtin_hash, hash_hit_coll_check)
 
 	if (HT_SIZE != 512)
 		cr_assert_fail("Warning: HT_SIZE is not 512 and will cause create_hash to be different");
+	mkdir("/tmp/hash_hit_coll_check/", 0777);
+	creat("/tmp/hash_hit_coll_check/more", 0777);
+	creat("/tmp/hash_hit_coll_check/gcc-9", 0777);
+	creat("/tmp/hash_hit_coll_check/ls", 0777);
 	shell = init_shell(false);
+	ft_setenv(shell->env, "PATH", "/tmp/hash_hit_coll_check", VAR_TYPE);
 	set_hash(shell, "ls");
 	set_hash(shell, "ls");
 	unsigned long hash = create_hash("ls", 512);
@@ -359,6 +364,10 @@ Test(unit_builtin_hash, hash_hit_coll_check)
 	cr_assert_not_null(coll);
 	cr_expect_eq(coll->hit, 1);
 	free_hashtable(shell);
+	remove("/tmp/hash_hit_coll_check/more");
+	remove("/tmp/hash_hit_coll_check/ls");
+	remove("/tmp/hash_hit_coll_check/gcc-9");
+	remove("/tmp/hash_hit_coll_check");
 	cr_expect_null(shell->hash);
 }
 
@@ -371,13 +380,17 @@ Test(unit_builtin_hash, hash_find_exec_check)
 
 	if (HT_SIZE != 512)
 		cr_assert_fail("Warning: HT_SIZE is not 512 and will cause create_hash to be different");
+	mkdir("/tmp/hash_find_exec_check/", 0777);
+	creat("/tmp/hash_find_exec_check/ls", 0777);
+	creat("/tmp/hash_find_exec_check/gcc-9", 0777);
 	shell = init_shell(false);
+	ft_setenv(shell->env, "PATH", "/tmp/hash_find_exec_check", VAR_TYPE);
 	ret = builtin_hash(shell,argv);
 	cr_expect_eq(ret, 0);
 	find_hash_exec(shell->hash, &path, "ls");
-	cr_expect_str_eq(path, "/usr/bin/ls");
+	cr_expect_str_eq(path, "/tmp/hash_find_exec_check/ls");
 	find_hash_exec(shell->hash, &path, "gcc-9");
-	cr_expect_str_eq(path, "/usr/bin/gcc-9");
+	cr_expect_str_eq(path, "/tmp/hash_find_exec_check/gcc-9");
 	free_hashtable(shell);
 	cr_expect_null(shell->hash);
 }
@@ -392,7 +405,10 @@ Test(unit_builtin_hash, hash_print, .init = redirect_std_errout)
 
 	if (HT_SIZE != 512)
 		cr_assert_fail("Warning: HT_SIZE is not 512 and will cause create_hash to be different");
+	mkdir("/tmp/hash_print/", 0777);
+	creat("/tmp/hash_print/ls", 0777);
 	shell = init_shell(false);
+	ft_setenv(shell->env, "PATH", "/tmp/hash_print/", VAR_TYPE);
 	fflush(stderr);
 	ret = builtin_hash(shell, argv1);
 	char buf[1024];
@@ -403,11 +419,13 @@ Test(unit_builtin_hash, hash_print, .init = redirect_std_errout)
 	set_hash(NULL, "ls");
 	set_hash(shell, "ls");
 	find_hash_exec(shell->hash, &path, "ls");
-	cr_expect_str_eq(path, "/usr/bin/ls");
+	cr_expect_str_eq(path, "/tmp/hash_print/ls");
 	ret = builtin_hash(shell, argv1);
 	ft_bzero(buf, 1024);
-	sprintf(buf, "Hit:\t%-*sPath:\n 1\t%-*s/usr/bin/ls\n", (int)shell->hash->exec_len, "Command:", (int)shell->hash->exec_len, "ls");
+	sprintf(buf, "Hit:\t%-*sPath:\n 1\t%-*s/tmp/hash_print/ls\n", (int)shell->hash->exec_len, "Command:", (int)shell->hash->exec_len, "ls");
 	cr_expect_stdout_eq_str(buf);
 	free_hashtable(shell);
+	remove("/tmp/hash_print/ls");
+	remove("/tmp/hash_print");
 	cr_expect_null(shell->hash);
 }
