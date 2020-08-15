@@ -392,6 +392,9 @@ Test(unit_builtin_hash, hash_find_exec_check)
 	find_hash_exec(shell->hash, &path, "gcc-9");
 	cr_expect_str_eq(path, "/tmp/hash_find_exec_check/gcc-9");
 	free_hashtable(shell);
+	remove("/tmp/hash_find_exec_check/ls");
+	remove("/tmp/hash_find_exec_check/gcc-9");
+	remove("/tmp/hash_find_exec_check");
 	cr_expect_null(shell->hash);
 }
 
