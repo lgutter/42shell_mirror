@@ -69,6 +69,7 @@ typedef enum		e_error
 	bad_subst_err,
 	empty_hash,
 	isbuiltin,
+	chdir_error,
 	error_count,
 }					t_error;
 

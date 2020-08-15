@@ -67,10 +67,28 @@ static int	path_start(t_cd *cd, char *old_pwd)
 	return (0);
 }
 
+static int	check_change_path(char *path, char *input)
+{
+	int			ret;
+
+	ret = 0;
+	if (access(path, F_OK) != 0)
+		ret = no_such_file_or_dir;
+	if (ret == 0 && is_directory(NULL, path) == 0)
+		ret = not_a_dir_error;
+	if (ret == 0 && access(path, R_OK) != 0)
+		ret = access_denied;
+	if (ret == 0 && chdir(path) == -1)
+		ret = chdir_error;
+	if (ret != 0)
+		handle_prefix_error_str(ret, "cd", input);
+	return (ret);
+}
+
 static int	resolve_cd_path(t_env *env, t_cd *cd)
 {
 	char	*old_pwd;
-	size_t	ret;
+	int		ret;
 
 	ret = 0;
 	if (cd->link == true && ft_strlen(cd->link_path) != 0)
@@ -81,17 +99,9 @@ static int	resolve_cd_path(t_env *env, t_cd *cd)
 		old_pwd = getcwd(NULL, 0);
 	if (old_pwd == NULL)
 		ret = 1;
-	if (ret == 0)
-		ret = path_start(cd, old_pwd);
-	if (ret == 0 && is_directory(NULL, cd->final_path) == false)
-		ret = handle_prefix_error_str(not_a_dir_error, "cd", cd->input_path);
-	if (ret == 0 && access(cd->final_path, R_OK) != 0)
-		ret = handle_error_str(access_denied, cd->final_path);
-	if (ret == 0 && chdir(cd->final_path) == -1)
-		ret = handle_prefix_error_str(no_such_file_or_dir, "cd",
-										cd->input_path);
-	if (ret == 0)
-		ret = set_old_new_pwd(env, cd, old_pwd);
+	ret = (ret == 0 ? path_start(cd, old_pwd) : ret);
+	ret = (ret == 0 ? check_change_path(cd->final_path, cd->input_path) : ret);
+	ret = (ret == 0 ? (int)set_old_new_pwd(env, cd, old_pwd) : ret);
 	free(old_pwd);
 	return (ret);
 }
@@ -110,6 +120,8 @@ int			builtin_cd(t_shell *shell, char **argv)
 		ret = resolve_cd_path(shell->env, &cd_s);
 	free(cd_s.input_path);
 	ft_bzero(cd_s.final_path, PATH_MAX);
-	cd_s = (t_cd){.to_oldpwd = false, .to_home = false, .link = true, };
+	cd_s.to_oldpwd = false;
+	cd_s.to_home = false;
+	cd_s.link = true;
 	return (ret == 0 ? 0 : 1);
 }
