@@ -75,6 +75,17 @@
 int			read_input(t_shell *shell);
 
 /*
+**	frees the allocated read_buff used to buffer extra input.
+*/
+void		free_read_buff(t_buff *buffer);
+
+/*
+**	called right before returning in read_input. It checks if there is more
+**	input waiting to be read and expands the read_buff with this input.
+*/
+void		update_read_buff(t_shell *shell);
+
+/*
 ** insert_char requires a pointer to the struct t_buff defined in cetushell.h
 ** and a character which needs to be inserted. The struct has the current index
 ** and will insert the character in the middle of a string or at the end.

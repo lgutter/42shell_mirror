@@ -21,37 +21,42 @@ static void		print_buffer(t_buff *buffer)
 {
 	if (buffer->rv_end > buffer->rv_start)
 	{
-		ft_printf("%.*s%s", buffer->rv_start, buffer->buff, RV_MODE);
-		ft_printf("%.*s", buffer->rv_end - buffer->rv_start,
+		ft_dprintf(STDERR_FILENO, "%.*s%s", buffer->rv_start,
+														buffer->buff, RV_MODE);
+		ft_dprintf(STDERR_FILENO, "%.*s", buffer->rv_end - buffer->rv_start,
 		&buffer->buff[buffer->rv_start]);
-		ft_printf("%s%s", RV_RESET, &buffer->buff[buffer->rv_end]);
+		ft_dprintf(STDERR_FILENO, "%s%s", RV_RESET,
+												buffer->buff[buffer->rv_end]);
 	}
 	else if (buffer->rv_end < buffer->rv_start)
 	{
-		ft_printf("%.*s%s", buffer->rv_end, buffer->buff, RV_MODE);
-		ft_printf("%.*s", buffer->rv_start - buffer->rv_end,
+		ft_dprintf(STDERR_FILENO, "%.*s%s",
+										buffer->rv_end, buffer->buff, RV_MODE);
+		ft_dprintf(STDERR_FILENO, "%.*s", buffer->rv_start - buffer->rv_end,
 		&buffer->buff[buffer->rv_end]);
-		ft_printf("%s%s", RV_RESET, &buffer->buff[buffer->rv_start]);
+		ft_dprintf(STDERR_FILENO, "%s%s", RV_RESET,
+											&buffer->buff[buffer->rv_start]);
 	}
 	else
-		ft_printf("%s", buffer->buff);
+		ft_dprintf(STDERR_FILENO, "%s", buffer->buff);
 }
 
 static void		refresh_prompt(t_buff *buffer, t_cursor *cursor)
 {
 	if (cursor->new_line_x > 1)
 	{
-		ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y - 1,
+		ft_dprintf(STDERR_FILENO, "%c[%d;%dH", ESCAPE_KEY, cursor->start.y - 1,
 			cursor->new_line_x);
-		ft_printf("%s%%%s", RV_MODE, RV_RESET);
-		ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, cursor->start.x);
+		ft_dprintf(STDERR_FILENO, "%s%%%s", RV_MODE, RV_RESET);
+		ft_dprintf(STDERR_FILENO, "%c[%d;%dH", ESCAPE_KEY, cursor->start.y,
+															cursor->start.x);
 		cursor->new_line_x = 1;
 	}
-	ft_printf("%c[%d;%dH", ESCAPE_KEY, cursor->start.y, 0);
+	ft_dprintf(STDERR_FILENO, "%c[%d;%dH", ESCAPE_KEY, cursor->start.y, 0);
 	send_terminal("cd");
-	ft_printf("%s", buffer->prompt);
+	ft_dprintf(STDERR_FILENO, "%s", buffer->prompt);
 	print_buffer(buffer);
-	ft_printf("%s", cursor->cur_buff);
+	ft_dprintf(STDERR_FILENO, "%s", cursor->cur_buff);
 }
 
 static int		init_buffs(t_buff *buffer, t_cursor *cursor, const char *prompt)
@@ -99,6 +104,7 @@ static char		*interactive_prompt_shell(t_shell *shell, const char *prompt)
 		}
 		shell->buffer->buff_len = ft_strlen(shell->buffer->buff);
 	}
+	update_read_buff(shell);
 	shell->buffer->state = INPUT_STATE;
 	temp = ft_strndup(shell->buffer->buff, shell->buffer->buff_size);
 	free_buffer_buffs(shell, 0);

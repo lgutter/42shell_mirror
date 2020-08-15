@@ -26,6 +26,7 @@ inc_dir = include_directories('inc')
 src_files = files([
   'src/terminal_input/prompt.c',
   'src/terminal_input/read_input.c',
+  'src/terminal_input/update_read_buff.c',
   'src/terminal_input/configure_terminal.c',
   'src/terminal_input/set_cursor.c',
   'src/terminal_input/get_cursor.c',

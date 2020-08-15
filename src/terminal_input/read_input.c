@@ -81,6 +81,25 @@ static int		handle_control_char(t_shell *shell, char c)
 	return (0);
 }
 
+static int		get_next_char(t_buff *buffer, char *c)
+{
+	int	ret;
+
+	if (buffer->read_buff == NULL ||
+		buffer->read_buff[buffer->read_index] == '\0')
+	{
+		ret = read(STDIN_FILENO, c, 1);
+		free_read_buff(buffer);
+	}
+	else
+	{
+		ret = 1;
+		*c = buffer->read_buff[buffer->read_index];
+		buffer->read_index++;
+	}
+	return (ret);
+}
+
 int				read_input(t_shell *shell)
 {
 	char		c;
@@ -89,19 +108,20 @@ int				read_input(t_shell *shell)
 	c = '\0';
 	if (shell == NULL || shell->buffer == NULL || shell->buffer->buff == NULL)
 		return (1);
-	ret = read(STDIN_FILENO, &c, 1);
+	ret = get_next_char(shell->buffer, &c);
 	if ((g_signal_handler & (1 << SIGINT)) != 0)
 	{
 		send_terminal(TERM_DOWN);
-		return (1);
+		free_read_buff(shell->buffer);
+		ret = 1;
 	}
-	if (ret == 1)
+	else if (ret == 1)
 	{
 		ret = read_esc_seq(c, &shell->cursor, shell->buffer, shell->hist);
-		if (ret != 0)
-			return (ret);
-		if (handle_control_char(shell, c) != 0)
-			return (1);
+		if (ret == 0)
+			ret = handle_control_char(shell, c);
 	}
-	return (0);
+	else
+		ret = 0;
+	return (ret);
 }

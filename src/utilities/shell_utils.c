@@ -19,6 +19,7 @@
 #include "signal_handler.h"
 #include "job_control.h"
 #include "hashtable.h"
+#include "input_handling.h"
 
 static t_shell	*alloc_shell(bool interactive)
 {
@@ -83,6 +84,7 @@ int				free_shell(t_shell *shell, int ret)
 		free_history(shell->hist);
 		free_hashtable(shell);
 		shell->hist = NULL;
+		free_read_buff(shell->buffer);
 		free_buffer_buffs(shell, 1);
 		if (shell->buffer != NULL)
 			free(shell->buffer);

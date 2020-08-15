@@ -17,7 +17,7 @@
 size_t			scroll_cursor(t_cursor *cursor)
 {
 	if (cursor->current.y < cursor->max.y)
-		ft_printf("\n");
+		ft_dprintf(STDERR_FILENO, "\n");
 	cursor->start.y++;
 	cursor->current.y++;
 	if (cursor->current.y > cursor->max.y)
@@ -46,10 +46,11 @@ void			print_complete_list(t_shell *shell, t_complete *comp)
 		if (i >= col)
 			i = scroll_cursor(&shell->cursor);
 		if (comp->options & (VAR_DBRACK | VAR_DOLLAR))
-			ft_printf("%s%-*s ", ((comp->options & VAR_DBRACK) ? "${" : "$"),
-			(comp->max_len), list->match);
+			ft_dprintf(STDERR_FILENO, "%s%-*s ",
+							((comp->options & VAR_DBRACK) ? "${" : "$"),
+												(comp->max_len), list->match);
 		else
-			ft_printf("%-*s ", comp->max_len, list->match);
+			ft_dprintf(STDERR_FILENO, "%-*s ", comp->max_len, list->match);
 		list = list->next;
 		i++;
 	}

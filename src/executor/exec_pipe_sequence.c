@@ -22,9 +22,9 @@ static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
 {
 	process->pid = getpid();
 	set_process_job_group(job, process);
-	if (job->foreground == true)
+	if (job->foreground == true && shell->interactive == true)
 	{
-		tcsetpgrp(STDIN_FILENO, job->pgrp);
+		tcsetpgrp(STDERR_FILENO, job->pgrp);
 		configure_terminal(NULL, 0);
 	}
 	reset_signals();
@@ -135,6 +135,6 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 		ret = execute_simple(pipe_seq, shell, job, process);
 	std_fd_restore(old_fds);
 	if (shell->interactive == true)
-		tcsetpgrp(STDIN_FILENO, shell->pgid);
+		tcsetpgrp(STDERR_FILENO, shell->pgid);
 	return (ret);
 }
