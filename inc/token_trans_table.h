@@ -52,6 +52,12 @@ typedef enum		e_type
 **	enumerations for all possible states in the tokenizer.
 **	these are used to provide the context of characters,
 **	so we can correctly determine the type of a token.
+**
+** substitution is a magic state where another lexer is spawned to find
+** the end of the $(). It will add everything up to and including the closing
+** ')' and return to state_word without delimiting.
+**
+** dq_substitution is the same as substitution but returns to dquote instead.
 */
 typedef enum		e_state
 {
@@ -78,6 +84,10 @@ typedef enum		e_state
 	dq_backslash,
 	comment,
 	pipe_comment,
+	dollar,
+	dq_dollar,
+	substitution,
+	dq_substitution
 }					t_state;
 
 /*
@@ -147,6 +157,7 @@ static const t_trans g_token_trans[] = {
 			['&']		= {amp, undetermined, ADD_CHAR_POST},
 			['|']		= {pipe_state, undetermined, ADD_CHAR_POST},
 			[';']		= {semicolon, undetermined, ADD_CHAR_POST},
+			['$']		= {dollar, undetermined, ADD_CHAR_POST},
 			['\\']		= {backslash, undetermined, ADD_CHAR_POST},
 			['\'']		= {squote, undetermined, ADD_CHAR_POST},
 			['"']		= {dquote, undetermined, ADD_CHAR_POST}
@@ -165,11 +176,33 @@ static const t_trans g_token_trans[] = {
 			['&']		= {amp, WORD, ADD_CHAR_POST},
 			['|']		= {pipe_state, WORD, ADD_CHAR_POST},
 			[';']		= {semicolon, WORD, ADD_CHAR_POST},
+			['$']		= {dollar, undetermined, ADD_CHAR_POST},
 			['\\']		= {backslash, undetermined, ADD_CHAR_POST},
 			['\'']		= {squote, undetermined, ADD_CHAR_POST},
 			['"']		= {dquote, undetermined, ADD_CHAR_POST}
 		},
 		.catch_state	= {state_word, undetermined, ADD_CHAR_POST}
+	},
+	[dollar] =
+	{
+		.rules = {
+			['\0']		= {eof, WORD, SKIP_CHAR},
+			[' ']		= {blank, WORD, SKIP_CHAR},
+			['\t']		= {blank, WORD, SKIP_CHAR},
+			['#']		= {comment, WORD, SKIP_CHAR},
+			['\n']		= {state_newline, WORD, ADD_CHAR_POST},
+			['<']		= {less, WORD, ADD_CHAR_POST},
+			['>']		= {great, WORD, ADD_CHAR_POST},
+			['&']		= {amp, WORD, ADD_CHAR_POST},
+			['|']		= {pipe_state, WORD, ADD_CHAR_POST},
+			[';']		= {semicolon, WORD, ADD_CHAR_POST},
+			['$']		= {dollar, undetermined, ADD_CHAR_POST},
+			['\\']		= {backslash, undetermined, ADD_CHAR_POST},
+			['\'']		= {squote, undetermined, ADD_CHAR_POST},
+			['"']		= {dquote, undetermined, ADD_CHAR_POST},
+			['(']		= {substitution, undetermined, ADD_CHAR_POST}
+		},
+		.catch_state = {state_word, undetermined, ADD_CHAR_POST}
 	},
 	[number] =
 	{
@@ -194,6 +227,7 @@ static const t_trans g_token_trans[] = {
 			['&']		= {amp, WORD, ADD_CHAR_POST},
 			['|']		= {pipe_state, WORD, ADD_CHAR_POST},
 			[';']		= {semicolon, WORD, ADD_CHAR_POST},
+			['$']		= {dollar, undetermined, ADD_CHAR_POST},
 			['\\']		= {backslash, undetermined, ADD_CHAR_POST},
 			['\'']		= {squote, undetermined, ADD_CHAR_POST},
 			['"']		= {dquote, undetermined, ADD_CHAR_POST}
@@ -223,6 +257,7 @@ static const t_trans g_token_trans[] = {
 			['&']		= {blank, LESSAMP, ADD_CHAR_PRE},
 			['|']		= {pipe_state, LESS, ADD_CHAR_POST},
 			[';']		= {semicolon, LESS, ADD_CHAR_POST},
+			['$']		= {dollar, LESS, ADD_CHAR_POST},
 			['\\']		= {backslash, LESS, ADD_CHAR_POST},
 			['\'']		= {squote, LESS, ADD_CHAR_POST},
 			['"']		= {dquote, LESS, ADD_CHAR_POST}
@@ -252,6 +287,7 @@ static const t_trans g_token_trans[] = {
 			['&']		= {blank, GREATAMP, ADD_CHAR_PRE},
 			['|']		= {pipe_state, GREAT, ADD_CHAR_POST},
 			[';']		= {semicolon, GREAT, ADD_CHAR_POST},
+			['$']		= {dollar, GREAT, ADD_CHAR_POST},
 			['\\']		= {backslash, GREAT, ADD_CHAR_POST},
 			['\'']		= {squote, GREAT, ADD_CHAR_POST},
 			['"']		= {dquote, GREAT, ADD_CHAR_POST}
@@ -281,6 +317,7 @@ static const t_trans g_token_trans[] = {
 			['&']		= {amp, PIPE, ADD_CHAR_POST},
 			['|']		= {blank, OROR, ADD_CHAR_PRE},
 			[';']		= {semicolon, PIPE, ADD_CHAR_POST},
+			['$']		= {dollar, PIPE, ADD_CHAR_POST},
 			['\\']		= {backslash, PIPE, ADD_CHAR_POST},
 			['\'']		= {squote, PIPE, ADD_CHAR_POST},
 			['"']		= {dquote, PIPE, ADD_CHAR_POST}
@@ -310,6 +347,7 @@ static const t_trans g_token_trans[] = {
 			['&']		= {amp, undetermined, ADD_CHAR_POST},
 			['|']		= {pipe_state, undetermined, ADD_CHAR_POST},
 			[';']		= {semicolon, undetermined, ADD_CHAR_POST},
+			['$']		= {dollar, undetermined, ADD_CHAR_POST},
 			['\\']		= {backslash, undetermined, ADD_CHAR_POST},
 			['\'']		= {squote, undetermined, ADD_CHAR_POST},
 			['"']		= {dquote, undetermined, ADD_CHAR_POST}
@@ -346,6 +384,7 @@ static const t_trans g_token_trans[] = {
 			['&']		= {amp, undetermined, ADD_CHAR_POST},
 			['|']		= {pipe_state, undetermined, ADD_CHAR_POST},
 			[';']		= {semicolon, undetermined, ADD_CHAR_POST},
+			['$']		= {dollar, undetermined, ADD_CHAR_POST},
 			['\\']		= {backslash, undetermined, ADD_CHAR_POST},
 			['\'']		= {squote, undetermined, ADD_CHAR_POST},
 			['"']		= {dquote, undetermined, ADD_CHAR_POST}
@@ -375,6 +414,7 @@ static const t_trans g_token_trans[] = {
 			['&']		= {blank, ANDAND, ADD_CHAR_PRE},
 			['|']		= {pipe_state, AMP, ADD_CHAR_POST},
 			[';']		= {semicolon, AMP, ADD_CHAR_POST},
+			['$']		= {dollar, AMP, ADD_CHAR_POST},
 			['\\']		= {backslash, AMP, ADD_CHAR_POST},
 			['\'']		= {squote, AMP, ADD_CHAR_POST},
 			['"']		= {dquote, AMP, ADD_CHAR_POST}
@@ -404,6 +444,7 @@ static const t_trans g_token_trans[] = {
 			['&']		= {amp, NEWLINE, ADD_CHAR_POST},
 			['|']		= {pipe_state, NEWLINE, ADD_CHAR_POST},
 			[';']		= {semicolon, NEWLINE, ADD_CHAR_POST},
+			['$']		= {dollar, NEWLINE, ADD_CHAR_POST},
 			['\\']		= {backslash, NEWLINE, ADD_CHAR_POST},
 			['\'']		= {squote, NEWLINE, ADD_CHAR_POST},
 			['"']		= {dquote, NEWLINE, ADD_CHAR_POST}
@@ -433,6 +474,7 @@ static const t_trans g_token_trans[] = {
 			['&']		= {amp, SEMI, ADD_CHAR_POST},
 			['|']		= {pipe_state, SEMI, ADD_CHAR_POST},
 			[';']		= {semicolon, SEMI, ADD_CHAR_POST},
+			['$']		= {dollar, SEMI, ADD_CHAR_POST},
 			['\\']		= {backslash, SEMI, ADD_CHAR_POST},
 			['\'']		= {squote, SEMI, ADD_CHAR_POST},
 			['"']		= {dquote, SEMI, ADD_CHAR_POST}
@@ -459,6 +501,7 @@ static const t_trans g_token_trans[] = {
 	{
 		.rules = {
 			['\0']		= {unt_dquote, undetermined, ADD_CHAR_POST},
+			['$']		= {dq_dollar, undetermined, ADD_CHAR_POST},
 			['"']		= {state_word, undetermined, ADD_CHAR_POST},
 			['\\']		= {dq_backslash, undetermined, ADD_CHAR_POST}
 		},
@@ -468,6 +511,7 @@ static const t_trans g_token_trans[] = {
 	{
 		.rules = {
 			['\0']		= {unt_dquote, undetermined, ADD_CHAR_POST},
+			['$']		= {dq_dollar, undetermined, ADD_CHAR_POST},
 			['"']		= {state_word, undetermined, ADD_CHAR_POST},
 			['\\']		= {dq_backslash, undetermined, ADD_CHAR_POST}
 		},
@@ -479,6 +523,17 @@ static const t_trans g_token_trans[] = {
 			['\0']		= {unt_backslash, undetermined, ADD_CHAR_POST},
 		},
 		.catch_state	= {state_word, undetermined, ADD_CHAR_POST}
+	},
+	[dq_dollar] =
+	{
+		.rules = {
+			['\0']		= {unt_dquote, undetermined, ADD_CHAR_POST},
+			['$']		= {dq_dollar, undetermined, ADD_CHAR_POST},
+			['"']		= {state_word, undetermined, ADD_CHAR_POST},
+			['\\']		= {dq_backslash, undetermined, ADD_CHAR_POST},
+			['(']		= {dq_substitution, undetermined, ADD_CHAR_POST}
+		},
+		.catch_state	= {dquote, undetermined, ADD_CHAR_POST}
 	},
 	[backslash] =
 	{

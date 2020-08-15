@@ -16,6 +16,7 @@
 # include "token_trans_table.h"
 # include "handle_error.h"
 # include "cetushell.h"
+# include "vecstr.h"
 # include <stdlib.h>
 
 /*
@@ -56,7 +57,7 @@ t_token					*tokenizer(t_shell *shell, char **input);
 **	arg: buff - a pointer to the buffer.
 **	returns: 0 on success, error code on error.
 */
-int						add_token(t_token **start, t_type type, char **buff);
+int						add_token(t_token **start, t_type type, t_vecstr *buff);
 
 /*
 **	frees all nodes and their content in a token linked list.
@@ -64,7 +65,7 @@ int						add_token(t_token **start, t_type type, char **buff);
 */
 t_token					*free_token_list(t_token **start);
 
-t_token					*free_token_list_empty_buff(t_token **start
-														, char *buff);
+t_token					*free_token_list_empty_buff(t_token **start,
+							t_vecstr *buff);
 
 #endif

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "tokenizer.h"
+#include "vecstr.h"
 
 t_token			*free_token_list(t_token **start)
 {
@@ -33,10 +34,10 @@ t_token			*free_token_list(t_token **start)
 	return (NULL);
 }
 
-t_token			*free_token_list_empty_buff(t_token **start, char *buff)
+t_token			*free_token_list_empty_buff(t_token **start, t_vecstr *buff)
 {
 	free_token_list(start);
-	ft_bzero(buff, ft_strlen(buff));
+	clear_vecstr(buff);
 	return (NULL);
 }
 
@@ -60,21 +61,21 @@ static t_token	*init_token(t_token **start)
 	return (temp);
 }
 
-int				add_token(t_token **start, t_type type, char **buff)
+int				add_token(t_token **start, t_type type, t_vecstr *buff)
 {
 	t_token *temp;
 
-	if (start == NULL || buff == NULL || *buff == NULL)
+	if (start == NULL || buff == NULL)
 		return (-1);
 	temp = init_token(start);
 	if (temp == NULL)
 	{
-		ft_memset((void *)*buff, '\0', ft_strlen(*buff));
-		return (handle_error(malloc_error));
+		clear_vecstr(buff);
+		return (malloc_error);
 	}
 	temp->next = NULL;
 	temp->type = type;
-	temp->value = ft_strdup(*buff);
-	ft_memset((void *)*buff, '\0', ft_strlen(*buff));
+	temp->value = ft_strdup(buff->string);
+	clear_vecstr(buff);
 	return (0);
 }

@@ -325,3 +325,39 @@ Test(tokenizer_tests, basic_mandatory_error_NULL_input_pointer)
 	result = tokenizer(NULL, NULL);
 	cr_expect_eq(result, NULL);
 }
+
+Test(tokenizer_tests, basic_command_substitution)
+{
+	t_token *result = NULL;
+	char 	*input = "$(ls -al)";
+
+	result = tokenizer(NULL, &input);
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "$(ls -al)");
+	cr_expect_eq(result->next, NULL);
+}
+
+Test(tokenizer_tests, basic_command_substitution_double_quoted)
+{
+	t_token *result = NULL;
+	char 	*input = "\"$(ls -al)\"";
+
+	result = tokenizer(NULL, &input);
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "\"$(ls -al)\"");
+	cr_expect_eq(result->next, NULL);
+}
+
+Test(tokenizer_tests, basic_command_substitution_double_quote_nested)
+{
+	t_token *result = NULL;
+	char 	*input = "\"$(ls -al \"folder with spaces\")\"";
+
+	result = tokenizer(NULL, &input);
+	cr_assert_neq(result, NULL);
+	cr_expect_eq(result->type, WORD);
+	cr_expect_str_eq(result->value, "\"$(ls -al \"folder with spaces\")\"");
+	cr_expect_eq(result->next, NULL);
+}

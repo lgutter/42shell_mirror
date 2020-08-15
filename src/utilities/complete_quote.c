@@ -12,6 +12,7 @@
 
 #include "utils.h"
 #include "prompt.h"
+#include "substitution.h"
 #include "token_trans_table.h"
 #include "signal_handler.h"
 
@@ -19,12 +20,9 @@
 **	checks if the given string contains invalid pipes, single or double quotes,
 **	or if it end with a backslash (unterminated backslash).
 **	returns:
-**	4:	if the string contains an unterminated pipe.
-**	3:	if the string contains an unterminated backslash.
-**	2:	if the string contains an unterminated double quote.
-**	1:	if the string contains an unterminated single quote.
-**	0:	if the string does not contain invalid quotes.
-**	-1:	on error.
+**	unt_*: if the string contains an unterminated sequence.
+**	eof:   if no unterminated sequence was found.
+**	-1:    on error.
 */
 
 static int	check_type(char *word)
@@ -40,32 +38,31 @@ static int	check_type(char *word)
 		rules = g_token_trans[state].rules[(size_t)*word];
 		if (rules.next_state == invalid)
 			rules = g_token_trans[state].catch_state;
-		if (rules.next_state == unt_squote)
-			return (1);
-		if (rules.next_state == unt_dquote)
-			return (2);
-		if (rules.next_state == unt_backslash)
-			return (3);
-		if (rules.next_state == unt_pipe)
-			return (4);
-		if (rules.next_state == eof)
-			return (0);
-		state = rules.next_state;
-		word++;
+		if (rules.next_state == unt_squote || rules.next_state == unt_dquote
+			|| rules.next_state == unt_backslash || rules.next_state == unt_pipe
+			|| rules.next_state == eof)
+			return (rules.next_state);
+		state = rules.next_state == dq_substitution ? dquote : rules.next_state;
+		word += rules.next_state == dq_substitution ? subst_length(word) : 1;
 	}
 }
+
+const char	*g_prompts[] = {
+	[unt_squote] = PROMPT_QUOTE,
+	[unt_dquote] = PROMPT_DQUOTE,
+	[unt_backslash] = PROMPT_BACKSLASH,
+	[unt_pipe] = PROMPT_PIPE,
+};
 
 static int	get_extra_input(t_shell *shell, char **temp, int type)
 {
 	char				*buff;
-	static const char	*prompts[] = {
-			"", PROMPT_QUOTE, PROMPT_DQUOTE, PROMPT_BACKSLASH, PROMPT_PIPE};
 
 	buff = NULL;
-	while (type > 0)
+	while (type != eof && type != -1)
 	{
 		ft_strexpand(temp, "\n");
-		buff = prompt_shell(shell, prompts[type]);
+		buff = prompt_shell(shell, g_prompts[type]);
 		if (buff == NULL && shell->interactive != 1)
 			return (handle_error_str(parsing_error, "unexpected EOF"));
 		ft_strexpand(temp, buff);
