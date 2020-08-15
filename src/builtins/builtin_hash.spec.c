@@ -229,8 +229,10 @@ Test(unit_builtin_hash, hash_insert_empty_list_find_path)
 	cr_expect_str_eq(shell->hash->hl->key, exec1);
 	cr_expect_str_eq(shell->hash->hl->value, path1);
 	unsigned long hashindex = create_hash("ls", HT_SIZE);
-	cr_expect_str_eq(shell->hash->ht[hashindex]->key, "ls");
+	cr_expect_str_eq(shell->hash->ht[hashindex]->key, exec1);
 	cr_expect_str_eq(shell->hash->ht[hashindex]->value, path1);
+	remove(path1);
+	remove("/tmp/hash_insert_empty_list_find_path/");
 	free_hashtable(shell);
 	cr_expect_null(shell->hash);
 }
@@ -238,18 +240,23 @@ Test(unit_builtin_hash, hash_insert_empty_list_find_path)
 Test(unit_builtin_hash, hash_insert_empty_list_change_path)
 {
 	t_shell		*shell;
-	char		*argv[3] = {"hash", "ls=/bin/ls", NULL};
+	char		*argv[3] = {"hash", "ls=/tmp/hash_insert_empty_list_change_path/ls", NULL};
 	size_t		ret = 0;
 
 	shell = init_shell(false);
+	mkdir("/tmp/hash_insert_empty_list_change_path/", 0777);
+	creat("/tmp/hash_insert_empty_list_change_path/ls", 07777);
+	ft_setenv(shell->env, "PATH", "/tmp/hash_insert_empty_list_change_path", VAR_TYPE);
 	ret = builtin_hash(shell,argv);
 	cr_expect_eq(ret, 0);
 	cr_expect_str_eq(shell->hash->hl->key, "ls");
-	cr_expect_str_eq(shell->hash->hl->value, "/bin/ls");
+	cr_expect_str_eq(shell->hash->hl->value, "/tmp/hash_insert_empty_list_change_path/ls");
 	unsigned long hashindex = create_hash("ls", HT_SIZE);
 	cr_expect_str_eq(shell->hash->ht[hashindex]->key, "ls");
-	cr_expect_str_eq(shell->hash->ht[hashindex]->value, "/bin/ls");
+	cr_expect_str_eq(shell->hash->ht[hashindex]->value, "/tmp/hash_insert_empty_list_change_path/ls");
 	free_hashtable(shell);
+	remove("/tmp/hash_insert_empty_list_change_path/ls");
+	remove("/tmp/hash_insert_empty_list_change_path");
 	cr_expect_null(shell->hash);
 }
 
@@ -261,37 +268,48 @@ Test(unit_builtin_hash, hash_insert_clear_list_find_path)
 	size_t		ret = 0;
 
 	shell = init_shell(false);
+	mkdir("/tmp/hash_insert_clear_list_find_path/", 0777);
+	creat("/tmp/hash_insert_clear_list_find_path/ls", 07777);
+	creat("/tmp/hash_insert_clear_list_find_path/stat", 07777);
+	ft_setenv(shell->env, "PATH", "/tmp/hash_insert_clear_list_find_path", VAR_TYPE);
 	ret = builtin_hash(shell,argv);
 	cr_expect_eq(ret, 0);
 	cr_expect_str_eq(shell->hash->hl->key, "ls");
-	cr_expect_str_eq(shell->hash->hl->value, "/usr/bin/ls");
+	cr_expect_str_eq(shell->hash->hl->value, "/tmp/hash_insert_clear_list_find_path/ls");
 	unsigned long hashindex = create_hash("ls", HT_SIZE);
 	cr_expect_str_eq(shell->hash->ht[hashindex]->key, "ls");
-	cr_expect_str_eq(shell->hash->ht[hashindex]->value, "/usr/bin/ls");
+	cr_expect_str_eq(shell->hash->ht[hashindex]->value, "/tmp/hash_insert_clear_list_find_path/ls");
 	ret = builtin_hash(shell,argv2);
 	cr_expect_eq(ret, 0);
 	cr_expect_str_eq(shell->hash->hl->key, "stat");
-	cr_expect_str_eq(shell->hash->hl->value, "/usr/bin/stat");
+	cr_expect_str_eq(shell->hash->hl->value, "/tmp/hash_insert_clear_list_find_path/stat");
 	hashindex = create_hash("stat", HT_SIZE);
 	cr_expect_str_eq(shell->hash->ht[hashindex]->key, "stat");
-	cr_expect_str_eq(shell->hash->ht[hashindex]->value, "/usr/bin/stat");
+	cr_expect_str_eq(shell->hash->ht[hashindex]->value, "/tmp/hash_insert_clear_list_find_path/stat");
 	cr_expect_null(shell->hash->hl->next);
 	free_hashtable(shell);
+	remove("/tmp/hash_insert_clear_list_find_path/ls");
+	remove("/tmp/hash_insert_clear_list_find_path/stat");
+	remove("/tmp/hash_insert_clear_list_find_path");
 	cr_expect_null(shell->hash);
 }
 
 Test(unit_builtin_hash, add_to_hash_empty_table_coll)
 {
 	t_shell		*shell;
-	char		*path1 = "/usr/bin/more";
+	char		*path1 = "/tmp/add_to_hash_empty_table_coll/more";
 	char		*exec1 = "more";
-	char		*path2 = "/usr/bin/gcc-9";
+	char		*path2 = "/tmp/add_to_hash_empty_table_coll/gcc-9";
 	char		*exec2 = "gcc-9";
 	size_t		ret = 0;
 
 	if (HT_SIZE != 512)
 		cr_assert_fail("Warning: HT_SIZE is not 512 and will cause create_hash to be different");
+	mkdir("/tmp/add_to_hash_empty_table_coll/", 0777);
+	creat("/tmp/add_to_hash_empty_table_coll/more", 0777);
+	creat("/tmp/add_to_hash_empty_table_coll/gcc-9", 0777);
 	shell = init_shell(false);
+	ft_setenv(shell->env, "PATH", "/tmp/add_to_hash_empty_table_coll", VAR_TYPE);
 	ret = add_to_hash(shell, path1, exec1);
 	cr_expect_eq(ret, 0);
 	cr_expect_str_eq(shell->hash->hl->key, exec1);
@@ -307,6 +325,9 @@ Test(unit_builtin_hash, add_to_hash_empty_table_coll)
 	cr_expect_str_eq(shell->hash->ht[hashindex]->next_col->key, exec2);
 	cr_expect_str_eq(shell->hash->ht[hashindex]->next_col->value, path2);
 	free_hashtable(shell);
+	remove(path1);
+	remove(path2);
+	remove("/tmp/add_to_hash_empty_table_coll");
 	cr_expect_null(shell->hash);
 }
 
