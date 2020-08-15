@@ -215,16 +215,22 @@ Test(unit_builtin_hash, hash_insert_empty_list_find_path)
 {
 	t_shell		*shell;
 	char		*argv[3] = {"hash", "ls", NULL};
+	char		*path1 = "/tmp/hash_insert_empty_list_find_path/ls";
+	char		*exec1 = "ls";
 	size_t		ret = 0;
 
+
 	shell = init_shell(false);
+	mkdir("/tmp/hash_insert_empty_list_find_path/", 0777);
+	creat(path1, 07777);
+	ft_setenv(shell->env, "PATH", "/tmp/hash_insert_empty_list_find_path", VAR_TYPE);
 	ret = builtin_hash(shell,argv);
 	cr_expect_eq(ret, 0);
-	cr_expect_str_eq(shell->hash->hl->key, "ls");
-	cr_expect_str_eq(shell->hash->hl->value, "/usr/bin/ls");
+	cr_expect_str_eq(shell->hash->hl->key, exec1);
+	cr_expect_str_eq(shell->hash->hl->value, path1);
 	unsigned long hashindex = create_hash("ls", HT_SIZE);
 	cr_expect_str_eq(shell->hash->ht[hashindex]->key, "ls");
-	cr_expect_str_eq(shell->hash->ht[hashindex]->value, "/usr/bin/ls");
+	cr_expect_str_eq(shell->hash->ht[hashindex]->value, path1);
 	free_hashtable(shell);
 	cr_expect_null(shell->hash);
 }
