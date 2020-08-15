@@ -60,10 +60,10 @@ static int	path_start(t_cd *cd, char *old_pwd)
 		if (temp == NULL)
 			return (1);
 		ft_strncpy(cd->final_path, temp, PATH_MAX);
-		free(temp);
 	}
 	else
 		ft_strncpy(cd->final_path, cd->input_path, PATH_MAX);
+	free(temp);
 	return (0);
 }
 
