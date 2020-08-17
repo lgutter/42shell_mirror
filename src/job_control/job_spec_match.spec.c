@@ -29,7 +29,7 @@ Test(job_spec_match_unit, basic_job_id)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -53,7 +53,7 @@ Test(job_spec_match_unit, basic_job_wrong_id)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -77,7 +77,7 @@ Test(job_spec_match_unit, basic_job_current)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -101,7 +101,7 @@ Test(job_spec_match_unit, basic_job_not_current)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -125,7 +125,7 @@ Test(job_spec_match_unit, basic_job_current_percent_sign)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -149,7 +149,7 @@ Test(job_spec_match_unit, basic_job_previous)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -173,7 +173,7 @@ Test(job_spec_match_unit, basic_job_begins_with)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -197,7 +197,7 @@ Test(job_spec_match_unit, basic_job_does_not_begin_with)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -221,7 +221,7 @@ Test(job_spec_match_unit, basic_job_contains_string)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -245,7 +245,7 @@ Test(job_spec_match_unit, basic_job_does_not_contain_string)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -269,7 +269,7 @@ Test(job_spec_match_unit, error_job_command_is_null)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, false);
 	if (job_is_current)
@@ -293,7 +293,7 @@ Test(job_spec_match_unit, error_invalid_job_spec)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -317,7 +317,7 @@ Test(job_spec_match_unit, error_null_job_spec)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	if (job_is_current)
@@ -341,7 +341,7 @@ Test(job_spec_match_unit, error_null_job)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	t_job_cont	job_control = {0, 0, NULL};
+	t_job_cont	job_control = {0, 0, NULL, true};
 	shell->job_control = &job_control;
 	t_job		*job = NULL;
 	if (job_is_current)
@@ -365,8 +365,8 @@ Test(job_spec_match_unit, error_null_job_control)
 
 	// no need to modify this part.
 	t_shell		*shell = init_shell(false);
-	// t_job_cont	job_control = {0, 0, NULL};
-	// shell->job_control = &job_control;
+	// t_job_cont	job_control = {0, 0, NULL, true};
+	shell->job_control = NULL;
 	t_job		*job = init_job(shell, command, (command[strlen(command) - 1]) == '&' ? false : true);
 	// if (job_is_current)
 	// 	job_control.current = 1;

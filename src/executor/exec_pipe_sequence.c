@@ -130,7 +130,7 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	else if ((simple_cmd->argv != NULL && job->foreground == true &&
 	is_builtin(simple_cmd->argv[0]) == true) ||
 	(simple_cmd->argv == NULL && simple_cmd->assignments != NULL))
-		ret = exec_simple_command(simple_cmd, shell);
+		ret = ft_setstatus(shell->env, exec_simple_command(simple_cmd, shell));
 	else
 		ret = execute_simple(pipe_seq, shell, job, process);
 	std_fd_restore(old_fds);

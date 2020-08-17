@@ -43,12 +43,15 @@ void		add_job_to_list(t_shell *shell, t_job *job)
 	}
 	shell->job_control->previous = shell->job_control->current;
 	shell->job_control->current = job->id;
-	if (job->status == running)
-		print_job_status(job, shell->job_control->current,
-						shell->job_control->previous, job_print_pids);
-	else
-		print_job_status(job, shell->job_control->current,
-						shell->job_control->previous, job_print_auto);
+	if (shell->interactive == true || shell->job_control->job_debug == true)
+	{
+		if (job->status == running)
+			print_job_status(job, shell->job_control->current,
+							shell->job_control->previous, job_print_pids);
+		else
+			print_job_status(job, shell->job_control->current,
+							shell->job_control->previous, job_print_auto);
+	}
 }
 
 t_status	get_job_status(t_job *job)
