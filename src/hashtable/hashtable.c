@@ -103,8 +103,6 @@ void			set_hash(t_shell *shell, char *argz)
 			add_to_hash(shell, path, argz);
 			shell->hash->ht[hash]->hit++;
 		}
-		else if (ret == cmd_not_found)
-			handle_prefix_error_str(cmd_not_found, "hash", argz);
 		free(path);
 	}
 	else if (ft_strcmp(argz, shell->hash->ht[hash]->key) == 0)
