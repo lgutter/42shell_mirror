@@ -22,6 +22,7 @@ ft_strnstr \
 ft_strcmp \
 ft_strncmp \
 ft_atoi \
+ft_atoll \
 ft_intlen \
 ft_isalpha \
 ft_isdigit \

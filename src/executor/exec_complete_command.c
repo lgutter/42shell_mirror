@@ -18,23 +18,17 @@
 
 static t_complete_cmd	*skip_and_or_list(t_shell *shell, t_complete_cmd *cmd)
 {
-	t_complete_cmd *temp;
-
-	if (cmd->seperator_op == and_op && ft_getstatus(shell->env) == 0)
+	if (cmd->seperator_op == and_op)
 	{
-		return (cmd);
+		if (ft_getstatus(shell->env) != 0 && cmd->next != NULL)
+			return (cmd->next);
 	}
-	if (cmd->seperator_op == or_op && ft_getstatus(shell->env) != 0)
+	if (cmd->seperator_op == or_op)
 	{
-		return (cmd);
+		if (ft_getstatus(shell->env) == 0 && cmd->next != NULL)
+			return (cmd->next);
 	}
-	temp = cmd;
-	while (temp->next != NULL &&
-			(temp->seperator_op == and_op || temp->seperator_op == or_op))
-	{
-		temp = temp->next;
-	}
-	return (temp);
+	return (cmd);
 }
 
 static int				handle_command(t_shell *shell, t_complete_cmd *comp_cmd)
