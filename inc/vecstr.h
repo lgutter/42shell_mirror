@@ -5,15 +5,15 @@
 /*                                                     +:+                    */
 /*   By: nloomans <nloomans@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 0000/00/00 00:00:00 by nloomans      #+#    #+#                 */
-/*   Updated: 9999/99/99 99:99:99 by nloomans      ########   odam.nl         */
+/*   Created: 2020/08/12 13:17:06 by nloomans      #+#    #+#                 */
+/*   Updated: 2020/08/17 11:47:16 by nloomans      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECSTR_H
 # define VECSTR_H
 
-#include <stdio.h>
+# include <stdio.h>
 
 /*
 ** t_vecstr is a simple vector string implementation. It allows you to
@@ -47,7 +47,7 @@ void				clear_vecstr(t_vecstr *vecstr);
 /*
 ** vecstr_add adds a number of bytes to the vecstr, recallocating if necessary.
 ** append does not need to be null-terminated as len bytes will always be added.
-** note that this also means it's undefined behavior if len is larger then append.
+** this also means it's undefined behavior if len is larger then append.
 */
 int					vecstr_add(t_vecstr *vecstr,
 						const char *append, size_t len);
