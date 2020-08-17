@@ -12,19 +12,6 @@
 
 #include "builtins.h"
 
-bool		is_executable(char *path)
-{
-	struct stat statbuff;
-
-	if (path == NULL)
-		return (false);
-	if (stat(path, &statbuff) != 0)
-		return (false);
-	if (access(path, X_OK) != 0)
-		return (false);
-	return (S_ISREG(statbuff.st_mode));
-}
-
 static int	type_executable(t_shell *shell, char *path)
 {
 	char	*check;

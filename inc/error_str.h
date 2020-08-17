@@ -60,5 +60,7 @@ static const char	*g_error_str[error_count] = {
 	[ambig_job_spec] = "Ambiguous job_spec",
 	[bad_subst_err] = "Bad substitution",
 	[empty_hash] = "Hashtable is empty",
+	[isbuiltin] = "is a shell builtin",
+	[chdir_error] = "Error while chdir()) call",
 };
 #endif

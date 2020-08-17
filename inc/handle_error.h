@@ -68,6 +68,8 @@ typedef enum		e_error
 	ambig_job_spec,
 	bad_subst_err,
 	empty_hash,
+	isbuiltin,
+	chdir_error,
 	error_count,
 }					t_error;
 

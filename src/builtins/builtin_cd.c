@@ -12,6 +12,7 @@
 
 #include "builtins.h"
 #include "executor.h"
+#include "autocomplete.h"
 #ifdef __linux__
 # include <linux/limits.h>
 #else
@@ -19,57 +20,75 @@
 #endif
 #include "utils.h"
 
-static char	*follow_links(char *current, char **dest, size_t cur_size)
+void		follow_links(char **curr, char **input, size_t cur_size)
 {
-	char	*path;
 	size_t	i;
 	char	*temp;
 
-	path = ft_strdup(current);
 	i = 0;
-	while (dest[i] != NULL)
+	if (input == NULL || cur_size == 0)
+		return ;
+	while (input[i] != NULL && *curr != NULL)
 	{
-		if (ft_strcmp(dest[i], "..") == 0)
+		if (ft_strcmp(input[i], "..") == 0)
 		{
-			temp = ft_strndup(path, ft_index_nchar(path, '/', cur_size));
-			free(path);
-			path = ft_strdup(temp);
+			temp = ft_strndup(*curr, ft_index_nchar(*curr, '/', cur_size));
+			free(*curr);
+			*curr = ft_strdup(temp);
 			free(temp);
 			cur_size--;
 		}
-		else if (ft_strcmp(dest[i], ".") != 0)
+		else if (ft_strcmp(input[i], ".") != 0)
 		{
-			str_expand_triple(&path, "/", dest[i]);
+			str_expand_triple(&*curr, "/", input[i]);
 			cur_size++;
 		}
 		i++;
 	}
-	free_dchar_arr(dest);
-	return (path);
+	free_dchar_arr(input);
 }
 
 static int	path_start(t_cd *cd, char *old_pwd)
 {
 	char	*temp;
 
-	if (cd->input_path[0] != '/')
+	temp = ft_strdup(old_pwd);
+	if (cd->input_path[0] != '/' && temp != NULL)
 	{
-		temp = follow_links(old_pwd, ft_strsplit(cd->input_path, '/')
+		follow_links(&temp, ft_strsplit(cd->input_path, '/')
 								, ft_countchar(old_pwd, '/'));
 		if (temp == NULL)
 			return (1);
 		ft_strncpy(cd->final_path, temp, PATH_MAX);
-		free(temp);
 	}
 	else
 		ft_strncpy(cd->final_path, cd->input_path, PATH_MAX);
+	free(temp);
 	return (0);
+}
+
+static int	check_change_path(char *path, char *input)
+{
+	int			ret;
+
+	ret = 0;
+	if (access(path, F_OK) != 0)
+		ret = no_such_file_or_dir;
+	if (ret == 0 && is_directory(NULL, path) == 0)
+		ret = not_a_dir_error;
+	if (ret == 0 && access(path, X_OK) != 0)
+		ret = access_denied;
+	if (ret == 0 && chdir(path) == -1)
+		ret = chdir_error;
+	if (ret != 0)
+		handle_prefix_error_str(ret, "cd", input);
+	return (ret);
 }
 
 static int	resolve_cd_path(t_env *env, t_cd *cd)
 {
 	char	*old_pwd;
-	size_t	ret;
+	int		ret;
 
 	ret = 0;
 	if (cd->link == true && ft_strlen(cd->link_path) != 0)
@@ -80,13 +99,9 @@ static int	resolve_cd_path(t_env *env, t_cd *cd)
 		old_pwd = getcwd(NULL, 0);
 	if (old_pwd == NULL)
 		ret = 1;
-	if (ret == 0)
-		ret = path_start(cd, old_pwd);
-	if (ret == 0 && chdir(cd->final_path) == -1)
-		ret = handle_prefix_error_str(no_such_file_or_dir, "cd",
-										cd->input_path);
-	if (ret == 0)
-		ret = set_old_new_pwd(env, cd, old_pwd);
+	ret = (ret == 0 ? path_start(cd, old_pwd) : ret);
+	ret = (ret == 0 ? check_change_path(cd->final_path, cd->input_path) : ret);
+	ret = (ret == 0 ? (int)set_old_new_pwd(env, cd, old_pwd) : ret);
 	free(old_pwd);
 	return (ret);
 }
@@ -105,6 +120,8 @@ int			builtin_cd(t_shell *shell, char **argv)
 		ret = resolve_cd_path(shell->env, &cd_s);
 	free(cd_s.input_path);
 	ft_bzero(cd_s.final_path, PATH_MAX);
-	cd_s = (t_cd){.to_oldpwd = false, .to_home = false, .link = true, };
+	cd_s.to_oldpwd = false;
+	cd_s.to_home = false;
+	cd_s.link = true;
 	return (ret == 0 ? 0 : 1);
 }

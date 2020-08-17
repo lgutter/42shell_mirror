@@ -83,7 +83,9 @@ size_t			initialize_complete(t_complete *com, t_buff *buffer)
 {
 	char	*simple_command;
 	char	*trim;
+	size_t	ret;
 
+	ret = 0;
 	if (com == NULL || buffer == NULL || buffer->buff == NULL)
 		return (1);
 	simple_command = is_op_offset(buffer);
@@ -91,18 +93,12 @@ size_t			initialize_complete(t_complete *com, t_buff *buffer)
 		return (1);
 	trim = ft_strtrim(simple_command);
 	if (ft_strlen(trim) == 0)
-	{
-		free(simple_command);
-		free(trim);
-		return (2);
-	}
-	if (get_to_complete(com, simple_command) != 0)
-	{
-		free(simple_command);
-		return (1);
-	}
-	com->options = get_autocomp_opt(com);
+		ret = 2;
+	if (ret == 0 && get_to_complete(com, simple_command) != 0)
+		ret = 1;
+	if (ret == 0)
+		com->options = get_autocomp_opt(com);
 	free(trim);
 	free(simple_command);
-	return (0);
+	return (ret);
 }

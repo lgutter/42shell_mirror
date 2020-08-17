@@ -261,7 +261,7 @@ Test(auto_complete_lists, add_dir_multi)
 {
     t_complete  comp;
 	size_t		ret;
-	t_env		*env;
+	t_shell		*shell = init_shell(false);
 
 	ret = mkdir("/tmp/add_dir_multi", 0777);
 	cr_expect_eq(ret, 0);
@@ -274,12 +274,11 @@ Test(auto_complete_lists, add_dir_multi)
 	close(ret);
 
 	memset(&comp, 0, sizeof(t_complete));
-	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	comp.options |= DIRECTORIES;
 	comp.to_complete = ft_strdup("/tmp/add_dir_multi/d");
 	comp.to_complen = 20;
-	ret = complete_files(env, &comp);
+	ret = complete_files(shell->env, &comp);
 	cr_expect_eq(ret, 0);
 	if (comp.list->match != NULL && ft_strcmp(comp.list->match, "dir2/") == 0)
 	{
@@ -301,7 +300,7 @@ Test(auto_complete_lists, add_dirfiles_multi)
 {
     t_complete  comp;
 	size_t		ret;
-	t_env		*env;
+	t_shell		*shell= init_shell(false);
 
 	ret = mkdir("/tmp/add_dirfiles_multi", 0777);
 	cr_expect_eq(ret, 0);
@@ -310,14 +309,12 @@ Test(auto_complete_lists, add_dirfiles_multi)
 	ret = open("/tmp/add_dirfiles_multi/dirfiles1", O_CREAT, O_WRONLY, O_APPEND, 0777);
 	ft_dprintf(ret, "test");
 	close(ret);
-
 	memset(&comp, 0, sizeof(t_complete));
-	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	comp.options |= (DIRECTORIES | FILES);
 	comp.to_complete = ft_strdup("/tmp/add_dirfiles_multi/d");
 	comp.to_complen = 25;
-	ret = complete_files(env, &comp);
+	ret = complete_files(shell->env, &comp);
 	cr_expect_eq(ret, 0);
 	if (comp.list->match != NULL && ft_strcmp(comp.list->match, "dirfiles1") == 0)
 	{

@@ -85,6 +85,66 @@ Test(builtin_cd_unit, valid_cd_normal)
 	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", dir, buff);
 }
 
+Test(builtin_cd_unit, valid_cd_normal_no_read_perm)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		buff[1024];
+	char		*dir = "/tmp/builtin_cd_unit_valid_cd_normal_no_read_perm";
+#ifdef __linux__
+	char		*expected_dir = "/tmp/builtin_cd_unit_valid_cd_normal_no_read_perm";
+#else
+	char		*expected_dir = "/private/tmp/builtin_cd_unit_valid_cd_normal_no_read_perm";
+#endif
+	char		olddir[1024];
+
+	getcwd(olddir, 1024);
+	mkdir(dir, 0333);
+	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = dir;
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), olddir);
+	getcwd(buff, 1024);
+	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), buff);
+	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", dir, buff);
+	remove(dir);
+}
+
+Test(builtin_cd_unit, valid_cd_normal_no_write_perm)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		buff[1024];
+	char		*dir = "/tmp/builtin_cd_unit_valid_cd_normal_no_write_perm";
+#ifdef __linux__
+	char		*expected_dir = "/tmp/builtin_cd_unit_valid_cd_normal_no_write_perm";
+#else
+	char		*expected_dir = "/private/tmp/builtin_cd_unit_valid_cd_normal_no_write_perm";
+#endif
+	char		olddir[1024];
+
+	getcwd(olddir, 1024);
+	mkdir(dir, 0555);
+	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = dir;
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), olddir);
+	getcwd(buff, 1024);
+	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), buff);
+	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", dir, buff);
+	remove(dir);
+}
+
 Test(builtin_cd_unit, valid_cd_from_removed_dir)
 {
 	char		**argv;
@@ -152,17 +212,100 @@ Test(builtin_cd_unit, invalid_cd_no_such_file, .init = redirect_std_err)
 	char		**argv;
 	t_shell		*shell = init_shell(false);
 	int			ret = 0;
-	char		buff[1024];
-
+	char		buff[4096];
 
 	argv = (char **)ft_memalloc(sizeof(char *) * 3);
 	argv[0] = "cd";
-	argv[1] = "foobar";
+	argv[1] = "/tmp/builtin_cd_unit_invalid_cd_no_such_file";
 	argv[2] = NULL;
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 	fflush(stderr);
-	sprintf(buff, "Cetushell: cd: foobar: %s\n", g_error_str[no_such_file_or_dir]);
+	sprintf(buff, "Cetushell: cd: /tmp/builtin_cd_unit_invalid_cd_no_such_file: %s\n", g_error_str[no_such_file_or_dir]);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(builtin_cd_unit, not_a_dir, .init = redirect_std_err)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		path[1024] = "/tmp/builtin_cd_unit_not_a_dir";
+	char		buff[4096];
+
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	creat(path, 0777);
+	argv[0] = "cd";
+	argv[1] = "/tmp/builtin_cd_unit_not_a_dir";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
+	fflush(stderr);
+	sprintf(buff, "Cetushell: cd: /tmp/builtin_cd_unit_not_a_dir: %s\n", g_error_str[not_a_dir_error]);
+	remove(path);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(builtin_cd_unit, not_a_dir_no_perm, .init = redirect_std_err)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		path[1024] = "/tmp/builtin_cd_unit_not_a_dir_no_perm";
+	char		buff[4096];
+
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	creat(path, 0000);
+	argv[0] = "cd";
+	argv[1] = "/tmp/builtin_cd_unit_not_a_dir_no_perm";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
+	fflush(stderr);
+	sprintf(buff, "Cetushell: cd: /tmp/builtin_cd_unit_not_a_dir_no_perm: %s\n", g_error_str[not_a_dir_error]);
+	remove(path);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(builtin_cd_unit, acces_denied_no_perm, .init = redirect_std_err)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		path[1024] = "/tmp/builtin_cd_unit_acces_denied_no_perm";
+	char		buff[4096];
+
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	mkdir(path, 0000);
+	argv[0] = "cd";
+	argv[1] = "/tmp/builtin_cd_unit_acces_denied_no_perm";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
+	fflush(stderr);
+	sprintf(buff, "Cetushell: cd: /tmp/builtin_cd_unit_acces_denied_no_perm: %s\n", g_error_str[access_denied]);
+	remove(path);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(builtin_cd_unit, acces_denied_no_exec_perm, .init = redirect_std_err)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		path[1024] = "/tmp/builtin_cd_unit_acces_denied_no_exec_perm";
+	char		buff[4096];
+
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	mkdir(path, 0666);
+	argv[0] = "cd";
+	argv[1] = "/tmp/builtin_cd_unit_acces_denied_no_exec_perm";
+	argv[2] = NULL;
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
+	fflush(stderr);
+	sprintf(buff, "Cetushell: cd: /tmp/builtin_cd_unit_acces_denied_no_exec_perm: %s\n", g_error_str[access_denied]);
+	remove(path);
 	cr_expect_stderr_eq_str(buff);
 }
 
@@ -387,7 +530,7 @@ Test(builtin_cd_unit, valid_cd_multi_link_P_option)
 	rmdir("/tmp/multi_link_P/bar");
 }
 
-Test(builtin_cd_unit, cd_invalid_option)
+Test(builtin_cd_unit, cd_invalid_option, .init = redirect_std_err)
 {
 	char		**argv;
 	t_shell		*shell = init_shell(false);
@@ -400,6 +543,7 @@ Test(builtin_cd_unit, cd_invalid_option)
 	argv[1] = "-PLKPLP";
 	argv[2] = dir;
 	argv[3] = NULL;
+	fflush(stderr);
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
 }

@@ -90,7 +90,8 @@ void			set_hash(t_shell *shell, char *argz)
 
 	path = NULL;
 	if (shell == NULL || shell->env == NULL || argz == NULL ||
-		shell->hash == NULL || is_builtin(argz) == true)
+		shell->hash == NULL || is_builtin(argz) == true
+		|| ft_strchr(argz, '/') != NULL)
 		return ;
 	hash = create_hash(argz, HT_SIZE);
 	if (shell->hash->ht[hash] == NULL)
