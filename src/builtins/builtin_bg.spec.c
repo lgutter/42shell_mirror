@@ -189,5 +189,7 @@ Test(builtin_bg_unit, basic_match_two_jobs, .init =cr_redirect_stdout)
 		cr_expect_eq(ret, 0, "second job exited, but should not have been continued!, ret: %i", ret);
 		ret = waitpid(job3->pgrp, &stat_loc, WNOHANG);
 		cr_expect_eq(ret, job3->pgrp, "job did not exit!, ret: %i", ret);
+	#else
+		cr_skip_test("Test builtin_bg_unit-basic_match_two_jobs can not be run on MacOS and will be skipped");
 	#endif
 	}
