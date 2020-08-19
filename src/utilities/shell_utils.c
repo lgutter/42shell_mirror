@@ -76,7 +76,8 @@ static char		*check_passwd_entry(char *entry, uid_t user, bool interactive)
 **	a section 3 function, we are not allowed to use it. if the shell is
 **	interactive, we also print a warning that we assumed the user's home.
 */
-static void 	init_home_var(t_shell *shell)
+
+static void		init_home_var(t_shell *shell)
 {
 	char	*temp;
 	char	*line;
