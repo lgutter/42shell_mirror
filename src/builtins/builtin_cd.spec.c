@@ -99,23 +99,23 @@ Test(builtin_cd_unit, valid_cd_normal_no_read_perm)
 	char		*expected_dir = "/private/tmp/builtin_cd_unit_valid_cd_normal_no_read_perm";
 #endif
 	char		olddir[1024];
-
 	getcwd(olddir, 1024);
 	mkdir(dir, 0333);
 	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
-	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv = (char **)ft_memalloc(sizeof(char *) * 4);
 	argv[0] = "cd";
-	argv[1] = dir;
-	argv[2] = NULL;
+	argv[1] = "-P";
+	argv[2] = dir;
+	argv[3] = NULL;
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), olddir);
 	getcwd(buff, 1024);
 	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), buff);
-	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", dir, buff);
+	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
 	remove(dir);
+	free(argv);
 }
-
 Test(builtin_cd_unit, valid_cd_normal_no_write_perm)
 {
 	char		**argv;
@@ -129,21 +129,22 @@ Test(builtin_cd_unit, valid_cd_normal_no_write_perm)
 	char		*expected_dir = "/private/tmp/builtin_cd_unit_valid_cd_normal_no_write_perm";
 #endif
 	char		olddir[1024];
-
 	getcwd(olddir, 1024);
 	mkdir(dir, 0555);
 	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
-	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv = (char **)ft_memalloc(sizeof(char *) * 4);
 	argv[0] = "cd";
-	argv[1] = dir;
-	argv[2] = NULL;
+	argv[1] = "-P";
+	argv[2] = dir;
+	argv[3] = NULL;
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), olddir);
 	getcwd(buff, 1024);
 	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), buff);
-	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", dir, buff);
+	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
 	remove(dir);
+	free(argv);
 }
 
 Test(builtin_cd_unit, valid_cd_from_removed_dir)
