@@ -33,6 +33,10 @@ static size_t	hash_path(t_shell *shell, char **path, char **split, char *arg)
 		*path = ft_strdup(split[1]);
 	if (*path == NULL)
 		return (handle_error(malloc_error));
+	if (is_executable(*path) == 0)
+		return (handle_prefix_error_str(cmd_not_found, "hash", *path));
+	else if (ft_strstr(*path, split[0]) == NULL)
+		return (handle_prefix_error_str(cmd_not_found, "hash", split[0]));
 	return (0);
 }
 

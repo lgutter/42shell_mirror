@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/05/07 22:37:17 by devan         #+#    #+#                 */
-/*   Updated: 2020/05/08 01:27:21 by devan         ########   odam.nl         */
+/*   Updated: 2020/08/04 16:40:02 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,12 @@ Test(builtin_cd_unit, valid_cd_normal)
 	t_shell		*shell = init_shell(false);
 	int			ret = 0;
 	char		buff[1024];
-	char		*dir = "/tmp";
 #ifdef __linux__
 	char		*expected_dir = "/tmp";
+	char		*dir = "/tmp";
 #else
 	char		*expected_dir = "/private/tmp";
+	char		*dir = "/private/tmp";
 #endif
 	char		olddir[1024];
 
@@ -81,8 +82,8 @@ Test(builtin_cd_unit, valid_cd_normal)
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), olddir);
 	getcwd(buff, 1024);
-	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), buff);
-	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", dir, buff);
+	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), expected_dir);
+	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
 }
 
 Test(builtin_cd_unit, valid_cd_normal_no_read_perm)
@@ -98,23 +99,23 @@ Test(builtin_cd_unit, valid_cd_normal_no_read_perm)
 	char		*expected_dir = "/private/tmp/builtin_cd_unit_valid_cd_normal_no_read_perm";
 #endif
 	char		olddir[1024];
-
 	getcwd(olddir, 1024);
 	mkdir(dir, 0333);
 	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
-	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv = (char **)ft_memalloc(sizeof(char *) * 4);
 	argv[0] = "cd";
-	argv[1] = dir;
-	argv[2] = NULL;
+	argv[1] = "-P";
+	argv[2] = dir;
+	argv[3] = NULL;
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), olddir);
 	getcwd(buff, 1024);
 	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), buff);
-	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", dir, buff);
+	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
 	remove(dir);
+	free(argv);
 }
-
 Test(builtin_cd_unit, valid_cd_normal_no_write_perm)
 {
 	char		**argv;
@@ -128,21 +129,22 @@ Test(builtin_cd_unit, valid_cd_normal_no_write_perm)
 	char		*expected_dir = "/private/tmp/builtin_cd_unit_valid_cd_normal_no_write_perm";
 #endif
 	char		olddir[1024];
-
 	getcwd(olddir, 1024);
 	mkdir(dir, 0555);
 	ft_setenv(shell->env, "OLDPWD", "foo", ENV_VAR);
-	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv = (char **)ft_memalloc(sizeof(char *) * 4);
 	argv[0] = "cd";
-	argv[1] = dir;
-	argv[2] = NULL;
+	argv[1] = "-P";
+	argv[2] = dir;
+	argv[3] = NULL;
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), olddir);
 	getcwd(buff, 1024);
 	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), buff);
-	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", dir, buff);
+	cr_expect_str_eq(buff, expected_dir, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
 	remove(dir);
+	free(argv);
 }
 
 Test(builtin_cd_unit, valid_cd_from_removed_dir)
@@ -521,7 +523,7 @@ Test(builtin_cd_unit, valid_cd_multi_link_P_option)
 	argv[3] = NULL;
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
-	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), "/tmp/multi_link_P/bar");
+	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), expected_dir);
 	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), expected_dir);
 	getcwd(buff, 1024);
 	cr_expect_str_eq(expected_dir, buff, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);
@@ -576,19 +578,19 @@ Test(builtin_cd_unit, valid_cd_multi_link_multi_option)
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
 	free(argv);
-	argv = (char **)ft_memalloc(sizeof(char *) * 8);
+	argv = (char **)ft_memalloc(sizeof(char *) * 9);
 	argv[0] = "cd";
 	argv[1] = "-P";
-	argv[1] = "-L";
-	argv[1] = "-P";
-	argv[1] = "-L";
-	argv[1] = "-L";
-	argv[1] = "-P";
-	argv[2] = "baz";
-	argv[3] = NULL;
+	argv[2] = "-L";
+	argv[3] = "-P";
+	argv[4] = "-L";
+	argv[5] = "-L";
+	argv[6] = "-P";
+	argv[7] = "baz";
+	argv[8] = NULL;
 	ret = builtin_cd(shell, argv);
 	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
-	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), "/tmp/multi_option/bar");
+	cr_expect_str_eq(ft_getenv(shell->env, "OLDPWD", VAR_TYPE), expected_dir);
 	cr_expect_str_eq(ft_getenv(shell->env, "PWD", VAR_TYPE), expected_dir);
 	getcwd(buff, 1024);
 	cr_expect_str_eq(expected_dir, buff, "did not change to correct dir! expected %s, got %s!", expected_dir, buff);

@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/24 18:43:31 by devan         #+#    #+#                 */
-/*   Updated: 2020/07/24 18:43:31 by devan         ########   odam.nl         */
+/*   Updated: 2020/08/07 17:04:45 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void			set_hash(t_shell *shell, char *argz)
 {
 	unsigned long	hash;
 	char			*path;
+	size_t			ret;
 
 	path = NULL;
 	if (shell == NULL || shell->env == NULL || argz == NULL ||
@@ -96,7 +97,8 @@ void			set_hash(t_shell *shell, char *argz)
 	hash = create_hash(argz, HT_SIZE);
 	if (shell->hash->ht[hash] == NULL)
 	{
-		if (find_executable(shell->env, &path, argz) == 0)
+		ret = find_executable(shell->env, &path, argz);
+		if (ret == 0)
 		{
 			add_to_hash(shell, path, argz);
 			shell->hash->ht[hash]->hit++;

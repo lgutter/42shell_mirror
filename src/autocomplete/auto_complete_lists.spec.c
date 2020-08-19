@@ -6,7 +6,7 @@
 /*   By: devan <devan@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/06/29 05:24:17 by devan         #+#    #+#                 */
-/*   Updated: 2020/07/09 15:51:12 by devanando     ########   odam.nl         */
+/*   Updated: 2020/08/04 16:30:38 by dkroeke       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,13 +236,17 @@ Test(auto_complete_lists, add_exec_multi)
     t_complete  comp;
 	size_t		ret;
 	t_env		*env;
+	char		input1[2048] = "/tmp/add_exec_multi/chmod";
+	char		input2[2048] = "/tmp/add_exec_multi/chmem";
 
-
+	mkdir("/tmp/add_exec_multi", 0777);
+	creat(input1, 0777);
+	creat(input2, 0777);
 	memset(&comp, 0, sizeof(t_complete));
 	env = (t_env *)ft_memalloc(sizeof(t_env));
 	comp.list = (t_clist *)ft_memalloc(sizeof(t_clist));
 	env->key = ft_strdup("PATH");
-	env->value = ft_strdup("foo:/bin/:/usr/bin:/usr/sbin");
+	env->value = ft_strdup("/tmp/add_exec_multi");
 	env->type = VAR_TYPE;
 	env->next = NULL;
 
@@ -255,6 +259,9 @@ Test(auto_complete_lists, add_exec_multi)
     cr_expect_str_eq(comp.list->match, "chmod");
 	cr_expect_str_eq(comp.list->next->match, "chmem");
 	cr_expect_null(comp.list->next->next);
+	remove(input1);
+	remove(input2);
+	remove("/tmp/add_exec_multi");
 }
 
 Test(auto_complete_lists, add_dir_multi)

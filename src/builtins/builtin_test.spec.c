@@ -302,9 +302,12 @@ Test(built_test_unit, valid_unary_block_file_exists)
 {
 	if (getenv("CI_ENVIRONMENT") != NULL)
 		cr_skip("no block files in CI environment, so test diabled!");
+	#ifdef __linux__
 	char	*input = "[ -b /dev/loop0 ]";
+	#else
+	char	*input = "[ -b /dev/disk0 ]";
+	#endif
 	int		expected_ret = UNIX_TRUE;
-
 	char **argv = ft_strsplit(input, ' ');
 	t_shell *shell = init_shell(false);
 	cr_assert_not_null(argv, "SETUP FAILED");
@@ -312,12 +315,11 @@ Test(built_test_unit, valid_unary_block_file_exists)
 	int ret = builtin_test(shell, argv);
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 }
-
+ 
 Test(built_test_unit, valid_unary_char_file_exists)
 {
 	char	*input = "[ -c /dev/null ]";
 	int		expected_ret = UNIX_TRUE;
-
 	char **argv = ft_strsplit(input, ' ');
 	t_shell *shell = init_shell(false);
 	cr_assert_not_null(argv, "SETUP FAILED");
@@ -330,7 +332,6 @@ Test(built_test_unit, valid_unary_dir_exists_negate)
 {
 	char	*input = "test ! -d /dev";
 	int		expected_ret = UNIX_FALSE;
-
 	char **argv = ft_strsplit(input, ' ');
 	t_shell *shell = init_shell(false);
 	cr_assert_not_null(argv, "SETUP FAILED");
@@ -341,16 +342,16 @@ Test(built_test_unit, valid_unary_dir_exists_negate)
 
 Test(built_test_unit, valid_unary_group_id_set)
 {
+	#ifdef __linux__
 	char	*filename = "/tmp/valid_group_id_set";
 	char	*input = "[ -g /tmp/valid_group_id_set ]";
 	int		expected_ret = UNIX_TRUE;
-
 	remove(filename);
-	int ret = open(filename, (O_CREAT | O_RDWR), 02664);
+	int ret = creat(filename, 0000);
 	if (ret < 0)
-		perror("open");
-
-	cr_assert_geq(ret, 0, "open failed! ret is %i", ret);
+		perror("creat");
+	cr_assert_geq(ret, 0, "creat failed! ret is %i", ret);
+	chmod(filename, 02664);
 	char **argv = ft_strsplit(input, ' ');
 	t_shell *shell = init_shell(false);
 	cr_assert_not_null(argv, "SETUP FAILED");
@@ -358,6 +359,9 @@ Test(built_test_unit, valid_unary_group_id_set)
 	ret = builtin_test(shell, argv);
 	cr_expect_eq(expected_ret, ret, "expected ret %i but got %i", expected_ret, ret);
 	remove(filename);
+	#else
+	cr_skip_test("does not work on macOS");
+	#endif
 }
 
 Test(built_test_unit, valid_unary_user_id_set_negate)
@@ -365,12 +369,12 @@ Test(built_test_unit, valid_unary_user_id_set_negate)
 	char	*filename = "/tmp/valid_user_id_set";
 	char	*input = "test ! -u /tmp/valid_user_id_set";
 	int		expected_ret = UNIX_FALSE;
-
 	remove(filename);
-	int ret = open(filename, (O_CREAT | O_RDWR), 04664);
+	int ret = creat(filename, 0000);
 	if (ret < 0)
-		perror("open");
-	cr_assert_geq(ret, 0, "open failed! ret is %i", ret);
+		perror("creat");
+	cr_assert_geq(ret, 0, "creat failed! ret is %i", ret);
+	chmod(filename, 04664);
 	char **argv = ft_strsplit(input, ' ');
 	t_shell *shell = init_shell(false);
 	cr_assert_not_null(argv, "SETUP FAILED");
