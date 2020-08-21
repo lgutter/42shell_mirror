@@ -76,6 +76,7 @@ src_files = files([
   'src/environment/ft_setenv.c',
   'src/environment/ft_setstatus.c',
   'src/environment/ft_unsetenv.c',
+  'src/environment/resolve_command_subst.c',
   'src/environment/free_env_list.c',
   'src/handle_input.c',
   'src/history/history_list.c',

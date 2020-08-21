@@ -110,4 +110,7 @@ int				expand_variable(t_shell *shell, char **string,
 int				expand_home(t_env *env_list, char **string,
 												size_t *read, size_t *write);
 
+int				resolve_command_subst(char **out, t_env *env_list,
+												const char *subst);
+
 #endif
