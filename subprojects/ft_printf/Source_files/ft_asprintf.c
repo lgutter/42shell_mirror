@@ -35,7 +35,7 @@ int						ft_asprintf(char **target,
 	info.totallen = 0;
 	va_start(info.arguments, format);
 	i = 0;
-	*target = NULL;
+	*target = ft_strnew(0);
 	while (format[i] != '\0')
 	{
 		if (format[i] == '%')
