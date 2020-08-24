@@ -20,6 +20,7 @@ quote
 multi-
 line"
 echo '--------------------------------------------------'
+cd ~
 cd /tmp
 printf "Roses are red\nViolets blue\nAll my base\nI love you\n" | sort | cat -e > sorted_poem
 sed -e 's/Roses/Turnips/' < sorted_poem > better_poem
@@ -72,11 +73,15 @@ cat -e <<EOF
 $testpoem
 EOF
 echo '--------------------------------------------------'
+setshell --help
 setshell --readonly READONLY=TRUE
+setenv --readonly 42SH=INVALID
+setenv --readonly 42SHINVALID
 unsetshell READONLY
 unset READONLY
 READONLY=FOO
 setenv --readonly READONLY=EURT
+setenv --readonly --force READONLY=EURT
 unsetenv READONLY
 unset READONLY
 unsetenv --force READONLY
@@ -87,6 +92,7 @@ export READONLY
 env | grep READ
 unsetshell --force READONLY
 unset READONLY
+unset --help
 env
 set
 echo '--------------------------------------------------'
@@ -132,6 +138,7 @@ echo "exit 42 2 3" | ./cetushell; echo $? #should print error about too many arg
 cd -L /tmp; cd -P .. #specific for MacOS
 cd /tmp
 type type ls # type is builtin, ls is command
+type env set hash true foo echo
 echo '--------------------------------------------------'
 ls doesnotexist || echo "OR operator works"; echo $?
 echo 'No error' || echo 'You cant see me'; echo "${?}"
@@ -147,38 +154,154 @@ a=hello b=world; b=42 echo ${a}_${b} && echo ${b} #hello_word world
 directory=/ ls_opt=-atr
 ls ${ls_opt} ${directory} #ls -atr /
 echo ${empty}|cat -e #only $
-set | grep -E '(a|b)='#a=hello b=world
-env | grep -E '(a|b)='#nothing (or LS_COLORS)
+set | grep -E '(a|b)=' #a=hello b=world
+env | grep -E '(a|b)=' #nothing or LS_COLORS
+shellenv
+setshell
+setenv
 export b
 printenv b #world
 ONESHOT= env | grep ONESHOT
 unset a b
 set | grep -E '(a|b)='#nothing
-env | grep -E '(a|b)='#nothing (or LS_COLORS)
-
+env | grep -E '(a|b)='#nothing or LS_COLORS
+a=hello b=world; b=42 echo ${a}_${b} && echo ${b} #hello_word world
+export a c #no output expected
+env | grep a #should show that a is hello
+export -p
+export -f #should print usage
 echo '--------------------------------------------------'
+OLDPATH=$PATH
 unset PATH
 PATH=/bin:/usr/bin
 mkdir testdir
 echo ${?} #0
 ls -1 | grep testdir #testdir
 rm -r testdir
+PATH=$OLDPATH
 echo '--------------------------------------------------'
 true; echo ${?}; false; echo ${?} #0; 1
 mkfifo fifo
 ls -lR /usr/bin >fifo 2>&1 &
-jobs
+jobs %1
 rm fifo
 emacs -nw &
 emacs -nw &
 emacs -nw &
 emacs -nw &
 emacs -nw &
-sleep 0.2
-jobs #when in interactive mode, should show 5 suspended emacs. in non-interactive mode they will exit.
+sleep 0.5
+jobs '%? ' #when in interactive mode, should show 5 suspended emacs. in non-interactive mode they will exit.
 # in interactive mode, use fg to use the emacs'
 echo "
 Only 'ls -lR /usr/bin >fifo 2>&1 &' left:"
-jobs
+exit #should not exit and print an error about unfinished jobs
+jobs -l
+bg %?foo #should print an error
+bg %?fo #should print an error that job is in background
+jobs -p
 #in interactive mode, run 'ls -Rl / 2>&1' and press `ctrl-z`. then run jobs to show it is suspended.
-exit 42
+echo '--------------------------------------------------'
+echo 'foo\
+bar' | cat -e
+echo "foo\
+bar" | cat -e
+echo "'foo\
+bar'
+baz" | cat -e
+l\
+s \
+-lat
+echo abc \| cat -e
+echo abc \\| cat -e
+echo '--------------------------------------------------'
+test
+[ true ]
+[ ]
+[ error
+echo '---------- -b BLOCK'
+test -b /dev/disk0 && echo ok || echo wrong #ok WRONG IN CI
+test -b /dev/console && echo ok || echo wrong #wrong
+test -b DOESTNOTEXIST && echo ok || echo wrong #wrong
+echo '---------- -c CHARACTER'
+test -c /dev/disk0 && echo ok || echo wrong #wrong
+test -c /dev/console && echo ok || echo wrong #ok
+echo '---------- -d DIRECTORY'
+test -d /dev/disk0 && echo ok || echo wrong #wrong
+test -d ${HOME} && echo ok || echo wrong #ok
+test -d /dev/disk0 && echo ok || echo wrong #wrong
+test -d ${HOME} && echo ok || echo wrong #ok
+echo '---------- -e EXISTS'
+test -e /dev/null && echo ok || echo wrong #ok
+test -e /usr/share/man/man2/execve.2 && echo ok || echo wrong #ok WRONG IN CI
+test -e DOESTNOTEXIST && echo ok || echo wrong #wrong
+echo '---------- -f FILE'
+test -f /dev/null && echo ok || echo wrong #wrong
+test -f /usr/share/man/man2/execve.2 && echo ok || echo wrong #ok WRONG IN CI
+echo '---------- -L LINK'
+test -L /dev/null && echo ok || echo wrong #wrong
+test -L /var && echo ok || echo wrong #ok WRONG IN CI
+test -h /dev/null && echo ok || echo wrong #wrong
+test -h /var && echo ok || echo wrong #ok
+echo '---------- -p FIFO'
+cd /tmp
+touch notfifo && mkfifo fifo
+test -p fifo && echo ok || echo wrong #ok
+test -p notfifo && echo ok || echo wrong #wrong
+echo '---------- -r READ'
+touch read noread; chmod u-r noread
+test -r read && echo ok || echo wrong #ok
+test -r noread && echo ok || echo wrong #wrong
+echo '---------- -w WRITE'
+touch write nowrite; chmod u-w nowrite
+test -w write && echo ok || echo wrong #ok
+test -w nowrite && echo ok || echo wrong #wrong
+echo '---------- - EXEC'
+touch exec noexec; chmod u+x exec
+test -x exec && echo ok || echo wrong #ok
+test -x noexec && echo ok || echo wrong #wrong
+echo '---------- -S SOCKET'
+# socketfile={{ Use one of the path output by "find /var/run -type s 2>/dev/null" }}
+# test -S ${socketfile} && echo ok || echo wrong #ok
+test -S /dev/null && echo ok || echo wrong #wrong
+echo '---------- -s NON-ZERO FILE'
+touch emptyfile; echo "not empty" > notempty
+test -s emptyfile && echo ok || echo wrong #wrong
+test -s notempty && echo ok || echo wrong #ok
+echo '---------- SINGLE ARG'
+a='hello' b=''; unset c
+test ${a} && echo ok || echo wrong #ok
+test ${b} && echo ok || echo wrong #wrong
+test ${c} && echo ok || echo wrong #wrong
+echo '---------- -z ZERO-LEN STR'
+test -z ${a} && echo ok || echo wrong #wrong
+test -z ${b} && echo ok || echo wrong #ok
+test -z ${c} && echo ok || echo wrong #ok
+echo '---------- -n NON-ZERO-LEN STR'
+test -n ${a} && echo ok || echo wrong #ok
+test -n ${b} && echo ok || echo wrong #wrong
+test -n ${c} && echo ok || echo wrong #wrong
+echo '---------- BINARY STR EXPR'
+test 'abc' = 'def' && echo ok || echo wrong #wrong
+test 'abc' = 'abc' && echo ok || echo wrong #ok
+test 'abc' != 'def' && echo ok || echo wrong #ok
+test 'abc' != 'abc' && echo ok || echo wrong #wrong
+echo '---------- BINARY INT EXPR'
+test 0 -eq 1 && echo ok || echo wrong #wrong
+test -1 -eq 1 && echo ok || echo wrong #wrong
+test -1 -eq -1 && echo ok || echo wrong #ok
+first='12' second='34'
+test ${first} -ne ${second} && echo ok || echo wrong #ok
+test -1 -gt -2 && echo ok || echo wrong #ok
+test 2 -ge 2 && echo ok || echo wrong #ok
+test -2 -lt -2 && echo ok || echo wrong #wrong
+test 3 -le +2 && echo ok || echo wrong #wrong
+rm -rf tempdir; test ! -d tempdir && echo "tempdir removed" #tempdir removed
+test zzz -eq 123 && echo ok || echo wrong # {{ Optionnal error message indicating integer expected }} wrong
+echo '--------------------------------------------------'
+hash mkdir; hash # {{ Print all hashes stored. One of them must be equivalent to: mkdir=/bin/mkdir }}
+hash -r
+hash
+hash DOESNOTEXIST; hash # {{ Optionnal error message indicating that 'DOESNOTEXIST' command is not found }}
+hash ps 42sh umount; hash # {{ Optionnal error message indicating that '42sh' command is not found }}
+# {{ Print hashed path for "ps" and "umount" commands }}
