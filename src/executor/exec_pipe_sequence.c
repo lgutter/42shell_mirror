@@ -27,7 +27,6 @@ static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
 		tcsetpgrp(STDERR_FILENO, job->pgrp);
 		configure_terminal(NULL, 0);
 	}
-	reset_signals();
 	exit(exec_simple_command(pipe_seq->simple_command, shell));
 }
 
