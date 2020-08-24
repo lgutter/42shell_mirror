@@ -37,7 +37,7 @@ static unsigned long long	ft_exceptions(unsigned long long integer,
 	return (1);
 }
 
-long long				ft_atoll(const char *string)
+long long					ft_atoll(const char *string)
 {
 	size_t				index;
 	unsigned long long	result;

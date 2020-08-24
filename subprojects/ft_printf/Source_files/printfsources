@@ -27,10 +27,12 @@ Write_files/ft_write_order \
 Write_files/ft_write_width \
 Write_files/ft_writer_fd \
 Write_files/ft_writer_string_n \
+Write_files/ft_writer_alloc_str \
 Write_files/ft_write_middle_width \
 ft_dispatcher \
 ft_init_info \
 ft_printf \
 ft_dprintf \
 ft_snprintf \
+ft_asprintf \
 ft_process_conversion

@@ -52,6 +52,15 @@ typedef struct			s_string_n_info
 	size_t				*index;
 }						t_string_n_info;
 
+# define AS_BUFF_LEN 128
+
+typedef struct			s_alloc_str_info
+{
+	char				**target;
+	char				buffer[AS_BUFF_LEN];
+	size_t				len;
+}						t_alloc_str_info;
+
 /*
 **	the info struct! this contains anything that we might need.
 **	A short explanation of every variable in the struct:
@@ -101,6 +110,8 @@ typedef int				(*t_formatter)(t_info *info);
 int						ft_printf(const char *restrict format, ...);
 int						ft_dprintf(int fd, const char *restrict format, ...);
 int						ft_snprintf(char *target, size_t len,
+											const char *restrict format, ...);
+int						ft_asprintf(char **target,
 											const char *restrict format, ...);
 int						ft_process_conversion(const char *format, t_info *info);
 int						ft_init_info(const char *format, t_info *info);
@@ -159,11 +170,14 @@ void					ft_write_middle_width(t_info *info, char *str);
 void					ft_write_width(t_info *info, size_t len);
 void					ft_write_flags(t_info *info);
 int						ft_write_order(t_info *info, char *str, char *order);
-void					ft_writer_fd\
-						(void *target, unsigned long long *totallen, \
-						const char *string, size_t len);
-void					ft_writer_string_n
-						(void *target, unsigned long long *totallen,\
-						const char *string, size_t len);
+void					ft_writer_fd(void *target,
+												unsigned long long *totallen,\
+												const char *string, size_t len);
+void					ft_writer_string_n(void *target,
+												unsigned long long *totallen,\
+												const char *string, size_t len);
+void					ft_writer_alloc_str(void *target,
+												unsigned long long *totallen,\
+												const char *string, size_t len);
 
 #endif
