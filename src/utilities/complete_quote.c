@@ -40,7 +40,7 @@ static int	check_type(char *word)
 			rules = g_token_trans[state].catch_state;
 		if (rules.next_state == unt_squote || rules.next_state == unt_dquote
 			|| rules.next_state == unt_backslash || rules.next_state == unt_pipe
-			|| rules.next_state == eof)
+			 || rules.next_state == pre_unt_pipe || rules.next_state == eof)
 			return (rules.next_state);
 		state = rules.next_state == dq_substitution ? dquote : rules.next_state;
 		word += rules.next_state == dq_substitution ? subst_length(word) : 1;
@@ -52,6 +52,7 @@ const char	*g_prompts[] = {
 	[unt_dquote] = PROMPT_DQUOTE,
 	[unt_backslash] = PROMPT_BACKSLASH,
 	[unt_pipe] = PROMPT_PIPE,
+	[pre_unt_pipe] = PROMPT_PIPE,
 };
 
 static int	get_extra_input(t_shell *shell, char **temp, int type)
