@@ -55,6 +55,9 @@ int			builtin_test(t_shell *shell, char **argv)
 		negate = true;
 	expr = &(argv[1 + negate]);
 	if (ft_strequ(argv[0], "[") == true)
+	{
+		free(expr[ft_str_arr_len(expr) - 1]);
 		expr[ft_str_arr_len(expr) - 1] = NULL;
+	}
 	return (handle_test_expression(expr, argv[0], negate));
 }
