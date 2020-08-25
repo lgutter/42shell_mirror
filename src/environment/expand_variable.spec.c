@@ -176,3 +176,52 @@ Test(unit_ft_expand_variable, basic_mandatory_error_NULL_string)
 	cr_expect_eq(ret, -1);
 	cr_assert_eq(test_string, NULL);
 }
+
+Test(unit_ft_expand_variable, mixed_command_substitution)
+{
+
+	struct {
+		char *in;
+		char *out;
+		size_t in_read;
+		size_t in_write;
+		size_t out_read;
+		size_t out_write;
+	} test_cases[] = {
+		{ .in = "$(echo hi)", .out = "hi" },
+		{ .in = "$(echo $PATH)", .out = "/usr/local/bin:/usr/bin:/bin" },
+		{
+		  .in = "$(rm -rf /tmp/cetushell-subst-test &&"
+		  "mkdir /tmp/cetushell-subst-test &&"
+		  "cd /tmp/cetushell-subst-test &&"
+		  "touch hello && ls &&"
+		  "rm -r ../cetushell-subst-test)",
+
+		  .out = "hello",
+		},
+		{ .in = "hello$(echo $PATH | head -c 5)world", .out = "hello/usr/world",
+		  .in_read = 5, .in_write = 5, .out_read = 9, .out_write = 10 },
+		{ .in = "helloX$(echo $PATH | head -c 5)world\"", .out = "hello/usr/world\"",
+		  .in_read = 6, .in_write = 5, .out_read = 9, .out_write = 10 },
+	};
+
+	for (size_t i = 0; i < sizeof(test_cases) / sizeof(*test_cases); i++) {
+		char *test_string = strdup(test_cases[i].in);
+
+		size_t read = test_cases[i].in_read;
+		size_t write = test_cases[i].in_write;
+
+		t_shell *shell = init_shell(false);
+		ft_setenv(shell->env, "PATH", "/usr/local/bin:/usr/bin:/bin", ENV_VAR);
+
+		int ret = expand_variable(shell, &test_string, &read, &write);
+
+		cr_expect_eq(ret, 0);
+		cr_expect_str_eq(test_string, test_cases[i].out);
+		if (test_cases[i].out_read != 0 && test_cases[i].out_write != 0)
+		{
+			cr_expect_eq(read, test_cases[i].out_read);
+			cr_expect_eq(write, test_cases[i].out_write);
+		}
+	}
+}
