@@ -17,9 +17,8 @@
 #include "processing.h"
 
 static void		exec_command_and_exit(int output_fd, const char *command,
-					size_t str_len, t_env *env_list)
+					size_t str_len, t_shell *shell)
 {
-	t_shell	shell;
 	char	*input;
 
 	input = ft_strndup(command, str_len);
@@ -33,8 +32,8 @@ static void		exec_command_and_exit(int output_fd, const char *command,
 		handle_error(dup2_fd_fail);
 		exit(1);
 	}
-	shell = (t_shell){ .interactive = false, .env = env_list };
-	handle_input(&shell, &input);
+	shell->interactive = false;
+	handle_input(shell, &input);
 	exit(0);
 }
 
@@ -67,7 +66,7 @@ static char		*read_to_string(int fd)
 	return (ret);
 }
 
-int				resolve_command_subst(char **out, t_env *env_list,
+int				resolve_command_subst(char **out, t_shell *shell,
 					const char *subst)
 {
 	size_t	subst_len;
@@ -85,7 +84,7 @@ int				resolve_command_subst(char **out, t_env *env_list,
 		return (-fork_failure);
 	}
 	if (pid == 0)
-		exec_command_and_exit(fork_pipe[1], subst + 2, subst_len - 2, env_list);
+		exec_command_and_exit(fork_pipe[1], subst + 2, subst_len - 2, shell);
 	close(fork_pipe[1]);
 	*out = read_to_string(fork_pipe[0]);
 	close(fork_pipe[0]);
