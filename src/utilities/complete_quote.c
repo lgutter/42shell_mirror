@@ -40,7 +40,7 @@ static int	check_type(char *word)
 			rules = g_token_trans[state].catch_state;
 		if (rules.next_state == unt_squote || rules.next_state == unt_dquote
 			|| rules.next_state == unt_backslash || rules.next_state == unt_pipe
-			 || rules.next_state == pre_unt_pipe || rules.next_state == eof)
+			|| rules.next_state == pre_unt_pipe || rules.next_state == eof)
 			return (rules.next_state);
 		state = rules.next_state == dq_substitution ? dquote : rules.next_state;
 		word += rules.next_state == dq_substitution ? subst_length(word) : 1;

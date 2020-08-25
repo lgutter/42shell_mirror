@@ -31,7 +31,7 @@ int		builtin_exit(t_shell *shell, char **argv)
 	if (argv != NULL && argv[0] != NULL && argv[1] != NULL)
 		final_code = ft_atoi(argv[1]);
 	else
-		final_code =  (temp == NULL) ? 0 : ft_atoi(temp);
+		final_code = (temp == NULL) ? 0 : ft_atoi(temp);
 	free(temp);
 	temp = ft_itoa(final_code);
 	if (temp == NULL)
