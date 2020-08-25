@@ -86,6 +86,7 @@ typedef	struct			s_process
 	pid_t				pid;
 	pid_t				*pgrp;
 	t_status			status;
+	int					signal;
 	char				*command;
 	struct s_process	*next;
 }						t_process;
@@ -95,7 +96,10 @@ t_job					*init_job(t_shell *shell, char *command,
 															bool foreground);
 t_process				*init_process(t_job *job, char *command);
 t_status				get_job_status(t_job *job);
-t_status				get_status_from_stat_loc(int stat_loc);
+t_status				get_status_from_stat_loc(int stat_loc,
+															t_process *process);
+int						handle_new_process(t_shell *shell, t_job *job,
+															t_process *process);
 void					check_jobs(t_job_cont *job_control, int update_opts);
 int						set_process_job_group(t_job *job, t_process *process);
 

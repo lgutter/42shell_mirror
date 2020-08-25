@@ -189,8 +189,9 @@ Test(exec_complete_command_unit, valid_basic_piped_command_background, .init = r
 	shell.env = &env;
 	ret = exec_complete_command(&shell, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
-	cr_expect_str_eq(shell.env->key, "");
-	cr_expect_str_eq(shell.env->value, "");
+	cr_expect_str_eq(shell.env->key, "?");
+	cr_expect_str_eq(shell.env->value, "0");
+	cr_expect_null(shell.env->next);
 	dprintf(2, "-");
 	fflush(stdout);
 	cr_expect_stdout_neq_str("foo");
@@ -223,8 +224,9 @@ Test(exec_complete_command_unit, valid_basic_command_background, .init = redirec
 	shell.env = &env;
 	ret = exec_complete_command(&shell, &command);
 	cr_expect_eq(ret, exp_ret, "expected ret %i but got %i!", exp_ret, ret);
-	cr_expect_str_eq(shell.env->key, "");
-	cr_expect_str_eq(shell.env->value, "");
+	cr_expect_str_eq(shell.env->key, "?");
+	cr_expect_str_eq(shell.env->value, "0");
+	cr_expect_null(shell.env->next);
 	dprintf(2, "-");
 	fflush(stdout);
 	cr_expect_stdout_neq_str("foo");

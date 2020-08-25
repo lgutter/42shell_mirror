@@ -173,16 +173,16 @@ export -f #should print usage
 echo '--------------------------------------------------'
 OLDPATH=$PATH
 unset PATH
-PATH=/bin:/usr/bin
+export PATH=/bin:/usr/bin
 mkdir testdir
 echo ${?} #0
 ls -1 | grep testdir #testdir
 rm -r testdir
-PATH=$OLDPATH
+export PATH=$OLDPATH
 echo '--------------------------------------------------'
 true; echo ${?}; false; echo ${?} #0; 1
 mkfifo fifo
-ls -lR /usr/bin >fifo 2>&1 &
+ls -lR / >fifo 2>&1 &
 jobs %1
 rm fifo
 emacs -nw &
@@ -195,7 +195,7 @@ jobs '%? ' #when in interactive mode, should show 5 suspended emacs. in non-inte
 # in interactive mode, use fg to use the emacs'
 echo "
 Only 'ls -lR /usr/bin >fifo 2>&1 &' left:"
-exit #should not exit and print an error about unfinished jobs
+exit | cat -e #should not exit and print an error about unfinished jobs
 jobs -l
 bg %?foo #should print an error
 bg %?fo #should print an error that job is in background
@@ -305,3 +305,16 @@ hash
 hash DOESNOTEXIST; hash # {{ Optionnal error message indicating that 'DOESNOTEXIST' command is not found }}
 hash ps 42sh umount; hash # {{ Optionnal error message indicating that '42sh' command is not found }}
 # {{ Print hashed path for "ps" and "umount" commands }}
+echo '--------------------------------------------------'
+cat <<EOF >segfault.c
+#include <signal.h>
+#include <unistd.h>
+
+int main(void)
+{
+	kill(getpid(), SIGSEGV);
+	return (0);
+}
+EOF
+gcc segfault.c -o segfault && ./segfault #should print an error that command segfaulted
+rm segfault

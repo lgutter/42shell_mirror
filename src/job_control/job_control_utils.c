@@ -11,24 +11,56 @@
 /* ************************************************************************** */
 
 #include "job_control.h"
+#include "environment.h"
 #include <signal.h>
 #include <sys/wait.h>
 
-t_status		get_status_from_stat_loc(int stat_loc)
+t_status		get_status_from_stat_loc(int stat_loc, t_process *process)
 {
+	if (process == NULL)
+		return (exited);
 	if (WIFSTOPPED(stat_loc) == true)
-		return (suspended);
+		process->status = suspended;
 	else if (WIFSIGNALED(stat_loc) == true)
 	{
-		if (WTERMSIG(stat_loc) == SIGPIPE)
-			return (broken_pipe);
+		process->signal = WTERMSIG(stat_loc);
+		if (process->signal == SIGPIPE)
+			process->status = broken_pipe;
 		else
-			return (exited);
+			process->status = exited;
 	}
 	else if (WIFCONTINUED(stat_loc) == true)
-		return (running);
+		process->status = running;
 	else
-		return (exited);
+		process->status = exited;
+	return (process->status);
+}
+
+int				handle_new_process(t_shell *shell, t_job *job,
+															t_process *process)
+{
+	int	stat_loc;
+	int	ret;
+
+	if (shell == NULL || job == NULL || process == NULL)
+		return (-1);
+	ret = 0;
+	if (job->foreground == true)
+	{
+		process->status = exited;
+		ret = waitpid(process->pid, &stat_loc, WUNTRACED | WCONTINUED);
+		if (ret > 0)
+		{
+			process->status = get_status_from_stat_loc(stat_loc, process);
+			if (WIFEXITED(stat_loc) != 0)
+				ret = (int)WEXITSTATUS(stat_loc);
+			else
+				ret = 0;
+		}
+	}
+	else
+		process->status = running;
+	return (ret);
 }
 
 t_job			*init_job(t_shell *shell, char *command, bool foreground)

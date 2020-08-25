@@ -18,10 +18,8 @@ static void	update_process_status(t_job *start, pid_t pid, int stat_loc)
 {
 	t_process	*process;
 	t_job		*job;
-	t_status	status;
 
 	job = start;
-	status = get_status_from_stat_loc(stat_loc);
 	while (job != NULL)
 	{
 		process = job->processes;
@@ -29,7 +27,12 @@ static void	update_process_status(t_job *start, pid_t pid, int stat_loc)
 		{
 			if (pid == process->pid)
 			{
-				process->status = status;
+				process->status = get_status_from_stat_loc(stat_loc, process);
+				if (process->signal != 0)
+				{
+					ft_dprintf(STDERR_FILENO, "%i %s\n",
+									process->pid, sys_siglist[process->signal]);
+				}
 				return ;
 			}
 			process = process->next;
