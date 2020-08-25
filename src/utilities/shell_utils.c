@@ -120,7 +120,8 @@ t_shell			*init_shell(bool interactive)
 	}
 	shell->interactive = interactive;
 	init_home_var(shell);
-	configure_terminal(shell, interactive == 1 ? 2 : 1);
+	if (interactive == true)
+		configure_terminal(shell, 2);
 	if (shell->hist != NULL)
 		initialize_history(shell);
 	if (init_hashtable(shell) != 0)
@@ -142,7 +143,8 @@ int				free_shell(t_shell *shell, int ret)
 		shell->buffer = NULL;
 		free_job_control(shell->job_control);
 		shell->job_control = NULL;
-		configure_terminal(NULL, 0);
+		if (shell->interactive == true)
+			configure_terminal(NULL, 0);
 		free_env_list(shell->env);
 		free(shell);
 	}

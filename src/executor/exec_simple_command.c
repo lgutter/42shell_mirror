@@ -84,6 +84,7 @@ static int	init_cmd(t_command *command,
 void		execve_command(t_command command)
 {
 	check_access(command.path);
+	reset_signals();
 	execve(command.path, command.argv, command.envp);
 	exit(handle_error(execve_failure));
 }

@@ -76,14 +76,16 @@ int				main(int argc, char **argv)
 		if (redir_file_argument(argv[1]) != 0)
 			return (1);
 	}
-	old_term_pgrp = tcgetpgrp(STDERR_FILENO);
 	interactive = (isatty(STDIN_FILENO) && isatty(STDERR_FILENO));
+	if (interactive == true)
+		old_term_pgrp = tcgetpgrp(STDERR_FILENO);
 	shell = init_shell(interactive);
 	if (shell == NULL)
 		return (1);
 	cetushell(shell);
 	exit_code = get_exit_code(shell);
-	tcsetpgrp(STDERR_FILENO, old_term_pgrp);
+	if (interactive == true)
+		tcsetpgrp(STDERR_FILENO, old_term_pgrp);
 	free_shell(shell, 1);
 	return (exit_code);
 }

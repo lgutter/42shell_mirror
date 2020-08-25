@@ -27,28 +27,29 @@ static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
 		tcsetpgrp(STDERR_FILENO, job->pgrp);
 		configure_terminal(NULL, 0);
 	}
-	reset_signals();
 	exit(exec_simple_command(pipe_seq->simple_command, shell));
 }
 
-static void	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
+static int	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
 						t_job *job, t_process *process)
 {
 	int		stat_loc;
 	int		ret;
+	pid_t	pid;
 
-	exec_pipe_sequence(pipe_seq->next, shell, job);
+	ret = exec_pipe_sequence(pipe_seq->next, shell, job);
 	close(STDIN_FILENO);
 	if (job->foreground == true)
 	{
-		ret = waitpid(process->pid, &stat_loc, WUNTRACED | WCONTINUED);
-		if (ret > 0)
+		pid = waitpid(process->pid, &stat_loc, WUNTRACED | WCONTINUED);
+		if (pid > 0)
 			process->status = get_status_from_stat_loc(stat_loc);
-		else if (ret != 0)
+		else if (pid != 0)
 			process->status = exited;
 	}
 	else
 		process->status = running;
+	return (ret);
 }
 
 static int	execute_pipe(t_pipe_sequence *pipe_seq, t_shell *shell,
@@ -74,8 +75,7 @@ static int	execute_pipe(t_pipe_sequence *pipe_seq, t_shell *shell,
 		if (dup2(pipe_fds[0], STDIN_FILENO) < 0)
 			return (handle_error_int(dup2_fd_fail, STDIN_FILENO));
 		close(pipe_fds[0]);
-		pipe_parent(pipe_seq, shell, job, process);
-		return (0);
+		return (pipe_parent(pipe_seq, shell, job, process));
 	}
 	return (handle_error_str(fork_failure, "while setting up pipe"));
 }

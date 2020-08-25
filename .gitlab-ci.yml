@@ -15,6 +15,7 @@ gcc-test:
     - meson build
   script:
     - ninja test -C build --verbose
+    - valgrind --leak-check=full --track-origins=yes --error-exitcode=1 build/cetushell scripts/test_script.csh
 
 gcc-coverage:
   image: lgutter/codam_ci:latest
@@ -27,6 +28,7 @@ gcc-coverage:
     - meson build -Db_coverage=true
   script:
     - ninja test -C build --verbose
+    - valgrind --leak-check=full --track-origins=yes build/cetushell scripts/test_script.csh
   after_script:
     - rm -rfv $(find . -regex ".*\.spec\.c\.gc[ndo][oav]")
     - ninja -C build coverage --verbose
@@ -45,6 +47,7 @@ clang-test:
     - CC=clang meson build
   script:
     - ninja test -C build --verbose
+    - valgrind --leak-check=full --track-origins=yes build/cetushell scripts/test_script.csh
 
 arch-build:
   stage: build

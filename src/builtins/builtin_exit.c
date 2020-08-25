@@ -26,13 +26,12 @@ int		builtin_exit(t_shell *shell, char **argv)
 		return (0);
 	}
 	temp = ft_getenv(shell->env, "?", SHELL_VAR);
-	configure_terminal(NULL, 0);
+	if (shell->interactive == true)
+		configure_terminal(NULL, 0);
 	if (argv != NULL && argv[0] != NULL && argv[1] != NULL)
 		final_code = ft_atoi(argv[1]);
-	else if (temp == NULL)
-		final_code = 0;
 	else
-		final_code = ft_atoi(temp);
+		final_code = (temp == NULL) ? 0 : ft_atoi(temp);
 	free(temp);
 	temp = ft_itoa(final_code);
 	if (temp == NULL)
