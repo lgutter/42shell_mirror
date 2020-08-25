@@ -135,4 +135,10 @@ t_process				*free_process(t_process *process);
 t_job					*free_job_list(t_job *start);
 t_job					*free_job(t_job *job);
 
+/*
+**	Kills all sub-processes of the shell and calls check_jobs to print any
+**	final changes in the jobs caused by this.
+*/
+void					clean_up_jobs(t_shell *shell);
+
 #endif

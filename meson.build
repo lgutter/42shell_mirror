@@ -84,6 +84,7 @@ src_files = files([
   'src/history/cut_split_history.c',
   'src/history/history_utils.c',
   'src/job_control/check_jobs.c',
+  'src/job_control/clean_up_jobs.c',
   'src/job_control/job_control_utils.c',
   'src/job_control/free_job_control.c',
   'src/job_control/job_list_utils.c',

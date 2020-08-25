@@ -83,6 +83,7 @@ int				main(int argc, char **argv)
 	if (shell == NULL)
 		return (1);
 	cetushell(shell);
+	clean_up_jobs(shell);
 	exit_code = get_exit_code(shell);
 	if (interactive == true)
 		tcsetpgrp(STDERR_FILENO, old_term_pgrp);
