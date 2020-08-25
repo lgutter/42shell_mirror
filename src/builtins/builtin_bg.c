@@ -13,6 +13,34 @@
 #include "builtins.h"
 #include <signal.h>
 
+static void	print_bg_error(t_job *job)
+{
+	char *error;
+
+	if (get_job_status(job) == running)
+		error = "is already running";
+	else
+		error = "has exited";
+	ft_dprintf(STDERR_FILENO, "Cetushell: bg: job %i %s\n", job->id, error);
+}
+
+static void	update_background_job(t_job *job)
+{
+	size_t	len;
+	char	*command;
+
+	command = job->command;
+	len = ft_strlen(command);
+	job->foreground = false;
+	if (command[len - 1] == '\n' ||
+		command[len - 1] == ';')
+	{
+		command[len - 1] = '&';
+	}
+	else if (command[len - 1] != '&')
+		ft_strexpand(&(job->command), " &");
+}
+
 static bool	iterate_jobs(t_job_cont *job_control, char *job_spec)
 {
 	t_job	*job;
@@ -20,21 +48,20 @@ static bool	iterate_jobs(t_job_cont *job_control, char *job_spec)
 
 	job_found = false;
 	job = job_control->job_list;
+	check_jobs(job_control, job_update_none);
 	while (job != NULL)
 	{
 		if (job_spec_match(job_control, job, job_spec) == true)
 		{
-			kill(-(job->pgrp), SIGCONT);
 			job_found = true;
-			if (job->foreground == true)
+			if (get_job_status(job) == suspended)
 			{
-				job->foreground = false;
-				if ((job->command)[ft_strlen(job->command) - 1] == '\n' ||
-					(job->command)[ft_strlen(job->command) - 1] == ';')
-					(job->command)[ft_strlen(job->command) - 1] = '&';
-				else if ((job->command)[ft_strlen(job->command) - 1] != '&')
-					ft_strexpand(&(job->command), " &");
+				kill(-(job->pgrp), SIGCONT);
+				if (job->foreground == true)
+					update_background_job(job);
 			}
+			else
+				print_bg_error(job);
 		}
 		job = job->next;
 	}
