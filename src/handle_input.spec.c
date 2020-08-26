@@ -195,9 +195,43 @@ Test(handle_input_integration, basic_run_and_or_commands_fail_first, .init = cr_
 	cr_expect_stdout_eq_str(expected_output);
 }
 
+Test(handle_input_integration, basic_run_and_or_commands_multiple_fail_first, .init = cr_redirect_stdout)
+{
+	char		*input = "false && echo foo && echo oof || echo bar";
+	char		*expected_output = "bar\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
 Test(handle_input_integration, basic_run_or_and_commands_succeed_first, .init = cr_redirect_stdout)
 {
 	char		*input = "true || echo foo && echo bar";
+	char		*expected_output = "bar\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_run_or_and_commands_multiple_succeed_first, .init = cr_redirect_stdout)
+{
+	char		*input = "true || echo foo || echo oof && echo bar";
 	char		*expected_output = "bar\n";
 
 
