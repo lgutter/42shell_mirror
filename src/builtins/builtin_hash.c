@@ -40,12 +40,12 @@ static size_t	hash_path(t_shell *shell, char **path, char **split, char *arg)
 	return (0);
 }
 
-static int	hash_arguments(t_shell *shell, char **argv, size_t i)
+static int		hash_arguments(t_shell *shell, char **argv, size_t i)
 {
 	char		*path;
 	char		**split;
 	size_t		ret;
-	int	return_code;
+	int			return_code;
 
 	return_code = 0;
 	ret = 0;
