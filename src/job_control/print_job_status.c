@@ -63,8 +63,8 @@ static void	print_job_pids(t_job *job, char prefix[9])
 	ft_printf("\n");
 }
 
-void		print_job_status(t_job *job,
-									size_t current, size_t previous, int opts)
+void		print_job_status(t_job *job, size_t current, size_t previous,
+															t_update_opts opts)
 {
 	char		prefix[9];
 	char		curprev;

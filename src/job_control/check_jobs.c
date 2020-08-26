@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "job_control.h"
+#include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 
@@ -30,8 +31,7 @@ static void	update_process_status(t_job *start, pid_t pid, int stat_loc)
 				process->status = get_status_from_stat_loc(stat_loc, process);
 				if (process->signal != 0)
 				{
-					ft_dprintf(STDERR_FILENO, "%i %s\n",
-									process->pid, sys_siglist[process->signal]);
+					print_process_signal(process, sig_print_pid);
 				}
 				return ;
 			}
@@ -41,7 +41,7 @@ static void	update_process_status(t_job *start, pid_t pid, int stat_loc)
 	}
 }
 
-void		check_jobs(t_job_cont *job_control, int update_opts)
+void		check_jobs(t_job_cont *job_control, t_update_opts update_opts)
 {
 	t_job	*job;
 	int		stat_loc;

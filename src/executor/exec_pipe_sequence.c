@@ -39,8 +39,7 @@ static int	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
 	close(STDIN_FILENO);
 	handle_new_process(shell, job, process);
 	if (process->signal != 0 && process->signal != SIGPIPE)
-		ft_dprintf(STDERR_FILENO, "%i %s\t%s\n",
-				process->pid, sys_siglist[process->signal], process->command);
+		print_process_signal(process, sig_print_all);
 	return (ret);
 }
 
@@ -86,11 +85,9 @@ static int	execute_simple(t_pipe_sequence *pipe_seq, t_shell *shell,
 		set_process_job_group(job, process);
 		ret = handle_new_process(shell, job, process);
 		if (process->signal != 0 && process->pid != job->pgrp)
-			ft_dprintf(STDERR_FILENO, "%i %s\t%s\n",
-				process->pid, sys_siglist[process->signal], process->command);
+			print_process_signal(process, sig_print_all);
 		else if (process->signal != 0)
-			ft_dprintf(STDERR_FILENO, "%i %s\n",
-				process->pid, sys_siglist[process->signal]);
+			print_process_signal(process, sig_print_none);
 		return (ret);
 	}
 	return (handle_error(fork_failure));

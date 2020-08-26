@@ -215,89 +215,94 @@ s \
 echo abc \| cat -e
 echo abc \\| cat -e
 echo '--------------------------------------------------'
-test
-[ true ]
-[ ]
+echo 'test builtin tests. error about brackets:'
 [ error
+echo 'All of the next tests print OK: [result] if result was as expected, or FAIL: [result] if it was incorrect.'
+test && echo 'FAIL: true' || echo 'OK: false'
+[ true ] && echo 'OK: true' || echo 'FAIL: false'
+[ ] && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- -b BLOCK'
-test -b /dev/disk0 && echo ok || echo wrong #ok WRONG IN CI
-test -b /dev/console && echo ok || echo wrong #wrong
-test -b DOESTNOTEXIST && echo ok || echo wrong #wrong
+test -b /dev/disk0 && echo 'OK: true' ||  echo 'FAIL: false  <-- will FAIL in CI'
+test -b /dev/console && echo 'FAIL: true' || echo 'OK: false'
+test -b DOESTNOTEXIST && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- -c CHARACTER'
-test -c /dev/disk0 && echo ok || echo wrong #wrong
-test -c /dev/console && echo ok || echo wrong #ok
+test -c /dev/disk0 && echo 'FAIL: true' || echo 'OK: false'
+test -c /dev/console && echo 'OK: true' || echo 'FAIL: false'
 echo '---------- -d DIRECTORY'
-test -d /dev/disk0 && echo ok || echo wrong #wrong
-test -d ${HOME} && echo ok || echo wrong #ok
-test -d /dev/disk0 && echo ok || echo wrong #wrong
-test -d ${HOME} && echo ok || echo wrong #ok
+test -d /dev/disk0 && echo 'FAIL: true' || echo 'OK: false'
+test -d ${HOME} && echo 'OK: true' || echo 'FAIL: false'
+test -d /dev/disk0 && echo 'FAIL: true' || echo 'OK: false'
+test -d ${HOME} && echo 'OK: true' || echo 'FAIL: false'
 echo '---------- -e EXISTS'
-test -e /dev/null && echo ok || echo wrong #ok
-test -e /usr/share/man/man2/execve.2 && echo ok || echo wrong #ok WRONG IN CI
-test -e DOESTNOTEXIST && echo ok || echo wrong #wrong
+test -e /dev/null && echo 'OK: true' || echo 'FAIL: false'
+test -e /usr/share/man/ && echo 'OK: true' || echo 'FAIL: false'
+test -e DOESTNOTEXIST && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- -f FILE'
-test -f /dev/null && echo ok || echo wrong #wrong
-test -f /usr/share/man/man2/execve.2 && echo ok || echo wrong #ok WRONG IN CI
+test -f /dev/null && echo 'FAIL: true' || echo 'OK: false'
+test -f /usr/share/man/ && echo 'OK: true' || echo 'FAIL: false'
 echo '---------- -L LINK'
-test -L /dev/null && echo ok || echo wrong #wrong
-test -L /var && echo ok || echo wrong #ok WRONG IN CI
-test -h /dev/null && echo ok || echo wrong #wrong
-test -h /var && echo ok || echo wrong #ok
+test -L /dev/null && echo 'FAIL: true' || echo 'OK: false'
+test -L /var && echo 'OK: true' || echo 'FAIL: false  <-- will FAIL in CI'
+test -h /dev/null && echo 'FAIL: true' || echo 'OK: false'
+test -h /var && echo 'OK: true' || echo 'FAIL: false  <-- will FAIL in CI'
 echo '---------- -p FIFO'
 cd /tmp
 touch notfifo && mkfifo fifo
-test -p fifo && echo ok || echo wrong #ok
-test -p notfifo && echo ok || echo wrong #wrong
+test -p fifo && echo 'OK: true' || echo 'FAIL: false'
+test -p notfifo && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- -r READ'
 touch read noread; chmod u-r noread
-test -r read && echo ok || echo wrong #ok
-test -r noread && echo ok || echo wrong #wrong
+test -r read && echo 'OK: true' || echo 'FAIL: false'
+test -r noread && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- -w WRITE'
 touch write nowrite; chmod u-w nowrite
-test -w write && echo ok || echo wrong #ok
-test -w nowrite && echo ok || echo wrong #wrong
+test -w write && echo 'OK: true' || echo 'FAIL: false'
+test -w nowrite && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- - EXEC'
 touch exec noexec; chmod u+x exec
-test -x exec && echo ok || echo wrong #ok
-test -x noexec && echo ok || echo wrong #wrong
+test -x exec && echo 'OK: true' || echo 'FAIL: false'
+test -x noexec && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- -S SOCKET'
 # socketfile={{ Use one of the path output by "find /var/run -type s 2>/dev/null" }}
-# test -S ${socketfile} && echo ok || echo wrong #ok
-test -S /dev/null && echo ok || echo wrong #wrong
+# test -S ${socketfile} && echo 'FAIL: true' || echo 'FAIL: false'
+test -S /dev/null && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- -s NON-ZERO FILE'
 touch emptyfile; echo "not empty" > notempty
-test -s emptyfile && echo ok || echo wrong #wrong
-test -s notempty && echo ok || echo wrong #ok
+test -s emptyfile && echo 'FAIL: true' || echo 'OK: false'
+test -s notempty && echo 'OK: true' || echo 'FAIL: false'
 echo '---------- SINGLE ARG'
 a='hello' b=''; unset c
-test ${a} && echo ok || echo wrong #ok
-test ${b} && echo ok || echo wrong #wrong
-test ${c} && echo ok || echo wrong #wrong
+test ${a} && echo 'OK: true' || echo 'FAIL: false'
+test ${b} && echo 'FAIL: true' || echo 'OK: false'
+test ${c} && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- -z ZERO-LEN STR'
-test -z ${a} && echo ok || echo wrong #wrong
-test -z ${b} && echo ok || echo wrong #ok
-test -z ${c} && echo ok || echo wrong #ok
+test -z ${a} && echo 'FAIL: true' || echo 'OK: false'
+test -z ${b} && echo 'OK: true' || echo 'FAIL: false'
+test -z ${c} && echo 'OK: true' || echo 'FAIL: false'
 echo '---------- -n NON-ZERO-LEN STR'
-test -n ${a} && echo ok || echo wrong #ok
-test -n ${b} && echo ok || echo wrong #wrong
-test -n ${c} && echo ok || echo wrong #wrong
+test ${a} && echo 'OK: true' || echo 'FAIL: false'
+test -n ${a} && echo 'OK: true' || echo 'FAIL: false'
+test ${b} && echo 'FAIL: true' || echo 'OK: false'
+test -n ${b} && echo 'FAIL: true' || echo 'OK: false'
+test ${c} && echo 'FAIL: true' || echo 'OK: false'
+test -n ${c} && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- BINARY STR EXPR'
-test 'abc' = 'def' && echo ok || echo wrong #wrong
-test 'abc' = 'abc' && echo ok || echo wrong #ok
-test 'abc' != 'def' && echo ok || echo wrong #ok
-test 'abc' != 'abc' && echo ok || echo wrong #wrong
+test 'abc' = 'def' && echo 'FAIL: true' || echo 'OK: false'
+test 'abc' = 'abc' && echo 'OK: true' || echo 'FAIL: false'
+test 'abc' != 'def' && echo 'OK: true' || echo 'FAIL: false'
+test 'abc' != 'abc' && echo 'FAIL: true' || echo 'OK: false'
 echo '---------- BINARY INT EXPR'
-test 0 -eq 1 && echo ok || echo wrong #wrong
-test -1 -eq 1 && echo ok || echo wrong #wrong
-test -1 -eq -1 && echo ok || echo wrong #ok
+test 0 -eq 1 && echo 'FAIL: true' || echo 'OK: false'
+test -1 -eq 1 && echo 'FAIL: true' || echo 'OK: false'
+test -1 -eq -1 && echo 'OK: true' || echo 'FAIL: false'
 first='12' second='34'
-test ${first} -ne ${second} && echo ok || echo wrong #ok
-test -1 -gt -2 && echo ok || echo wrong #ok
-test 2 -ge 2 && echo ok || echo wrong #ok
-test -2 -lt -2 && echo ok || echo wrong #wrong
-test 3 -le +2 && echo ok || echo wrong #wrong
+test ${first} -ne ${second} && echo 'OK: true' || echo 'FAIL: false'
+test -1 -gt -2 && echo 'OK: true' || echo 'FAIL: false'
+test 2 -ge 2 && echo 'OK: true' || echo 'FAIL: false'
+test -2 -lt -2 && echo 'FAIL: true' || echo 'OK: false'
+test 3 -le +2 && echo 'FAIL: true' || echo 'OK: false'
 rm -rf tempdir; test ! -d tempdir && echo "tempdir removed" #tempdir removed
-test zzz -eq 123 && echo ok || echo wrong # {{ Optionnal error message indicating integer expected }} wrong
+test zzz -eq 123 && echo 'FAIL: true' || echo 'OK: false' # {{ Optionnal error message indicating integer expected }} wrong
 echo '--------------------------------------------------'
 hash mkdir; hash # {{ Print all hashes stored. One of them must be equivalent to: mkdir=/bin/mkdir }}
 hash -r
@@ -306,15 +311,77 @@ hash DOESNOTEXIST; hash # {{ Optionnal error message indicating that 'DOESNOTEXI
 hash ps 42sh umount; hash # {{ Optionnal error message indicating that '42sh' command is not found }}
 # {{ Print hashed path for "ps" and "umount" commands }}
 echo '--------------------------------------------------'
-cat <<EOF >segfault.c
-#include <signal.h>
+[ -f sigdeath.c ] && echo "sigdeath.c already exists." || >sigdeath.c echo "
+#include <stdio.h>
+#include <fcntl.h>
 #include <unistd.h>
+#include <signal.h>
 
-int main(void)
+int	main(void)
 {
-	kill(getpid(), SIGSEGV);
+	char input;
+	static const int	signals[256] = {
+		['H'] = 42, //RESERVED FOR HELP
+		['a'] = SIGABRT,
+		['h'] = SIGHUP,
+		['q'] = SIGQUIT,
+		['i'] = SIGILL,
+		['T'] = SIGTRAP,
+		['f'] = SIGFPE,
+		['k'] = SIGKILL,
+		['b'] = SIGBUS,
+		['s'] = SIGSEGV,
+		['S'] = SIGSYS,
+		['p'] = SIGPIPE,
+		['A'] = SIGALRM,
+		['t'] = SIGTERM,
+		['o'] = SIGSTOP,
+		['I'] = SIGTTIN,
+		['O'] = SIGTTOU,
+		['c'] = SIGXCPU,
+		['F'] = SIGXFSZ,
+		['v'] = SIGVTALRM,
+		['r'] = SIGPROF,
+		['u'] = SIGUSR1,
+		['U'] = SIGUSR2,
+	};
+
+	input = 0;
+	if (isatty(STDIN_FILENO))
+	{
+		printf(\"press a key to die with corresponding signal, or press [H] to see a list of all available signals.\n\");
+		while (signals[input] == 0)
+		{
+			scanf(\"%c\", &input);
+			if (signals[input] == 42)
+			{
+				for (int i = 0; i < 128; i++)
+				{
+					if (signals[i] != 0 && signals[i] != 42)
+						printf(\"[%c]: %s\n\", i, sys_siglist[signals[i]]);
+				}
+				input = 0;
+			}
+
+		}
+	}
+	else
+		scanf(\"%c\", &input);
+	if (signals[input] != 0)
+		kill(getpid(), signals[input]);
 	return (0);
 }
-EOF
-gcc segfault.c -o segfault && ./segfault #should print an error that command segfaulted
-rm segfault
+"
+[ -x sigdeath ] && echo "sigdeath already compiled" || gcc sigdeath.c -o sigdeath
+echo "SIGNAL ERRORS EXPECTED:"
+echo "s" | ./sigdeath
+echo "a" | ./sigdeath
+echo "q" | ./sigdeath
+echo "k" | ./sigdeath
+echo "S" | ./sigdeath
+echo "t" | ./sigdeath
+echo "c" | ./sigdeath
+echo "b" | ./sigdeath
+echo "u" | ./sigdeath
+echo "F" | ./sigdeath
+echo "Shell is still alive!"

@@ -15,6 +15,23 @@
 #include <signal.h>
 #include <sys/wait.h>
 
+void			print_process_signal(t_process *process, t_sig_print_opts opts)
+{
+	if (process != NULL && process->signal != 0)
+	{
+		if (process->signal != SIGINT)
+		{
+			if ((opts & sig_print_pid) == sig_print_pid)
+				ft_dprintf(STDERR_FILENO, "%i: ", process->pid);
+			ft_dprintf(STDERR_FILENO, "%s", sys_siglist[process->signal]);
+			if ((opts & sig_print_command) == sig_print_command)
+				ft_dprintf(STDERR_FILENO, "\t%s", process->command);
+		}
+		process->signal = 0;
+		ft_dprintf(STDERR_FILENO, "\n");
+	}
+}
+
 t_status		get_status_from_stat_loc(int stat_loc, t_process *process)
 {
 	if (process == NULL)
@@ -61,56 +78,6 @@ int				handle_new_process(t_shell *shell, t_job *job,
 	else
 		process->status = running;
 	return (ret);
-}
-
-t_job			*init_job(t_shell *shell, char *command, bool foreground)
-{
-	t_job	*job;
-	size_t	id;
-
-	id = 0;
-	if (shell != NULL)
-		id = get_new_job_id(shell->job_control);
-	job = (t_job *)ft_memalloc(sizeof(t_job) * 1);
-	if (job != NULL)
-	{
-		job->id = id;
-		job->pgrp = 0;
-		job->status = exited;
-		job->foreground = foreground;
-		job->command = ft_strdup(command);
-		job->processes = NULL;
-		job->next = NULL;
-	}
-	return (job);
-}
-
-t_process		*init_process(t_job *job, char *command)
-{
-	t_process	*process;
-	t_process	*temp;
-
-	if (job == NULL)
-		return (NULL);
-	process = (t_process *)ft_memalloc(sizeof(t_process) * 1);
-	if (process != NULL)
-	{
-		process->pid = 0;
-		process->pgrp = &(job->pgrp);
-		process->status = exited;
-		process->command = ft_strdup(command);
-		process->next = NULL;
-		if (job->processes == NULL)
-			job->processes = process;
-		else
-		{
-			temp = job->processes;
-			while (temp->next != NULL)
-				temp = temp->next;
-			temp->next = process;
-		}
-	}
-	return (process);
 }
 
 int				set_process_job_group(t_job *job, t_process *process)

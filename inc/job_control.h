@@ -62,6 +62,14 @@ typedef	enum			e_update_opts
 						job_print_pid | job_print_long | job_print_pids)
 }						t_update_opts;
 
+typedef	enum			e_sig_print_opts
+{
+	sig_print_none = 0,
+	sig_print_pid = (1 << 0),
+	sig_print_command = (1 << 1),
+	sig_print_all = (sig_print_pid | sig_print_command),
+}						t_sig_print_opts;
+
 typedef	struct			s_job_cont
 {
 	size_t				current;
@@ -100,7 +108,8 @@ t_status				get_status_from_stat_loc(int stat_loc,
 															t_process *process);
 int						handle_new_process(t_shell *shell, t_job *job,
 															t_process *process);
-void					check_jobs(t_job_cont *job_control, int update_opts);
+void					check_jobs(t_job_cont *job_control,
+													t_update_opts update_opts);
 int						set_process_job_group(t_job *job, t_process *process);
 
 /*
@@ -128,8 +137,10 @@ t_job					*update_job_status(t_job_cont *job_control,
 **		previous:	id for the previous job, to determine if - should be printed
 **		opts:		options for printing, if 0, job_print_auto is assumed.
 */
-void					print_job_status(t_job *job,
-									size_t current, size_t previous, int opts);
+void					print_job_status(t_job *job, size_t current,
+										size_t previous, t_update_opts opts);
+void					print_process_signal(t_process *process,
+														t_sig_print_opts opts);
 bool					job_spec_match(t_job_cont *job_control,
 											t_job *job, const char *job_spec);
 void					add_job_to_list(t_shell *shell, t_job *job);
