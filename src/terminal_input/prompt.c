@@ -26,7 +26,7 @@ static void		print_buffer(t_buff *buffer)
 		ft_dprintf(STDERR_FILENO, "%.*s", buffer->rv_end - buffer->rv_start,
 		&buffer->buff[buffer->rv_start]);
 		ft_dprintf(STDERR_FILENO, "%s%s", RV_RESET,
-												buffer->buff[buffer->rv_end]);
+												&buffer->buff[buffer->rv_end]);
 	}
 	else if (buffer->rv_end < buffer->rv_start)
 	{
