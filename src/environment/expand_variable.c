@@ -106,31 +106,6 @@ static int		expand_dollar(t_env *env_list, char **string,
 	return (0);
 }
 
-static int		expand_command_subst(t_shell *shell,
-					char **string, size_t *read, size_t *write)
-{
-	int		len;
-	char	*expanded;
-	char	*new;
-
-	len = resolve_command_subst(&expanded, shell, *string + *read);
-	if (len < 0)
-		return (-len);
-	ft_asprintf(&new, "%.*s%s%s",
-		*write, *string, expanded, *string + *read + len);
-	if (new == NULL)
-	{
-		ft_strdel(&expanded);
-		return (malloc_error);
-	}
-	ft_strdel(string);
-	*string = new;
-	*write += ft_strlen(expanded);
-	*read = *write - 1;
-	ft_strdel(&expanded);
-	return (no_error);
-}
-
 int				expand_variable(t_shell *shell, char **string,
 													size_t *read, size_t *write)
 {
