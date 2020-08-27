@@ -29,16 +29,19 @@ static void	update_background_job(t_job *job)
 	size_t	len;
 	char	*command;
 
-	command = job->command;
-	len = ft_strlen(command);
 	job->foreground = false;
-	if (command[len - 1] == '\n' ||
-		command[len - 1] == ';')
+	if (job->command != NULL)
 	{
-		command[len - 1] = '&';
+		command = job->command;
+		len = ft_strlen(command);
+		if (command[len - 1] == '\n' ||
+			command[len - 1] == ';')
+		{
+			command[len - 1] = '&';
+		}
+		else if (command[len - 1] != '&')
+			ft_strexpand(&(job->command), " &");
 	}
-	else if (command[len - 1] != '&')
-		ft_strexpand(&(job->command), " &");
 }
 
 static bool	iterate_jobs(t_job_cont *job_control, char *job_spec)
