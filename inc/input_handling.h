@@ -50,7 +50,6 @@
 # define CNTRL_E 005
 # define CNTRL_F 006
 # define CNTRL_G 007
-# define CNTRL_R 022
 # define CNTRL_S 023
 # define CNTRL_V 026
 # define CNTRL_X 030
