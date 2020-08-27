@@ -45,6 +45,7 @@ static const char	*g_error_str[error_count] = {
 	[error_inv_format] = "Invalid format",
 	[too_many_arguments] = "Too many arguments given",
 	[too_few_arguments] = "Too few arguments given",
+	[num_arg_required] = "Numeric argument required",
 	[invalid_option] = "invalid option",
 	[var_not_set] = "Variable not set",
 	[restore_fd_fail] = "Failed to restore fd",
