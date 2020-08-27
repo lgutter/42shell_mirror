@@ -25,7 +25,7 @@ static t_complete_cmd	*skip_and_or_list(t_shell *shell, t_complete_cmd *cmd)
 	{
 		if (ft_getstatus(shell->env) != 0 && temp->next != NULL)
 		{
-			while (temp->seperator_op == and_op)
+			while (temp != NULL && temp->seperator_op == and_op)
 				temp = temp->next;
 			return (temp);
 		}
@@ -34,7 +34,7 @@ static t_complete_cmd	*skip_and_or_list(t_shell *shell, t_complete_cmd *cmd)
 	{
 		if (ft_getstatus(shell->env) == 0 && temp->next != NULL)
 		{
-			while (temp->seperator_op == or_op)
+			while (temp != NULL && temp->seperator_op == or_op)
 				temp = temp->next;
 			return (temp);
 		}
