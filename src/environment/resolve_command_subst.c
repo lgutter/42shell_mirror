@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   expand_command_subst.h                             :+:    :+:            */
+/*   resolve_command_subst.c                            :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: nloomans <nloomans@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 0000/00/00 00:00:00 by nloomans      #+#    #+#                 */
-/*   Updated: 9999/99/99 99:99:99 by nloomans      ########   odam.nl         */
+/*   Created: 2020/08/25 12:57:26 by nloomans      #+#    #+#                 */
+/*   Updated: 2020/08/27 17:57:26 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ static void		exec_command_and_exit(int output_fd, const char *command,
 		handle_error(dup2_fd_fail);
 		exit(1);
 	}
-	shell->interactive = false;
+	if (shell != NULL)
+		shell->interactive = false;
 	handle_input(shell, &input);
 	exit(0);
 }
@@ -66,7 +67,7 @@ static char		*read_to_string(int fd)
 	return (ret);
 }
 
-int				resolve_command_subst(char **out, t_shell *shell,
+static int		resolve_command_subst(char **out, t_shell *shell,
 					const char *subst)
 {
 	size_t	subst_len;
@@ -91,4 +92,31 @@ int				resolve_command_subst(char **out, t_shell *shell,
 	if (*out == NULL)
 		return (-malloc_error);
 	return (subst_len + 1);
+}
+
+int				expand_command_subst(t_shell *shell,
+									char **string, size_t *read, size_t *write)
+{
+	int		len;
+	char	*expanded;
+	char	*new;
+
+	if (string == NULL || *string == NULL || read == NULL || write == NULL)
+		return (-1);
+	len = resolve_command_subst(&expanded, shell, *string + *read);
+	if (len < 0)
+		return (-len);
+	ft_asprintf(&new, "%.*s%s%s",
+		*write, *string, expanded, *string + *read + len);
+	if (new == NULL)
+	{
+		ft_strdel(&expanded);
+		return (malloc_error);
+	}
+	ft_strdel(string);
+	*string = new;
+	*write += ft_strlen(expanded);
+	*read = *write - 1;
+	ft_strdel(&expanded);
+	return (no_error);
 }
