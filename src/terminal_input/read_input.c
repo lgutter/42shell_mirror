@@ -65,13 +65,6 @@ static int		handle_control_char(t_shell *shell, char c)
 {
 	if (handle_printable_char(shell->buffer, &shell->cursor, c) == 1)
 		return (1);
-	if (c == CNTRL_R)
-	{
-		shell->cursor.current.y = (shell->cursor.current.y
-										- shell->cursor.start.y);
-		shell->cursor.start.y = 1;
-		send_terminal("cl");
-	}
 	if (cut_copy_paste(shell->buffer, &shell->cursor, c) != 0 ||
 		ctrl_d_key(c, shell) == 1)
 		return (1);
