@@ -53,6 +53,7 @@ typedef enum		e_error
 	error_inv_format,
 	too_many_arguments,
 	too_few_arguments,
+	num_arg_required,
 	invalid_option,
 	var_not_set,
 	restore_fd_fail,

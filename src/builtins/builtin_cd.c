@@ -101,7 +101,7 @@ static int	resolve_cd_path(t_env *env, t_cd *cd)
 		ret = 1;
 	ret = (ret == 0 ? path_start(cd, old_pwd) : ret);
 	ret = (ret == 0 ? check_change_path(cd->final_path, cd->input_path) : ret);
-	ret = (ret == 0 ? (int)set_old_new_pwd(env, cd, old_pwd) : ret);
+	ret = (ret == 0 ? set_old_new_pwd(env, cd, old_pwd) : ret);
 	free(old_pwd);
 	return (ret);
 }

@@ -119,11 +119,48 @@ Test(unit_builtin_exit, basic_mandatory_error_running_jobs, .init = cr_redirect_
 
 	argv = ft_strsplit("exit", ' ');
 	ret = builtin_exit(shell, argv);
-	cr_expect_eq(ret, 0, "expected ret %i, got %i!", 0, ret);
+	cr_expect_eq(ret, 1, "expected ret %i, got %i!", 1, ret);
 	temp = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
 	cr_expect_null(temp);
 	fflush(stderr);
 	cr_expect_stderr_eq_str("Cetushell: you have unfinished jobs.\n");
+}
+
+Test(unit_builtin_exit, basic_mandatory_error_too_many_args, .init = cr_redirect_stderr)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	char		*temp;
+	int			ret;
+	char		buff[1024];
+
+	memset(buff, 0, 1024);
+	argv = ft_strsplit("exit 2 3 4 5", ' ');
+	ret = builtin_exit(shell, argv);
+	cr_expect_eq(ret, 1, "expected ret %i, got %i!", 1, ret);
+	temp = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
+	cr_expect_null(temp);
+	fflush(stderr);
+	snprintf(buff, 1023, "Cetushell: %s\n", g_error_str[too_many_arguments]);
+}
+
+Test(unit_builtin_exit, basic_mandatory_error_non_numeric_arg, .init = cr_redirect_stderr)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	char		*temp;
+	int			ret;
+	char		buff[1024];
+
+	memset(buff, 0, 1024);
+	argv = ft_strsplit("exit foo", ' ');
+	ret = builtin_exit(shell, argv);
+	cr_expect_eq(ret, exit_shell_code, "expected ret %i, got %i!", exit_shell_code, ret);
+	temp = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
+	cr_assert_not_null(temp);
+	cr_expect_str_eq(temp, "2");
+	fflush(stderr);
+	snprintf(buff, 1023, "Cetushell: %s: %s\n", argv[1], g_error_str[num_arg_required]);
 }
 
 Test(unit_builtin_exit, undefined_error_nothing_defined, .init = redirect_std_err)
@@ -141,11 +178,11 @@ Test(unit_builtin_exit, undefined_error_nothing_defined, .init = redirect_std_er
 	temp = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
 	cr_expect_null(temp);
 	fflush(stderr);
-	sprintf(buff, "Cetushell: %.1000s\n", g_error_str[env_empty_error]);
+	snprintf(buff, 1023, "Cetushell: %s\n", g_error_str[env_empty_error]);
 	cr_expect_stderr_eq_str(buff);
 }
 
-Test(unit_builtin_exit, basic_bonus_error_valid_argument_exit_code)
+Test(unit_builtin_exit, basic_mandatory_valid_argument_exit_code)
 {
 	char		**argv;
 	t_shell		*shell = init_shell(false);
@@ -159,4 +196,3 @@ Test(unit_builtin_exit, basic_bonus_error_valid_argument_exit_code)
 	temp = ft_getenv(shell->env, "EXIT_CODE", SHELL_VAR);
 	cr_expect_str_eq(temp, "45", "expected exit code var %s, got %s!", "45", temp);
 }
-

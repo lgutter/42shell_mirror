@@ -16,10 +16,16 @@
 
 #include "builtins.h"
 #include "environment.h"
+#include "error_str.h"
 
 static void redirect_std_out()
 {
 	cr_redirect_stdout();
+}
+
+static void redirect_std_err()
+{
+	cr_redirect_stderr();
 }
 
 Test(builtin_env_unit, env_null)
@@ -60,6 +66,52 @@ Test(builtin_env_unit, valid_env_no_arguments, .init = redirect_std_out)
 	fflush(stdout);
 	sprintf(buff, "%s=%s\n", env.key, env.value);
 	cr_expect_stdout_eq_str(buff);
+}
+
+Test(builtin_set_unit, error_set_no_args_closed_stdout, .init = redirect_std_err)
+{
+	char		**argv;
+	t_env		shell_var = {"baz", "blah", SHELL_VAR, NULL};
+	t_env		env = {"foo", "bar", ENV_VAR, &shell_var};
+	t_env		*start = &env;
+	t_shell		*shell = init_shell(false);
+	shell->env = start;
+	int			ret = 0;
+
+	argv = (char **)malloc(sizeof(char *) * 2);
+	argv[0] = ft_strdup("set");
+	argv[1] = NULL;
+	close(STDOUT_FILENO);
+	ret = builtin_set(shell, argv);
+	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
+	char		buff[1024];
+	memset(buff, '\0', 1024);
+	fflush(stderr);
+	snprintf(buff, 1023, "Cetushell: set: write error: %s\n", g_error_str[bad_fd_error]);
+	cr_expect_stderr_eq_str(buff);
+}
+
+Test(builtin_env_unit, error_env_no_args_closed_stdout, .init = redirect_std_err)
+{
+	char		**argv;
+	t_env		shell_var = {"baz", "blah", SHELL_VAR, NULL};
+	t_env		env = {"foo", "bar", ENV_VAR, &shell_var};
+	t_env		*start = &env;
+	t_shell		*shell = init_shell(false);
+	shell->env = start;
+	int			ret = 0;
+
+	argv = (char **)malloc(sizeof(char *) * 2);
+	argv[0] = ft_strdup("env");
+	argv[1] = NULL;
+	close(STDOUT_FILENO);
+	ret = builtin_set(shell, argv);
+	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
+	char		buff[1024];
+	memset(buff, '\0', 1024);
+	fflush(stderr);
+	snprintf(buff, 1023, "Cetushell: env: write error: %s\n", g_error_str[bad_fd_error]);
+	cr_expect_stderr_eq_str(buff);
 }
 
 Test(builtin_shellenv_unit, valid_shell_no_arguments, .init = redirect_std_out)

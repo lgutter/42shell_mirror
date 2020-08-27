@@ -12,6 +12,30 @@
 
 #include "builtins.h"
 
+static int		print_export(t_shell *shell)
+{
+	t_env	*head;
+
+	head = shell->env;
+	while (head != NULL)
+	{
+		if ((head->type & ENV_VAR) != 0)
+		{
+			if (write(STDOUT_FILENO, "", 0) == -1)
+			{
+				handle_prefix_error_str(bad_fd_error, "export", "write error");
+				return (1);
+			}
+			if (ft_strlen(head->value) == 0)
+				ft_printf("export %s%c", head->key, '\n');
+			else
+				ft_printf("export %s=\"%s\"%c", head->key, head->value, '\n');
+		}
+		head = head->next;
+	}
+	return (0);
+}
+
 static size_t	checkopt_export(char *arg)
 {
 	size_t		i;
@@ -81,6 +105,6 @@ int				builtin_export(t_shell *shell, char **argv)
 		i++;
 	}
 	if (print == 1)
-		print_export(shell, argv);
+		return (print_export(shell));
 	return (0);
 }

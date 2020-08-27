@@ -17,7 +17,7 @@
 # include <limits.h>
 #endif
 
-int			get_cd_options(char **argv, t_cd *cd_s)
+int				get_cd_options(char **argv, t_cd *cd_s)
 {
 	struct s_ft_getopt	opt;
 	int					len;
@@ -46,7 +46,7 @@ int			get_cd_options(char **argv, t_cd *cd_s)
 	return (0);
 }
 
-int			get_home_oldpw(t_cd *cd_s, t_env *env)
+int				get_home_oldpw(t_cd *cd_s, t_env *env)
 {
 	char	*key;
 
@@ -69,7 +69,15 @@ int			get_home_oldpw(t_cd *cd_s, t_env *env)
 	return (0);
 }
 
-size_t		set_old_new_pwd(t_env *env, t_cd *cd, char *old_path)
+static int	print_old_pwd(char *path)
+{
+	if (write(STDOUT_FILENO, "", 0) == -1)
+		return (handle_prefix_error_str(bad_fd_error, "cd", "write error"));
+	ft_printf("%s\n", path);
+	return (0);
+}
+
+int			set_old_new_pwd(t_env *env, t_cd *cd, char *old_path)
 {
 	if (env == NULL || cd == NULL || old_path == NULL)
 		return (1);
@@ -93,6 +101,6 @@ size_t		set_old_new_pwd(t_env *env, t_cd *cd, char *old_path)
 			return (handle_prefix_error(malloc_error, "cd"));
 	}
 	if (cd->to_oldpwd)
-		ft_printf("%s\n", (cd->link ? cd->link_path : cd->final_path));
+		return (print_old_pwd(cd->link ? cd->link_path : cd->final_path));
 	return (0);
 }
