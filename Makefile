@@ -3,78 +3,59 @@
 #                                                         ::::::::             #
 #    Makefile                                           :+:    :+:             #
 #                                                      +:+                     #
-#    By: dkroeke <dkroeke@student.codam.nl>           +#+                      #
+#    By: lgutter <lgutter@student.codam.nl>           +#+                      #
 #                                                    +#+                       #
-#    Created: Invalid date        by                #+#    #+#                 #
-#    Updated: Invalid date        by               ########   odam.nl          #
+#    Created: 2019/09/11 13:40:17 by lgutter       #+#    #+#                  #
+#    Updated: 2020/06/15 14:07:04 by lgutter       ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
-NAME= cetushell
+include src/42shsrcs
+include inc/headerlist
+
+JUNK = $(shell find -E . -regex ".*(\..*~|\#.*\#|\.DS_Store)" 2>/dev/null)
+
+OBJS := $(42SHSRCS:%= src/%.o)
+LIBFT := ft_printf/libftprintf.a
+INCLPATH := -I ./inc -I ./ft_printf
+MAIN := src/main.o
+
+CFLAGS := -Wall -Wextra -Werror -O2
+
+NAME := 42sh
+
+PLUS = \033[38;5;40m| + |\033[0;00m
+MINUS = \033[38;5;160m| - |\033[0;00m
 
 all: $(NAME)
 
-# Libaries #--------------------------------------------------------------------
+$(NAME): $(LIBFT) $(OBJS) $(MAIN) $(HEADERS)
+	@$(CC) $(MAIN) $(OBJS) $(CFLAGS) $(LIBFT) -ltermcap $(INCLPATH) -o $@
+	@echo "$(PLUS) compiled: $@"
 
-LIBFT_NAME=		ft
-LIBFT_DIR=		subprojects/libft
-LIBFT_A=		$(LIBFT_DIR)/lib$(LIBFT_NAME).a
-LIBFT_IFLAGS=	-I $(LIBFT_DIR)
-LIBFT_LFLAGS=	-L $(LIBFT_DIR) -l$(LIBFT_NAME)
+$(LIBFT): FORCE
+	@$(MAKE) -C ft_printf/
 
-$(LIBFT_A):
-	$(MAKE) -C $(LIBFT_DIR)
+%.o: %.c
+	@$(CC) -c $< $(CFLAGS) $(INCLPATH) -o $@
+	@echo "$(PLUS) compiled: $@"
 
-FTPRINTF_NAME=		ftprintf
-FTPRINTF_DIR=		subprojects/ft_printf
-FTPRINTF_A=			$(FTPRINTF_DIR)/lib$(FTPRINTF_NAME).a
-FTPRINTF_IFLAGS=	-I $(FTPRINTF_DIR)
-FTPRINTF_LFLAGS=	-L $(FTPRINTF_DIR) -l$(FTPRINTF_NAME)
+lclean:
+	@rm -rfv $(JUNK) $(OBJS) $(MAIN)| sed -E $$'s/(.*)/$(MINUS) removed: \\1/g'
 
-$(FTPRINTF_A):
-	$(MAKE) -C $(FTPRINTF_DIR)
+clean: lclean
+	@$(MAKE) clean -C ft_printf/
 
-# Definitions #-----------------------------------------------------------------
+lfclean: lclean
+	@rm -rfv $(NAME) | sed -E $$'s/(.*)/$(MINUS) removed: \\1/g'
 
-SRC_DIR= 		src
-INC_DIR=		inc
-OBJ_DIR=		obj
-
-SRC_FILES=		src/main \
-				src/set_terminal \
-INC_FILES=		inc/shell21
-OBJ_FILES=		$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES))
-
-CFLAGS=			-Werror -Wall -Wextra
-IFLAGS=			-I $(INC_DIR) $(LIBFT_IFLAGS) $(FTPRINTF_IFLAGS)
-LFLAGS=			$(LIBFT_LFLAGS) $(FTPRINTF_LFLAGS)
-
-# Regular rules #---------------------------------------------------------------
-
-$(NAME): $(OBJ_FILES) $(LIBFT_A) $(FTPRINTF_A)
-	$(CC) -o $@ $(OBJ_FILES) $(CFLAGS) $(LFLAGS)
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_FILES)
-	@mkdir -p $$(dirname $@)
-	$(CC) -o $@ -c $< $(CFLAGS) $(IFLAGS)
-
-# Phonies #---------------------------------------------------------------------
-
-clean:
-	@$(MAKE) -C $(LIBFT_DIR) fclean
-	@$(MAKE) -C $(FTPRINTF_DIR) fclean
-	@rm -rf $(OBJ_DIR)
-
-fclean: clean
-	@$(MAKE) -C $(LIBFT_DIR) fclean
-	@$(MAKE) -C $(FTPRINTF_DIR) fclean
-	@rm -f $(NAME)
+fclean: lfclean
+	@$(MAKE) fclean -C ft_printf/
 
 re:
 	@$(MAKE) fclean
-	@$(MAKE)
+	@$(MAKE) all
 
-# Special #---------------------------------------------------------------------
+FORCE:
 
-.SECONDARY: $(OBJ_FILES)
-.PHONY: all clean fclean re
+.PHONY: all clean lclean lfclean fclean re FORCE

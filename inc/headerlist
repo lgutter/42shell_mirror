@@ -1,0 +1,26 @@
+HEADERS := inc/autocomplete.h \
+inc/builtins.h \
+inc/cetushell.h \
+inc/environment.h \
+inc/error_str.h \
+inc/executor.h \
+inc/handle_error.h \
+inc/handle_input.h \
+inc/hashtable.h \
+inc/headerlist \
+inc/history.h \
+inc/input_handling.h \
+inc/job_control.h \
+inc/parser.h \
+inc/parser_structs.h \
+inc/parser_utils.h \
+inc/processing.h \
+inc/prompt.h \
+inc/quote_trans_table.h \
+inc/signal_handler.h \
+inc/substitution.h \
+inc/test_expressions.h \
+inc/tokenizer.h \
+inc/token_trans_table.h \
+inc/utils.h \
+inc/vecstr.h
