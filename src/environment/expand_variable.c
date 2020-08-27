@@ -119,6 +119,10 @@ int				expand_variable(t_shell *shell, char **string,
 	if (ft_strncmp((*string) + *read, "$((", 3) == 0)
 	{
 		ret = arithmatic_expansion(shell, string, read, write);
+		if (ret != 0)
+		{
+			(*write)++;
+		}
 	}
 	else if (ft_strnequ(*string + *read, "$(", 2))
 		ret = expand_command_subst(shell, string, read, write);

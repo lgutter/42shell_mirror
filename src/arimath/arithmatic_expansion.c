@@ -30,13 +30,13 @@ static void		reconstruct_input_from_list(struct s_ari_node *iter)
 	printf("\033[0m\n");
 }
 
-static size_t	find_length(const char *string, size_t *aread_index)
+static size_t	find_length(const char *string, size_t aread_index)
 {
 	int     	par_counter;
 	size_t  	temp_index;
 	
 	par_counter = 0;
-	temp_index = *aread_index + 3;
+	temp_index = aread_index + 3;
 	while ((string)[temp_index] != '\0')
 	{
 		if (ft_strncmp((string) + temp_index, "))", 2) == 0 && par_counter == 0)
@@ -47,8 +47,6 @@ static size_t	find_length(const char *string, size_t *aread_index)
 			par_counter--;
 		temp_index++;
 	}
-	//printf("len: %zu, offset: %zu, |%.*s|\n",  (temp_index - *aread_index + 2), *aread_index,
-	//	(int)(temp_index - *aread_index) + 2, string + *aread_index);
 	return (temp_index);
 }
 
@@ -81,29 +79,36 @@ int				arithmatic_expansion(t_shell *const shell,
 	struct s_ari_node	*token_list;
 	size_t  			temp_index;
 	char				*tape;
+	char				*new_astring;
 
-	temp_index = find_length(*astring, aread_index);
+	temp_index = find_length(*astring, *aread_index);
 	if ((*astring)[temp_index] == '\0')
 	{
 		ft_dprintf(2, "Cetushell: arithmatic expansion missing closing parenthesis\n");
-		return (parsing_error);
+		return (bad_subst_err);
 	}
 	tape = ft_strsub(*astring, *aread_index + 3, (temp_index - *aread_index) - 3);
 	printf("|%s|\n", tape);
 	if (tape == NULL)
 	{
-		return (malloc_error);
+		return (bad_subst_err);
 	}
 	token_list = NULL;
 	if (interpreter_module(shell, &tape, &token_list) != 0)
 	{
-		return (-1);
+		return (bad_subst_err);
 	}
 	free(tape);
 	tape = arithmatic_run_math_operations(shell->env, &token_list);
 	reconstruct_input_from_list(token_list); //temporary
 	arithmatic_delete_tokens(&token_list);
-	//kill me please
+
+	ft_asprintf(&new_astring, "%.*s%s%s", *awrite_index, *astring,
+		tape, *astring + temp_index + 2);
+	*awrite_index += ft_strlen(tape);
+	*aread_index = *awrite_index - 1;
+	free(*astring);
+	*astring = new_astring;
 
 	free(tape); //insert number to astring
 	(void)awrite_index;

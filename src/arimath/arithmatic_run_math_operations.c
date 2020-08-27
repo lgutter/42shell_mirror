@@ -79,7 +79,7 @@ char		*arithmatic_run_math_operations(t_env *const env,
 		printf("bad token at start of list\n");
 		return (NULL);
 	}
-	while (iter < sizeof(g_op_queue) / sizeof(t_math_action))
+	while (iter < (sizeof(g_op_queue) / sizeof(struct s_action_kvp)) - 1)
 	{
 		if (run_basic_operator(node_list, g_op_queue[iter].operator, \
 			g_op_queue[iter].action) != 0)
