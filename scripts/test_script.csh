@@ -142,12 +142,13 @@ type env set hash true foo echo
 echo '--------------------------------------------------'
 ls doesnotexist || echo "OR operator works"; echo $?
 echo 'No error' || echo 'You cant see me'; echo "${?}"
-false && echo foo || echo bar #bar
-false || echo foo && echo bar #foo
-true || echo foo && echo bar #bar
-true && echo foo || echo bar #foo
-false && echo foo && echo oops || echo bar #bar
-true || echo foo || echo oops && echo bar #bar
+false && echo FAIL || echo OK #bar
+false || echo -n O && echo K #foo
+true || echo FAIL && echo OK #bar
+true && echo OK || echo FAIL #foo
+false && echo FAIL && echo FAIL || echo OK #bar
+false && echo FAIL && echo FAIL && echo FAIL || echo OK #bar
+true || echo FAIL || echo FAIL || echo FAIL && echo OK #bar
 
 echo '--------------------------------------------------'
 a=hello b=world; b=42 echo ${a}_${b} && echo ${b} #hello_word world
