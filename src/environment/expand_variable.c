@@ -10,7 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ft_printf.h"
 #include "environment.h"
+#include "processing.h"
 
 static ssize_t	env_str_len(char *string)
 {
@@ -104,6 +106,31 @@ static int		expand_dollar(t_env *env_list, char **string,
 	return (0);
 }
 
+static int		expand_command_subst(t_shell *shell,
+					char **string, size_t *read, size_t *write)
+{
+	int		len;
+	char	*expanded;
+	char	*new;
+
+	len = resolve_command_subst(&expanded, shell, *string + *read);
+	if (len < 0)
+		return (-len);
+	ft_asprintf(&new, "%.*s%s%s",
+		*write, *string, expanded, *string + *read + len);
+	if (new == NULL)
+	{
+		ft_strdel(&expanded);
+		return (malloc_error);
+	}
+	ft_strdel(string);
+	*string = new;
+	*write += ft_strlen(expanded);
+	*read = *write - 1;
+	ft_strdel(&expanded);
+	return (no_error);
+}
+
 int				expand_variable(t_shell *shell, char **string,
 													size_t *read, size_t *write)
 {
@@ -113,8 +140,10 @@ int				expand_variable(t_shell *shell, char **string,
 	env = (shell != NULL) ? shell->env : NULL;
 	if (string == NULL || *string == NULL || read == NULL || write == NULL)
 		return (-1);
-	ret = 0;
-	ret = expand_dollar(env, string, read, write);
+	if (ft_strnequ(*string + *read, "$(", 2))
+		ret = expand_command_subst(shell, string, read, write);
+	else
+		ret = expand_dollar(env, string, read, write);
 	if (ret == malloc_error)
 		handle_error(malloc_error);
 	return (ret);

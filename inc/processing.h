@@ -110,4 +110,18 @@ int				expand_variable(t_shell *shell, char **string,
 int				expand_home(t_env *env_list, char **string,
 												size_t *read, size_t *write);
 
+/*
+**	Tales a pointer to the start of a command substitution in a string,
+**	including the opening $. This will then execture the command in a
+**	non-interactive copy of shell and store the stdout of the command
+**	substitution in out.
+**
+**	Returns:
+**	- The total length of the substitution string. E.g. $(foo) would be 6.
+**	- -errid error on on failure. This means that you need to invert the error
+**	  code before handing it to handle_error.
+*/
+int				resolve_command_subst(char **out, t_shell *shell,
+					const char *subst);
+
 #endif
