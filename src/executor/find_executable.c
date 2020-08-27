@@ -76,9 +76,9 @@ int			find_executable(t_env *env_list, char **path, char *arg_zero,
 	else
 	{
 		env_path = ft_getenv(env_list, "PATH", VAR_TYPE);
-		if (env_path == NULL)
-			return (print_warnings ?
-				handle_error_str(env_not_found, "PATH") : env_not_found);
+		if (env_path == NULL && print_warnings &&
+				handle_error_str(env_not_found, "PATH"))
+			return (env_not_found);
 		paths = ft_strsplit(env_path, ':');
 		free(env_path);
 		if (paths == NULL)
