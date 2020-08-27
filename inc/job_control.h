@@ -62,6 +62,14 @@ typedef	enum			e_update_opts
 						job_print_pid | job_print_long | job_print_pids)
 }						t_update_opts;
 
+typedef	enum			e_sig_print_opts
+{
+	sig_print_none = 0,
+	sig_print_pid = (1 << 0),
+	sig_print_command = (1 << 1),
+	sig_print_all = (sig_print_pid | sig_print_command),
+}						t_sig_print_opts;
+
 typedef	struct			s_job_cont
 {
 	size_t				current;
@@ -86,6 +94,7 @@ typedef	struct			s_process
 	pid_t				pid;
 	pid_t				*pgrp;
 	t_status			status;
+	int					signal;
 	char				*command;
 	struct s_process	*next;
 }						t_process;
@@ -95,8 +104,12 @@ t_job					*init_job(t_shell *shell, char *command,
 															bool foreground);
 t_process				*init_process(t_job *job, char *command);
 t_status				get_job_status(t_job *job);
-t_status				get_status_from_stat_loc(int stat_loc);
-void					check_jobs(t_job_cont *job_control, int update_opts);
+t_status				get_status_from_stat_loc(int stat_loc,
+															t_process *process);
+int						handle_new_process(t_shell *shell, t_job *job,
+															t_process *process);
+void					check_jobs(t_job_cont *job_control,
+													t_update_opts update_opts);
 int						set_process_job_group(t_job *job, t_process *process);
 
 /*
@@ -124,8 +137,10 @@ t_job					*update_job_status(t_job_cont *job_control,
 **		previous:	id for the previous job, to determine if - should be printed
 **		opts:		options for printing, if 0, job_print_auto is assumed.
 */
-void					print_job_status(t_job *job,
-									size_t current, size_t previous, int opts);
+void					print_job_status(t_job *job, size_t current,
+										size_t previous, t_update_opts opts);
+void					print_process_signal(t_process *process,
+														t_sig_print_opts opts);
 bool					job_spec_match(t_job_cont *job_control,
 											t_job *job, const char *job_spec);
 void					add_job_to_list(t_shell *shell, t_job *job);
@@ -134,5 +149,11 @@ t_process				*free_process_list(t_process *start);
 t_process				*free_process(t_process *process);
 t_job					*free_job_list(t_job *start);
 t_job					*free_job(t_job *job);
+
+/*
+**	Kills all sub-processes of the shell and calls check_jobs to print any
+**	final changes in the jobs caused by this.
+*/
+void					clean_up_jobs(t_shell *shell);
 
 #endif

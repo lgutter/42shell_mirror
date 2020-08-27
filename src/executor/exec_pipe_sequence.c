@@ -33,22 +33,13 @@ static void	exec_in_child(t_pipe_sequence *pipe_seq, t_shell *shell,
 static int	pipe_parent(t_pipe_sequence *pipe_seq, t_shell *shell,
 						t_job *job, t_process *process)
 {
-	int		stat_loc;
 	int		ret;
-	pid_t	pid;
 
 	ret = exec_pipe_sequence(pipe_seq->next, shell, job);
 	close(STDIN_FILENO);
-	if (job->foreground == true)
-	{
-		pid = waitpid(process->pid, &stat_loc, WUNTRACED | WCONTINUED);
-		if (pid > 0)
-			process->status = get_status_from_stat_loc(stat_loc);
-		else if (pid != 0)
-			process->status = exited;
-	}
-	else
-		process->status = running;
+	handle_new_process(shell, job, process);
+	if (process->signal != 0 && process->signal != SIGPIPE)
+		print_process_signal(process, sig_print_all);
 	return (ret);
 }
 
@@ -84,7 +75,6 @@ static int	execute_simple(t_pipe_sequence *pipe_seq, t_shell *shell,
 										t_job *job, t_process *process)
 {
 	int			ret;
-	int			stat_loc;
 
 	ret = 0;
 	process->pid = fork();
@@ -93,17 +83,11 @@ static int	execute_simple(t_pipe_sequence *pipe_seq, t_shell *shell,
 	else if (process->pid > 0)
 	{
 		set_process_job_group(job, process);
-		if (job->foreground == true)
-		{
-			ret = waitpid(process->pid, &stat_loc, WUNTRACED);
-			process->status = exited;
-			if (ret > 0 && WIFEXITED(stat_loc) != 0)
-				ret = ft_setstatus(shell->env, (int)WEXITSTATUS(stat_loc));
-			if (ret > 0)
-				process->status = get_status_from_stat_loc(stat_loc);
-		}
-		else
-			process->status = running;
+		ret = handle_new_process(shell, job, process);
+		if (process->signal != 0 && process->pid != job->pgrp)
+			print_process_signal(process, sig_print_all);
+		else if (process->signal != 0)
+			print_process_signal(process, sig_print_none);
 		return (ret);
 	}
 	return (handle_error(fork_failure));
@@ -130,11 +114,11 @@ int			exec_pipe_sequence(t_pipe_sequence *pipe_seq,
 	else if ((simple_cmd->argv != NULL && job->foreground == true &&
 	is_builtin(simple_cmd->argv[0]) == true) ||
 	(simple_cmd->argv == NULL && simple_cmd->assignments != NULL))
-		ret = ft_setstatus(shell->env, exec_simple_command(simple_cmd, shell));
+		ret = exec_simple_command(simple_cmd, shell);
 	else
 		ret = execute_simple(pipe_seq, shell, job, process);
 	std_fd_restore(old_fds);
 	if (shell->interactive == true)
 		tcsetpgrp(STDERR_FILENO, shell->pgid);
-	return (ret);
+	return (ft_setstatus(shell->env, ret));
 }

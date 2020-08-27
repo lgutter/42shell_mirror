@@ -40,21 +40,29 @@ static size_t	hash_path(t_shell *shell, char **path, char **split, char *arg)
 	return (0);
 }
 
-static size_t	hash_args(t_shell *shell, char **argv, size_t i)
+static int		hash_arguments(t_shell *shell, char **argv, size_t i)
 {
 	char		*path;
 	char		**split;
 	size_t		ret;
+	int			return_code;
 
-	path = NULL;
+	return_code = 0;
 	ret = 0;
-	split = ft_strsplit(argv[i], '=');
-	ret = hash_path(shell, &path, split, argv[i]);
-	if (ret == 0 && path != NULL)
-		ret = add_to_hash(shell, path, split[0]);
-	free(path);
-	free_dchar_arr(split);
-	return (ret);
+	while (argv[i] != NULL)
+	{
+		path = NULL;
+		split = ft_strsplit(argv[i], '=');
+		ret = hash_path(shell, &path, split, argv[i]);
+		if (ret == 0 && path != NULL)
+			ret = add_to_hash(shell, path, split[0]);
+		free(path);
+		free_dchar_arr(split);
+		if (ret != 0)
+			return_code = 1;
+		i++;
+	}
+	return (return_code);
 }
 
 int				builtin_hash(t_shell *shell, char **argv)
@@ -70,18 +78,15 @@ int				builtin_hash(t_shell *shell, char **argv)
 		return (0);
 	}
 	else if (ft_strcmp(argv[i], "-i") == 0)
+	{
 		initialize_hashes(shell);
+		return (0);
+	}
 	else if (ft_strcmp(argv[i], "-r") == 0)
 	{
 		free_hashtable(shell);
 		init_hashtable(shell);
 		i++;
 	}
-	while (argv[i] != NULL && ft_strcmp(argv[1], "-i") != 0)
-	{
-		if (hash_args(shell, argv, i) != 0)
-			return (1);
-		i++;
-	}
-	return (0);
+	return (hash_arguments(shell, argv, i));
 }

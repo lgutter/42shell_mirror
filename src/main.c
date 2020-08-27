@@ -45,8 +45,8 @@ static void		cetushell(t_shell *shell)
 	while (ret != exit_shell_code)
 	{
 		prompt = ft_getenv(shell->env, "PS1", SHELL_VAR);
-		if (shell->interactive == true)
-			check_jobs(shell->job_control, job_update_all);
+		check_jobs(shell->job_control,
+				shell->interactive == true ? job_update_all : job_update_none);
 		input = prompt_shell(shell, prompt == NULL ? PROMPT_NORMAL : prompt);
 		free(prompt);
 		if ((g_signal_handler & (1 << SIGINT)) != 0)
@@ -83,6 +83,7 @@ int				main(int argc, char **argv)
 	if (shell == NULL)
 		return (1);
 	cetushell(shell);
+	clean_up_jobs(shell);
 	exit_code = get_exit_code(shell);
 	if (interactive == true)
 		tcsetpgrp(STDERR_FILENO, old_term_pgrp);

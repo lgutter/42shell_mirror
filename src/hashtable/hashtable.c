@@ -78,7 +78,8 @@ static size_t	add_hash_col(t_shell *shell, t_hentry *col, char *argz)
 				ret = add_to_hash(shell, path, argz);
 			free(path);
 		}
-		entry->next_col->hit++;
+		if (entry->next_col != NULL)
+			entry->next_col->hit++;
 	}
 	return (ret);
 }
