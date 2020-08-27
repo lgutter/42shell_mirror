@@ -95,14 +95,18 @@ static int	process(struct s_ft_getopt *opt,
 	return (0);
 }
 
+static bool	should_stop(struct s_ft_getopt opt, int argc, char **argv)
+{
+	return (opt.index >= argc || argv[opt.index][0] != '-' ||
+		ft_strcmp(argv[opt.index], "-") == 0);
+}
+
 bool		ft_getopt(struct s_ft_getopt *opt, int argc, char **argv,
 				const char *optstring)
 {
 	size_t	i;
 
-	if (opt->index >= argc || argv[opt->index][0] != '-')
-		return (false);
-	if (ft_strcmp(argv[opt->index], "-") == 0)
+	if (should_stop(*opt, argc, argv))
 		return (false);
 	if (argv[opt->index][1] == '-')
 	{
