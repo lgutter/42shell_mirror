@@ -57,6 +57,33 @@ Test(builtin_cd_unit, valid_cd_oldpwd, .init = redirect_std_out)
 	cr_expect_stdout_eq_str(buff);
 }
 
+Test(builtin_cd_unit, error_cd_oldpwd_closed_stdout, .init = redirect_std_err)
+{
+	char		**argv;
+	t_shell		*shell = init_shell(false);
+	int			ret = 0;
+	char		buff[1024];
+	char		*dir = "/tmp";
+	char		expected_dir[1024];
+
+
+	getcwd(expected_dir, 1024);
+	ret = ft_setenv(shell->env, "OLDPWD", dir, ENV_VAR);
+	cr_assert_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	argv = (char **)ft_memalloc(sizeof(char *) * 3);
+	argv[0] = "cd";
+	argv[1] = "-";
+	close(STDOUT_FILENO);
+	ret = builtin_cd(shell, argv);
+	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
+	getcwd(buff, 1024);
+	cr_expect_str_neq(buff, expected_dir, "did not stay in correct dir! expected %s, got %s!", dir, buff);
+	fflush(stderr);
+	memset(buff, '\0', 1024);
+	snprintf(buff, 1023, "Cetushell: cd: write error: %s\n", g_error_str[bad_fd_error]);
+	cr_expect_stderr_eq_str(buff);
+}
+
 Test(builtin_cd_unit, valid_cd_normal)
 {
 	char		**argv;

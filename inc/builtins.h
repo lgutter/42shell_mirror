@@ -65,7 +65,7 @@ int					builtin_test(t_shell *shell, char **argv);
 
 int					get_cd_options(char **argv, t_cd *cd_s);
 int					get_home_oldpw(t_cd *cd_s, t_env *env);
-size_t				set_old_new_pwd(t_env *env, t_cd *cd, char *old_path);
+int					set_old_new_pwd(t_env *env, t_cd *cd, char *old_path);
 void				print_export(t_shell *shell, char **argv);
 
 static const struct s_builtin	g_builtins[] = {
