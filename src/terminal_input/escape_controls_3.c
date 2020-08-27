@@ -18,19 +18,17 @@ static void		cntrl_left(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (ft_strcmp(seq, CNTRL_LEFT) == 0 && buffer->index > 1)
 	{
-		if (!ft_isspace((int)buffer->buff[buffer->index]) &&
-			ft_isspace((int)buffer->buff[buffer->index - 1]))
+		while (buffer->index > 0 &&
+			ft_isspace(buffer->buff[buffer->index - 1]))
 		{
 			buffer->index--;
 			cursor->current.x--;
 			cursor->direction = CURSOR_LEFT;
 			set_cursor_pos(cursor, buffer);
 		}
-		while (buffer->index > 0)
+		while (buffer->index > 0 &&
+			!ft_isspace(buffer->buff[buffer->index - 1]))
 		{
-			if (!ft_isspace((int)buffer->buff[buffer->index]) &&
-				ft_isspace((int)buffer->buff[buffer->index - 1]))
-				break ;
 			buffer->index--;
 			cursor->current.x--;
 			cursor->direction = CURSOR_LEFT;
@@ -43,19 +41,17 @@ static void		cntrl_right(t_buff *buffer, t_cursor *cursor, char *seq)
 {
 	if (ft_strcmp(seq, CNTRL_RIGHT) == 0)
 	{
-		if (!ft_isspace((int)buffer->buff[buffer->index]) &&
-			ft_isspace((int)buffer->buff[buffer->index - 1]))
+		while (buffer->index < buffer->buff_len &&
+			ft_isspace(buffer->buff[buffer->index]))
 		{
 			buffer->index++;
 			cursor->current.x++;
 			cursor->direction = CURSOR_RIGHT;
 			set_cursor_pos(cursor, buffer);
 		}
-		while (buffer->buff[buffer->index] != '\0')
+		while (buffer->index < buffer->buff_len &&
+			!ft_isspace(buffer->buff[buffer->index]))
 		{
-			if (!ft_isspace((int)buffer->buff[buffer->index]) &&
-				ft_isspace((int)buffer->buff[buffer->index - 1]))
-				break ;
 			buffer->index++;
 			cursor->current.x++;
 			cursor->direction = CURSOR_RIGHT;
