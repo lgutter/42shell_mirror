@@ -32,7 +32,7 @@ Test(subst_length, not_finished) {
 
 Test(subst_length, dollarless_open) {
    cr_expect_eq(subst_length("(foo (  )"), 9);
-   cr_expect_eq(subst_length("(((()"), 5);
+   cr_expect_eq(subst_length("( ((()"), 6);
 }
 
 Test(subst_length, squote) {
@@ -51,4 +51,16 @@ Test(subst_length, backslash) {
    cr_expect_eq(subst_length("( \\) )"), 6);
    cr_expect_eq(subst_length("( \\$( )"), 7);
    cr_expect_eq(subst_length("( $\\( )"), 7);
+}
+
+Test(subst_length, arith) {
+   cr_expect_eq(subst_length("(( 5 + 1 ))"), 11);
+   cr_expect_eq(subst_length("(( 5 + $(echo 7) ))"), 19);
+   cr_expect_eq(subst_length("(())"), 4);
+   cr_expect_eq(subst_length("(( ) ))"), 7);
+   cr_expect_eq(subst_length("(( ( ))"), 7);
+   cr_expect_eq(subst_length("(( \" ))"), 7);
+   cr_expect_eq(subst_length("(( 5 + $(( 7 + 5 )) ))"), 22);
+   cr_expect_eq(subst_length("(( 5 + $(echo 7 + 5) ))"), 23);
+   cr_expect_eq(subst_length("(( 5 + $(echo $((7 + 5))) ))"), 28);
 }
