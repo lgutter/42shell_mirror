@@ -74,7 +74,7 @@ static size_t	add_hash_col(t_shell *shell, t_hentry *col, char *argz)
 			entry = entry->next_col;
 		if (entry->next_col == NULL)
 		{
-			if (find_executable(shell->env, &path, argz) == 0)
+			if (find_executable(shell->env, &path, argz, false) == 0)
 				ret = add_to_hash(shell, path, argz);
 			free(path);
 		}
@@ -98,7 +98,7 @@ void			set_hash(t_shell *shell, char *argz)
 	hash = create_hash(argz, HT_SIZE);
 	if (shell->hash->ht[hash] == NULL)
 	{
-		ret = find_executable(shell->env, &path, argz);
+		ret = find_executable(shell->env, &path, argz, false);
 		if (ret == 0)
 		{
 			add_to_hash(shell, path, argz);

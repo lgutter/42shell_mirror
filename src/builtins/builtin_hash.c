@@ -26,7 +26,7 @@ static size_t	hash_path(t_shell *shell, char **path, char **split, char *arg)
 		return (handle_prefix_error(cmd_not_found, split[0]));
 	if (split[1] == NULL)
 	{
-		if (find_executable(shell->env, path, arg) != 0)
+		if (find_executable(shell->env, path, arg, true) != 0)
 			return (handle_error_str(cmd_not_found, split[0]));
 	}
 	else

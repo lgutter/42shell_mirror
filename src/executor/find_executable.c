@@ -59,7 +59,8 @@ static int	traverse_paths(char **paths, char **path, char *arg_zero)
 	return (cmd_not_found);
 }
 
-int			find_executable(t_env *env_list, char **path, char *arg_zero)
+int			find_executable(t_env *env_list, char **path, char *arg_zero,
+				bool print_warnings)
 {
 	char	*env_path;
 	char	**paths;
@@ -76,7 +77,8 @@ int			find_executable(t_env *env_list, char **path, char *arg_zero)
 	{
 		env_path = ft_getenv(env_list, "PATH", VAR_TYPE);
 		if (env_path == NULL)
-			return (handle_error_str(env_not_found, "PATH"));
+			return (print_warnings ?
+				handle_error_str(env_not_found, "PATH") : env_not_found);
 		paths = ft_strsplit(env_path, ':');
 		free(env_path);
 		if (paths == NULL)
