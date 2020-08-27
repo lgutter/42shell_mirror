@@ -33,10 +33,10 @@ static void	insert_node(struct s_ari_node *const new_node,
 	}
 }
 
-int		arithmatic_add_token(struct s_ari_node **const node_list,
-			char *const original_key,
-			const long int value,
-			const enum e_operator operator)
+int			arithmatic_add_token(struct s_ari_node **const node_list,
+				char *const original_key,
+				const long int value,
+				const enum e_operator operator)
 {
 	struct s_ari_node	*new_node;
 

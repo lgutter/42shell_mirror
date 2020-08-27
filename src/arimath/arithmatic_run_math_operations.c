@@ -21,7 +21,7 @@ static int	run_basic_operator(struct s_ari_node **const node_list,
 	iter = *node_list;
 	while (iter != NULL && iter->next != NULL)
 	{
-		if ( iter->next->operator == cur_op)
+		if (iter->next->operator == cur_op)
 		{
 			if (iter->next->next == NULL || iter->next->next->operator != none)
 			{
@@ -59,35 +59,43 @@ static const struct s_action_kvp g_op_queue[] = {
 	{or, arithmath_or},
 };
 
+static int	iter_operations(struct s_ari_node **const node_list)
+{
+	size_t	iter;
+
+	iter = 0;
+	while (iter < (sizeof(g_op_queue) / sizeof(struct s_action_kvp)))
+	{
+		if (run_basic_operator(node_list, g_op_queue[iter].operator, \
+			g_op_queue[iter].action) != 0)
+		{
+			printf("equation invalid\n");
+			return (-1);
+		}
+		iter++;
+	}
+	return (0);
+}
+
 char		*arithmatic_run_math_operations(t_env *const env,
 				struct s_ari_node **const node_list)
 {
-	size_t	iter;
 	char	num_buf[40];
 
 	if (*node_list == NULL)
 	{
 		return (ft_strdup("0"));
 	}
-	iter = 0;
 	if (run_crementers(env, node_list) != 0)
-	{
 		return (NULL);
-	}
 	if ((*node_list)->operator != none)
 	{
 		printf("bad token at start of list\n");
 		return (NULL);
 	}
-	while (iter < (sizeof(g_op_queue) / sizeof(struct s_action_kvp)) - 1)
+	if (iter_operations(node_list) != 0)
 	{
-		if (run_basic_operator(node_list, g_op_queue[iter].operator, \
-			g_op_queue[iter].action) != 0)
-		{
-			printf("equation invalid\n");
-			return (NULL);
-		}
-		iter++;
+		return (NULL);
 	}
 	if ((*node_list)->next)
 	{

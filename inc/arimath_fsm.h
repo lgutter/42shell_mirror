@@ -13,7 +13,7 @@
 #ifndef ARIMATH_FSM_H
 # define ARIMATH_FSM_H
 
-enum e_ari_state{
+enum	e_ari_state{
 	invalid_state,
 	st_assert_operator,
 	st_operator,
@@ -23,11 +23,11 @@ enum e_ari_state{
 	st_end,
 };
 
-struct s_ari_fsm_rule{
+struct	s_ari_fsm_rule{
 	enum e_ari_state	next_state;
 };
 
-struct s_ari_fsm_state{
+struct	s_ari_fsm_state{
 	struct s_ari_fsm_rule	rules[256];
 	struct s_ari_fsm_rule	catch_rule;
 };

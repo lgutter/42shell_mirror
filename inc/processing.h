@@ -19,7 +19,8 @@ typedef enum	e_q_table
 {
 	ALL_QUOTES_TABLE = 0,
 	HERE_END_TABLE,
-	HEREDOCS_TABLE
+	HEREDOCS_TABLE,
+	ARITHMATIC_TABLE,
 }				t_q_table;
 
 /*

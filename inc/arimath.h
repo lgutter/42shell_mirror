@@ -13,9 +13,9 @@
 #ifndef ARIMATH_H
 # define ARIMATH_H
 
-#include "environment.h"
+# include "environment.h"
 
-enum e_operator{
+enum			e_operator{
 	none,
 	penta_increment,
 	penta_decrement,
@@ -39,16 +39,16 @@ enum e_operator{
 	end_terminator,
 };
 
-extern const char 	*g_op_ident_chart[];
+extern const char	*g_op_ident_chart[];
 
 typedef long int	(*t_math_action)(long int, long int);
 
-struct s_action_kvp{
+struct			s_action_kvp{
 	enum e_operator	operator;
 	t_math_action	action;
 };
 
-struct s_ari_node{
+struct			s_ari_node{
 	char				*original_key;
 	long int			value;
 	enum e_operator		operator;
@@ -57,9 +57,9 @@ struct s_ari_node{
 };
 
 int				arithmatic_expansion(t_shell *const shell,
-                    char **const astring,
-                    size_t *const aread_index,
-                    size_t *const awrite_index);
+					char **const astring,
+					size_t *const aread_index,
+					size_t *const awrite_index);
 
 char			*arithmatic_run_math_operations(t_env *const env,
 					struct s_ari_node **const node_list);

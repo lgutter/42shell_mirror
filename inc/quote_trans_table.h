@@ -223,6 +223,15 @@ static const t_q_trans g_quote_trans[][q_state_count] = {
 			},
 			.catch_state	= {no_quote, Q_ADD_CHAR}
 		},
+	},
+	[ARITHMATIC_TABLE] = {
+		[no_quote] = {
+			.rules = {
+				['\0']		= {q_eof, Q_ADD_CHAR},
+				['$']		= {no_quote, Q_EXPAND_VAR}
+			},
+			.catch_state	= {no_quote, Q_ADD_CHAR}
+		},
 	}
 };
 

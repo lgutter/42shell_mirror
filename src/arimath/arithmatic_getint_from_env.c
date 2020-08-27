@@ -62,14 +62,9 @@ long int	arithmatic_atol_base(size_t	*const len, const char *str)
 		base = 16;
 	}
 	else if (*(str + index) == '0')
-	{
 		base = 8;
-	}
 	else if (g_atoi[ustr[index]] == 0)
-	{
-		*len = 0;
-		return (0);
-	}
+		*len = 0;//this signals an invalid number
 	while (g_atoi[ustr[index]] != 0 && g_atoi[ustr[index]] - 1 < base)
 	{
 		num *= base;
@@ -92,7 +87,7 @@ int			arithmatic_getint_from_env(long int *const alint,
 	key_content = ft_getenv(env, key, VAR_TYPE);
 	if (key_content == NULL)
 	{
-		return (-1);
+		return (env_not_found);
 	}
 	*alint = arithmatic_atol_base(&index, key_content);
 	if (index == 0)

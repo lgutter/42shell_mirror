@@ -13,7 +13,6 @@
 #include "arimath.h"
 #include "processing.h"
 
-#include <stdio.h>
 static void		reconstruct_input_from_list(struct s_ari_node *iter)
 {
 	printf("reconstructing input from tokens:\033[94m\n");
@@ -28,13 +27,13 @@ static void		reconstruct_input_from_list(struct s_ari_node *iter)
 		iter = iter->next;
 	}
 	printf("\033[0m\n");
-}
+}//this entire function is for debugging
 
 static size_t	find_length(const char *string, size_t aread_index)
 {
-	int     	par_counter;
-	size_t  	temp_index;
-	
+	int			par_counter;
+	size_t		temp_index;
+
 	par_counter = 0;
 	temp_index = aread_index + 3;
 	while ((string)[temp_index] != '\0')
@@ -56,18 +55,26 @@ static int		interpreter_module(t_shell *const shell,
 {
 	int		ret;
 
-	//do all dollar expansions
-	ret = process_word(shell, tape, ALL_QUOTES_TABLE);
+	ret = process_word(shell, tape, ARITHMATIC_TABLE);
 	if (ret != 0)
 	{
 		printf("dollarsign expansions failed\n");
 		return (ret);
 	}
-
-	
 	ret = create_token_list(shell->env, *tape, node_list);
-	printf("actual tape:\033[33m %s\033[0m\n", *tape);//temporary
-	reconstruct_input_from_list(*node_list);//temporary
+	ft_strdel(tape);
+	if (ret != 0)
+	{
+		return (bad_subst_err);
+	}
+	reconstruct_input_from_list(*node_list); //temporary
+	*tape = arithmatic_run_math_operations(shell->env, node_list);
+	reconstruct_input_from_list(*node_list); //temporary
+	arithmatic_delete_tokens(node_list);
+	if (*tape == NULL)
+	{
+		return (bad_subst_err);
+	}
 	return (ret);
 }
 
@@ -77,40 +84,28 @@ int				arithmatic_expansion(t_shell *const shell,
 					size_t *const awrite_index)
 {
 	struct s_ari_node	*token_list;
-	size_t  			temp_index;
+	size_t				tmp_ind;
 	char				*tape;
 	char				*new_astring;
 
-	temp_index = find_length(*astring, *aread_index);
-	if ((*astring)[temp_index] == '\0')
+	tmp_ind = find_length(*astring, *aread_index);
+	if ((*astring)[tmp_ind] == '\0')
 	{
 		ft_dprintf(2, "Cetushell: arithmatic expansion missing closing parenthesis\n");
 		return (bad_subst_err);
 	}
-	tape = ft_strsub(*astring, *aread_index + 3, (temp_index - *aread_index) - 3);
-	printf("|%s|\n", tape);
+	tape = ft_strsub(*astring, *aread_index + 3, (tmp_ind - *aread_index) - 3);
 	if (tape == NULL)
-	{
 		return (bad_subst_err);
-	}
 	token_list = NULL;
 	if (interpreter_module(shell, &tape, &token_list) != 0)
-	{
 		return (bad_subst_err);
-	}
-	free(tape);
-	tape = arithmatic_run_math_operations(shell->env, &token_list);
-	reconstruct_input_from_list(token_list); //temporary
-	arithmatic_delete_tokens(&token_list);
-
 	ft_asprintf(&new_astring, "%.*s%s%s", *awrite_index, *astring,
-		tape, *astring + temp_index + 2);
+		tape, *astring + tmp_ind + 2);
+	free(tape);
 	*awrite_index += ft_strlen(tape);
 	*aread_index = *awrite_index - 1;
 	free(*astring);
 	*astring = new_astring;
-
-	free(tape); //insert number to astring
-	(void)awrite_index;
 	return (0);
 }

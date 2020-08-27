@@ -27,13 +27,9 @@ static int	crement_var(t_env *const env,
 		return (ret);
 	}
 	if (type == decrement || type == tri_decrement || type == penta_decrement)
-	{
 		new_num--;
-	}
 	else
-	{
 		new_num++;
-	}
 	if (is_prefix == true)
 	{
 		cur_node->value = new_num;
@@ -51,7 +47,7 @@ static int	find_first_valid_crementer(t_env *const env,
 				struct s_ari_node *cur_node)
 {
 	int						holder;
-	const enum e_operator	downgrade_chart[] = {
+	const enum e_operator	downgrade_tbl[] = {
 		[penta_increment] = tri_increment,
 		[tri_increment] = addition,
 		[increment] = end_terminator,
@@ -61,16 +57,16 @@ static int	find_first_valid_crementer(t_env *const env,
 		[end_terminator] = none,
 	};
 
-	if (cur_node->prev && downgrade_chart[cur_node->prev->operator] != none)
+	if (cur_node->prev && downgrade_tbl[cur_node->prev->operator] != none)
 	{
 		holder = crement_var(env, true, cur_node->prev->operator, cur_node);
-		cur_node->prev->operator = downgrade_chart[cur_node->prev->operator];
+		cur_node->prev->operator = downgrade_tbl[cur_node->prev->operator];
 		return (holder);
 	}
-	else if (cur_node->next && downgrade_chart[cur_node->next->operator] != none)
+	else if (cur_node->next && downgrade_tbl[cur_node->next->operator] != none)
 	{
 		holder = crement_var(env, false, cur_node->next->operator, cur_node);
-		cur_node->next->operator = downgrade_chart[cur_node->next->operator];
+		cur_node->next->operator = downgrade_tbl[cur_node->next->operator];
 		return (holder);
 	}
 	return (0);
@@ -108,7 +104,7 @@ static int	associate_prefixes(struct s_ari_node *cur_node)
 				cur_node->operator = end_terminator;
 			}
 			else
-				return (-1); //bad operator position
+				return (-1); //operator in bad position
 		}
 		cur_node = cur_node->next;
 	}
@@ -135,6 +131,11 @@ static void	purge_terminators(struct s_ari_node **node_list)
 		}
 	}
 }
+
+/*
+**	in here we will slate nodes for deletion by setting them as
+**	operator = 'end_terminator'
+*/
 
 int			run_crementers(t_env *const env,
 				struct s_ari_node **node_list)

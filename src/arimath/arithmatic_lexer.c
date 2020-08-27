@@ -25,17 +25,6 @@ static int				add_number_token(const char **const atape,
 		return (parsing_error);
 	}
 	*atape += index;
-	//if (ft_isdigit(**atape) == false)
-	//{
-	//	return (parsing_error);
-	//}
-	//num = 0;
-	//while (ft_isdigit(**atape) == true)
-	//{
-	//	num *= 10;
-	//	num += ((**atape) - '0');
-	//	(*atape)++;
-	//}
 	return (arithmatic_add_token(node_list, NULL, num, none));
 }
 
@@ -64,9 +53,9 @@ static int				add_operator_token(const char **const atape,
 	return (parsing_error);
 }
 
-static int			add_variable_token(const char **const atape,
-						t_env *const env,
-						struct s_ari_node **const node_list)
+static int				add_variable_token(const char **const atape,
+							t_env *const env,
+							struct s_ari_node **const node_list)
 {
 	size_t		len;
 	char		*key;
@@ -88,17 +77,41 @@ static int			add_variable_token(const char **const atape,
 		ret_holder = arithmatic_add_token(node_list, key, int_value, none);
 	}
 	free(key);
+	if (ret_holder == env_not_found)
+		return (0);
 	return (ret_holder);
 }
 
+const bool g_valid_char_tbl[256] = {
+	[' '] = true,
+	['\t'] = true,
+	['_'] = true,
+	['+'] = true,
+	['-'] = true,
+	['*'] = true,
+	['/'] = true,
+	['%'] = true,
+	['<'] = true,
+	['>'] = true,
+	['='] = true,
+	['!'] = true,
+	['&'] = true,
+	['|'] = true,
+};
+
 static enum e_ari_state	next_state(enum e_ari_state current_state,
-							const char current_tape_character)
+							const char cur_char)
 {
 	const struct s_ari_fsm_state	*next_state_def;
 	enum e_ari_state				default_next_state;
 	unsigned char					char_index;
 
-	char_index = current_tape_character;
+	char_index = cur_char;
+	if (g_valid_char_tbl[char_index] != true && ft_isalnum(char_index) == false)
+	{
+		ft_dprintf(2, "Cetushell: unexpected character: %c\n", cur_char);
+		return (invalid_state);
+	}
 	next_state_def = &(g_arithmatic_fsm_def[current_state]);
 	default_next_state = next_state_def->rules[char_index].next_state;
 	if (default_next_state != invalid_state)
@@ -123,27 +136,19 @@ int						create_token_list(t_env *const env,
 	{
 		state = next_state(state, *tape);
 		if (state == st_number)
-		{
 			status = add_number_token(&tape, node_list);
-		}
 		else if (state == st_operator)
-		{
 			status = add_operator_token(&tape, node_list);
-		}
 		else if (state == st_variable)
-		{
 			status = add_variable_token(&tape, env, node_list);
-		}
 		else
-		{
 			tape++;
-		}
 		if (status != 0)
 			break ;
 	}
 	if (*tape != '\0' || state == invalid_state)
 	{
-		printf("fsm error occured\n");
+		ft_dprintf(2, "Cetushell: arithmath parsing error\n");
 		return (-1);
 	}
 	return (0);
