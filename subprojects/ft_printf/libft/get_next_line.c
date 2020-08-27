@@ -46,7 +46,7 @@ static int		list_add_new(int fd, t_cache **start, char *buf,
 {
 	t_cache *new;
 
-	if (buf == NULL || (ssize_t)ft_strlenc(buf, '\n', i) >= (i - 1))
+	if (buf == NULL || (ssize_t)ft_strlenc(buf, '\n', i - 1) >= (i - 1))
 		return (0);
 	new = (t_cache *)malloc(sizeof(t_cache) * 1);
 	if (new == NULL)
@@ -78,7 +78,8 @@ static int		finalize(int fd, t_cache **start, char **line, size_t size)
 	{
 		return (-1);
 	}
-	size = ft_strlenc(*line, '\n', size);
+	if (ft_memchr(*line, '\n', size) != NULL)
+		size = ft_strlenc(*line, '\n', size);
 	ft_memexpand((void **)line, &size, "\0", 1);
 	return (size);
 }
@@ -101,7 +102,7 @@ int				get_next_line(const int fd, char **line)
 	while (ft_memchr(*line, '\n', size) == NULL && ret != 0)
 	{
 		ret = read(fd, buffer, BUFF_SIZE);
-		ft_memexpand((void **)line, &size, buffer, (int)ret);
+		ft_memexpand((void **)line, &size, buffer, (size_t)ret);
 	}
 	ft_memdel((void **)&buffer);
 	return (finalize(fd, &start, line, size));
