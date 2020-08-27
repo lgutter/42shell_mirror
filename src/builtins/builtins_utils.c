@@ -14,27 +14,6 @@
 #include "executor.h"
 #include "utils.h"
 
-void				print_export(t_shell *shell, char **argv)
-{
-	t_env	*head;
-
-	(void)argv;
-	if (shell == NULL)
-		return ;
-	head = shell->env;
-	while (head != NULL)
-	{
-		if ((head->type & ENV_VAR) != 0)
-		{
-			if (ft_strlen(head->value) == 0)
-				ft_printf("export %s%c", head->key, '\n');
-			else
-				ft_printf("export %s=\"%s\"%c", head->key, head->value, '\n');
-		}
-		head = head->next;
-	}
-}
-
 int					execute_builtin(t_shell *shell, char **argv)
 {
 	int		ret;

@@ -215,7 +215,7 @@ Test(builtin_export_unit, valid_env_no_arguments, .init = redirect_std_out)
 	shell->env = start;
 	int			ret = 0;
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 2);
 	argv[0] = ft_strdup("export");
 	argv[1] = NULL;
 	ret = builtin_export(shell, argv);
@@ -225,6 +225,53 @@ Test(builtin_export_unit, valid_env_no_arguments, .init = redirect_std_out)
 	fflush(stdout);
 	sprintf(buff, "export %s=\"%s\"\n", env.key, env.value);
 	cr_expect_stdout_eq_str(buff);
+}
+
+Test(builtin_export_unit, valid_env_p_arg, .init = redirect_std_out)
+{
+	char		**argv;
+	t_env		shell_var = {"baz", "blah", SHELL_VAR, NULL};
+	t_env		env = {"foo", "bar", ENV_VAR, &shell_var};
+	t_env		*start = &env;
+	t_shell		*shell = init_shell(false);
+	shell->env = start;
+	int			ret = 0;
+
+	argv = (char **)malloc(sizeof(char *) * 3);
+	argv[0] = ft_strdup("export");
+	argv[0] = ft_strdup("-p");
+	argv[1] = NULL;
+	ret = builtin_export(shell, argv);
+	cr_expect_eq(ret, 0, "ret is %d but must be %d", ret, 0);
+	char		buff[1024];
+	memset(buff, '\0', 1024);
+	fflush(stdout);
+	sprintf(buff, "export %s=\"%s\"\n", env.key, env.value);
+	cr_expect_stdout_eq_str(buff);
+}
+
+Test(builtin_export_unit, error_env_p_arg_closed_stdout, .init = redirect_std_err)
+{
+	char		**argv;
+	t_env		shell_var = {"baz", "blah", SHELL_VAR, NULL};
+	t_env		env = {"foo", "bar", ENV_VAR, &shell_var};
+	t_env		*start = &env;
+	t_shell		*shell = init_shell(false);
+	shell->env = start;
+	int			ret = 0;
+
+	argv = (char **)malloc(sizeof(char *) * 3);
+	argv[0] = ft_strdup("export");
+	argv[1] = ft_strdup("-p");
+	argv[2] = NULL;
+	close(STDOUT_FILENO);
+	ret = builtin_export(shell, argv);
+	cr_expect_eq(ret, 1, "ret is %d but must be %d", ret, 1);
+	char		buff[1024];
+	memset(buff, '\0', 1024);
+	fflush(stderr);
+	snprintf(buff, 1023, "Cetushell: export: write error: %s\n", g_error_str[bad_fd_error]);
+	cr_expect_stderr_eq_str(buff);
 }
 
 Test(builtin_export_unit, invalid_NULL_env, .init = cr_redirect_stderr)
