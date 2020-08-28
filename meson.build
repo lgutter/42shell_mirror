@@ -64,6 +64,7 @@ src_files = files([
   'src/utilities/count_utils.c',
   'src/utilities/vecstr.c',
   'src/utilities/file_utils.c',
+  'src/utilities/ft_getline.c',
   'src/word_processing/process_word.c',
   'src/word_processing/process_redirects.c',
   'src/word_processing/process_assignments.c',

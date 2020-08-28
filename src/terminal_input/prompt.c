@@ -124,7 +124,7 @@ char			*prompt_shell(t_shell *shell, const char *prompt)
 		}
 		else
 		{
-			if (get_next_line(STDIN_FILENO, &temp) == 0)
+			if (ft_getline(STDIN_FILENO, &temp) == 0)
 			{
 				free(temp);
 				temp = NULL;
