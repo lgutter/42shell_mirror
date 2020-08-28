@@ -45,7 +45,6 @@ static void		continue_job(t_shell *shell, t_job *job)
 {
 	t_status	status;
 
-	job->status = running;
 	status = job->status;
 	tcsetpgrp(STDERR_FILENO, job->pgrp);
 	configure_terminal(NULL, 0);
@@ -72,6 +71,7 @@ int				builtin_fg(t_shell *shell, char **argv)
 	if (job == NULL)
 		return (1);
 	job->foreground = true;
+	job->status = running;
 	print_job_status(job, shell->job_control->current,
 								shell->job_control->previous, job_print_short);
 	continue_job(shell, job);
