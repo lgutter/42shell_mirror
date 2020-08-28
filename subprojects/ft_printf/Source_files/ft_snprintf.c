@@ -18,7 +18,7 @@ static t_string_n_info	init_sninfo(char *target, size_t len)
 	static size_t	index = 0;
 
 	sninfo.target = target;
-	sninfo.len = len;
+	sninfo.len = len == 0 ? 0 : len - 1;
 	sninfo.index = &index;
 	return (sninfo);
 }
