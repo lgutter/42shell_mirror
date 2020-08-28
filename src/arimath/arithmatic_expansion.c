@@ -96,12 +96,13 @@ int				arithmatic_expansion(t_shell *const shell,
 	}
 	tape = ft_strsub(*astring, *aread_index + 3, (tmp_ind - *aread_index) - 3);
 	if (tape == NULL)
-		return (bad_subst_err);
+		return (malloc_error);
 	token_list = NULL;
 	if (interpreter_module(shell, &tape, &token_list) != 0)
 		return (bad_subst_err);
-	ft_asprintf(&new_astring, "%.*s%s%s", *awrite_index, *astring,
-		tape, *astring + tmp_ind + 2);
+	if (ft_asprintf(&new_astring, "%.*s%s%s", *awrite_index, *astring,
+		tape, *astring + tmp_ind + 2) == -1)
+		return (malloc_error);
 	free(tape);
 	*awrite_index += ft_strlen(tape);
 	*aread_index = *awrite_index - 1;

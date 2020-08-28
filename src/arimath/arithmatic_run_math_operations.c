@@ -80,7 +80,7 @@ static int	iter_operations(struct s_ari_node **const node_list)
 char		*arithmatic_run_math_operations(t_env *const env,
 				struct s_ari_node **const node_list)
 {
-	char	num_buf[40];
+	char	*num_buf;
 
 	if (*node_list == NULL)
 	{
@@ -102,6 +102,6 @@ char		*arithmatic_run_math_operations(t_env *const env,
 		printf("leftover tokens!\n");
 		return (NULL);
 	}
-	ft_snprintf(num_buf, sizeof(num_buf), "%ld", (*node_list)->value);
-	return (ft_strdup(num_buf));
+	ft_asprintf(&num_buf, "%ld", (*node_list)->value);
+	return (num_buf);
 }

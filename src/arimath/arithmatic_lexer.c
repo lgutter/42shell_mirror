@@ -148,7 +148,7 @@ int						create_token_list(t_env *const env,
 	}
 	if (*tape != '\0' || state == invalid_state)
 	{
-		ft_dprintf(2, "Cetushell: arithmath parsing error\n");
+		ft_dprintf(2, "Cetushell: arithmetic parsing error\n");
 		return (-1);
 	}
 	return (0);
