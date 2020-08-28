@@ -27,8 +27,8 @@ static bool		echo_write_error(bool no_newline, char **argv)
 
 int				builtin_echo(t_shell *shell, char **argv)
 {
-	int i;
-	bool no_newline;
+	int		i;
+	bool	no_newline;
 
 	(void)shell;
 	no_newline = false;

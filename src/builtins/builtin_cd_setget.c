@@ -69,7 +69,7 @@ int				get_home_oldpw(t_cd *cd_s, t_env *env)
 	return (0);
 }
 
-static int	print_old_pwd(char *path)
+static int		print_old_pwd(char *path)
 {
 	if (write(STDOUT_FILENO, "", 0) == -1)
 		return (handle_prefix_error_str(bad_fd_error, "cd", "write error"));
@@ -77,7 +77,7 @@ static int	print_old_pwd(char *path)
 	return (0);
 }
 
-int			set_old_new_pwd(t_env *env, t_cd *cd, char *old_path)
+int				set_old_new_pwd(t_env *env, t_cd *cd, char *old_path)
 {
 	if (env == NULL || cd == NULL || old_path == NULL)
 		return (1);
