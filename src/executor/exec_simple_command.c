@@ -81,7 +81,7 @@ static int	init_cmd(t_command *command,
 	return (ret);
 }
 
-int		exec_command(t_shell *shell, t_simple_cmd *simple_cmd,
+int			exec_command(t_shell *shell, t_simple_cmd *simple_cmd,
 															t_command command)
 {
 	if (is_builtin(simple_cmd->argv[0]) == true)
