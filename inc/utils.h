@@ -151,4 +151,18 @@ bool		is_executable(char *path);
 */
 bool		is_directory(char *file, char *path);
 
+/*
+**	simplified version of get_next_line. reads per 1, so not very fast for
+**	large chunks, but very simple and safe. Uses vector string to minimize
+**	the number of malloc calles needed.
+**	args:
+**		fd:		the fd to read from.
+**		line:	a pointer to the char * to store the result it.
+**	returns:
+**	1 if a line was found
+**	0 if no iput was received
+**	-1 on error
+*/
+int			ft_getline(const int fd, char **line);
+
 #endif

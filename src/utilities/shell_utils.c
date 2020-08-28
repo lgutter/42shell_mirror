@@ -91,7 +91,7 @@ static void		init_home_var(t_shell *shell)
 		if (fd >= 0)
 		{
 			user = getuid();
-			while (temp == NULL && get_next_line(fd, &line) > 0)
+			while (temp == NULL && ft_getline(fd, &line) > 0)
 			{
 				temp = check_passwd_entry(line, user, shell->interactive);
 				free(line);
