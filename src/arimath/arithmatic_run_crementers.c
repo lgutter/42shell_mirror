@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   arithmatic_expansion.c                             :+:    :+:            */
+/*   arithmatic_run_crementers.c                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: aholster <aholster@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
@@ -88,9 +88,9 @@ static int	associate_prefixes(struct s_ari_node *cur_node)
 				cur_node->value = -(cur_node->value);
 			flip = false;
 			if (cur_node->next == NULL)
-				return (0); //safe end of list
+				return (0);
 			if (cur_node->next->operator == none)
-				return (-1); //two adjacent numbers
+				return (handle_error_str(parsing_error, "adjacent numbers"));
 			cur_node = cur_node->next;
 		}
 		else
@@ -104,12 +104,12 @@ static int	associate_prefixes(struct s_ari_node *cur_node)
 				cur_node->operator = end_terminator;
 			}
 			else
-				return (-1); //operator in bad position
+				return (handle_error_str(parsing_error, "unexpected operator"));
 		}
 		cur_node = cur_node->next;
 	}
 	if (require_num == true)
-		return (-1);
+		return (handle_error_str(parsing_error, "missing number"));
 	return (0);
 }
 
@@ -141,25 +141,22 @@ int			run_crementers(t_env *const env,
 				struct s_ari_node **node_list)
 {
 	struct s_ari_node	*iter;
+	int					ret;
 
 	iter = *node_list;
+	ret = 0;
 	while (iter)
 	{
 		if (iter->original_key)
 		{
-			if (find_first_valid_crementer(env, iter) != 0)
-			{
-				printf("error incrementing var\n");
-			}
+			ret = find_first_valid_crementer(env, iter);
+			if (ret != 0)
+				return (handle_error(ret));
 		}
 		iter = iter->next;
 	}
 	purge_terminators(node_list);
-	if (associate_prefixes(*node_list) == -1)
-	{
-		printf("prefixes are bad\n");
-		return (-1);
-	}
+	ret = associate_prefixes(*node_list);
 	purge_terminators(node_list);
-	return (0);
+	return (ret);
 }

@@ -39,8 +39,6 @@ enum			e_operator{
 	end_terminator,
 };
 
-extern const char	*g_op_ident_chart[];
-
 typedef long int	(*t_math_action)(long int, long int);
 
 struct			s_action_kvp{
@@ -61,7 +59,8 @@ int				arithmatic_expansion(t_shell *const shell,
 					size_t *const aread_index,
 					size_t *const awrite_index);
 
-char			*arithmatic_run_math_operations(t_env *const env,
+int				arithmatic_run_math_operations(char **tape,
+					t_env *const env,
 					struct s_ari_node **const node_list);
 int				run_crementers(t_env *const env,
 					struct s_ari_node **const node_list);

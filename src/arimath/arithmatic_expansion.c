@@ -12,6 +12,7 @@
 
 #include "arimath.h"
 #include "processing.h"
+#include "op_ident_chart.h"
 
 static void		reconstruct_input_from_list(struct s_ari_node *iter)
 {
@@ -49,33 +50,55 @@ static size_t	find_length(const char *string, size_t aread_index)
 	return (temp_index);
 }
 
-static int		interpreter_module(t_shell *const shell,
-					char **tape,
-					struct s_ari_node **const node_list)
+static int		interpreter_module(t_shell *const shell, char **tape)
 {
 	int		ret;
+	struct s_ari_node *node_list;
 
+	node_list = NULL;
 	ret = process_word(shell, tape, ARITHMATIC_TABLE);
 	if (ret != 0)
 	{
-		printf("dollarsign expansions failed\n");
+		ft_strdel(tape);
 		return (ret);
 	}
-	ret = create_token_list(shell->env, *tape, node_list);
+	ret = create_token_list(shell->env, *tape, &node_list);
 	ft_strdel(tape);
 	if (ret != 0)
 	{
-		return (bad_subst_err);
+		arithmatic_delete_tokens(&node_list);
+		return (ret);
 	}
-	reconstruct_input_from_list(*node_list); //temporary
-	*tape = arithmatic_run_math_operations(shell->env, node_list);
-	reconstruct_input_from_list(*node_list); //temporary
-	arithmatic_delete_tokens(node_list);
-	if (*tape == NULL)
+	reconstruct_input_from_list(node_list); //temporary
+	ret = arithmatic_run_math_operations(tape, shell->env, &node_list);
+	reconstruct_input_from_list(node_list); //temporary
+	arithmatic_delete_tokens(&node_list);
+	if (ret == 0 && *tape == NULL)
 	{
-		return (bad_subst_err);
+		return (malloc_error);
 	}
 	return (ret);
+}
+
+static int		insert_result(char **const astring,
+					size_t *const awrite_index,
+					char *tape,
+					size_t temp_index)
+{
+	char *new_astring;
+
+
+	if (ft_asprintf(&new_astring, "%.*s%s%s", *awrite_index, *astring,
+		tape, *astring + temp_index + 2) == -1)
+	{
+		free(tape);
+		return (malloc_error);
+	}
+	*awrite_index += ft_strlen(tape);
+	free(tape);
+	free(*astring);
+	*astring = new_astring;
+	return (0);
 }
 
 int				arithmatic_expansion(t_shell *const shell,
@@ -83,30 +106,23 @@ int				arithmatic_expansion(t_shell *const shell,
 					size_t *const aread_index,
 					size_t *const awrite_index)
 {
-	struct s_ari_node	*token_list;
 	size_t				tmp_ind;
 	char				*tape;
-	char				*new_astring;
+	int					ret;
 
 	tmp_ind = find_length(*astring, *aread_index);
 	if ((*astring)[tmp_ind] == '\0')
 	{
-		ft_dprintf(2, "Cetushell: arithmatic expansion missing closing parenthesis\n");
-		return (bad_subst_err);
+		return (handle_error_str(parsing_error, "no closing parenthesis"));
 	}
 	tape = ft_strsub(*astring, *aread_index + 3, (tmp_ind - *aread_index) - 3);
 	if (tape == NULL)
 		return (malloc_error);
-	token_list = NULL;
-	if (interpreter_module(shell, &tape, &token_list) != 0)
-		return (bad_subst_err);
-	if (ft_asprintf(&new_astring, "%.*s%s%s", *awrite_index, *astring,
-		tape, *astring + tmp_ind + 2) == -1)
-		return (malloc_error);
-	free(tape);
-	*awrite_index += ft_strlen(tape);
-	*aread_index = *awrite_index - 1;
-	free(*astring);
-	*astring = new_astring;
-	return (0);
+	ret = interpreter_module(shell, &tape);
+	if (ret != 0)
+		return (ret);
+	ret = insert_result(astring, awrite_index, tape, tmp_ind);
+	if (ret == 0)
+		*aread_index = *awrite_index - 1;
+	return (ret);
 }

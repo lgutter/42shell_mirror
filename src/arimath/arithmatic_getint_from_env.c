@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   arithmatic_expansion.c                             :+:    :+:            */
+/*   arithmatic_getint_from_env.c                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: aholster <aholster@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
@@ -81,25 +81,22 @@ int			arithmatic_getint_from_env(long int *const alint,
 				t_env *const env,
 				const char *const key)
 {
-	char	*key_content;
+	char	*env_value;
 	size_t	index;
+	int		ret;
 
-	key_content = ft_getenv(env, key, VAR_TYPE);
-	if (key_content == NULL)
+	ret = 0;
+	env_value = ft_getenv(env, key, VAR_TYPE);
+	if (env_value == NULL)
 	{
 		return (env_not_found);
 	}
-	*alint = arithmatic_atol_base(&index, key_content);
-	if (index == 0)
+	*alint = arithmatic_atol_base(&index, env_value);
+	if (index == 0 || env_value[index] != '\0')
 	{
-		printf("env variable invalid\n");
-		return (parsing_error);
+		ft_dprintf(2, "not a valid number: %s\n", env_value);
+		ret = parsing_error;
 	}
-	if (key_content[index] != '\0')
-	{
-		printf("env_variable has bad characters at end\n");
-		return (parsing_error);
-	}
-	free(key_content);
-	return (0);
+	free(env_value);
+	return (ret);
 }

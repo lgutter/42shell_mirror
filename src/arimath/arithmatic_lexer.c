@@ -12,6 +12,7 @@
 
 #include "arimath_fsm.h"
 #include "arimath.h"
+#include "op_ident_chart.h"
 
 static int				add_number_token(const char **const atape,
 							struct s_ari_node **const node_list)
@@ -132,6 +133,7 @@ int						create_token_list(t_env *const env,
 	int					status;
 
 	state = st_encounterer;
+	status = 0;
 	while (state != invalid_state && *tape != '\0')
 	{
 		state = next_state(state, *tape);
@@ -147,9 +149,8 @@ int						create_token_list(t_env *const env,
 			break ;
 	}
 	if (*tape != '\0' || state == invalid_state)
-	{
-		ft_dprintf(2, "Cetushell: arithmetic parsing error\n");
-		return (-1);
-	}
-	return (0);
+		return (handle_error_str(parsing_error, "in arithmetic expansion"));
+	if (status != 0 && status != malloc_error)
+		handle_error(status);
+	return (status);
 }

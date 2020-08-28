@@ -1,18 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   arithmatic_expansion.c                             :+:    :+:            */
+/*   op_ident_chart.h                                   :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: aholster <aholster@student.codam.nl>         +#+                     */
+/*   By: lgutter <lgutter@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/04/20 10:58:15 by aholster      #+#    #+#                 */
-/*   Updated: 2020/04/20 10:58:15 by aholster      ########   odam.nl         */
+/*   Created: 2020/08/28 11:45:42 by lgutter       #+#    #+#                 */
+/*   Updated: 2020/08/28 11:45:42 by lgutter       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "arimath.h"
+#ifndef OP_IDENT_CHART_H
+# define OP_IDENT_CHART_H
 
-const char *g_op_ident_chart[] = {
+# include "arimath.h"
+
+static const char *g_op_ident_chart[] = {
 	[none] = NULL,
 	[penta_increment] = "+++++",
 	[penta_decrement] = "-----",
@@ -35,3 +38,5 @@ const char *g_op_ident_chart[] = {
 	[or] = "||",
 	[end_terminator] = NULL,
 };
+
+#endif

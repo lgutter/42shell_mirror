@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   arithmatic_expansion.c                             :+:    :+:            */
+/*   arithmatic_run_math_operations.c                   :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: aholster <aholster@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
@@ -11,21 +11,20 @@
 /* ************************************************************************** */
 
 #include "arimath.h"
+#include "op_ident_chart.h"
 
-static int	run_basic_operator(struct s_ari_node **const node_list,
+static int	run_basic_operator(struct s_ari_node *iter,
 				enum e_operator const cur_op,
 				t_math_action cur_action)
 {
-	struct s_ari_node	*iter;
-
-	iter = *node_list;
 	while (iter != NULL && iter->next != NULL)
 	{
 		if (iter->next->operator == cur_op)
 		{
 			if (iter->next->next == NULL || iter->next->next->operator != none)
 			{
-				return (-1);
+				return (handle_error_str(parsing_error,
+													g_op_ident_chart[cur_op]));
 			}
 			iter->value = cur_action(iter->value, iter->next->next->value);
 			arithmatic_remove_token(iter->next);
@@ -33,10 +32,11 @@ static int	run_basic_operator(struct s_ari_node **const node_list,
 		}
 		else
 		{
-			if (iter->next->next == NULL)
-				break ;
-			if (iter->next->next->operator != none)
-				return (-1);
+			if (iter->next->next != NULL && iter->next->next->operator != none)
+			{
+				return (handle_error_str(parsing_error,
+								g_op_ident_chart[iter->next->next->operator]));
+			}
 			iter = iter->next->next;
 		}
 	}
@@ -62,46 +62,46 @@ static const struct s_action_kvp g_op_queue[] = {
 static int	iter_operations(struct s_ari_node **const node_list)
 {
 	size_t	iter;
+	int		ret;
 
 	iter = 0;
 	while (iter < (sizeof(g_op_queue) / sizeof(struct s_action_kvp)))
 	{
-		if (run_basic_operator(node_list, g_op_queue[iter].operator, \
-			g_op_queue[iter].action) != 0)
+		ret = run_basic_operator(*node_list, g_op_queue[iter].operator, \
+			g_op_queue[iter].action);
+		if (ret != 0)
 		{
-			printf("equation invalid\n");
-			return (-1);
+			return (ret);
 		}
 		iter++;
 	}
 	return (0);
 }
 
-char		*arithmatic_run_math_operations(t_env *const env,
+int			arithmatic_run_math_operations(char **tape,
+				t_env *const env,
 				struct s_ari_node **const node_list)
 {
-	char	*num_buf;
+	int		ret;
 
 	if (*node_list == NULL)
 	{
-		return (ft_strdup("0"));
+		*tape = ft_strdup("0");
+		return (0);
 	}
-	if (run_crementers(env, node_list) != 0)
-		return (NULL);
+	ret = run_crementers(env, node_list);
+	if (ret != 0)
+		return (ret);
 	if ((*node_list)->operator != none)
 	{
-		printf("bad token at start of list\n");
-		return (NULL);
+		return (handle_error_str(parsing_error,
+									g_op_ident_chart[(*node_list)->operator]));
 	}
-	if (iter_operations(node_list) != 0)
-	{
-		return (NULL);
-	}
+	ret = iter_operations(node_list);
+	if (ret != 0)
+		return (ret);
 	if ((*node_list)->next)
-	{
-		printf("leftover tokens!\n");
-		return (NULL);
-	}
-	ft_asprintf(&num_buf, "%ld", (*node_list)->value);
-	return (num_buf);
+		return (handle_error_str(parsing_error, "end of arithmetic expansion"));
+	ft_asprintf(tape, "%ld", (*node_list)->value);
+	return (0);
 }

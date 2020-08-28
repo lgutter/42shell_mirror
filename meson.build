@@ -75,7 +75,6 @@ src_files = files([
   'src/arimath/arithmatic_lexer.c',
   'src/arimath/arithmatic_run_math_operations.c',
   'src/arimath/arithmatic_run_crementers.c',
-  'src/arimath/operator_ident_chart.c',
   'src/arimath/arithmatic_getint_from_env.c',
   'src/arimath/arithmatic_basic_actions.c',
   'src/arimath/arithmatic_equality_actions.c',
