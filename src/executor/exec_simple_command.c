@@ -81,12 +81,20 @@ static int	init_cmd(t_command *command,
 	return (ret);
 }
 
-void		execve_command(t_command command)
+int		exec_command(t_shell *shell, t_simple_cmd *simple_cmd,
+															t_command command)
 {
-	check_access(command.path);
-	reset_signals();
-	execve(command.path, command.argv, command.envp);
-	exit(handle_error(execve_failure));
+	if (is_builtin(simple_cmd->argv[0]) == true)
+		return (execute_builtin(shell, command.argv));
+	else if (getpid() == shell->pid)
+		return (handle_error_str(internal_error, "not forked for executable"));
+	else
+	{
+		check_access(command.path);
+		reset_signals();
+		execve(command.path, command.argv, command.envp);
+		exit(handle_error(execve_failure));
+	}
 }
 
 int			exec_simple_command(t_simple_cmd *simple_cmd, t_shell *shell)
@@ -103,14 +111,8 @@ int			exec_simple_command(t_simple_cmd *simple_cmd, t_shell *shell)
 	else if (simple_cmd->argv != NULL)
 	{
 		redir_info = set_up_redirections(simple_cmd->redirects);
-		if (redir_info == NULL)
-			return (ret);
-		if (is_builtin(simple_cmd->argv[0]) == true)
-			ret = execute_builtin(shell, command.argv);
-		else if (getpid() == shell->pid)
-			ret = handle_error_str(internal_error, "not forked for executable");
-		else
-			execve_command(command);
+		if (redir_info != NULL)
+			ret = exec_command(shell, simple_cmd, command);
 		reset_redirections(&redir_info);
 	}
 	restore_assignments(shell, simple_cmd);

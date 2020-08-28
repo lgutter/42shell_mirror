@@ -84,7 +84,8 @@ t_job		*update_job_status(t_job_cont *job_control, t_job *job, int opts)
 		job->status = status;
 		print_job_status(job, job_control->current,
 						job_control->previous, (opts & job_print_mask));
-		if ((opts & job_print_pid_mask) == 0 && job->status == exited)
+		if ((opts & job_print_pid_mask) == 0 &&
+			(job->status == exited || job->status == broken_pipe))
 			remove_job_from_list(job_control, job->id);
 	}
 	else
