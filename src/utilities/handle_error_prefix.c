@@ -15,16 +15,22 @@
 
 int		handle_prefix_error(int error_code, char *prefix)
 {
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "Cetushell: %s: %s\n",
+	if (error_code > 0 && error_code < error_count)
+	{
+		g_error_internal = error_code;
+		ft_dprintf(STDERR_FILENO, "Cetushell: %s: %s\n",
 											prefix, g_error_str[error_code]);
+	}
 	return (error_code);
 }
 
 int		handle_prefix_error_str(int error_code, char *prefix, char *str)
 {
-	g_error_internal = error_code;
-	ft_dprintf(STDERR_FILENO, "Cetushell: %s: %s: %s\n", prefix, str,
-		g_error_str[error_code]);
+	if (error_code > 0 && error_code < error_count)
+	{
+		g_error_internal = error_code;
+		ft_dprintf(STDERR_FILENO, "Cetushell: %s: %s: %s\n", prefix, str,
+			g_error_str[error_code]);
+	}
 	return (error_code);
 }
