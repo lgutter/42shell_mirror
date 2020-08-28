@@ -126,6 +126,8 @@ int				expand_variable(t_shell *shell, char **string,
 	}
 	else if (ft_strnequ(*string + *read, "$(", 2))
 		ret = expand_command_subst(shell, string, read, write);
+	else if ((*string)[*read] == '<' || (*string)[*read] == '>')
+		ret = expand_process_subst(shell, string, read, write);
 	else
 	{
 		ret = expand_dollar(env, string, read, write);

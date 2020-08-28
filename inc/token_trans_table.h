@@ -260,7 +260,8 @@ static const t_trans g_token_trans[] = {
 			['$']		= {dollar, LESS, ADD_CHAR_POST},
 			['\\']		= {backslash, LESS, ADD_CHAR_POST},
 			['\'']		= {squote, LESS, ADD_CHAR_POST},
-			['"']		= {dquote, LESS, ADD_CHAR_POST}
+			['"']		= {dquote, LESS, ADD_CHAR_POST},
+			['(']		= {substitution, undetermined, ADD_CHAR_POST}
 		},
 		.catch_state	= {state_word, LESS, ADD_CHAR_POST}
 	},
@@ -290,7 +291,8 @@ static const t_trans g_token_trans[] = {
 			['$']		= {dollar, GREAT, ADD_CHAR_POST},
 			['\\']		= {backslash, GREAT, ADD_CHAR_POST},
 			['\'']		= {squote, GREAT, ADD_CHAR_POST},
-			['"']		= {dquote, GREAT, ADD_CHAR_POST}
+			['"']		= {dquote, GREAT, ADD_CHAR_POST},
+			['(']		= {substitution, undetermined, ADD_CHAR_POST}
 		},
 		.catch_state	= {state_word, GREAT, ADD_CHAR_POST}
 	},

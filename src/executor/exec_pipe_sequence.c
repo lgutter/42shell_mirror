@@ -84,10 +84,13 @@ static int	execute_simple(t_pipe_sequence *pipe_seq, t_shell *shell,
 	{
 		set_process_job_group(job, process);
 		ret = handle_new_process(shell, job, process);
-		if (process->signal != 0 && process->pid != job->pgrp)
-			print_process_signal(process, sig_print_all);
-		else if (process->signal != 0)
-			print_process_signal(process, sig_print_none);
+		if (shell->interactive == true && process->signal != 0)
+		{
+			if (process->pid != job->pgrp)
+				print_process_signal(process, sig_print_all);
+			else
+				print_process_signal(process, sig_print_none);
+		}
 		return (ret);
 	}
 	return (handle_error(fork_failure));
