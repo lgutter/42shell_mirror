@@ -56,7 +56,6 @@ static int	init_cmd(t_command *command,
 {
 	int ret;
 
-	ret = 0;
 	ft_bzero(command, sizeof(command));
 	if (simple_cmd->argv == NULL && simple_cmd->assignments == NULL)
 		return (parsing_error);
@@ -71,7 +70,8 @@ static int	init_cmd(t_command *command,
 	if (simple_cmd->argv != NULL && shell->hash != NULL)
 		find_hash_exec(shell->hash, &(command->path), command->argv[0]);
 	if (simple_cmd->argv != NULL && command->path == NULL)
-		ret = find_executable(shell->env, &(command->path), command->argv[0]);
+		ret = find_executable(shell->env,
+			&(command->path), command->argv[0], true);
 	if (ret != 0)
 	{
 		if (ret == cmd_not_found)

@@ -29,7 +29,7 @@ static int	type_executable(t_shell *shell, char *path, bool *error)
 
 	ret = 0;
 	check = NULL;
-	find_executable(shell == NULL ? NULL : shell->env, &check, path);
+	find_executable(shell == NULL ? NULL : shell->env, &check, path, true);
 	if (check != NULL &&
 			(ft_strchr(check, '/') == NULL || is_executable(check) == true))
 	{
