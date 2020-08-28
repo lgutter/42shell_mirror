@@ -785,3 +785,318 @@ Test(handle_input_integration, basic_arithmetic_comparison_expression_expansion,
 	fflush(stdout);
 	cr_expect_stdout_eq_str(expected_output);
 }
+
+Test(handle_input_integration, basic_arithmetic_empty_var, .init = cr_redirect_stdout)
+{
+	char		*input = "var=; echo $((var))";
+	char		*expected_output = "0\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_early_empty_var, .init = cr_redirect_stdout)
+{
+	char		*input = "var=; echo $(($var))";
+	char		*expected_output = "0\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_env_entiresum, .init = cr_redirect_stdout)
+{
+	char		*input = "var='4 + 4'; echo $(($var))";
+	char		*expected_output = "8\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_env_flip, .init = cr_redirect_stdout)
+{
+	char		*input = "var=1; echo $((- - - - - - -var))";
+	char		*expected_output = "-1\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_env_flip_but_the_other_way_around, .init = cr_redirect_stdout)
+{
+	char		*input = "var=-1; echo $((- - - - - - -var))";
+	char		*expected_output = "1\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_env_hex, .init = cr_redirect_stdout)
+{
+	char		*input = "var=0x111; echo $((var))";
+	char		*expected_output = "273\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+
+Test(handle_input_integration, basic_arithmetic_env_oct, .init = cr_redirect_stdout)
+{
+	char		*input = "var=0111; echo $((var))";
+	char		*expected_output = "73\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_quintplus, .init = cr_redirect_stdout)
+{
+	char		*input = "one=1 two=2; echo $((one+++++two)) $one $two";
+	char		*expected_output = "4 2 3\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_quintsub, .init = cr_redirect_stdout)
+{
+	char		*input = "one=1 two=2; echo $((one-----two)) $one $two";
+	char		*expected_output = "0 0 1\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, arithmatic_nested, .init = cr_redirect_stdout)
+{
+	char		*input = "echo $((4 * $((2 + 2))))\n";
+	char		*expected_output = "16\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, arithmatic_non_numerical_env, .init = cr_redirect_stderr)
+{
+	char		*input = "var=bla ; echo $((var))\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "not a valid number: bla\nCetushell: %s\n", g_error_str[parsing_error]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}
+
+Test(handle_input_integration, arithmatic_non_numerical_suffix_env, .init = cr_redirect_stderr)
+{
+	char		*input = "var=12bla ; echo $((var))\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "not a valid number: 12bla\nCetushell: %s\n", g_error_str[parsing_error]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}
+
+Test(handle_input_integration, arithmatic_unterminated, .init = cr_redirect_stderr)
+{
+	char		*input = "echo $(()\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "Cetushell: %s\n", g_error_str[bad_subst_err]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}
+
+Test(handle_input_integration, arithmatic_double_the_fun_doublewrong, .init = cr_redirect_stderr)
+{
+	char		*input = "echo $((2 2))\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "Cetushell: %s: in arithmetic expansion\n", g_error_str[parsing_error]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}
+
+Test(handle_input_integration, arithmatic_missing_operator, .init = cr_redirect_stderr)
+{
+	char		*input = "echo $((2++2))\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "Cetushell: %s: lvalue required\n", g_error_str[bad_math]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}
+
+Test(handle_input_integration, arithmatic_too_much_incrementing, .init = cr_redirect_stderr)
+{
+	char		*input = "var=1; echo $((++var++))\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "Cetushell: %s: lvalue required\n", g_error_str[bad_math]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}
+
+Test(handle_input_integration, arithmatic_leftover_incrementer, .init = cr_redirect_stderr)
+{
+	char		*input = "var=1; echo $((++ ++var))\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "Cetushell: %s: lvalue required\n", g_error_str[bad_math]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}
+
+Test(handle_input_integration, arithmatic_prefix_operator, .init = cr_redirect_stderr)
+{
+	char		*input = "echo $((*var))\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "Cetushell: %s: unexpected operator\n", g_error_str[bad_math]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}
+
+Test(handle_input_integration, arithmatic_invalid_operator, .init = cr_redirect_stderr)
+{
+	char		*input = "echo $((!!!!))\n";
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &buffer);
+	char temp[1024];
+	memset(temp, 0, 1024);
+	snprintf(temp, 1024, "Cetushell: %s: in arithmetic expansion\n", g_error_str[parsing_error]);
+	fflush(stderr);
+	cr_expect_stderr_eq_str(temp);
+}

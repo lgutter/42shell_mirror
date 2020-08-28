@@ -98,11 +98,18 @@ int				arithmatic_getint_from_env(long int *const alint,
 	{
 		return (env_not_found);
 	}
-	*alint = arithmatic_atol_base(&index, env_value);
-	if (index == 0 || env_value[index] != '\0')
+	if (ft_strlen(env_value) == 0)
 	{
-		ft_dprintf(2, "not a valid number: %s\n", env_value);
-		ret = parsing_error;
+		ret = env_not_found;
+	}
+	else
+	{
+		*alint = arithmatic_atol_base(&index, env_value);
+		if (index == 0 || env_value[index] != '\0')
+		{
+			ft_dprintf(2, "not a valid number: %s\n", env_value);
+			ret = parsing_error;
+		}
 	}
 	free(env_value);
 	return (ret);

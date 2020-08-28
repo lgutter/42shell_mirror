@@ -51,6 +51,8 @@ ssize_t			arith_length_tail(const char *input, ssize_t acc)
 {
 	int sub_subst_length;
 
+	if (input[0] == '\0')
+		return (-1);
 	if (input[0] == ')' && input[1] == ')')
 		return (acc + 2);
 	if (input[0] == '$' && input[1] == '(')
