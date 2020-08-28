@@ -598,3 +598,190 @@ Test(handle_input_integration, invalid_bad_substitution, .init = cr_redirect_std
 	fflush(stderr);
 	cr_expect_stderr_eq_str(temp);
 }
+
+Test(handle_input_integration, basic_arithmetic_number, .init = cr_redirect_stdout)
+{
+	char		*input = "echo $((42))";
+	char		*expected_output = "42\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_addition, .init = cr_redirect_stdout)
+{
+	char		*input = "echo $((1+2))";
+	char		*expected_output = "3\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_substraction, .init = cr_redirect_stdout)
+{
+	char		*input = "echo $((1-2))";
+	char		*expected_output = "-1\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_multiple, .init = cr_redirect_stdout)
+{
+	char		*input = "echo $((1+1))$((2+2))$((3+3))";
+	char		*expected_output = "246\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_multiple_nested, .init = cr_redirect_stdout)
+{
+	char		*input = "echo $(($((1+1))$((2+2))$((3+3)) * $((5 / 5))))";
+	char		*expected_output = "246\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_expansion, .init = cr_redirect_stdout)
+{
+	char		*input = "a=1+1; echo $((${a}))";
+	char		*expected_output = "2\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_crementation, .init = cr_redirect_stdout)
+{
+	char		*input = "b=4; echo $((b++)) $((++b)) $((--b)) $((b--))";
+	char		*expected_output = "4 6 5 5\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_crementation_expression, .init = cr_redirect_stdout)
+{
+	char		*input = "b=4; echo $((1 + b++)) $((++b - 1)) $((--b + 2 / 2)) $((b-- * 2)) $b";
+	char		*expected_output = "5 5 6 10 4\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_harder_expression, .init = cr_redirect_stdout)
+{
+	char		*input = "echo $((65536 * 256 / 1024 % 2147483648))";
+	char		*expected_output = "16384\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_comparison, .init = cr_redirect_stdout)
+{
+	char		*input = "echo $((2<3>0<=1>=2==0!=1))";
+	char		*expected_output = "0\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}
+
+Test(handle_input_integration, basic_arithmetic_comparison_expression_expansion, .init = cr_redirect_stdout)
+{
+	char		*input = "c=8; echo $((123<=123 && 42%42 || c++ + 34))";
+	char		*expected_output = "1\n";
+
+
+
+	t_shell		*shell = init_shell(false);
+	char		*buffer = strdup(input);
+	cr_assert_not_null(shell);
+	cr_assert_not_null(buffer);
+	handle_input(shell, &input);
+	cr_expect_str_eq(buffer, input);
+	fflush(stdout);
+	cr_expect_stdout_eq_str(expected_output);
+}

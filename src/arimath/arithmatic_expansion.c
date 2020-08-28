@@ -12,23 +12,6 @@
 
 #include "arimath.h"
 #include "processing.h"
-#include "op_ident_chart.h"
-
-static void		reconstruct_input_from_list(struct s_ari_node *iter)
-{
-	printf("reconstructing input from tokens:\033[94m\n");
-	while (iter != NULL)
-	{
-		if (iter->original_key != NULL)
-			printf("%s=%ld ", iter->original_key, iter->value);
-		else if (iter->operator != none)
-			printf("%s ", g_op_ident_chart[iter->operator]);
-		else
-			printf("%ld ", iter->value);
-		iter = iter->next;
-	}
-	printf("\033[0m\n");
-}//this entire function is for debugging
 
 static size_t	find_length(const char *string, size_t aread_index)
 {
@@ -69,9 +52,7 @@ static int		interpreter_module(t_shell *const shell, char **tape)
 		arithmatic_delete_tokens(&node_list);
 		return (ret);
 	}
-	reconstruct_input_from_list(node_list); //temporary
 	ret = arithmatic_run_math_operations(tape, shell->env, &node_list);
-	reconstruct_input_from_list(node_list); //temporary
 	arithmatic_delete_tokens(&node_list);
 	if (ret == 0 && *tape == NULL)
 	{
