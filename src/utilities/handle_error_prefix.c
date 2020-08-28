@@ -13,7 +13,7 @@
 #include "handle_error.h"
 #include "error_str.h"
 
-int		handle_prefix_error(int error_code, char *prefix)
+int		handle_prefix_error(int error_code, char const*prefix)
 {
 	g_error_internal = error_code;
 	ft_dprintf(STDERR_FILENO, "Cetushell: %s: %s\n",
@@ -21,7 +21,7 @@ int		handle_prefix_error(int error_code, char *prefix)
 	return (error_code);
 }
 
-int		handle_prefix_error_str(int error_code, char *prefix, char *str)
+int		handle_prefix_error_str(int error_code, char const *prefix, char const *str)
 {
 	g_error_internal = error_code;
 	ft_dprintf(STDERR_FILENO, "Cetushell: %s: %s: %s\n", prefix, str,

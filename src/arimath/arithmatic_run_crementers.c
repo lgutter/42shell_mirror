@@ -72,47 +72,6 @@ static int	find_first_valid_crementer(t_env *const env,
 	return (0);
 }
 
-static int	associate_prefixes(struct s_ari_node *cur_node)
-{
-	bool	require_num;
-	bool	flip;
-
-	flip = false;
-	require_num = false;
-	while (cur_node)
-	{
-		if (cur_node->operator == none)
-		{
-			require_num = 0;
-			if (flip)
-				cur_node->value = -(cur_node->value);
-			flip = false;
-			if (cur_node->next == NULL)
-				return (0);
-			if (cur_node->next->operator == none)
-				return (handle_error_str(parsing_error, "adjacent numbers"));
-			cur_node = cur_node->next;
-		}
-		else
-		{
-			require_num = true;
-			if (cur_node->operator == addition)
-				cur_node->operator = end_terminator;
-			else if (cur_node->operator == subtraction)
-			{
-				flip = !flip;
-				cur_node->operator = end_terminator;
-			}
-			else
-				return (handle_error_str(parsing_error, "unexpected operator"));
-		}
-		cur_node = cur_node->next;
-	}
-	if (require_num == true)
-		return (handle_error_str(parsing_error, "missing number"));
-	return (0);
-}
-
 static void	purge_terminators(struct s_ari_node **node_list)
 {
 	struct s_ari_node	*cleanup_trail;

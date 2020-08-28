@@ -64,6 +64,7 @@ int				arithmatic_run_math_operations(char **tape,
 					struct s_ari_node **const node_list);
 int				run_crementers(t_env *const env,
 					struct s_ari_node **const node_list);
+int				associate_prefixes(struct s_ari_node *cur_node);
 
 int				create_token_list(t_env *const env,
 					const char *tape,

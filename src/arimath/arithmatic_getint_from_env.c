@@ -12,7 +12,7 @@
 
 #include "environment.h"
 
-const int	g_atoi[256] = {
+const int	g_atol_tbl[256] = {
 	['0'] = 0 + 1,
 	['1'] = 1 + 1,
 	['2'] = 2 + 1,
@@ -37,49 +37,56 @@ const int	g_atoi[256] = {
 	['F'] = 15 + 1,
 };
 
-long int	arithmatic_atol_base(size_t	*const len, const char *str)
+static long int	parse_number(size_t *const len,
+					const int base,
+					const bool is_neg,
+					const unsigned char *const ustr)
 {
-	bool				is_neg;
-	int					base;
-	const unsigned char	*ustr;
 	long int			num;
-	size_t				index;
 
 	num = 0;
-	index = 0;
-	base = 10;
-	is_neg = false;
-	if (*str == '+' || *str == '-')
-	{
-		if (*str == '-')
-			is_neg = true;
-		index++;
-	}
-	ustr = (unsigned char *)str;
-	if (ft_strnequ(str + index, "0x", 2) || ft_strnequ(str + index, "0X", 2))
-	{
-		index += 2;
-		base = 16;
-	}
-	else if (*(str + index) == '0')
-		base = 8;
-	else if (g_atoi[ustr[index]] == 0)
-		*len = 0;//this signals an invalid number
-	while (g_atoi[ustr[index]] != 0 && g_atoi[ustr[index]] - 1 < base)
+	while (g_atol_tbl[ustr[*len]] != 0 && g_atol_tbl[ustr[*len]] - 1 < base)
 	{
 		num *= base;
-		num += g_atoi[ustr[index]] - 1;
-		index++;
+		num += g_atol_tbl[ustr[*len]] - 1;
+		(*len)++;
 	}
-	*len = index;
 	if (is_neg)
 		return (-num);
 	return (num);
 }
 
-int			arithmatic_getint_from_env(long int *const alint,
-				t_env *const env,
-				const char *const key)
+long int		arithmatic_atol_base(size_t	*const len, const char *str)
+{
+	bool				is_neg;
+	int					base;
+	const unsigned char	*ustr;
+
+	base = 10;
+	is_neg = false;
+	*len = 0;
+	if (*str == '+' || *str == '-')
+	{
+		if (*str == '-')
+			is_neg = true;
+		(*len)++;
+	}
+	ustr = (unsigned char *)str;
+	if (ft_strnequ(str + *len, "0x", 2) || ft_strnequ(str + *len, "0X", 2))
+	{
+		*len += 2;
+		base = 16;
+	}
+	else if (*(str + *len) == '0')
+		base = 8;
+	else if (g_atol_tbl[ustr[*len]] == 0)
+		*len = 0;
+	return (parse_number(len, base, is_neg, ustr));
+}
+
+int				arithmatic_getint_from_env(long int *const alint,
+					t_env *const env,
+					const char *const key)
 {
 	char	*env_value;
 	size_t	index;

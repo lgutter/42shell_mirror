@@ -79,6 +79,7 @@ src_files = files([
   'src/arimath/arithmatic_basic_actions.c',
   'src/arimath/arithmatic_equality_actions.c',
   'src/arimath/arithmatic_comparison_actions.c',
+  'src/arimath/arithmatic_associate_prefixes.c',
   'src/environment/convert_env_to_envp.c',
   'src/environment/dup_sys_env.c',
   'src/environment/expand_home.c',

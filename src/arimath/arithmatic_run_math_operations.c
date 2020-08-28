@@ -94,8 +94,9 @@ int			arithmatic_run_math_operations(char **tape,
 		return (ret);
 	if ((*node_list)->operator != none)
 	{
-		return (handle_error_str(parsing_error,
-									g_op_ident_chart[(*node_list)->operator]));
+		return (handle_prefix_error_str(bad_math,
+			"unexpected operator at start of sequence",
+			g_op_ident_chart[(*node_list)->operator]));
 	}
 	ret = iter_operations(node_list);
 	if (ret != 0)

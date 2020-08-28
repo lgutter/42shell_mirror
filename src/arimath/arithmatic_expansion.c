@@ -52,8 +52,8 @@ static size_t	find_length(const char *string, size_t aread_index)
 
 static int		interpreter_module(t_shell *const shell, char **tape)
 {
-	int		ret;
-	struct s_ari_node *node_list;
+	int					ret;
+	struct s_ari_node	*node_list;
 
 	node_list = NULL;
 	ret = process_word(shell, tape, ARITHMATIC_TABLE);
@@ -86,7 +86,6 @@ static int		insert_result(char **const astring,
 					size_t temp_index)
 {
 	char *new_astring;
-
 
 	if (ft_asprintf(&new_astring, "%.*s%s%s", *awrite_index, *astring,
 		tape, *astring + temp_index + 2) == -1)
