@@ -118,7 +118,7 @@ int			builtin_cd(t_shell *shell, char **argv)
 		ret = get_home_oldpw(&cd_s, shell->env);
 	if (ret == 0)
 		ret = resolve_cd_path(shell->env, &cd_s);
-	free(cd_s.input_path);
+	ft_strdel(&(cd_s.input_path));
 	ft_bzero(cd_s.final_path, PATH_MAX);
 	cd_s.to_oldpwd = false;
 	cd_s.to_home = false;
