@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: nloomans <nloomans@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 0000/00/00 00:00:00 by nloomans      #+#    #+#                 */
-/*   Updated: 9999/99/99 99:99:99 by nloomans      ########   odam.nl         */
+/*   Created: Invalid date        by nloomans      #+#    #+#                 */
+/*   Updated: Invalid date        by nloomans      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ ssize_t			arith_length_tail(const char *input, ssize_t acc)
 {
 	int sub_subst_length;
 
+	if (input[0] == '\0')
+		return (-1);
 	if (input[0] == ')' && input[1] == ')')
 		return (acc + 2);
 	if (input[0] == '$' && input[1] == '(')
