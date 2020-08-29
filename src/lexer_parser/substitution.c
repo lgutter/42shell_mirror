@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: nloomans <nloomans@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: Invalid date        by nloomans      #+#    #+#                 */
-/*   Updated: Invalid date        by nloomans      ########   odam.nl         */
+/*   Created: 0000/00/00 00:00:00 by nloomans      #+#    #+#                 */
+/*   Updated: 9999/99/99 99:99:99 by nloomans      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
