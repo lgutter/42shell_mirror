@@ -46,11 +46,11 @@ void		get_cursor_pos(t_cursor *cursor, size_t prompt_len)
 	send_terminal("sc");
 	ft_dprintf(STDERR_FILENO, "%c[6n", ESCAPE_KEY);
 	ft_memset(&pos, '\0', sizeof(pos));
-	ret = read(STDERR_FILENO, &pos, sizeof(pos));
+	ret = read(STDERR_FILENO, &pos, sizeof(pos) - 1);
 	if (ret == -1)
 		return ;
 	if (ret < 3)
-		read(STDERR_FILENO, &pos, sizeof(pos));
+		read(STDERR_FILENO, &pos, sizeof(pos) - 1);
 	else
 		parse_cursor_pos(cursor, pos, prompt_len, ret);
 	cursor->current.x = prompt_len;
