@@ -12,26 +12,7 @@
 
 #include "arimath.h"
 #include "processing.h"
-
-static size_t	find_length(const char *string, size_t aread_index)
-{
-	int			par_counter;
-	size_t		temp_index;
-
-	par_counter = 0;
-	temp_index = aread_index + 3;
-	while ((string)[temp_index] != '\0')
-	{
-		if (ft_strncmp((string) + temp_index, "))", 2) == 0 && par_counter == 0)
-			break ;
-		else if ((string)[temp_index] == '(')
-			par_counter++;
-		else if ((string)[temp_index] == ')')
-			par_counter--;
-		temp_index++;
-	}
-	return (temp_index);
-}
+#include "substitution.h"
 
 static int		interpreter_module(t_shell *const shell, char **tape)
 {
@@ -87,14 +68,16 @@ int				arithmatic_expansion(t_shell *const shell,
 					size_t *const awrite_index)
 {
 	size_t				tmp_ind;
+	ssize_t				holder;
 	char				*tape;
 	int					ret;
 
-	tmp_ind = find_length(*astring, *aread_index);
-	if ((*astring)[tmp_ind] == '\0')
+	holder = subst_length(*astring + *aread_index + 1) - 2;
+	if (holder < 0)
 	{
 		return (handle_error_str(parsing_error, "no closing parenthesis"));
 	}
+	tmp_ind = holder + *aread_index + 1;
 	tape = ft_strsub(*astring, *aread_index + 3, (tmp_ind - *aread_index) - 3);
 	if (tape == NULL)
 		return (malloc_error);
