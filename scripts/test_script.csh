@@ -183,9 +183,8 @@ export PATH=$OLDPATH
 echo '--------------------------------------------------'
 true; echo ${?}; false; echo ${?} #0; 1
 mkfifo fifo
-ls -lR / >fifo 2>&1 &
+ls -lR /usr/bin >fifo 2>&1 &
 jobs %1
-rm fifo
 emacs -nw &
 emacs -nw &
 emacs -nw &
@@ -202,6 +201,8 @@ bg %?foo #should print an error
 bg %?fo #should print an error that job is in background
 jobs -p
 #in interactive mode, run 'ls -Rl / 2>&1' and press `ctrl-z`. then run jobs to show it is suspended.
+cat fifo >/dev/null #ls -lR should now show as exited.
+rm fifo #we can now safely remove the pipe since we emptied it.
 echo '--------------------------------------------------'
 echo 'foo\
 bar' | cat -e
@@ -386,3 +387,13 @@ echo "b" | ./sigdeath
 echo "u" | ./sigdeath
 echo "F" | ./sigdeath
 echo "Shell is still alive!"
+echo '------------Arithmetic Expansions-----------------'
+echo $((42)) | grep -o 42 && echo OK || echo FAIL
+echo $((1+2)) | grep 3 && echo OK || echo FAIL
+echo $((1-2)) | grep -- -1 && echo OK || echo FAIL
+echo $((1+1))$((2+2))$((3+3)) | grep 246 && echo OK || echo FAIL
+a=1+1; echo $((${a})) | grep 2 && echo OK || echo FAIL
+b=4; echo $((b++)) $((++b)) $((--b)) $((b--)) | grep '4 6 5 5' && echo OK || echo FAIL
+echo $((65536 * 256 / 1024 % 2147483648)) | grep 16384 && echo OK || echo FAIL
+echo $((2<3>0<=1>=2==0!=1)) | grep 0 && echo OK || echo FAIL
+c=8; echo $((123<=123 && 42%42 || c++ + 34)) | grep 1 && echo OK || echo FAIL

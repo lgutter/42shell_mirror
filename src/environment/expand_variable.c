@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+#include "arimath.h"
 #include "environment.h"
 #include "processing.h"
 
@@ -115,10 +116,20 @@ int				expand_variable(t_shell *shell, char **string,
 	env = (shell != NULL) ? shell->env : NULL;
 	if (string == NULL || *string == NULL || read == NULL || write == NULL)
 		return (-1);
-	if (ft_strnequ(*string + *read, "$(", 2))
+	if (ft_strncmp((*string) + *read, "$((", 3) == 0)
+	{
+		ret = arithmatic_expansion(shell, string, read, write);
+		if (ret != 0)
+		{
+			(*write)++;
+		}
+	}
+	else if (ft_strnequ(*string + *read, "$(", 2))
 		ret = expand_command_subst(shell, string, read, write);
 	else
+	{
 		ret = expand_dollar(env, string, read, write);
+	}
 	if (ret == malloc_error)
 		handle_error(malloc_error);
 	return (ret);
