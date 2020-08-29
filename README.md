@@ -7,8 +7,9 @@ The six extra features we are building are:
 - Tab completion for built-ins, command, and files in current directory ✓
 - hash table for executables ✓
 - test builtin ✓
-- Arithmetic expansion using `$(())`
-- command substitution using `$()`
+- Arithmetic expansion using `$(())` ✓
+- command substitution using `$()` ✓
+- process substitution using `<()` and `>()` ✓
 
 anything labeled with `(BONUS)` is not required by the project subject.
 
@@ -53,6 +54,9 @@ This shell currently has the following features:
 - Redirections (>, <, >>, <<, >&, <&)
 - Command history using `arrow up` and `arrow down` (using `$HISTFILE` & `$HISTSIZE`, supports newlines(BONUS))
 - Contextual `tab` completion with support for files, directories, executables, and shell/environment variables.
+- Arithmetic expansion using `$((expr))`, with support for variables and nesting with `$((40 + $((2))))` and decimal, hex, and octal numbers.
+- Command substitution using `$(command)`, with full support for anything supported in non-interactive mode.
+- Process substitution using `>(command)` to redirect to the process or `<(command)` to redirect from the command.
 - Quotes (`"`, `'` and `\`), including in heredocs and the heredoc end word (i.e. `EOF`)
 - the operators `&&` and `||` to chain multiple complete commands
 - job control including the required builtins (see below) and `job_spec` which supports these formats:
