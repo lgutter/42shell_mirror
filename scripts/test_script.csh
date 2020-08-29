@@ -397,3 +397,11 @@ b=4; echo $((b++)) $((++b)) $((--b)) $((b--)) | grep '4 6 5 5' && echo OK || ech
 echo $((65536 * 256 / 1024 % 2147483648)) | grep 16384 && echo OK || echo FAIL
 echo $((2<3>0<=1>=2==0!=1)) | grep 0 && echo OK || echo FAIL
 c=8; echo $((123<=123 && 42%42 || c++ + 34)) | grep 1 && echo OK || echo FAIL
+echo '------------Process Substitutions-----------------'
+cat -e < <(ls)
+diff <(ls) <(ls -a)
+ls | tee >(cat -e) >/dev/null
+diff <(sort <(cat -e <(grep fork <(ls -tr /usr/share/man/man2)) | head -n 1 1> >(rev))) <(echo '$zg.2.krofv') && echo OK || FAIL
+[ -z "$(cat <(echo s | ./sigdeath))" ] && echo OK || echo FAIL
+[ -z "$(cat <(echo s | ./sigdeath & ))" ] && echo OK || echo FAIL
+cat <()

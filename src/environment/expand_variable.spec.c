@@ -14,6 +14,7 @@
 #include <criterion/redirect.h>
 #include <criterion/assert.h>
 #include <string.h>
+#include <fcntl.h>
 #include "processing.h"
 
 Test(unit_ft_expand_home, basic_mandatory_expand_tilde)
@@ -224,4 +225,27 @@ Test(unit_ft_expand_variable, mixed_command_substitution)
 			cr_expect_eq(write, test_cases[i].out_write);
 		}
 	}
+}
+
+Test(unit_ft_expand_variable, basic_process_substitution_left) {
+	char	*test_string = strdup("<(echo hi)");
+	size_t	read_idx = 0, write_idx = 0;
+	t_shell	*shell = init_shell(false);
+	ft_setenv(shell->env, "PATH", "/usr/local/bin:/usr/bin:/bin", ENV_VAR);
+
+	int ret = expand_variable(shell, &test_string, &read_idx, &write_idx);
+	cr_expect_eq(ret, 0);
+	cr_expect_eq(ft_strncmp(test_string, "/dev/fd/", 8), 0);
+	int fd = open(test_string, O_RDONLY);
+
+	char process_stdout[1024];
+	size_t offset = 0;
+	ssize_t n;
+	while (( n = read(fd, process_stdout + offset, sizeof(process_stdout) - offset) ) > 0 ) {
+			process_stdout[offset + n] = '\0';
+			offset += n;
+	}
+
+	cr_assert_str_eq(process_stdout, "hi\n");
+	cr_assert_eq(read(fd, process_stdout, sizeof(process_stdout)), 0);
 }
