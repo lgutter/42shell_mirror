@@ -25,7 +25,7 @@ static int		read_esc_seq(char c, t_cursor *cursor, t_buff *buffer,
 	ft_bzero(seq, ESC_SEQ_SIZE);
 	if (c == ESCAPE_KEY)
 	{
-		ret = read(STDIN_FILENO, seq, ESC_SEQ_SIZE);
+		ret = read(STDIN_FILENO, seq, ESC_SEQ_SIZE - 1);
 		if (ret == -1)
 			return (2);
 		if (seq[0] == 'O')
