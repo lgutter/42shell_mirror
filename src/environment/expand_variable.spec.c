@@ -239,8 +239,12 @@ Test(unit_ft_expand_variable, basic_process_substitution_left) {
 	int fd = open(test_string, O_RDONLY);
 
 	char process_stdout[1024];
-	ssize_t n = read(fd, process_stdout, sizeof(process_stdout));
-	process_stdout[n] = '\0';
+	size_t offset = 0;
+	ssize_t n;
+	while (( n = read(fd, process_stdout + offset, sizeof(process_stdout) - offset) ) > 0 ) {
+			process_stdout[offset + n] = '\0';
+			offset += n;
+	}
 
 	cr_assert_str_eq(process_stdout, "hi\n");
 	cr_assert_eq(read(fd, process_stdout, sizeof(process_stdout)), 0);
