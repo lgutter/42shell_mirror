@@ -51,7 +51,7 @@ Test(builtin_unset_env_unit, valid_force_read_only_unset)
 	t_shell		*shell = init_shell(false);
 
 	ft_setenv(shell->env, "READONLY", "ORIGINAL", (RO_VAR | ENV_VAR));
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 4);
 	argv[0] = ft_strdup("unsetenv");
 	argv[1] = ft_strdup("--force");
 	argv[2] = ft_strdup("READONLY");
@@ -103,7 +103,7 @@ Test(builtin_unset_env_unit, invalid_invalid_option, .init = redirect_std_err)
 	t_shell		*shell = init_shell(false);
 	char		buff[1024];
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 4);
 	argv[0] = ft_strdup("unsetenv");
 	argv[1] = ft_strdup("--foo");
 	argv[2] = ft_strdup("testinvalidoption=foo");
@@ -127,7 +127,7 @@ Test(builtin_unset_env_unit, invalid_shell_no_arguments, .init = redirect_std_er
 	t_shell		*shell = init_shell(false);
 	shell->env = start;
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 2);
 	argv[0] = ft_strdup("unsetshell");
 	argv[1] = NULL;
 	ret = builtin_unsetvar(shell, argv);
@@ -147,7 +147,7 @@ Test(builtin_unset_env_unit, invalid_NULL_env)
 	t_shell		*shell = init_shell(false);
 	shell->env = start;
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 2);
 	argv[0] = ft_strdup("unsetshell");
 	argv[1] = NULL;
 	ret = builtin_unsetvar(shell, argv);

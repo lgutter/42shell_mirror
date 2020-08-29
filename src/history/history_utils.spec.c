@@ -495,9 +495,10 @@ Test(scroll_hist, invalid_NULL_cursor)
 {
 	t_history	hist;
 	t_buff		buffer;
+	t_cursor	*cursor = NULL;
 	int			ret;
 
-	ret = scroll_hist(&hist, &buffer, NULL);
+	ret = scroll_hist(&hist, &buffer, cursor);
 	cr_assert_eq(ret, 1);
 }
 

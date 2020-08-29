@@ -51,7 +51,7 @@ Test(builtin_echo_unit, valid_echo_no_arguments, .init = redirect_std_out)
 	char		**argv;
 	int			ret = 0;
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 2);
 	argv[0] = ft_strdup("echo");
 	argv[1] = NULL;
 	ret = builtin_echo(shell, argv);
@@ -148,7 +148,7 @@ Test(builtin_echo_unit, valid_echo_one_argument_no_newline, .init = redirect_std
 	char		**argv;
 	int			ret = 0;
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 4);
 	argv[0] = ft_strdup("echo");
 	argv[1] = ft_strdup("-n");
 	argv[2] = ft_strdup("foo");
@@ -168,7 +168,7 @@ Test(builtin_echo_unit, valid_echo_two_arguments_no_newline, .init = redirect_st
 	char		**argv;
 	int			ret = 0;
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 5);
 	argv[0] = ft_strdup("echo");
 	argv[1] = ft_strdup("-n");
 	argv[2] = ft_strdup("foo");
@@ -189,7 +189,7 @@ Test(builtin_echo_unit, valid_echo_two_arguments, .init = redirect_std_out)
 	char		**argv;
 	int			ret = 0;
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 4);
 	argv[0] = ft_strdup("echo");
 	argv[1] = ft_strdup("foo");
 	argv[2] = ft_strdup("bar");

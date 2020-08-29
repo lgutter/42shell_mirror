@@ -150,6 +150,7 @@ Test(remove_word, start) {
 	t_buff		*buffer;
 	t_cursor	cursor;
 
+	memset(&cursor, 0, sizeof(t_cursor));
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
@@ -171,6 +172,7 @@ Test(remove_word, middle) {
 	t_buff		*buffer;
 	t_cursor	cursor;
 
+	memset(&cursor, 0, sizeof(t_cursor));
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
@@ -192,6 +194,7 @@ Test(remove_word, end) {
 	t_buff		*buffer;
 	t_cursor	cursor;
 
+	memset(&cursor, 0, sizeof(t_cursor));
 	buffer = ft_memalloc(sizeof(t_buff));
 	buffer->buff = ft_memalloc(sizeof(char) * 64);
 	cr_assert_neq(buffer, NULL, "Malloc failed!");
