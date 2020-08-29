@@ -174,7 +174,7 @@ Test(set_up_redirections_unit, valid_overwrite_file_twice)
 
 Test(set_up_redirections_unit, valid_write_to_fd_no_left_fd)
 {
-	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
+	int				*pipe_fds = (int *)ft_memalloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
 	int				left_fd = STDOUT_FILENO;
@@ -206,7 +206,7 @@ Test(set_up_redirections_unit, valid_write_to_fd_no_left_fd)
 
 Test(set_up_redirections_unit, valid_write_to_fd)
 {
-	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
+	int				*pipe_fds = (int *)ft_memalloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
 	int				left_fd = 524;
@@ -238,7 +238,7 @@ Test(set_up_redirections_unit, valid_write_to_fd)
 
 Test(set_up_redirections_unit, valid_write_to_fd_unclosed_stdout)
 {
-	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
+	int				*pipe_fds = (int *)ft_memalloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
 	t_io_file		io_file2;
@@ -285,7 +285,7 @@ Test(set_up_redirections_unit, valid_write_to_fd_unclosed_stdout)
 
 Test(set_up_redirections_unit, valid_write_to_fd_unclosed_stderr)
 {
-	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
+	int				*pipe_fds = (int *)ft_memalloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
 	t_io_file		io_file2;
@@ -416,7 +416,7 @@ Test(set_up_redirections_unit, valid_close_fd_stderr)
 
 Test(set_up_redirections_unit, valid_read_from_fd)
 {
-	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
+	int				*pipe_fds = (int *)ft_memalloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
 	int				left_fd = 525;
@@ -448,7 +448,7 @@ Test(set_up_redirections_unit, valid_read_from_fd)
 
 Test(set_up_redirections_unit, valid_read_from_fd_unclosed_stdin)
 {
-	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
+	int				*pipe_fds = (int *)ft_memalloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
 	t_io_file		io_file2;
@@ -495,7 +495,7 @@ Test(set_up_redirections_unit, valid_read_from_fd_unclosed_stdin)
 
 Test(set_up_redirections_unit, valid_read_from_fd_no_left_fd)
 {
-	int				*pipe_fds = (int *)malloc(sizeof(int) * 2);
+	int				*pipe_fds = (int *)ft_memalloc(sizeof(int) * 2);
 	char			*filename = NULL;
 	t_io_file		io_file;
 	int				left_fd = STDIN_FILENO;
@@ -674,8 +674,8 @@ Test(set_up_redirections_unit, invalid_empty_redirect, .init = redirect_std_err)
 Test(reset_redirections_unit, valid_close_single_fd)
 {
 	int ret;
-	t_redir_info	*info = malloc(sizeof(t_redir_info) * 1);
-	info->fd_list = malloc(sizeof(t_fd_list) * 1);
+	t_redir_info	*info = ft_memalloc(sizeof(t_redir_info) * 1);
+	info->fd_list = ft_memalloc(sizeof(t_fd_list) * 1);
 	info->std_fds[0] = 0;
 	info->std_fds[1] = 1;
 	info->std_fds[2] = 2;
@@ -696,9 +696,9 @@ Test(reset_redirections_unit, valid_close_single_fd)
 Test(reset_redirections_unit, valid_close_fd_restore_fd)
 {
 	int ret;
-	t_redir_info	*info = malloc(sizeof(t_redir_info) * 1);
-	t_fd_list	*list2 = malloc(sizeof(t_fd_list) * 1);
-	info->fd_list = malloc(sizeof(t_fd_list) * 1);
+	t_redir_info	*info = ft_memalloc(sizeof(t_redir_info) * 1);
+	t_fd_list	*list2 = ft_memalloc(sizeof(t_fd_list) * 1);
+	info->fd_list = ft_memalloc(sizeof(t_fd_list) * 1);
 	info->std_fds[0] = 0;
 	info->std_fds[1] = 1;
 	info->std_fds[2] = 2;
@@ -732,7 +732,7 @@ Test(reset_redirections_unit, valid_close_fd_restore_fd)
 Test(reset_redirections_unit, invalid_NULL_fd_list)
 {
 	int ret;
-	t_redir_info	*info = malloc(sizeof(t_redir_info) * 1);
+	t_redir_info	*info = ft_memalloc(sizeof(t_redir_info) * 1);
 	info->fd_list = NULL;
 	info->std_fds[0] = 0;
 	info->std_fds[1] = 1;
@@ -745,8 +745,8 @@ Test(reset_redirections_unit, invalid_NULL_fd_list)
 Test(reset_redirections_unit, invalid_NULL_std_fds)
 {
 	int ret;
-	t_redir_info	*info = malloc(sizeof(t_redir_info) * 1);
-	info->fd_list = malloc(sizeof(t_fd_list) * 1);
+	t_redir_info	*info = ft_memalloc(sizeof(t_redir_info) * 1);
+	info->fd_list = ft_memalloc(sizeof(t_fd_list) * 1);
 	int	newfd = dup(1);
 	info->fd_list->fd = newfd;
 	info->fd_list->og_fd = -1;

@@ -73,7 +73,7 @@ Test(builtin_set_env_unit, invalid_deny_read_only_overwrite, .init = redirect_st
 	char		buff[1024];
 
 	ft_setenv(shell->env, "READONLY", "ORIGINAL", (RO_VAR | ENV_VAR));
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 4);
 	argv[0] = ft_strdup("setenv");
 	argv[1] = ft_strdup("--readonly");
 	argv[2] = ft_strdup("READONLY=OVERWRITTEN");
@@ -109,7 +109,7 @@ Test(builtin_set_env_unit, valid_force_read_only_overwrite)
 	int			ret = 0;
 
 	ft_setenv(shell->env, "READONLY", "ORIGINAL", (RO_VAR | ENV_VAR));
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 4);
 	argv[0] = ft_strdup("setenv");
 	argv[1] = ft_strdup("--force");
 	argv[2] = ft_strdup("READONLY=OVERWRITTEN");
@@ -174,7 +174,7 @@ Test(builtin_set_env_unit, valid_different_var_type)
 	int			ret = 0;
 
 	ft_setenv(shell->env, "SAMENAME", "INENVVARS", (RO_VAR | ENV_VAR));
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 4);
 	argv[0] = ft_strdup("setshell");
 	argv[1] = ft_strdup("--force");
 	argv[2] = ft_strdup("SAMENAME=INSHELLVARS");
@@ -235,7 +235,7 @@ Test(builtin_set_env_unit, valid_env_no_arguments, .init = redirect_std_out)
 	shell->env = start;
 	int			ret = 0;
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 2);
 	argv[0] = ft_strdup("setenv");
 	argv[1] = NULL;
 	ret = builtin_setvar(shell, argv);
@@ -257,7 +257,7 @@ Test(builtin_set_env_unit, valid_shell_no_arguments, .init = redirect_std_out)
 	shell->env = start;
 	int			ret = 0;
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 2);
 	argv[0] = ft_strdup("setshell");
 	argv[1] = NULL;
 	ret = builtin_setvar(shell, argv);
@@ -277,7 +277,7 @@ Test(builtin_set_env_unit, invalid_NULL_env)
 	shell->env = start;
 	int			ret = 0;
 
-	argv = (char **)malloc(sizeof(char *) * 3);
+	argv = (char **)malloc(sizeof(char *) * 2);
 	argv[0] = ft_strdup("setshell");
 	argv[1] = NULL;
 	ret = builtin_setvar(shell, argv);

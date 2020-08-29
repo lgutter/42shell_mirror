@@ -138,12 +138,12 @@ Test(init_complete, to_complete_exec_spaces)
     t_complete  comp;
 
     buffer.buff = ft_strdup("   spaces");
-    buffer.index = 13;
+    buffer.index = 10;
 
     initialize_complete(&comp, &buffer);
     cr_expect_str_eq(comp.to_complete, "spaces");
     cr_expect_eq(comp.to_complen, 6);
-    cr_expect_eq(comp.options, EXECUTABLES + BUILTINS, " is %d and must be %d\n", 
+    cr_expect_eq(comp.options, EXECUTABLES + BUILTINS, " is %d and must be %d\n",
                     (int)comp.options, EXECUTABLES + BUILTINS);
 }
 
@@ -157,7 +157,7 @@ Test(init_complete, null_checks)
     ret = initialize_complete(&comp, &buffer);
     cr_expect_eq(ret, 1);
     buffer.buff = ft_strdup("   spaces");
-    buffer.index = 13;
+    buffer.index = 10;
     ret = initialize_complete(NULL, &buffer);
     cr_expect_eq(ret, 1);
     ret = initialize_complete(&comp, NULL);
