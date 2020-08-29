@@ -111,9 +111,12 @@ int				expand_variable(t_shell *shell, char **string,
 int				expand_home(t_env *env_list, char **string,
 												size_t *read, size_t *write);
 
+void			subst_exec_command_and_exit(int fd_to_fd[2],
+					const char *command, size_t str_len, t_shell *shell);
+
 /*
 **	Takes a pointer to a string containing a command substitution.
-**	 This will then execute the command in a non-interactive copy of shell
+**	This will then execute the command in a non-interactive copy of shell
 **	and place the stdout of the command in the original string.
 **
 **	Returns:
@@ -121,6 +124,25 @@ int				expand_home(t_env *env_list, char **string,
 **	- errid error code on failure.
 */
 int				expand_command_subst(t_shell *shell,
-									char **string, size_t *read, size_t *write);
+					char **string, size_t *read, size_t *write);
+
+/*
+**	Takes a pointer to a string containing a process substitution.
+**	This will then launch the command in a non-interactive copy of the shell
+**	and place "/dev/fd/$NEW_PROCESS_FD" in the original string.
+**	The still open fd will be placed in shell->process_subst_fds. Close the
+**	fd using close_process_fds.
+**
+**	Returns:
+**	- 0 on succes.
+**	- errid error code on failure.
+*/
+int				expand_process_subst(t_shell *shell,
+					char **string, size_t *read, size_t *write);
+
+/*
+**	Closes all .fd's in node and free all nodes. Returns NULL.
+*/
+t_fd_list		*close_process_fds(t_fd_list *node);
 
 #endif

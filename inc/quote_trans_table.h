@@ -92,7 +92,9 @@ static const t_q_trans g_quote_trans[][q_state_count] = {
 				['\'']		= {q_squote, Q_SKIP_CHAR},
 				['"']		= {q_dquote, Q_SKIP_CHAR},
 				['\\']		= {q_backslash, Q_ADD_CHAR},
-				['$']		= {no_quote, Q_EXPAND_VAR}
+				['$']		= {no_quote, Q_EXPAND_VAR},
+				['<']		= {no_quote, Q_EXPAND_VAR},
+				['>']		= {no_quote, Q_EXPAND_VAR}
 			},
 			.catch_state	= {no_quote, Q_ADD_CHAR}
 		},

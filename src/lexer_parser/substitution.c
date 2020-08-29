@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <stddef.h>
+#include "ft_printf.h"
 #include "substitution.h"
 
 static ssize_t	find_squote(const char *input, ssize_t acc)
@@ -84,7 +85,7 @@ ssize_t			subst_length_tail(const char *input, ssize_t acc)
 			return (-1);
 		return (subst_length_tail(input + 2, acc + 2));
 	}
-	if (input[0] == '$' && input[1] == '(')
+	if (ft_strchr("$<>", input[0]) != NULL && input[1] == '(')
 	{
 		sub_subst_length = subst_length(input + 1) + 1;
 		if (sub_subst_length == -1)

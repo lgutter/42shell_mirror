@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   resolve_command_subst.c                            :+:    :+:            */
+/*   command.c                                          :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: nloomans <nloomans@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/08/25 12:57:26 by nloomans      #+#    #+#                 */
-/*   Updated: 2020/08/27 17:57:26 by lgutter       ########   odam.nl         */
+/*   Created: 0000/00/00 00:00:00 by nloomans      #+#    #+#                 */
+/*   Updated: 9999/99/99 99:99:99 by nloomans      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,6 @@
 #include "substitution.h"
 #include "handle_input.h"
 #include "processing.h"
-
-static void		exec_command_and_exit(int output_fd, const char *command,
-					size_t str_len, t_shell *shell)
-{
-	char	*input;
-
-	input = ft_strndup(command, str_len);
-	if (input == NULL)
-	{
-		handle_error(malloc_error);
-		exit(1);
-	}
-	if (dup2(output_fd, STDOUT_FILENO) == -1)
-	{
-		handle_error(dup2_fd_fail);
-		exit(1);
-	}
-	if (shell != NULL)
-		shell->interactive = false;
-	handle_input(shell, &input);
-	exit(0);
-}
 
 static char		*read_to_string(int fd)
 {
@@ -68,13 +46,11 @@ static char		*read_to_string(int fd)
 }
 
 static int		resolve_command_subst(char **out, t_shell *shell,
-					const char *subst)
+					const char *subst, size_t subst_len)
 {
-	size_t	subst_len;
 	int		fork_pipe[2];
 	pid_t	pid;
 
-	subst_len = subst_length(subst + 1);
 	if (pipe(fork_pipe) == -1)
 		return (-pipe_failure);
 	pid = fork();
@@ -85,7 +61,11 @@ static int		resolve_command_subst(char **out, t_shell *shell,
 		return (-fork_failure);
 	}
 	if (pid == 0)
-		exec_command_and_exit(fork_pipe[1], subst + 2, subst_len - 2, shell);
+	{
+		close(fork_pipe[0]);
+		subst_exec_command_and_exit((int[]){fork_pipe[1], STDOUT_FILENO},
+			subst + 2, subst_len - 2, shell);
+	}
 	close(fork_pipe[1]);
 	*out = read_to_string(fork_pipe[0]);
 	close(fork_pipe[0]);
@@ -100,10 +80,12 @@ int				expand_command_subst(t_shell *shell,
 	int		len;
 	char	*expanded;
 	char	*new;
+	size_t	subst_len;
 
 	if (string == NULL || *string == NULL || read == NULL || write == NULL)
 		return (-1);
-	len = resolve_command_subst(&expanded, shell, *string + *read);
+	subst_len = subst_length(*string + *read + 1);
+	len = resolve_command_subst(&expanded, shell, *string + *read, subst_len);
 	if (len < 0)
 		return (-len);
 	ft_asprintf(&new, "%.*s%s%s",

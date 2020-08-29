@@ -59,6 +59,7 @@ static int				handle_command(t_shell *shell, t_complete_cmd *comp_cmd)
 		add_job_to_list(shell, job);
 	else
 		free_job(job);
+	shell->process_subst_fds = close_process_fds(shell->process_subst_fds);
 	return (ret);
 }
 

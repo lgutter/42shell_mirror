@@ -61,6 +61,21 @@ typedef struct			s_cursor
 	int					direction;
 }						t_cursor;
 
+/*
+**	a linked list containing file descriptors and there original position.
+**	fields:
+**		fd:		the file descriptor.
+**		og_fd:	the original number associated with the descriptor,
+**				or -1 if it was not originally associated with a descriptor.
+**		next:	a pointer to the next element in the list.
+*/
+typedef	struct			s_fd_list
+{
+	int					fd;
+	int					og_fd;
+	struct s_fd_list	*next;
+}						t_fd_list;
+
 typedef struct			s_shell
 {
 	bool				interactive;
@@ -74,6 +89,7 @@ typedef struct			s_shell
 	struct s_job_cont	*job_control;
 	struct s_env		*env;
 	struct s_hashtable	*hash;
+	t_fd_list			*process_subst_fds;
 }						t_shell;
 
 t_shell					*init_shell(bool interactive);

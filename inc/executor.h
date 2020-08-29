@@ -44,21 +44,6 @@ typedef struct	s_command
 }				t_command;
 
 /*
-**	a linked list containing file descriptors and there original position.
-**	fields:
-**		fd:		the file descriptor.
-**		og_fd:	the original number associated with the descriptor,
-**				or -1 if it was not originally associated with a descriptor.
-**		next:	a pointer to the next element in the list.
-*/
-typedef	struct	s_fd_list
-{
-	int					fd;
-	int					og_fd;
-	struct s_fd_list	*next;
-}				t_fd_list;
-
-/*
 **	contains information needed to properly handle redirections.
 **	fields:
 **		std_fds:	an array of 3 integers used to hold the original fd's
