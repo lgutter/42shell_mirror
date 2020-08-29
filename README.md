@@ -2,7 +2,7 @@
 
 42shell is a project in the [Codam](https://www.codam.nl/) curriculum requiring you to build a shell with all basic functionality, plus a choice of six extra features.
 
-The six extra features we are building are:
+The seven extra features we have built are:
 - Complete management of quoting ✓
 - Tab completion for built-ins, command, and files in current directory ✓
 - hash table for executables ✓
