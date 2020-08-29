@@ -13,7 +13,7 @@
 #include "handle_error.h"
 #include "error_str.h"
 
-int		handle_prefix_error(int error_code, char const*prefix)
+int		handle_prefix_error(int error_code, char const *prefix)
 {
 	if (error_code > 0 && error_code < error_count)
 	{
@@ -24,7 +24,8 @@ int		handle_prefix_error(int error_code, char const*prefix)
 	return (error_code);
 }
 
-int		handle_prefix_error_str(int error_code, char const *prefix, char const *str)
+int		handle_prefix_error_str(int error_code, char const *prefix,
+			char const *str)
 {
 	if (error_code > 0 && error_code < error_count)
 	{
