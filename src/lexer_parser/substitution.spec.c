@@ -64,3 +64,16 @@ Test(subst_length, arith) {
    cr_expect_eq(subst_length("(( 5 + $(echo 7 + 5) ))"), 23);
    cr_expect_eq(subst_length("(( 5 + $(echo $((7 + 5))) ))"), 28);
 }
+
+Test(subst_length, process) {
+   cr_expect_eq(subst_length("( <(foo) )"), 10);
+   cr_expect_eq(subst_length("( >(foo) )"), 10);
+   cr_expect_eq(subst_length("( \"<(foo\" )"), 11);
+   cr_expect_eq(subst_length("( \">(foo\" )"), 11);
+   cr_expect_eq(subst_length("( \\<(foo )"), 10);
+   cr_expect_eq(subst_length("( \\>(foo )"), 10);
+   cr_expect_eq(subst_length("(( <( ))"), 8);
+   cr_expect_eq(subst_length("(( >( ))"), 8);
+   cr_expect_eq(subst_length("( <(foo)"), -1);
+   cr_expect_eq(subst_length("( >(foo)"), -1);
+}
