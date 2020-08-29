@@ -40,7 +40,7 @@ size_t			hash_duplicate(char *key, t_hashtable *table)
 	entry = table->hl;
 	while (entry != NULL)
 	{
-		if (entry->key != NULL && strcmp(entry->key, key) == 0)
+		if (entry->key != NULL && ft_strcmp(entry->key, key) == 0)
 			return (1);
 		entry = entry->next;
 	}
