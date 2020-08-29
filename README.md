@@ -2,16 +2,16 @@
 
 42shell is a project in the [Codam](https://www.codam.nl/) curriculum requiring you to build a shell with all basic functionality, plus a choice of six extra features.
 
-The six extra features we are building are:
+The seven extra features we have built are:
 - Complete management of quoting ✓
 - Tab completion for built-ins, command, and files in current directory ✓
-- hash table for executables ✓
+- Hash table for executables ✓
 - test builtin ✓
 - Arithmetic expansion using `$(())` ✓
-- command substitution using `$()` ✓
-- process substitution using `<()` and `>()` ✓
+- Command substitution using `$()` ✓
+- Process substitution using `<()` and `>()` ✓ (BONUS)
 
-anything labeled with `(BONUS)` is not required by the project subject.
+Anything labeled with `(BONUS)` is not required by the project subject.
 
 
 
@@ -45,9 +45,9 @@ To start the shell, run `./cetushell`.
 
 This shell currently has the following features:
 - Command execution based on `PATH`
-- hashing of executable names in hashtable, with corresponding `hash` builtin
-- non-interactive mode through redirection of input OR a file as argument (BONUS)
-- support for comments using `#`. Aything after a `#` until the next newline is ignored. (BONUS)
+- Hashing of executable names in hashtable, with corresponding `hash` builtin
+- Non-interactive mode through redirection of input OR a file as argument (BONUS)
+- Support for comments using `#`. Aything after a `#` until the next newline is ignored. (BONUS)
 - Internal shell + environment variables, including assignment through assignment words, expansion (using `$KEY` or `${KEY}`) and support for read-only
 - Changing the shell prompt by modifying the shell variable `PS1`
 - Pipes (including completion of pipes(BONUS))
@@ -58,8 +58,8 @@ This shell currently has the following features:
 - Command substitution using `$(command)`, with full support for anything supported in non-interactive mode.
 - Process substitution using `>(command)` to redirect to the process or `<(command)` to redirect from the command.
 - Quotes (`"`, `'` and `\`), including in heredocs and the heredoc end word (i.e. `EOF`)
-- the operators `&&` and `||` to chain multiple complete commands
-- job control including the required builtins (see below) and `job_spec` which supports these formats:
+- The operators `&&` and `||` to chain multiple complete commands
+- Job control including the required builtins (see below) and `job_spec` which supports these formats:
 	- `%-`: matches previous job
 	- `%+`: matches current job
 	- `%n` matches job with job id `n`
