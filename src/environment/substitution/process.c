@@ -16,7 +16,7 @@
 #include "handle_input.h"
 #include "processing.h"
 
-int				launch_process(const char *command, size_t command_len,
+static int		launch_process(const char *command, size_t command_len,
 					t_shell *shell, bool is_left)
 {
 	int		fork_pipe[2];
