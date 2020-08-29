@@ -88,7 +88,7 @@ static size_t	add_file_match(t_complete *comp, char *path, char *complete)
 	files = readdir(directory);
 	while (files != NULL)
 	{
-		if (strncmp(complete, files->d_name, ft_strlen(complete)) == 0)
+		if (ft_strncmp(complete, files->d_name, ft_strlen(complete)) == 0)
 		{
 			if (filter_files(comp, files->d_name, path) == 0 &&
 					is_directory(files->d_name, path) == false)

@@ -63,7 +63,7 @@ static t_opt	get_autocomp_opt(t_complete *comp)
 	t_opt	options;
 
 	options = 0;
-	if (strncmp("${", comp->to_complete, 2) == 0)
+	if (ft_strncmp("${", comp->to_complete, 2) == 0)
 		options |= VAR_DBRACK;
 	else if (comp->to_complete[0] == '$')
 		options |= VAR_DOLLAR;
