@@ -5,7 +5,7 @@
 #                                                      +:+                     #
 #    By: lgutter <lgutter@student.codam.nl>           +#+                      #
 #                                                    +#+                       #
-#    Created: 2019/09/11 13:40:17 by lgutter        #+#    #+#                 #
+#    Created: 2019/09/11 13:40:17 by lgutter       #+#    #+#                  #
 #    Updated: 2020/01/08 10:31:03 by lgutter       ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
@@ -13,8 +13,6 @@
 include Source_files/printfsources
 include libft/libftsources
 include libft/covsources
-
-JUNK = $(shell find -E . -regex ".*(\..*~|\#.*\#|\.DS_Store)" 2>/dev/null)
 
 OBJECTS := $(PRINTFSOURCES:%=Source_files/%.o)
 OBJECTS += $(LFTSOURCES:%=libft/%.o)
@@ -42,7 +40,7 @@ $(NAME): $(OBJECTS) $(HEADER)
 	@echo "$(PLUS) compiled: $@"
 
 clean:
-	@rm -rfv $(JUNK) $(OBJECTS) | sed -E $$'s/(.*)/$(MINUS) removed: \\1/g'
+	@rm -rfv $(OBJECTS) | sed -E $$'s/(.*)/$(MINUS) removed: \\1/g'
 
 fclean: clean
 	@rm -rfv $(NAME) | sed -E $$'s/(.*)/$(MINUS) removed: \\1/g'

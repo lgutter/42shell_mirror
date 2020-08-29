@@ -13,8 +13,6 @@
 include src/42shsrcs
 include inc/headerlist
 
-JUNK = $(shell find -E . -regex ".*(\..*~|\#.*\#|\.DS_Store)" 2>/dev/null)
-
 OBJS := $(42SHSRCS:%= src/%.o)
 LIBFT := ft_printf/libftprintf.a
 INCLPATH := -I ./inc -I ./ft_printf
@@ -41,7 +39,7 @@ $(LIBFT): FORCE
 	@echo "$(PLUS) compiled: $@"
 
 lclean:
-	@rm -rfv $(JUNK) $(OBJS) $(MAIN)| sed -E $$'s/(.*)/$(MINUS) removed: \\1/g'
+	@rm -rfv $(OBJS) $(MAIN)| sed -E $$'s/(.*)/$(MINUS) removed: \\1/g'
 
 clean: lclean
 	@$(MAKE) clean -C ft_printf/
